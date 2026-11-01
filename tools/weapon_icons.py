@@ -49,7 +49,9 @@ icon("pistol", "Pistole", [
     rect(31, 3.5, 4, 2.5), rect(94, 3.5, 3, 2.5),
     rect(44, 17, 54, 5),
     g_solid,
-    "M25 15 L50 17 L52 23 Q47 34 45 46 L29 46 Q30 34 31 26 Q28 21 23 19 Z",
+    # Straight grip, about 18 degrees back, flat magazine base, small beavertail.
+    poly((28, 17), (51, 17), (51, 22), (46, 44.5), (28.5, 44.5), (33, 21.5), (27, 19)),
+    rect(28, 44, 18.5, 2.2),
 ], [g_hole] + [rect(32 + i * 2.6, 8, 1.2, 7) for i in range(4)])
 
 g_solid, g_hole = guard(38, 23, 15, 11)
