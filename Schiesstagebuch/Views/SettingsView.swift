@@ -208,12 +208,7 @@ struct AmmunitionListView: View {
                         Section(group.0) {
                             ForEach(group.1) { a in
                                 NavigationLink { AmmunitionDetailView(ammunition: a) } label: {
-                                    HStack {
-                                        CartridgeView(caliber: a.caliber).frame(width: 18, height: 30)
-                                        Text(a.name).foregroundStyle(a.isArchived ? .secondary : .primary)
-                                        Spacer()
-                                        Text(a.totalShots.formatted()).monospacedDigit().foregroundStyle(.secondary)
-                                    }
+                                    AmmunitionRow(ammunition: a)
                                 }
                                 .swipeActions { ArchiveButton(item: a) }
                             }
@@ -366,5 +361,18 @@ struct ArchiveButton<Item: ArchivableItem>: View {
                   systemImage: item.isArchived ? "tray.and.arrow.up" : "archivebox")
         }
         .tint(.orange)
+    }
+}
+
+private struct AmmunitionRow: View {
+    let ammunition: Ammunition
+
+    var body: some View {
+        HStack {
+            CartridgeView(caliber: ammunition.caliber).frame(width: 18, height: 30)
+            Text(ammunition.name).foregroundStyle(ammunition.isArchived ? .secondary : .primary)
+            Spacer()
+            Text((ammunition.entries ?? []).totalShots.formatted()).monospacedDigit().foregroundStyle(.secondary)
+        }
     }
 }
