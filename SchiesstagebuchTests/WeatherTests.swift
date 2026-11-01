@@ -193,7 +193,7 @@ final class WeatherTests: ModelTestCase {
         let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
         XCTAssertEqual(restored.weather, record)
 
-        let csv = String(decoding: Backup.csv(context), as: UTF8.self)
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         let lines = csv.components(separatedBy: "\r\n")
         let header = lines[0].components(separatedBy: ";")
         XCTAssertTrue(header.contains("Wetter".loc))
