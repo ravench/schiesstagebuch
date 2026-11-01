@@ -177,7 +177,7 @@ struct CaliberListView: View {
 struct CaliberEditorView: View {
     let caliber: Caliber?
     var initialName = ""
-    var onCreate: ((Caliber) -> Void)? = nil
+    var onCreate: ((Caliber) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -269,8 +269,8 @@ struct AmmunitionListView: View {
 
 struct AmmunitionEditorView: View {
     let ammunition: Ammunition?
-    var suggestedCaliber: Caliber? = nil
-    var onCreate: ((Ammunition) -> Void)? = nil
+    var suggestedCaliber: Caliber?
+    var onCreate: ((Ammunition) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var calibers: [Caliber]
@@ -396,7 +396,7 @@ struct RangeListView: View {
 
 struct RangeEditorView: View {
     let range: ShootingRange?
-    var onCreate: ((ShootingRange) -> Void)? = nil
+    var onCreate: ((ShootingRange) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""

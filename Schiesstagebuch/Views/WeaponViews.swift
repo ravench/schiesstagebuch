@@ -200,7 +200,7 @@ struct MaintenanceHistoryView: View {
 
 struct WeaponEditorView: View {
     let weapon: Weapon?
-    var onCreate: ((Weapon) -> Void)? = nil
+    var onCreate: ((Weapon) -> Void)?
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -308,7 +308,7 @@ struct WeaponEditorView: View {
             }
             .onChange(of: calibers) { _, new in
                 if let d = defaultCaliber, new.contains(d) { return }
-                defaultCaliber = new.sorted { $0.name < $1.name }.first
+                defaultCaliber = new.min { $0.name < $1.name }
             }
             .confirmationDialog("Waffe löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
