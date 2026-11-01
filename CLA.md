@@ -1,6 +1,6 @@
 # Contributor License Agreement
 
-This agreement is between you ("Contributor") and Raven (https://github.com/ravench),
+This agreement is between you ("Contributor") and Simon Giotta (https://github.com/ravench),
 the owner of the Schiesstagebuch project ("Owner"). It applies to every
 contribution you submit to this repository, such as code, documentation,
 translations, icons or other material ("Contribution").
