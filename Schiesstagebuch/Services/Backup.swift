@@ -43,6 +43,7 @@ enum Backup {
         var caliberIDs: [UUID]; var defaultCaliberID: UUID?
         var cleaningIntervalShots: Int; var cleaningIntervalDays: Int
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
+        var dayCounting: String?
     }
     struct AmmunitionDTO: Codable { var id: UUID; var name: String; var caliberID: UUID?; var isArchived: Bool }
     struct LotDTO: Codable { var id: UUID; var ammunitionID: UUID?; var number: String; var notes: String; var isArchived: Bool; var createdAt: Date }
@@ -74,7 +75,8 @@ enum Backup {
                 .init(id: $0.id, name: $0.name, isArchived: $0.isArchived, category: $0.categoryRaw,
                       caliberIDs: ($0.calibers ?? []).map(\.id), defaultCaliberID: $0.defaultCaliber?.id,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
-                      serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays)
+                      serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
+                      dayCounting: $0.dayCountingRaw)
             },
             ammunition: try all(Ammunition.self, context).map { .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived) },
             ranges: try all(ShootingRange.self, context).map {
@@ -128,6 +130,7 @@ enum Backup {
             w.defaultCaliber = d.defaultCaliberID.flatMap { caliberMap[$0] }
             w.cleaningIntervalShots = d.cleaningIntervalShots; w.cleaningIntervalDays = d.cleaningIntervalDays
             w.serviceIntervalShots = d.serviceIntervalShots; w.serviceIntervalDays = d.serviceIntervalDays
+            w.dayCountingRaw = d.dayCounting ?? ""
             context.insert(w); weapons[d.id] = w
         }
 

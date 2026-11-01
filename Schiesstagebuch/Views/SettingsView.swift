@@ -12,6 +12,8 @@ struct SettingsView: View {
     @State private var importingLegacy = false
     @State private var message: String?
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
+    @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
+    @Query private var weapons: [Weapon]
 
     var body: some View {
         NavigationStack {
@@ -38,6 +40,18 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Picker(selection: $dayCounting) {
+                        ForEach(DayCounting.allCases) { Text($0.title).tag($0) }
+                    } label: {
+                        Label("Tage zählen", systemImage: "calendar.badge.clock")
+                    }
+                } header: {
+                    Text("Erinnerungen")
+                } footer: {
+                    Text("Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.")
+                }
+
+                Section {
                     Button { export() } label: { Label("Backup exportieren", systemImage: "square.and.arrow.up") }
                     Button { importing = true } label: { Label("Backup wiederherstellen", systemImage: "square.and.arrow.down") }
                     Button { exportCSV() } label: { Label("Tagebuch als CSV", systemImage: "tablecells") }
@@ -56,6 +70,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Einstellungen")
+            .onChange(of: dayCounting) { weapons.forEach { MaintenanceNotifier.refresh($0) } }
             .fileExporter(isPresented: Binding(get: { exportDoc != nil }, set: { if !$0 { exportDoc = nil } }),
                           document: exportDoc, contentType: exportType, defaultFilename: exportName) { result in
                 if case .failure(let e) = result { message = e.localizedDescription }

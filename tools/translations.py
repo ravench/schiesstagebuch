@@ -273,4 +273,12 @@ T = {
     "Schüsse erfassen als": ("Record shots as", "Saisir les coups", "Registra i colpi come"),
     "Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.": ("Optional. Without a result the sum of the shots counts; with max. points the app calculates the percentage.", "Facultatif. Sans résultat, la somme des coups compte ; avec les points max., l'app calcule le pourcentage.", "Facoltativo. Senza risultato conta la somma dei colpi; con i punti max. l'app calcola la percentuale."),
     "Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.": ("Optional. With max. points the app calculates the percentage and the average per shot.", "Facultatif. Avec les points max., l'app calcule le pourcentage et la moyenne par coup.", "Facoltativo. Con i punti max. l'app calcola la percentuale e la media per colpo."),
+    "Ab Reinigung / Service": ("From cleaning / service", "Dès le nettoyage / service", "Dalla pulizia / manutenzione"),
+    "Ab erster Nutzung danach": ("From first use afterwards", "Dès la première utilisation suivante", "Dal primo utilizzo successivo"),
+    "Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.": ("When day-based reminders start counting. You can change this per firearm.", "À partir de quand les rappels en jours comptent. Modifiable pour chaque arme.", "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni arma."),
+    "Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.": ("A cleaning resets the cleaning shots and days; a service also resets the service ones.", "Un nettoyage remet à zéro les coups et jours du nettoyage ; un service remet aussi ceux du service.", "Una pulizia azzera colpi e giorni della pulizia; una manutenzione azzera anche quelli della manutenzione."),
+    "Erinnerungen": ("Reminders", "Rappels", "Promemoria"),
+    "Standard (%@)": ("Default (%@)", "Par défaut (%@)", "Predefinito (%@)"),
+    "Tage zählen": ("Count days", "Compter les jours", "Conta i giorni"),
+    "Tage zählen ab der nächsten Nutzung": ("Days count from the next use", "Les jours comptent dès la prochaine utilisation", "I giorni contano dal prossimo utilizzo"),
 }

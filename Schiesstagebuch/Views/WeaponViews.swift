@@ -212,6 +212,7 @@ struct WeaponEditorView: View {
     @State private var cleaningDays = 0
     @State private var serviceShots = 0
     @State private var serviceDays = 0
+    @State private var dayCountingRaw = ""
     @State private var choosingCalibers = false
     @State private var confirmDelete = false
     @State private var didLoad = false
@@ -266,6 +267,15 @@ struct WeaponEditorView: View {
 
                 intervalSection(.cleaning, shots: $cleaningShots, days: $cleaningDays)
                 intervalSection(.service, shots: $serviceShots, days: $serviceDays)
+
+                Section {
+                    Picker("Tage zählen", selection: $dayCountingRaw) {
+                        Text(String(localized: "Standard (\(DayCounting.appDefault.title))")).tag("")
+                        ForEach(DayCounting.allCases) { Text($0.title).tag($0.rawValue) }
+                    }
+                } footer: {
+                    Text("Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.")
+                }
 
                 if weapon != nil {
                     Section {
@@ -327,6 +337,7 @@ struct WeaponEditorView: View {
         isArchived = weapon.isArchived
         cleaningShots = weapon.cleaningIntervalShots; cleaningDays = weapon.cleaningIntervalDays
         serviceShots = weapon.serviceIntervalShots; serviceDays = weapon.serviceIntervalDays
+        dayCountingRaw = weapon.dayCountingRaw
         didLoad = true
     }
 
@@ -339,6 +350,7 @@ struct WeaponEditorView: View {
         target.isArchived = isArchived
         target.cleaningIntervalShots = cleaningShots; target.cleaningIntervalDays = cleaningDays
         target.serviceIntervalShots = serviceShots; target.serviceIntervalDays = serviceDays
+        target.dayCountingRaw = dayCountingRaw
         if weapon == nil { context.insert(target); onCreate?(target) }
         try? context.save()
         if cleaningShots + cleaningDays + serviceShots + serviceDays > 0 {
