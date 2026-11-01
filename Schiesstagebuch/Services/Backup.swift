@@ -222,7 +222,7 @@ enum Backup {
             cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
             cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
             cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
-            cols.append(e.filterColor.isEmpty ? "" : e.filterColor.loc)
+            cols.append(e.filterColor)
             cols.append(e.diopter.map { SightSettings.format($0) } ?? "")
             cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")
             cols.append(e.irisSize.map { SightSettings.format($0) } ?? "")

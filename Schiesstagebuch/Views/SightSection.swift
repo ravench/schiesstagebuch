@@ -10,9 +10,16 @@ struct SightSection: View {
         Section {
             DisclosureGroup(isExpanded: $expanded) {
                 Picker("Filter", selection: $sight.filter) {
-                    Text("Kein Filter").tag("")
-                    ForEach(FilterColor.all, id: \.self) { Text($0.loc).tag($0) }
+                    Label { Text("Kein Filter") } icon: { FilterSwatch(name: "") }.tag("")
+                    ForEach(FilterColor.filters, id: \.name) { f in
+                        Label { Text(f.name) } icon: { FilterSwatch(name: f.name) }.tag(f.name)
+                    }
+                    // Keep a stored name that is no longer sold selectable.
+                    if !sight.filter.isEmpty, FilterColor.filter(named: sight.filter) == nil {
+                        Label { Text(sight.filter) } icon: { FilterSwatch(name: sight.filter) }.tag(sight.filter)
+                    }
                 }
+                .pickerStyle(.navigationLink)
                 if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
                 sliderRow("Diopter", value: $sight.diopter)
                 if aperture != .iris {
@@ -71,5 +78,25 @@ struct SightSection: View {
                 }
             }
         }
+    }
+}
+
+/// Small round lens swatch for a filter; an empty ring for "no filter".
+struct FilterSwatch: View {
+    let name: String
+    var size: CGFloat = 18
+
+    var body: some View {
+        let filter = FilterColor.filter(named: name)
+        ZStack {
+            if let filter {
+                Circle().fill(Color(.sRGB, red: filter.red, green: filter.green, blue: filter.blue))
+            } else if !name.isEmpty {
+                Circle().fill(Color.secondary.opacity(0.4))
+            }
+            Circle().strokeBorder(Color.primary.opacity(name.isEmpty ? 0.5 : 0.8), lineWidth: 2)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 }
