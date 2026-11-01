@@ -9,10 +9,25 @@ jobs:
       - uses: actions/checkout@v4
       - run: brew install xcodegen
       - run: xcodegen generate
+      - name: Check translations
+        run: python3 tools/localize.py && git diff --exit-code Schiesstagebuch/Resources/Localizable.xcstrings
       - name: Build for simulator
         run: |
           xcodebuild build \
             -project Schiesstagebuch.xcodeproj \
             -scheme Schiesstagebuch \
             -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || exit ${PIPESTATUS[0]}
+      - name: Unit tests
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          devices = json.load(sys.stdin)['devices']
+          ios = sorted((k for k in devices if 'iOS' in k), reverse=True)
+          print(next(d['udid'] for k in ios for d in devices[k] if d['name'].startswith('iPhone')))")
+          echo "Testing on $UDID"
+          xcodebuild test \
+            -project Schiesstagebuch.xcodeproj \
+            -scheme Schiesstagebuch \
+            -destination "id=$UDID" \
             CODE_SIGNING_ALLOWED=NO | xcpretty || exit ${PIPESTATUS[0]}
