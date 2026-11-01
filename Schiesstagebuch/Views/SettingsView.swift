@@ -15,6 +15,7 @@ struct SettingsView: View {
     @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
     @Query private var weapons: [Weapon]
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
+    @AppStorage(SightSettings.showKey) private var showSport = false
 
     var body: some View {
         NavigationStack {
@@ -41,6 +42,19 @@ struct SettingsView: View {
                     Text("Erfassung")
                 } footer: {
                     Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
+                }
+
+                Section {
+                    Toggle(isOn: $showSport) {
+                        Label("Waffen-Einstellungen für Sportschützen erfassen", systemImage: "scope")
+                    }
+                    if showSport {
+                        NavigationLink { FilterSettingsView() } label: {
+                            Label("Filter", systemImage: "circle.lefthalf.filled")
+                        }
+                    }
+                } footer: {
+                    Text("Zeigt in Einträgen Felder für Filter, Diopter, Ring oder Iris und Zweibein. Ausgeblendete Werte bleiben gespeichert.")
                 }
 
                 Section {
