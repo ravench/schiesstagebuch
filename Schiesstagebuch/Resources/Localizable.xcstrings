@@ -1082,25 +1082,25 @@
         }
       }
     },
-    "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt.": {
+    "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The backup contains all entries, photos and master data. Restoring never duplicates existing entries."
+            "value": "The backup contains all entries, photos and master data. Restoring never duplicates existing entries. The last 10 backups are also kept in the Files app under On My iPhone › Schiesstagebuch › Backups."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique jamais les entrées existantes."
+            "value": "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique pas les entrées existantes. Les 10 dernières sauvegardes sont aussi conservées dans l'app Fichiers sous Sur mon iPhone › Schiesstagebuch › Backups."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica mai le voci esistenti."
+            "value": "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica le voci esistenti. Gli ultimi 10 backup restano anche nell'app File in Sul mio iPhone › Schiesstagebuch › Backups."
           }
         }
       }

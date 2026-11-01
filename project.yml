@@ -13,6 +13,9 @@ targets:
       path: Schiesstagebuch/Info.plist
       properties:
         UIBackgroundModes: [remote-notification]
+        # Show the app's Documents folder in the Files app (backups, files to import).
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
         CFBundleDevelopmentRegion: de
         CFBundleLocalizations: [de, en, fr, it]
     entitlements:
