@@ -530,6 +530,29 @@
         }
       }
     },
+    "App von %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App by %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App de %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App di %@"
+          }
+        }
+      }
+    },
     "App-Icon": {
       "extractionState": "manual",
       "localizations": {
@@ -756,52 +779,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegli dalle foto"
-          }
-        }
-      }
-    },
-    "Aus Schusszähler importieren": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import from Schusszähler"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importer depuis Schusszähler"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa da Schusszähler"
-          }
-        }
-      }
-    },
-    "Aus Schusszähler-App importieren": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import from Schusszähler app"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importer depuis l'app Schusszähler"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa dall'app Schusszähler"
           }
         }
       }
@@ -2301,6 +2278,29 @@
         }
       }
     },
+    "Import aus «%@»": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import from “%@”"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importer depuis « %@ »"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importa da «%@»"
+          }
+        }
+      }
+    },
     "In Karten öffnen": {
       "extractionState": "manual",
       "localizations": {
@@ -2347,25 +2347,25 @@
         }
       }
     },
-    "In der alten App unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": {
+    "In «%@» von %@ unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "In the old app, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here."
+            "value": "In “%@” by %@, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dans l'ancienne app, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici."
+            "value": "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nella vecchia app salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."
+            "value": "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."
           }
         }
       }
