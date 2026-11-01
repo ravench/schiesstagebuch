@@ -35,9 +35,9 @@ enum Backup {
         var entries: [EntryDTO]
     }
 
-    struct CaliberDTO: Codable { var id: UUID; var name: String; var category: String; var isArchived: Bool }
+    struct CaliberDTO: Codable { var id: UUID; var name: String; var category: String; var isArchived: Bool; var catalogID: String? }
     struct WeaponDTO: Codable {
-        var id: UUID; var name: String; var isArchived: Bool
+        var id: UUID; var name: String; var isArchived: Bool; var category: String?
         var caliberIDs: [UUID]; var defaultCaliberID: UUID?
         var cleaningIntervalShots: Int; var cleaningIntervalDays: Int
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
@@ -59,9 +59,9 @@ enum Backup {
         let file = File(
             version: currentVersion,
             exportedAt: .now,
-            calibers: try all(Caliber.self, context).map { .init(id: $0.id, name: $0.name, category: $0.category, isArchived: $0.isArchived) },
+            calibers: try all(Caliber.self, context).map { .init(id: $0.id, name: $0.name, category: $0.category, isArchived: $0.isArchived, catalogID: $0.catalogID) },
             weapons: try all(Weapon.self, context).map {
-                .init(id: $0.id, name: $0.name, isArchived: $0.isArchived,
+                .init(id: $0.id, name: $0.name, isArchived: $0.isArchived, category: $0.categoryRaw,
                       caliberIDs: ($0.calibers ?? []).map(\.id), defaultCaliberID: $0.defaultCaliber?.id,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays)
@@ -97,12 +97,14 @@ enum Backup {
         for d in file.calibers {
             if let c = calibers[d.id] ?? calibersByName[Caliber.normalized(d.name)] { caliberMap[d.id] = c; continue }
             let c = Caliber(name: d.name, category: d.category); c.id = d.id; c.isArchived = d.isArchived
+            c.catalogID = d.catalogID ?? ""
             context.insert(c); calibers[d.id] = c; caliberMap[d.id] = c
         }
 
         var weapons = Dictionary(uniqueKeysWithValues: try all(Weapon.self, context).map { ($0.id, $0) })
         for d in file.weapons where weapons[d.id] == nil {
             let w = Weapon(name: d.name); w.id = d.id; w.isArchived = d.isArchived
+            w.categoryRaw = d.category ?? WeaponCategory.other.rawValue
             w.calibers = d.caliberIDs.compactMap { caliberMap[$0] }
             w.defaultCaliber = d.defaultCaliberID.flatMap { caliberMap[$0] }
             w.cleaningIntervalShots = d.cleaningIntervalShots; w.cleaningIntervalDays = d.cleaningIntervalDays

@@ -147,7 +147,11 @@ struct EntryRow: View {
                         Label(range.name, systemImage: "mappin.and.ellipse")
                     }
                     if let weapon = entry.weapon {
-                        Label(weapon.name, systemImage: "scope")
+                        Label {
+                            Text(weapon.name)
+                        } icon: {
+                            WeaponIcon(category: weapon.category).frame(width: 26, height: 10)
+                        }
                     }
                 }
                 .font(.subheadline)
