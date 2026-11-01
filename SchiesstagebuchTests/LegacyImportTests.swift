@@ -26,7 +26,7 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertNotNil(LegacyImport.parseDate(" 01.01.2024 "))
     }
 
-    func testApplyCreatesMasterDataAndSkipsOnReimport() async throws {
+    func testApplyCreatesReferenceDataAndSkipsOnReimport() async throws {
         let rows = LegacyImport.parseTSV(tsv)
         let plan = LegacyImport.plan(rows, context: context)
         XCTAssertEqual(plan.newRows.count, 2)

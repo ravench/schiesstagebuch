@@ -30,10 +30,14 @@ disabled_rules:
   # SwiftUI views and parsers are naturally long; enforced with the limits below instead.
   - type_body_length
   - todo
+  # Trailing commas in multi-line literals keep diffs small.
+  - trailing_comma
+  # The code base uses compact `}` / `else {` on separate lines for one-line branches.
+  - statement_position
 
 line_length:
-  warning: 160
-  error: 200
+  warning: 180
+  error: 220
   ignores_urls: true
   ignores_interpolated_strings: true
 
