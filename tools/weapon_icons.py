@@ -186,4 +186,61 @@ icon("black_powder", "Vorderlader", [
     rect(121, 14, 1.4, 1.8),
 ], ["M39.8 22 L45.2 22 Q45.2 25.3 42.2 25.3 L39.8 24.6 Z"])
 
+# Swiss bolt-action service carbine (K31 / K11 / G11): full wooden stock, magazine, straight-pull bolt.
+g_solid, g_hole = guard(38, 23.5, 9, 6)
+icon("service_carbine", "Karabiner", [
+    "M2 21 Q14 18.5 30 16.5 L104 17 L104 21 L58 21.5 L56 24 L46 24 L44 22.5 L42 22.5 Q39 25 37 27 L30 28 Q16 30.5 2 33 Z",
+    poly((30, 14.5), (124, 15.2), (124, 17.6), (30, 17.8)),
+    rect(34, 12.5, 24, 4.5),
+    poly((36, 17), (38.5, 17), (37, 21.5), (34.5, 21.5)), circle(35.6, 22.4, 2.2),
+    rect(62, 12, 6, 2.6), rect(121, 13, 1.4, 2.2),
+    rect(78, 14.6, 2, 7), rect(102, 14.8, 2, 6.4),
+    g_solid,
+], [g_hole])
+
+# 10 m air pistol: anatomical grip, air cylinder under the barrel.
+g_solid, g_hole = guard(50, 20.5, 13, 8.5)
+icon("air_pistol", "Luftpistole", [
+    rect(34, 8.5, 64, 6),
+    "M58 14.5 L94 14.5 Q97 14.5 97 17.5 Q97 20.5 94 20.5 L58 20.5 Z",
+    rect(36, 4.5, 6, 4), rect(95, 5.5, 2.5, 3),
+    rect(42, 14.5, 18, 6),
+    g_solid,
+    "M30 12 L50 16 L52 22 L47 40 L53.5 42.5 L53 46.5 L28.8 41 Q27.4 40.6 27.7 38.8 L31.5 23 Q26 20 22 15 Z",
+], [g_hole])
+
+# Match crossbow (Armbrust): sport stock, rail, prod and string.
+icon("crossbow", "Armbrust", [
+    SPORT_STOCK.format(fe=100),
+    rect(38, 11, 22, 5),
+    rect(56, 13, 54, 3),
+    "M107 4 Q115.5 24 107 44 L110 44 Q118.5 24 110 4 Z",
+    poly((107.5, 5), (108.5, 5.8), (66, 14.2), (65, 13.4)),
+    poly((107.5, 43), (108.5, 42.2), (66, 15.8), (65, 16.6)),
+    rect(36, 6, 6, 5), rect(97, 7, 6, 6),
+], [THUMBHOLE, rect(98.5, 8.5, 3, 3)])
+
+# Lever-action rifle: straight-grip stock, tube magazine, lever loop.
+icon("lever_action", "Unterhebelrepetierer", [
+    "M2 19 Q16 17 32 15.5 L36 15.5 L38 22 Q34 24 30 25 Q16 29 2 35 Z",
+    rect(34, 13, 18, 9),
+    rect(52, 14, 72, 2.8),
+    rect(52, 17.4, 60, 2.4),
+    rect(52, 16.5, 26, 5.2),
+    "M38 22 L52 22 Q52 31 46 31 Q40 31 38 27 Z",
+    poly((34, 9), (37, 8.5), (38, 13), (35, 13)),
+    rect(121, 12.5, 1.5, 1.8), rect(70, 12.4, 2.5, 1.8),
+], ["M40.5 22 L49.5 22 Q49.5 28.5 46 28.5 Q42 28.5 40.5 25.5 Z"])
+
+# Pump-action shotgun: tube magazine and ribbed slide.
+icon("pump_shotgun", "Vorderschaftrepetierflinte", [
+    "M2 19 Q16 16.5 30 14 L34 14 L34 21 Q30 24 27 26 Q14 29 2 34 Z",
+    rect(32, 12, 22, 9.5),
+    rect(54, 12.8, 70, 3),
+    rect(54, 16.2, 56, 3),
+    rect(64, 15.4, 28, 7),
+    rect(122, 11.6, 1.6, 1.4),
+    "M38 21.5 L47 21.5 Q47 27 42 27 L38 25.5 Z",
+], ["M39.8 21.5 L45.2 21.5 Q45.2 25.3 42.2 25.3 L39.8 24.6 Z"] + [rect(67 + i * 5, 16.6, 2, 4.6) for i in range(5)])
+
 icon("other", "Andere", [ring(64, 24, 21, 17), ring(64, 24, 13, 9), circle(64, 24, 5)])
