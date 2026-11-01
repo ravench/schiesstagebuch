@@ -365,3 +365,10 @@ T = {
     "NW": ("NW", "NO", "NO"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
 }
+
+# Weather block: kept in its own file; same German key must mean the same thing.
+from translations_weather import W  # noqa: E402
+
+for _k, _v in W.items():
+    assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
+    T[_k] = _v

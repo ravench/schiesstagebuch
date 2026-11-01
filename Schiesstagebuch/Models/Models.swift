@@ -222,6 +222,8 @@ final class Entry {
     var irisSize: Double?
     /// Bipod length in cm, rifles only.
     var bipodLength: Double?
+    /// Weather as JSON (`WeatherRecord`); nil when none was recorded, e.g. indoors.
+    var weatherData: Data?
     /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
     var shotValuesText: String = ""
     var notes: String = ""

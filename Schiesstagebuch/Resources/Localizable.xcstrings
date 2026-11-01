@@ -254,6 +254,29 @@
         }
       }
     },
+    "%lld Uhr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld o'clock"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld heures"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ore %lld"
+          }
+        }
+      }
+    },
     "AXIA-Filter": {
       "extractionState": "manual",
       "localizations": {
@@ -369,6 +392,98 @@
         }
       }
     },
+    "Abdeckung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cover"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cache"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "copertura"
+          }
+        }
+      }
+    },
+    "Ablösung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relève"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turno"
+          }
+        }
+      }
+    },
+    "Ablösung hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add relay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une relève"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi turno"
+          }
+        }
+      }
+    },
+    "Ablösungen / Serien": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relays / series"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relèves / séries"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turni / serie"
+          }
+        }
+      }
+    },
     "Alle": {
       "extractionState": "manual",
       "localizations": {
@@ -480,6 +595,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tutte le armi"
+          }
+        }
+      }
+    },
+    "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything is optional. With the range's location and shooting direction, the app suggests the sun."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout est facultatif. Avec le lieu et la direction de tir du stand, l'app propose le soleil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto è facoltativo. Con il luogo e la direzione di tiro del poligono, l'app propone il sole."
           }
         }
       }
@@ -806,6 +944,29 @@
         }
       }
     },
+    "Aus, wenn drinnen geschossen wird; dann erscheint auch im Eintrag kein Wetter.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off when shooting indoors; the entry then shows no weather."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désactivé pour le tir en salle ; l'entrée n'affiche alors pas de météo."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disattivato quando si tira al coperto; la voce non mostra allora alcun meteo."
+          }
+        }
+      }
+    },
     "Ausgewählt": {
       "extractionState": "manual",
       "localizations": {
@@ -990,6 +1151,29 @@
         }
       }
     },
+    "Bemerkung Wetter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weather note"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remarque météo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nota meteo"
+          }
+        }
+      }
+    },
     "Bemerkungen": {
       "extractionState": "manual",
       "localizations": {
@@ -1055,6 +1239,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Denominazione, ad es. GP 11 o Geco FMJ 124gr"
+          }
+        }
+      }
+    },
+    "Bise": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bise"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bise"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bise"
+          }
+        }
+      }
+    },
+    "Blende / Irisblende": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "blinder / iris"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cache / iris"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "schermo / iride"
+          }
+        }
+      }
+    },
+    "Blendung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glare"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Éblouissement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbagliamento"
           }
         }
       }
@@ -1358,6 +1611,75 @@
         }
       }
     },
+    "Dunst": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "haze"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "brume"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "foschia"
+          }
+        }
+      }
+    },
+    "Dunst / aufsteigende Feuchtigkeit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haze / rising moisture"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brume / humidité montante"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foschia / umidità che sale"
+          }
+        }
+      }
+    },
+    "Dämmerung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dusk"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "crépuscule"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "crepuscolo"
+          }
+        }
+      }
+    },
     "Eigene Filter": {
       "extractionState": "manual",
       "localizations": {
@@ -1446,6 +1768,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Una pulizia azzera colpi e giorni della pulizia; una manutenzione azzera anche quelli della manutenzione."
+          }
+        }
+      }
+    },
+    "Einfluss aufs Resultat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impact on the result"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Influence sur le résultat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Influenza sul risultato"
           }
         }
       }
@@ -2232,6 +2577,29 @@
         }
       }
     },
+    "Föhn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Föhn"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foehn"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favonio"
+          }
+        }
+      }
+    },
     "Füge die Anlagen hinzu, auf denen du schiesst.": {
       "extractionState": "manual",
       "localizations": {
@@ -2324,6 +2692,52 @@
         }
       }
     },
+    "Gesamteindruck": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overall impression"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impression générale"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impressione generale"
+          }
+        }
+      }
+    },
+    "Gewitterwind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "thunderstorm wind"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vent d'orage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vento temporalesco"
+          }
+        }
+      }
+    },
     "Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.": {
       "extractionState": "manual",
       "localizations": {
@@ -2347,6 +2761,29 @@
         }
       }
     },
+    "Hagel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hail"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "grêle"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "grandine"
+          }
+        }
+      }
+    },
     "Handschrift wird nur ungefähr erkannt. Bitte alle Werte prüfen.": {
       "extractionState": "manual",
       "localizations": {
@@ -2366,6 +2803,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "La scrittura a mano viene riconosciuta solo in modo approssimativo. Controlla tutti i valori."
+          }
+        }
+      }
+    },
+    "Handschuh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "glove"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "guanto"
+          }
+        }
+      }
+    },
+    "Hilfsmittel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aids"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accessoires"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausili"
+          }
+        }
+      }
+    },
+    "Hilfsmittel & Einfluss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aids & impact"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accessoires & influence"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausili & influenza"
+          }
+        }
+      }
+    },
+    "Himmel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sky"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ciel"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cielo"
           }
         }
       }
@@ -3106,6 +3635,29 @@
         }
       }
     },
+    "Kunstlicht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "artificial light"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lumière artificielle"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "luce artificiale"
+          }
+        }
+      }
+    },
     "Kurzwaffe": {
       "extractionState": "manual",
       "localizations": {
@@ -3194,6 +3746,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultimi 12 mesi"
+          }
+        }
+      }
+    },
+    "Licht & Sicht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light & visibility"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumière & visibilité"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luce & visibilità"
+          }
+        }
+      }
+    },
+    "Lichtverhältnisse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luminosité"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luce"
           }
         }
       }
@@ -3336,6 +3934,52 @@
         }
       }
     },
+    "Luftdruck (Wetter)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Air pressure"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pression atmosphérique"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pressione atmosferica"
+          }
+        }
+      }
+    },
+    "Luftfeuchtigkeit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Humidity"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Humidité"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Umidità"
+          }
+        }
+      }
+    },
     "Luftgewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -3378,6 +4022,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pistola ad aria compressa"
+          }
+        }
+      }
+    },
+    "Lufttemperatur": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Air temperature"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Température de l'air"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura dell'aria"
           }
         }
       }
@@ -3796,6 +4463,75 @@
         }
       }
     },
+    "Nebel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fog"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "brouillard"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nebbia"
+          }
+        }
+      }
+    },
+    "Nebel, Scheiben zeitweise weg": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fog, targets gone at times"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "brouillard, cibles parfois invisibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nebbia, bersagli a tratti invisibili"
+          }
+        }
+      }
+    },
+    "Nebelschleier vor den Scheiben": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "veil of mist in front of the targets"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "voile de brume devant les cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "velo di nebbia davanti ai bersagli"
+          }
+        }
+      }
+    },
     "Neue Munition": {
       "extractionState": "manual",
       "localizations": {
@@ -3976,6 +4712,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nuovo calibro"
+          }
+        }
+      }
+    },
+    "Niederschlag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precipitation"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Précipitations"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precipitazioni"
+          }
+        }
+      }
+    },
+    "Niederschlag & Luft": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precipitation & air"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Précipitations & air"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precipitazioni & aria"
+          }
+        }
+      }
+    },
+    "Niederschlag in der eigenen Ablösung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precipitation during my relay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Précipitations pendant ma relève"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precipitazioni durante il mio turno"
+          }
+        }
+      }
+    },
+    "Nieselregen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "drizzle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bruine"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pioggerella"
           }
         }
       }
@@ -4302,6 +5130,29 @@
         }
       }
     },
+    "Optional: Wetter pro Ablösung oder Serie, mit Uhrzeit, um Wechsel festzuhalten.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional: weather per relay or series, with the time, to record changes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif : météo par relève ou série, avec l'heure, pour noter les changements."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo: meteo per turno o serie, con l'ora, per annotare i cambiamenti."
+          }
+        }
+      }
+    },
     "Ordonnanzgewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -4551,6 +5402,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Storico manutenzione"
+          }
+        }
+      }
+    },
+    "Pfütze": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "puddle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "flaque"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pozzanghera"
           }
         }
       }
@@ -4877,6 +5751,29 @@
         }
       }
     },
+    "Raumtemperatur": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "room temperature"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "température ambiante"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "temperatura ambiente"
+          }
+        }
+      }
+    },
     "Reaktivieren": {
       "extractionState": "manual",
       "localizations": {
@@ -4896,6 +5793,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Riattiva"
+          }
+        }
+      }
+    },
+    "Regen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rain"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pluie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pioggia"
+          }
+        }
+      }
+    },
+    "Regenschutz": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rain gear"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "protection pluie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "protezione pioggia"
           }
         }
       }
@@ -5107,6 +6050,29 @@
         }
       }
     },
+    "Schauer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "showers"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "averses"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rovesci"
+          }
+        }
+      }
+    },
     "Scheibe": {
       "extractionState": "manual",
       "localizations": {
@@ -5222,6 +6188,29 @@
         }
       }
     },
+    "Schiessmütze": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shooting cap"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "casquette de tir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "berretto da tiro"
+          }
+        }
+      }
+    },
     "Schiesstagebuch": {
       "extractionState": "manual",
       "localizations": {
@@ -5241,6 +6230,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diario di tiro"
+          }
+        }
+      }
+    },
+    "Schnee": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "snow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "neige"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "neve"
+          }
+        }
+      }
+    },
+    "Schneeregen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sleet"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "neige fondue"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nevischio"
           }
         }
       }
@@ -5498,6 +6533,98 @@
         }
       }
     },
+    "Sicht auf die Scheiben": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View of the targets"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visibilité des cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visibilità dei bersagli"
+          }
+        }
+      }
+    },
+    "Sonne direkt in den Stand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sun straight into the stand"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "soleil directement dans le stand"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sole dritto nel poligono"
+          }
+        }
+      }
+    },
+    "Sonne zum Schützen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sun relative to shooter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soleil par rapport au tireur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sole rispetto al tiratore"
+          }
+        }
+      }
+    },
+    "Sonnenblende": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sun shade"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pare-soleil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "parasole"
+          }
+        }
+      }
+    },
     "Sportgewehr / Kleinkaliber": {
       "extractionState": "manual",
       "localizations": {
@@ -5705,6 +6832,29 @@
         }
       }
     },
+    "Starkregen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "heavy rain"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "forte pluie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pioggia forte"
+          }
+        }
+      }
+    },
     "Statistik": {
       "extractionState": "manual",
       "localizations": {
@@ -5724,6 +6874,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statistiche"
+          }
+        }
+      }
+    },
+    "Stroh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "straw"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "paille"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "paglia"
           }
         }
       }
@@ -5820,6 +6993,98 @@
         }
       }
     },
+    "Teilschatten / Schattenwurf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "partial shade / shadows"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ombre partielle / ombres portées"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ombra parziale / ombre"
+          }
+        }
+      }
+    },
+    "Temperatur": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperature"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Température"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura"
+          }
+        }
+      }
+    },
+    "Temperatur im Stand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperature in the stand"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Température dans le stand"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura nel poligono"
+          }
+        }
+      }
+    },
+    "Temperaturgefühl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Felt temperature"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Température ressentie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura percepita"
+          }
+        }
+      }
+    },
     "Total": {
       "extractionState": "manual",
       "localizations": {
@@ -5889,6 +7154,29 @@
         }
       }
     },
+    "Uhrzeit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heure"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ora"
+          }
+        }
+      }
+    },
     "Unsicher gelesen, Schuss %@": {
       "extractionState": "manual",
       "localizations": {
@@ -5931,6 +7219,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Carabina a leva"
+          }
+        }
+      }
+    },
+    "Unterlage / Boden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ground / mat"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sol / support"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terreno / appoggio"
           }
         }
       }
@@ -6023,6 +7334,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fucile a pompa"
+          }
+        }
+      }
+    },
+    "Vorschlag: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggestion: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggestion : %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggerimento: %@"
           }
         }
       }
@@ -6257,6 +7591,75 @@
         }
       }
     },
+    "Westwind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "west wind"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vent d'ouest"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vento da ovest"
+          }
+        }
+      }
+    },
+    "Wetter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weather"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Météo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meteo"
+          }
+        }
+      }
+    },
+    "Wetter erfassen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record weather"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir la météo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra il meteo"
+          }
+        }
+      }
+    },
     "Wiederherstellen fehlgeschlagen: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -6299,6 +7702,121 @@
           "stringUnit": {
             "state": "translated",
             "value": "Visualizzazioni ripetute (non contate)"
+          }
+        }
+      }
+    },
+    "Wind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wind"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vent"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vento"
+          }
+        }
+      }
+    },
+    "Windart": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type of wind"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type de vent"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tipo di vento"
+          }
+        }
+      }
+    },
+    "Windcharakter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wind character"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caractère du vent"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carattere del vento"
+          }
+        }
+      }
+    },
+    "Windrichtung (Uhr)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wind direction (clock)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direction du vent (heure)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direzione del vento (ore)"
+          }
+        }
+      }
+    },
+    "Windstärke am Stand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wind strength at the range"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Force du vent au stand"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forza del vento al poligono"
           }
         }
       }
@@ -6487,6 +8005,98 @@
         }
       }
     },
+    "abflauend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dropping"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "faiblissant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in calo"
+          }
+        }
+      }
+    },
+    "angenehm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pleasant"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "agréable"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "piacevole"
+          }
+        }
+      }
+    },
+    "aufkommend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rising"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "se levant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in aumento"
+          }
+        }
+      }
+    },
+    "bedeckt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "overcast"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "couvert"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "coperto"
+          }
+        }
+      }
+    },
     "bis %@": {
       "extractionState": "manual",
       "localizations": {
@@ -6506,6 +8116,443 @@
           "stringUnit": {
             "state": "translated",
             "value": "entro il %@"
+          }
+        }
+      }
+    },
+    "böig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gusty"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en rafales"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a raffiche"
+          }
+        }
+      }
+    },
+    "deutlich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "clear"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nette"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "netta"
+          }
+        }
+      }
+    },
+    "diffus": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "diffuse"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "diffus"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "diffusa"
+          }
+        }
+      }
+    },
+    "drückend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "oppressive"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lourd"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "afoso"
+          }
+        }
+      }
+    },
+    "dunkel, Scheibe beleuchtet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dark, target lit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nuit, cible éclairée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "buio, bersaglio illuminato"
+          }
+        }
+      }
+    },
+    "durchzogen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mixed"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mitigé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "variabile"
+          }
+        }
+      }
+    },
+    "ein bisschen Wind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a bit of wind"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "un peu de vent"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "un po' di vento"
+          }
+        }
+      }
+    },
+    "eingeschränkt durch den Stand (Tunnel, Blenden)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "restricted by the stand (tunnel, baffles)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "limitée par le stand (tunnel, pare-balles)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "limitata dal poligono (tunnel, schermi)"
+          }
+        }
+      }
+    },
+    "eisig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "icy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "glacial"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gelido"
+          }
+        }
+      }
+    },
+    "feucht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "damp"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "humide"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "umido"
+          }
+        }
+      }
+    },
+    "frisch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fresh"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vif"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "frizzante"
+          }
+        }
+      }
+    },
+    "garstig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nasty"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "exécrable"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pessimo"
+          }
+        }
+      }
+    },
+    "gleichbleibend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "constant"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "constant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "costante"
+          }
+        }
+      }
+    },
+    "grell": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "glaring"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "éblouissant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "abbagliante"
+          }
+        }
+      }
+    },
+    "gut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "good"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bon"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "buono"
+          }
+        }
+      }
+    },
+    "heiss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "très chaud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "molto caldo"
+          }
+        }
+      }
+    },
+    "hemdsärmelig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in shirtsleeves"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en manches de chemise"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in maniche di camicia"
+          }
+        }
+      }
+    },
+    "ideal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ideal"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "idéal"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ideale"
+          }
+        }
+      }
+    },
+    "im Schatten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in the shade"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "à l'ombre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "all'ombra"
           }
         }
       }
@@ -6533,6 +8580,305 @@
         }
       }
     },
+    "in der Sonne": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in the sun"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "au soleil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "al sole"
+          }
+        }
+      }
+    },
+    "ja": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "oui"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sì"
+          }
+        }
+      }
+    },
+    "kalt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cold"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "froid"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "freddo"
+          }
+        }
+      }
+    },
+    "kein": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aucune"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nessuna"
+          }
+        }
+      }
+    },
+    "keine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aucun"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nessuno"
+          }
+        }
+      }
+    },
+    "keiner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "aucune"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nessuna"
+          }
+        }
+      }
+    },
+    "klar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "clear"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "claire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "chiara"
+          }
+        }
+      }
+    },
+    "konstant": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "steady"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "constant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "costante"
+          }
+        }
+      }
+    },
+    "kühl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cool"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "frais"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fresco"
+          }
+        }
+      }
+    },
+    "leicht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "slight"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "légère"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "leggero"
+          }
+        }
+      }
+    },
+    "leicht bewölkt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "partly cloudy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "peu nuageux"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "poco nuvoloso"
+          }
+        }
+      }
+    },
+    "leichter Dunst": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "light haze"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "légère brume"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "leggera foschia"
+          }
+        }
+      }
+    },
+    "leichter Regen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "light rain"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pluie légère"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pioggia leggera"
+          }
+        }
+      }
+    },
     "m ü. M.": {
       "extractionState": "manual",
       "localizations": {
@@ -6552,6 +8898,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "m s.l.m."
+          }
+        }
+      }
+    },
+    "mässig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "moderate"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "modéré"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "moderato"
+          }
+        }
+      }
+    },
+    "nass": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wet"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mouillé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bagnato"
           }
         }
       }
@@ -6602,6 +8994,29 @@
         }
       }
     },
+    "schwierig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "difficult"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "difficile"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "difficile"
+          }
+        }
+      }
+    },
     "seit %@ fällig": {
       "extractionState": "manual",
       "localizations": {
@@ -6621,6 +9036,374 @@
           "stringUnit": {
             "state": "translated",
             "value": "da fare dal %@"
+          }
+        }
+      }
+    },
+    "sonnig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sunny"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ensoleillé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "soleggiato"
+          }
+        }
+      }
+    },
+    "spürbar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "noticeable"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sensible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "percepibile"
+          }
+        }
+      }
+    },
+    "stark": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "strong"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fort"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "forte"
+          }
+        }
+      }
+    },
+    "stürmisch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stormy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tempétueux"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tempestoso"
+          }
+        }
+      }
+    },
+    "tief stehend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "low"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "basso"
+          }
+        }
+      }
+    },
+    "trocken": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dry"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sec"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "asciutto"
+          }
+        }
+      }
+    },
+    "von hinten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from behind"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de derrière"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "da dietro"
+          }
+        }
+      }
+    },
+    "von links": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from the left"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de gauche"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "da sinistra"
+          }
+        }
+      }
+    },
+    "von rechts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from the right"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de droite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "da destra"
+          }
+        }
+      }
+    },
+    "von vorne": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from the front"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de face"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "di fronte"
+          }
+        }
+      }
+    },
+    "von vorne (im Gesicht)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "from the front (in the face)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de face (dans les yeux)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "di fronte (in faccia)"
+          }
+        }
+      }
+    },
+    "warm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "warm"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "chaud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "caldo"
+          }
+        }
+      }
+    },
+    "warm (Sonne)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "warm (sun)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "chaude (soleil)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calda (sole)"
+          }
+        }
+      }
+    },
+    "warme Kleidung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "warm clothes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vêtements chauds"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "abiti caldi"
+          }
+        }
+      }
+    },
+    "wechselnd": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "changing"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "changeant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "variabile"
+          }
+        }
+      }
+    },
+    "windstill": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calm"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calme"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calma"
           }
         }
       }
@@ -6759,6 +9542,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Applica"
+          }
+        }
+      }
+    },
+    "–": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "–"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "–"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "–"
           }
         }
       }
