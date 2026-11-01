@@ -1,7 +1,7 @@
 # Schiesstagebuch
 
 Native iOS app (SwiftUI, SwiftData, Swift Charts) to log shooting sessions,
-replacing "Schusszähler-Schiesstagebuch". German UI, iOS 17+.
+replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French and Italian.
 
 ## Features
 
@@ -60,3 +60,15 @@ Schiesstagebuch/
   Services/   backup/CSV, calibre catalogue, maintenance status + notifications, image compression
   Views/      journal, editor, detail, statistics, weapons, settings
 ```
+
+## Languages
+
+German is the source language. Translations (en, fr, it) live in
+`tools/translations.py`; regenerate the string catalogue with:
+
+```sh
+python3 tools/localize.py   # fails if any UI string lacks a translation
+```
+
+Write UI text in German. Literals in `Text`, `Button`, `Label` etc. are localized
+automatically; strings built at runtime go through `"…".loc` or `String(localized:)`.

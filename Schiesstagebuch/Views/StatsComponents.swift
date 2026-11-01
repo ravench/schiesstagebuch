@@ -9,9 +9,9 @@ enum StatsPeriod: Hashable {
 
     var title: String {
         switch self {
-        case .all: "Gesamt"
+        case .all: "Gesamt".loc
         case .year(let y): String(y)
-        case .last12Months: "Letzte 12 Monate"
+        case .last12Months: "Letzte 12 Monate".loc
         }
     }
 
@@ -60,7 +60,7 @@ struct KPIGrid: View {
 
     private func tile(_ title: String, _ value: String, _ icon: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Label(title, systemImage: icon).font(.caption).foregroundStyle(.secondary)
+            Label(title.loc, systemImage: icon).font(.caption).foregroundStyle(.secondary)
             Text(value).font(.title2.bold().monospacedDigit()).lineLimit(1).minimumScaleFactor(0.6)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -143,7 +143,7 @@ struct BreakdownChart<Key: Hashable>: View {
     var body: some View {
         if !rows.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
-                Text(title).font(.headline)
+                Text(title.loc).font(.headline)
                 Chart(rows) { row in
                     BarMark(x: .value("Schüsse", row.shots), y: .value(title, row.name))
                         .foregroundStyle(by: .value(title, row.name))

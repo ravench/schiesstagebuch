@@ -13,6 +13,8 @@ targets:
       path: Schiesstagebuch/Info.plist
       properties:
         UIBackgroundModes: [remote-notification]
+        CFBundleDevelopmentRegion: de
+        CFBundleLocalizations: [de, en, fr, it]
     entitlements:
       path: Schiesstagebuch/Schiesstagebuch.entitlements
       properties:

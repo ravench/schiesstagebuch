@@ -74,7 +74,7 @@ struct EntryListView: View {
         List {
             if isFiltering || !searchText.isEmpty {
                 Section {
-                    LabeledContent("Treffer", value: "\(filtered.count) Einträge")
+                    LabeledContent("Treffer", value: String(localized: "\(filtered.count) Einträge"))
                     LabeledContent("Schüsse", value: filtered.reduce(0) { $0 + $1.shotCount }.formatted())
                 }
             }
@@ -139,7 +139,7 @@ struct EntryRow: View {
             .frame(width: 40)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(entry.event.isEmpty ? "Schiessen" : entry.event)
+                Text(entry.event.isEmpty ? "Schiessen".loc : entry.event)
                     .font(.headline)
                     .lineLimit(1)
                 HStack(spacing: 6) {

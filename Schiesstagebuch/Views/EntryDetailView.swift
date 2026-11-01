@@ -13,7 +13,7 @@ struct EntryDetailView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(entry.date, format: .dateTime.weekday(.wide).day().month(.wide).year())
                         .font(.subheadline).foregroundStyle(.secondary)
-                    Text(entry.event.isEmpty ? "Schiessen" : entry.event).font(.title2.bold())
+                    Text(entry.event.isEmpty ? "Schiessen".loc : entry.event).font(.title2.bold())
                     if let range = entry.range {
                         Label(range.place.isEmpty ? range.name : "\(range.name), \(range.place)",
                               systemImage: "mappin.and.ellipse")
@@ -70,13 +70,13 @@ struct EntryDetailView: View {
     private func metric(_ title: String, _ value: String) -> some View {
         VStack(spacing: 2) {
             Text(value).font(.title.bold().monospacedDigit()).lineLimit(1).minimumScaleFactor(0.5)
-            Text(title).font(.caption).foregroundStyle(.secondary)
+            Text(title.loc).font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
     private func row(_ title: String, _ value: String?) -> some View {
-        if let value { LabeledContent(title, value: value) }
+        if let value { LabeledContent(title.loc, value: value) }
     }
 }
