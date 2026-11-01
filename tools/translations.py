@@ -35,8 +35,6 @@ T = {
     "Archivierte zeigen": ("Show archived", "Afficher les archivées", "Mostra archiviate"),
     "Armbrust": ("Crossbow", "Arbalète", "Balestra"),
     "Aus": ("Off", "Désactivé", "Disattivato"),
-    "Aus Schusszähler importieren": ("Import from Schusszähler", "Importer depuis Schusszähler", "Importa da Schusszähler"),
-    "Aus Schusszähler-App importieren": ("Import from Schusszähler app", "Importer depuis l'app Schusszähler", "Importa dall'app Schusszähler"),
     "Ausgewählt": ("Selected", "Sélectionnés", "Selezionati"),
     "Ausrüstung": ("Equipment", "Équipement", "Equipaggiamento"),
     "Backup exportieren": ("Export backup", "Exporter une sauvegarde", "Esporta backup"),
@@ -124,10 +122,6 @@ T = {
     "Import": ("Import", "Import", "Importazione"),
     "In der Datei wurden keine Einträge gefunden.": (
         "No entries were found in the file.", "Aucune entrée n'a été trouvée dans le fichier.", "Nel file non sono state trovate voci."),
-    "In der alten App unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": (
-        "In the old app, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here.",
-        "Dans l'ancienne app, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici.",
-        "Nella vecchia app salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."),
     "Jagdgewehr": ("Hunting rifle", "Carabine de chasse", "Carabina da caccia"),
     "Jahr": ("Year", "Année", "Anno"),
     "Kaliber": ("Caliber", "Calibre", "Calibro"),
@@ -335,4 +329,7 @@ T = {
         "Repeated displays (not counted)", "Affichages répétés (non comptés)", "Visualizzazioni ripetute (non contate)"),
     "Zehnerwertung": ("Tens scoring (A10)", "Valeur sur 10 (A10)", "Punteggio su 10 (A10)"),
     "Übernehmen": ("Apply", "Reprendre", "Applica"),
+    "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
+    "App von %@": ("App by %@", "App de %@", "App di %@"),
+    "In «%@» von %@ unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": ("In “%@” by %@, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here.", "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici.", "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."),
 }
