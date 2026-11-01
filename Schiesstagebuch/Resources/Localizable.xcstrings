@@ -1036,6 +1036,52 @@
         }
       }
     },
+    "Blau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blue"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bleu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blu"
+          }
+        }
+      }
+    },
+    "Braun": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brown"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brun"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marrone"
+          }
+        }
+      }
+    },
     "Darstellung": {
       "extractionState": "manual",
       "localizations": {
@@ -1285,6 +1331,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "La vecchia app non conosceva i calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."
+          }
+        }
+      }
+    },
+    "Diopter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diopter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dioptre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diottra"
           }
         }
       }
@@ -2117,6 +2186,29 @@
         }
       }
     },
+    "Gelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jaune"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giallo"
+          }
+        }
+      }
+    },
     "Gesamt": {
       "extractionState": "manual",
       "localizations": {
@@ -2163,6 +2255,52 @@
         }
       }
     },
+    "Grau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gris"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grigio"
+          }
+        }
+      }
+    },
+    "Grün": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Green"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vert"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verde"
+          }
+        }
+      }
+    },
     "Handschrift wird nur ungefähr erkannt. Bitte alle Werte prüfen.": {
       "extractionState": "manual",
       "localizations": {
@@ -2182,6 +2320,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "La scrittura a mano viene riconosciuta solo in modo approssimativo. Controlla tutti i valori."
+          }
+        }
+      }
+    },
+    "Hellgelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jaune clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giallo chiaro"
           }
         }
       }
@@ -2596,6 +2757,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Categoria"
+          }
+        }
+      }
+    },
+    "Kein Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans filtre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun filtro"
           }
         }
       }
@@ -3796,6 +3980,29 @@
         }
       }
     },
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. New entries take the values of the last entry with this firearm."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma."
+          }
+        }
+      }
+    },
     "Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.": {
       "extractionState": "manual",
       "localizations": {
@@ -3815,6 +4022,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativo. Senza risultato conta la somma dei colpi; con i punti max. l'app calcola la percentuale."
+          }
+        }
+      }
+    },
+    "Orange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orange"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orange"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arancione"
           }
         }
       }
@@ -4068,6 +4298,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Storico manutenzione"
+          }
+        }
+      }
+    },
+    "Polarisationsfilter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polarising filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtre polarisant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtro polarizzatore"
           }
         }
       }
@@ -4482,6 +4735,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Revolver"
+          }
+        }
+      }
+    },
+    "Ringgrösse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ring size"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taille de l'anneau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dimensione dell'anello"
+          }
+        }
+      }
+    },
+    "Rosa": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pink"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rose"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rosa"
+          }
+        }
+      }
+    },
+    "Rot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rouge"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rosso"
           }
         }
       }
@@ -5333,6 +5655,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Versione"
+          }
+        }
+      }
+    },
+    "Violett": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Violet"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Violet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viola"
+          }
+        }
+      }
+    },
+    "Visier & Brille": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sight & glasses"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visée & lunettes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira & occhiali"
           }
         }
       }

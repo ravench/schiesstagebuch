@@ -62,6 +62,15 @@ struct EntryDetailView: View {
                 if let lot = entry.lot { row("Los", lot.number) }
             }
 
+            let sight = SightSettings(entry: entry)
+            if !sight.isEmpty {
+                Section("Visier & Brille") {
+                    row("Filter", FilterColor.title(sight.filter))
+                    row("Diopter", sight.diopter.map(SightSettings.format))
+                    row("Ringgrösse", sight.ringSize.map(SightSettings.format))
+                }
+            }
+
             if !entry.notes.isEmpty {
                 Section("Bemerkungen") { Text(entry.notes) }
             }
