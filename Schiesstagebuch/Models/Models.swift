@@ -47,6 +47,15 @@ final class Caliber: ArchivableItem {
         self.category = category
     }
 
+    /// Alternative names from the catalogue, e.g. "9 mm Luger, 9 mm Para".
+    var aliasSummary: String {
+        (CaliberCatalog.item(id: catalogID)?.displayAliases ?? []).joined(separator: ", ")
+    }
+
+    func matches(_ query: String) -> Bool {
+        query.isEmpty || name.localizedCaseInsensitiveContains(query) || aliasSummary.localizedCaseInsensitiveContains(query)
+    }
+
     static func normalized(_ s: String) -> String {
         s.lowercased().replacingOccurrences(of: " ", with: "")
             .replacingOccurrences(of: "×", with: "x")

@@ -10,7 +10,7 @@ Outlines are side views in millimetres, base at the bottom, as SVG path data
 import json, math, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from cartridges import CATALOGUE, RIMLESS, RIMMED, BELTED, RIMFIRE, SHOT, BALL, MINIE, PELLET, SPITZER, ROUND, FLAT
+from cartridges import CATALOGUE, DISPLAY_ALIASES, RIMLESS, RIMMED, BELTED, RIMFIRE, SHOT, BALL, MINIE, PELLET, SPITZER, ROUND, FLAT
 from weapon_icons import ICONS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -114,7 +114,11 @@ def build():
     for category, items in CATALOGUE:
         for s in items:
             calibers.append({"id": s["name"], "name": s["name"], "category": category,
-                             "aliases": s["aliases"], "kind": s["kind"], "outline": outline(s)})
+                             "aliases": s["aliases"], "displayAliases": DISPLAY_ALIASES.get(s["name"], []),
+                             "kind": s["kind"], "outline": outline(s)})
+    names = {c["name"] for c in calibers}
+    unknown = set(DISPLAY_ALIASES) - names
+    assert not unknown, f"DISPLAY_ALIASES for unknown calibres: {unknown}"
     icons = [{"id": k, **v} for k, v in ICONS.items()]
     return calibers, icons
 

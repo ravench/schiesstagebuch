@@ -366,7 +366,7 @@ struct CaliberMultiPicker: View {
     @State private var adding = false
 
     private var groups: [(String, [Caliber])] {
-        let matches = all.filter { search.isEmpty || $0.name.localizedCaseInsensitiveContains(search) }
+        let matches = all.filter { $0.matches(search) }
         let order = preferred + CaliberCatalog.Category.allCases.map(\.rawValue).filter { !preferred.contains($0) }
         return Dictionary(grouping: matches) { $0.category.isEmpty ? CaliberCatalog.Category.other.rawValue : $0.category }
             .sorted { (order.firstIndex(of: $0.key) ?? 99) < (order.firstIndex(of: $1.key) ?? 99) }
@@ -406,7 +406,12 @@ struct CaliberMultiPicker: View {
         } label: {
             HStack {
                 CartridgeView(caliber: c).frame(width: 18, height: 30)
-                Text(c.name).foregroundStyle(.primary)
+                VStack(alignment: .leading) {
+                    Text(c.name).foregroundStyle(.primary)
+                    if !c.aliasSummary.isEmpty {
+                        Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
                 Spacer()
                 if selection.contains(c) { Image(systemName: "checkmark").foregroundStyle(.tint) }
             }
