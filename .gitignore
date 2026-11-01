@@ -1,0 +1,7 @@
+*.xcodeproj/
+xcuserdata/
+DerivedData/
+.DS_Store
+build/
+Schiesstagebuch/Schiesstagebuch.entitlements
+Schiesstagebuch/Info.plist

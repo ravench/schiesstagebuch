@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""Lists the localization keys used in the Swift sources (German source strings).
+
+Interpolations become %lld (integers) or %@ (strings), matching how Swift builds
+keys for LocalizedStringKey and String(localized:). Used by tools/localize.py.
+"""
+import os, re, sys
+
+ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Schiesstagebuch")
+LIT = r'"((?:[^"\\]|\\.|\\\((?:[^()]|\([^()]*\))*\))*)"'
+CONTEXTS = [
+    r'\b(?:Text|Button|Label|Section|TextField|Picker|Toggle|LabeledContent|Stepper|Menu|ContentUnavailableView)\(\s*' + LIT,
+    r'\.(?:navigationTitle|alert|confirmationDialog|accessibilityLabel)\(\s*' + LIT,
+    r'\bprompt:\s*' + LIT,
+    r'\bString\(localized:\s*' + LIT,
+    LIT + r'\.loc\b',
+    r'\b(?:pickerRow|tile|metric|row)\(\s*' + LIT,
+    r'\bBreakdownChart\(title:\s*' + LIT,
+    r'\bcase \.\w+:\s*' + LIT,          # enum titles (titleKey) and error texts
+    r'\bcase \w+ = ' + LIT,             # CaliberCatalog.Category raw values
+    r'\[' + LIT + r'(?:,\s*' + LIT + r')+\]\s*\n?\s*\.map\(\\\.loc\)',
+]
+STRINGY = ("formatted", "name", "title", "Description", "joined", ".loc", "place")
+
+
+def key_for(literal):
+    def repl(m):
+        expr = m.group(1)
+        return "%@" if any(t in expr for t in STRINGY) else "%lld"
+    return re.sub(r'\\\(((?:[^()]|\([^()]*\))*)\)', repl, literal).replace('\\"', '"')
+
+
+def keys():
+    found = {}
+    for dirpath, _, files in os.walk(ROOT):
+        for f in files:
+            if not f.endswith(".swift"):
+                continue
+            src = open(os.path.join(dirpath, f)).read()
+            for pat in CONTEXTS:
+                for m in re.finditer(pat, src):
+                    for g in m.groups():
+                        if g and re.search(r'[A-Za-zÄÖÜäöü]{2}', g):
+                            found.setdefault(key_for(g), f)
+            # CSV header list
+            for m in re.finditer(r'\[("Datum".*?)\]\s*\n\s*\.map\(\\\.loc\)', src, re.S):
+                for g in re.findall(LIT, m.group(1)):
+                    found.setdefault(g, f)
+    # SF Symbol names and other non-UI literals that the patterns can catch.
+    junk = re.compile(r'^[a-z0-9_.]+$|^(SELECT|SQLite)')
+    return {k: v for k, v in found.items() if not junk.match(k)}
+
+
+if __name__ == "__main__":
+    for k, f in sorted(keys().items()):
+        print(f"{f}\t{k}")
