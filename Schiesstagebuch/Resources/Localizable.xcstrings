@@ -921,29 +921,6 @@
         }
       }
     },
-    "Barcode alt": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Old barcode"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ancien code-barres"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Codice a barre vecchio"
-          }
-        }
-      }
-    },
     "Barcode kann nicht dargestellt werden": {
       "extractionState": "manual",
       "localizations": {

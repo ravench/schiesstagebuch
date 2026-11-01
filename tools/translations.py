@@ -17,7 +17,6 @@ T = {
         "%1$lld entrées restaurées, %2$lld existaient déjà.",
         "%1$lld voci ripristinate, %2$lld erano già presenti."),
     "%lld Einträge wiederhergestellt.": ("%lld entries restored.", "%lld entrées restaurées.", "%lld voci ripristinate."),
-    "Barcode alt": ("Old barcode", "Ancien code-barres", "Codice a barre vecchio"),
     "Barcode kann nicht dargestellt werden": ("Barcode can't be displayed", "Impossible d'afficher le code-barres", "Impossibile visualizzare il codice a barre"),
     "Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.": (
         "Both barcodes are calculated from the licence number. The card's credit card details are not stored.",
