@@ -22,6 +22,7 @@ struct EntryEditorView: View {
     @State private var lot: AmmoLot?
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
+    @State private var sight = SightSettings()
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
     @State private var sighters = 0
@@ -158,6 +159,8 @@ struct EntryEditorView: View {
                     }
                 }
 
+                SightSection(sight: $sight)
+
                 Section("Bemerkungen") {
                     TextField("Notizen", text: $notes, axis: .vertical).lineLimit(3...8)
                 }
@@ -184,6 +187,8 @@ struct EntryEditorView: View {
             .onAppear(perform: load)
             .onChange(of: weapon) { _, new in
                 guard didLoad else { return }
+                // New entries take the sight settings last used with this weapon.
+                if entry == nil { sight = SightSettings.lastUsed(for: new, in: allEntries) ?? SightSettings() }
                 // Only the weapon's own calibres are valid; fall back to its default.
                 if let caliber, new?.calibers?.contains(caliber) == true { return }
                 caliber = new?.preferredCaliber
@@ -266,6 +271,7 @@ struct EntryEditorView: View {
             date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
             caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; shotCount = entry.shotCount; result = entry.result
             maxPoints = entry.maxPoints
+            sight = SightSettings(entry: entry)
             passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
             mode = ShotEntryMode(of: entry)
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
@@ -279,6 +285,7 @@ struct EntryEditorView: View {
             lot = suggestedLot(for: ammunition)
         }
         if entry == nil {
+            sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
         }
@@ -344,6 +351,7 @@ struct EntryEditorView: View {
             target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
         }
         target.result = result; target.notes = notes
+        sight.apply(to: target)
         target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
         target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
 
