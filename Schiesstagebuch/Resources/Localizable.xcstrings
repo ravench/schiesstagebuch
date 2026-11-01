@@ -1036,52 +1036,6 @@
         }
       }
     },
-    "Blau": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Blue"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bleu"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Blu"
-          }
-        }
-      }
-    },
-    "Braun": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Brown"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Brun"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Marrone"
-          }
-        }
-      }
-    },
     "Darstellung": {
       "extractionState": "manual",
       "localizations": {
@@ -2209,29 +2163,6 @@
         }
       }
     },
-    "Gelb": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yellow"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jaune"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giallo"
-          }
-        }
-      }
-    },
     "Gesamt": {
       "extractionState": "manual",
       "localizations": {
@@ -2278,52 +2209,6 @@
         }
       }
     },
-    "Grau": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Grey"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gris"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Grigio"
-          }
-        }
-      }
-    },
-    "Grün": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Green"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vert"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verde"
-          }
-        }
-      }
-    },
     "Handschrift wird nur ungefähr erkannt. Bitte alle Werte prüfen.": {
       "extractionState": "manual",
       "localizations": {
@@ -2343,29 +2228,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "La scrittura a mano viene riconosciuta solo in modo approssimativo. Controlla tutti i valori."
-          }
-        }
-      }
-    },
-    "Hellgelb": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Light yellow"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jaune clair"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giallo chiaro"
           }
         }
       }
@@ -4072,29 +3934,6 @@
         }
       }
     },
-    "Orange": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Orange"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Orange"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Arancione"
-          }
-        }
-      }
-    },
     "Ordonnanzgewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -4344,29 +4183,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Storico manutenzione"
-          }
-        }
-      }
-    },
-    "Polarisationsfilter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Polarising filter"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtre polarisant"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtro polarizzatore"
           }
         }
       }
@@ -4804,52 +4620,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dimensione dell'anello"
-          }
-        }
-      }
-    },
-    "Rosa": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pink"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rose"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rosa"
-          }
-        }
-      }
-    },
-    "Rot": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Red"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rouge"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rosso"
           }
         }
       }
@@ -5701,29 +5471,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Versione"
-          }
-        }
-      }
-    },
-    "Violett": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Violet"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Violet"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Viola"
           }
         }
       }

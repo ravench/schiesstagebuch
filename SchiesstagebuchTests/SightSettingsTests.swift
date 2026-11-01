@@ -19,24 +19,24 @@ final class SightSettingsTests: ModelTestCase {
 
     func testApplyAndReadBack() {
         let e = addEntry(nil, on: day(1), shots: 10)
-        SightSettings(filter: "Gelb", diopter: 2.34, ringSize: 15).apply(to: e)
-        XCTAssertEqual(e.filterColor, "Gelb")
+        SightSettings(filter: "Citron", diopter: 2.34, ringSize: 15).apply(to: e)
+        XCTAssertEqual(e.filterColor, "Citron")
         XCTAssertEqual(e.diopter, 2.3)
         XCTAssertEqual(e.ringSize, 9.9)
-        XCTAssertEqual(SightSettings(entry: e), SightSettings(filter: "Gelb", diopter: 2.3, ringSize: 9.9))
+        XCTAssertEqual(SightSettings(entry: e), SightSettings(filter: "Citron", diopter: 2.3, ringSize: 9.9))
     }
 
     func testLastUsedComesFromNewestEntryWithSameWeapon() throws {
         let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
         let p210 = Weapon(name: "P210"); context.insert(p210)
-        let old = addEntry(stgw, on: day(1), shots: 10); old.filterColor = "Orange"; old.diopter = 1.5
-        let newer = addEntry(stgw, on: day(5), shots: 10); newer.filterColor = "Gelb"; newer.ringSize = 3.2
+        let old = addEntry(stgw, on: day(1), shots: 10); old.filterColor = "Saphire"; old.diopter = 1.5
+        let newer = addEntry(stgw, on: day(5), shots: 10); newer.filterColor = "Citron"; newer.ringSize = 3.2
         addEntry(stgw, on: day(8), shots: 10)                         // nothing recorded: skipped
-        let other = addEntry(p210, on: day(9), shots: 10); other.filterColor = "Rot"
+        let other = addEntry(p210, on: day(9), shots: 10); other.filterColor = "CALM"
         try context.save()
         let entries = try context.fetch(FetchDescriptor<Entry>())
-        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries), SightSettings(filter: "Gelb", ringSize: 3.2))
-        XCTAssertEqual(SightSettings.lastUsed(for: p210, in: entries)?.filter, "Rot")
+        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries), SightSettings(filter: "Citron", ringSize: 3.2))
+        XCTAssertEqual(SightSettings.lastUsed(for: p210, in: entries)?.filter, "CALM")
         XCTAssertNil(SightSettings.lastUsed(for: nil, in: entries))
     }
 
@@ -52,9 +52,9 @@ final class SightSettingsTests: ModelTestCase {
     }
 
     func testFittingDropsTheApertureTheWeaponDoesNotHave() {
-        let s = SightSettings(filter: "Gelb", diopter: 1.2, ringSize: 3.4, irisSize: 2.1)
-        XCTAssertEqual(s.fitted(to: .iris), SightSettings(filter: "Gelb", diopter: 1.2, irisSize: 2.1))
-        XCTAssertEqual(s.fitted(to: .ring), SightSettings(filter: "Gelb", diopter: 1.2, ringSize: 3.4))
+        let s = SightSettings(filter: "Citron", diopter: 1.2, ringSize: 3.4, irisSize: 2.1)
+        XCTAssertEqual(s.fitted(to: .iris), SightSettings(filter: "Citron", diopter: 1.2, irisSize: 2.1))
+        XCTAssertEqual(s.fitted(to: .ring), SightSettings(filter: "Citron", diopter: 1.2, ringSize: 3.4))
         XCTAssertEqual(s.fitted(to: .both), s)
     }
 
@@ -62,16 +62,34 @@ final class SightSettingsTests: ModelTestCase {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in FilterColor.all + ["Kein Filter", "Einstellungen für Sportschützen", "Waffen-Einstellungen für Sportschützen erfassen",
+            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Waffen-Einstellungen für Sportschützen erfassen",
                                              "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein", "Zweibein (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
     }
 
+    func testFilterListMatchesTheShop() {
+        XCTAssertEqual(FilterColor.all.count, 17)
+        XCTAssertEqual(Set(FilterColor.all).count, FilterColor.all.count, "names are unique")
+        XCTAssertEqual(Set(FilterColor.filters.map(\.rgb)).count, FilterColor.filters.count, "swatches are distinct")
+        XCTAssertTrue(FilterColor.all.contains("Eidgenoss polarisiert"))
+        XCTAssertFalse(FilterColor.all.contains { $0.contains("Filterhalter") }, "the holder is not a filter")
+    }
+
+    func testFilterLookupAndTitles() {
+        let citron = FilterColor.filter(named: "Citron")
+        XCTAssertEqual(citron?.rgb, 0xF2EA2E)
+        XCTAssertEqual(citron?.red ?? 0, 242.0 / 255, accuracy: 0.0001)
+        XCTAssertNil(FilterColor.filter(named: ""))
+        XCTAssertNil(FilterColor.filter(named: "Gelb"))
+        XCTAssertEqual(FilterColor.title("Supergreen"), "Supergreen", "product names are not translated")
+        XCTAssertEqual(FilterColor.title("Gelb"), "Gelb", "unknown stored names are shown as they are")
+    }
+
     func testBackupAndCSVKeepSightSettings() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
-        SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5).apply(to: e)
+        SightSettings(filter: "ACE", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5).apply(to: e)
         try context.save()
 
         let data = try Backup.export(context)
@@ -80,7 +98,7 @@ final class SightSettingsTests: ModelTestCase {
         let target = ModelContext(other)
         try Backup.restore(from: data, into: target)
         let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
-        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5))
+        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "ACE", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5))
 
         let csv = String(decoding: Backup.csv(context), as: UTF8.self)
         let lines = csv.components(separatedBy: "\r\n")

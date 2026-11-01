@@ -89,12 +89,42 @@ struct SightSettings: Equatable {
     static func format(_ v: Double) -> String { v.formatted(.number.precision(.fractionLength(1))) }
 }
 
-/// Filter colours for shooting glasses. Keys are German and localised for display.
+/// Shooting-glasses filters as sold by schiessbrillen-online.ch (product names, not translated),
+/// each with a swatch colour approximating the lens in the shop photo.
 enum FilterColor {
-    static let all: [String] = [
-        "Gelb", "Hellgelb", "Orange", "Rot", "Rosa", "Violett",
-        "Blau", "Grün", "Grau", "Braun", "Polarisationsfilter",
+    struct Filter: Equatable {
+        let name: String
+        /// sRGB 0xRRGGBB.
+        let rgb: UInt32
+        var red: Double { Double((rgb >> 16) & 0xFF) / 255 }
+        var green: Double { Double((rgb >> 8) & 0xFF) / 255 }
+        var blue: Double { Double(rgb & 0xFF) / 255 }
+    }
+
+    static let filters: [Filter] = [
+        .init(name: "Saphire", rgb: 0x6F86D6),
+        .init(name: "Citron", rgb: 0xF2EA2E),
+        .init(name: "VAG Fitness", rgb: 0x9C9494),
+        .init(name: "Sunrise polar", rgb: 0xC030B0),
+        .init(name: "Waldfee polar", rgb: 0x5A5230),
+        .init(name: "CALM", rgb: 0x7A1028),
+        .init(name: "Red Devil (Extrem)", rgb: 0xA8361A),
+        .init(name: "Moschus Green (Hoya)", rgb: 0xC9D2C0),
+        .init(name: "Nikon Bright", rgb: 0xF4F4F8),
+        .init(name: "Nasashield grey polarisiert", rgb: 0x3A3A3A),
+        .init(name: "Nasashield braun polarisiert", rgb: 0x5A3A2A),
+        .init(name: "Serengeti polarisiert", rgb: 0x5E3328),
+        .init(name: "Eidgenoss polarisiert", rgb: 0x5A1A1A),
+        .init(name: "Serengeti", rgb: 0xA0521E),
+        .init(name: "Supergreen", rgb: 0xC6E02A),
+        .init(name: "HC Geor", rgb: 0xF5D63A),
+        .init(name: "ACE", rgb: 0xC98AF0),
     ]
 
-    static func title(_ key: String) -> String { key.isEmpty ? "Kein Filter".loc : key.loc }
+    static var all: [String] { filters.map(\.name) }
+
+    /// The filter with this stored name; nil for "no filter" or a name no longer in the list.
+    static func filter(named name: String) -> Filter? { filters.first { $0.name == name } }
+
+    static func title(_ key: String) -> String { key.isEmpty ? "Kein Filter".loc : key }
 }

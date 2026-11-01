@@ -66,7 +66,12 @@ struct EntryDetailView: View {
             let sight = SightSettings(entry: entry)
             if showSport, !sight.isEmpty {
                 Section("Einstellungen für Sportschützen") {
-                    row("Filter", FilterColor.title(sight.filter))
+                    LabeledContent("Filter") {
+                        HStack(spacing: 6) {
+                            FilterSwatch(name: sight.filter, size: 14)
+                            Text(FilterColor.title(sight.filter))
+                        }
+                    }
                     row("Iris (Brille)", sight.irisSize.map(SightSettings.format))
                     row("Diopter", sight.diopter.map(SightSettings.format))
                     row("Ringgrösse", sight.ringSize.map(SightSettings.format))
