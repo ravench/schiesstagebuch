@@ -1,3 +1,84 @@
 # Schiesstagebuch
 
-Native iOS app to log shooting sessions.
+Native iOS app (SwiftUI, SwiftData, Swift Charts) to log shooting sessions,
+replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French and Italian.
+
+## Features
+
+- **Tagebuch**: entries grouped by month with date, range, event, weapon, calibre,
+  ammo, shot count, result, notes and up to 4 photos. Search across all fields,
+  filter by weapon, range and year. New entries start from the last range, weapon and ammo.
+- **Stammdaten** (Einstellungen): weapons, calibres, ammunition, shooting ranges.
+  Anything can be archived instead of deleted, so history and statistics stay intact.
+- **Kaliber**: pre-filled with common calibres (rimfire, handgun, rifle incl. GP 90 / GP 11,
+  shotgun, air). A weapon has one or more calibres (e.g. SIG P210 with 9x19 and .22 LR
+  barrels) and one default. Entries only offer the weapon's calibres; ammunition is
+  linked to a calibre and filtered accordingly.
+- **Statistik**: totals, shots over time (monthly or cumulative), shots per weapon,
+  calibre and range, with a period filter. Every weapon, calibre, range and ammo has
+  its own statistics page.
+- **Pflege**: log cleaning and service per weapon. Optional reminders after N shots
+  and/or N days, as local notifications and a badge on the Waffen tab.
+- **Daten**: JSON backup with photos (restore merges, no duplicates), CSV export for Excel.
+- **Import** from the old Schusszähler app: its `ShootCounter-Export.tsv` or `data.db`.
+  Old ammo names are mapped to calibres (editable before importing), weapons get their
+  calibres and a guessed category, and photos are pulled from the Photos library when the
+  referenced pictures still exist there.
+- **iCloud sync** via SwiftData + CloudKit (container `iCloud.net.forestraven.schiesstagebuch`).
+  Works offline and without iCloud; calibres seeded on several devices are merged.
+- **Icons**: a silhouette per weapon category and a true-to-scale cartridge outline for
+  every catalogue calibre.
+
+## Building
+
+The Xcode project is generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen):
+
+```sh
+brew install xcodegen
+xcodegen generate
+open Schiesstagebuch.xcodeproj
+```
+
+If you build your own copy, replace `DEVELOPMENT_TEAM` in `project.yml` with your team ID (or pick your team under Signing & Capabilities), then run on a device or simulator.
+For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates the
+container on first run. Change the bundle id / container in `project.yml` if
+`net.forestraven` isn't yours.
+
+Calibres and icons are generated assets. After editing `tools/cartridges.py` or
+`tools/weapon_icons.py`, run:
+
+```sh
+python3 tools/generate_assets.py --preview /tmp/preview.html   # preview is optional
+```
+
+## Layout
+
+```
+Schiesstagebuch/
+  App/        app entry, tabs
+  Models/     SwiftData models (CloudKit-compatible: defaults + optional relationships)
+  Services/   backup/CSV, calibre catalogue, maintenance status + notifications, image compression
+  Views/      journal, editor, detail, statistics, weapons, settings
+```
+
+## Languages
+
+German is the source language. Translations (en, fr, it) live in
+`tools/translations.py`; regenerate the string catalogue with:
+
+```sh
+python3 tools/localize.py   # fails if any UI string lacks a translation
+```
+
+Write UI text in German. Literals in `Text`, `Button`, `Label` etc. are localized
+automatically; strings built at runtime go through `"…".loc` or `String(localized:)`.
+
+## License
+
+Source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md):
+anyone may read, build, modify and use the app for noncommercial purposes, and
+pull requests are welcome. Commercial use, including selling the app or a copy
+of it in the App Store, is reserved to the copyright holder.
+
+Contributions require agreeing to the [Contributor License Agreement](CLA.md);
+see [CONTRIBUTING.md](CONTRIBUTING.md).
