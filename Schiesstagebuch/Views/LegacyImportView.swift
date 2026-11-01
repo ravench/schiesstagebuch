@@ -76,11 +76,11 @@ struct LegacyImportView: View {
                     Section {
                         Button("Datei wählen …") { picking = true }
                     } footer: {
-                        Text("In der alten App unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.")
+                        Text("In «\(LegacyImport.sourceAppName)» von \(LegacyImport.sourceDeveloper) unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.")
                     }
                 }
             }
-            .navigationTitle("Aus Schusszähler importieren")
+            .navigationTitle(String(localized: "Import aus «\(LegacyImport.sourceAppName)»"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

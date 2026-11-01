@@ -9,6 +9,9 @@ import UIKit
 /// Both hold the same columns: datum, schiessanlage, anlass, waffe, schusszahi,
 /// munition, resultat, bemerkungen, picture1…4. Pictures are Photos library ids.
 enum LegacyImport {
+    /// The old app's App Store name and developer, shown as-is in every language.
+    static let sourceAppName = "Schusszähler-Schiesstagebuch"
+    static let sourceDeveloper = "carusoNET"
     struct Row: Hashable {
         var date: Date
         var range: String
