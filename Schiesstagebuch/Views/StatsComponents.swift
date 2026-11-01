@@ -183,7 +183,7 @@ struct ShotsOverTimeChart: View {
     }
 }
 
-/// Horizontal bars of shots per group (weapon, range, ammunition …). 
+/// Horizontal bars of shots per group (weapon, range, ammunition …).
 struct BreakdownChart<Key: Hashable>: View {
     let title: String
     let entries: [Entry]

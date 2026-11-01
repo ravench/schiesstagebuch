@@ -63,6 +63,16 @@ xcodebuild test -project Schiesstagebuch.xcodeproj -scheme Schiesstagebuch \
 
 Every change should come with tests.
 
+## Code style
+
+CI runs [SwiftLint](https://github.com/realm/SwiftLint) 0.59.1 in strict mode, so any warning
+fails the build. The rules are in `.swiftlint.yml`. Check locally before pushing:
+
+```sh
+brew install swiftlint
+swiftlint lint --strict
+```
+
 ## Layout
 
 ```
