@@ -114,8 +114,20 @@ enum LotNumberParser {
 
         /// Unlabelled lot formats of known manufacturers, with their score.
         static let knownFormats: [(pattern: String, score: Double)] = [
-            (#"^\d{3,5}[/-]\d{2}$"#, 0.7),                     // Sellier & Bellot dot matrix: "1903/44", "1168/60"
-            (#"^CBC\d{3,4}/\d{2}$"#, 0.8),                    // Magtech (CBC), top flap: "CBC546/24"
+            (#"^CBC\d{3,4}/\d{2}$"#, 0.92),                   // Magtech (CBC), top flap: "CBC546/24"
+            (#"^\d{5}/\d{5,6}$"#, 0.8),                       // Lapua / SK: "08553/21491"
+            (#"^\d{3,5}[/-]\d{2}$"#, 0.7),                    // Sellier & Bellot dot matrix: "1903/44", "1168/60"
+            (#"^[A-Z]{3}\d{2}[A-Z]\d{4}$"#, 0.6),              // GECO / RWS / Norma (RUAG Ammotec): "SAV22D0052"
+            (#"^[A-Z]{2}\d{2}[A-Z]{2}\d{1,2}$"#, 0.5),          // Winchester: "SC03LD44"
+            (#"^\d{7}$"#, 0.45),                               // Hornady / Fiocchi: "3101052"
+            (#"^(\d{1,2}[A-Z]\d{3,4}|[A-Z]\d{2}[A-Z]\d{1,2})$"#, 0.4), // Federal / CCI / Speer: "38X628", "A27T3"
+            (#"^[A-Z]{3}\d{3}$"#, 0.4),                         // old Eley: "WYB083"
+        ]
+
+        /// Formats with spaces, matched against a whole line: Eley "10 26-04 244"
+        /// (product, year, loader, batch).
+        static let lineFormats: [(pattern: String, score: Double)] = [
+            (#"^\d{2} ?\d{2}-\d{2} ?\d{3}$"#, 0.85),
         ]
 
         /// Lines of only digits and slashes: dot-matrix print, which OCR often spaces out
@@ -264,11 +276,15 @@ enum LotNumberParser {
                 text = text.filter { !$0.isWhitespace }
             }
             text = text.replacingOccurrences(of: #"\s*[/∕⁄]\s*"#, with: "/", options: .regularExpression)
+            let whole = text.trimmingCharacters(in: .whitespaces).replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+            if let score = knownFormatScore(whole, in: Rules.lineFormats) {
+                return [LotCandidate(number: whole, source: .guess, score: score)]
+            }
             return text.split(whereSeparator: { $0 == " " || $0 == "," || $0 == ";" }).compactMap { word -> LotCandidate? in
                 guard let value = cleaned(String(word)) else { return nil }
-                if let format = Rules.knownFormats.first(where: { value.range(of: $0.pattern, options: .regularExpression) != nil }) {
+                if let score = knownFormatScore(value, in: Rules.knownFormats) {
                     // Not scaled by confidence: dot-matrix print is read with low confidence.
-                    return LotCandidate(number: value, source: .guess, score: format.score)
+                    return LotCandidate(number: value, source: .guess, score: score)
                 }
                 guard value.contains(where: \.isNumber), value.contains(where: \.isLetter),
                       LotNumber.normalized(value).count >= 4,
@@ -280,6 +296,11 @@ enum LotNumberParser {
     }
 
     // MARK: Helpers
+
+    /// The best score of the formats this value matches, nil if none.
+    private static func knownFormatScore(_ value: String, in formats: [(pattern: String, score: Double)]) -> Double? {
+        formats.filter { value.range(of: $0.pattern, options: .regularExpression) != nil }.map(\.score).max()
+    }
 
     /// Trims punctuation around a value and checks its length; nil if it can't be a lot.
     static func cleaned(_ raw: String) -> String? {

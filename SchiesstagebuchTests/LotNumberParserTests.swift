@@ -57,6 +57,42 @@ final class LotNumberParserTests: XCTestCase {
         XCTAssertEqual(result.first?.number, "CBC546/24")
     }
 
+    /// The flap lot outranks the labelled "L-" code of the end label when both are on one photo.
+    func testMagtechFlapBeatsEndLabel() {
+        let result = LotNumberParser.candidates(lines: [line("CC0410 L-6483", y: 0.3), line("CBC546/24", y: 0.6)])
+        XCTAssertEqual(result.first?.number, "CBC546/24")
+        XCTAssertNotEqual(result.first?.number, "CC0410")
+    }
+
+    /// Formats from public manufacturer information (see the lot format research).
+    func testOtherManufacturerFormats() {
+        let cases = [
+            ("08553/21491", "Lapua / SK"),
+            ("SAV22D0052", "GECO / RWS / Norma"),
+            ("SC03LD44", "Winchester"),
+            ("3101052", "Hornady / Fiocchi"),
+            ("38X628", "Federal"),
+            ("A27T3", "CCI"),
+            ("WYB083", "old Eley"),
+        ]
+        for (lot, maker) in cases {
+            let result = LotNumberParser.candidates(lines: [line("9X19 124GR 1045"), line(lot, y: 0.6)])
+            XCTAssertEqual(result.first?.number, lot, maker)
+        }
+    }
+
+    /// Eley prints "10 26-04 244" with spaces, above a velocity line.
+    func testEleyWholeLine() {
+        let result = LotNumberParser.candidates(lines: [line("10 26-04 244", y: 0.5), line("1045", y: 0.55)])
+        XCTAssertEqual(result.first?.number, "10 26-04 244")
+    }
+
+    /// RWS rimfire lots such as "56 NH" are only taken after a label.
+    func testRWSLotAfterLabel() {
+        XCTAssertEqual(LotNumberParser.candidates(lines: [line("Los 56 NH")]).first?.number, "56 NH")
+        XCTAssertEqual(LotNumberParser.candidates(lines: [line("56 NH")]), [])
+    }
+
     /// Sellier & Bellot: EAN-13 product code, QR code with a web address, dot-matrix lot "1168/60".
     func testSellierBellotIgnoresEANAndQR() {
         let lines = [
@@ -161,9 +197,9 @@ final class LotNumberParserTests: XCTestCase {
 
     /// A lot of the same shape as one saved for this ammo comes first.
     func testKnownLotShapeRanksFirst() {
-        let lines = [line("XK2201 21G0715")]
+        let lines = [line("XK2201 QZ7Y71")]
         XCTAssertEqual(LotNumberParser.candidates(lines: lines).first?.number, "XK2201")
-        XCTAssertEqual(LotNumberParser.candidates(lines: lines, knownLots: ["21G0103"]).first?.number, "21G0715")
+        XCTAssertEqual(LotNumberParser.candidates(lines: lines, knownLots: ["AB1C23"]).first?.number, "QZ7Y71")
     }
 
     func testNormalizedAndShape() {
