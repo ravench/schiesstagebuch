@@ -2439,6 +2439,29 @@
         }
       }
     },
+    "Höhe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitude"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitude"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitudine"
+          }
+        }
+      }
+    },
     "Im Ordner der App gefunden": {
       "extractionState": "manual",
       "localizations": {
@@ -3566,6 +3589,75 @@
         }
       }
     },
+    "N": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N"
+          }
+        }
+      }
+    },
+    "NO": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NE"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NE"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NE"
+          }
+        }
+      }
+    },
+    "NW": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NW"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NO"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NO"
+          }
+        }
+      }
+    },
     "Nach Schüssen": {
       "extractionState": "manual",
       "localizations": {
@@ -3980,6 +4072,29 @@
         }
       }
     },
+    "O": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E"
+          }
+        }
+      }
+    },
     "OK": {
       "extractionState": "manual",
       "localizations": {
@@ -4091,6 +4206,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativo. Con i punti max. l'app calcola la percentuale e la media per colpo."
+          }
+        }
+      }
+    },
+    "Optional. Mit Ort und Schussrichtung schlägt die App vor, woher die Sonne kommt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. With the location and shooting direction, the app suggests where the sun comes from."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Avec le lieu et la direction de tir, l'app propose d'où vient le soleil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Con il luogo e la direzione di tiro, l'app propone da dove viene il sole."
           }
         }
       }
@@ -4854,6 +4992,29 @@
         }
       }
     },
+    "Richtung von der Schützenlinie zu den Scheiben. 0° = Nord, 90° = Ost.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direction from the firing line to the targets. 0° = north, 90° = east."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direction de la ligne de tir vers les cibles. 0° = nord, 90° = est."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direzione dalla linea di tiro ai bersagli. 0° = nord, 90° = est."
+          }
+        }
+      }
+    },
     "Ringgrösse": {
       "extractionState": "manual",
       "localizations": {
@@ -4873,6 +5034,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dimensione dell'anello"
+          }
+        }
+      }
+    },
+    "S": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S"
+          }
+        }
+      }
+    },
+    "SO": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SE"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SE"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SE"
+          }
+        }
+      }
+    },
+    "SW": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SW"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SO"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SO"
           }
         }
       }
@@ -5034,6 +5264,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "colpi"
+          }
+        }
+      }
+    },
+    "Schussrichtung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shooting direction"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direction de tir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direzione di tiro"
           }
         }
       }
@@ -5774,6 +6027,29 @@
         }
       }
     },
+    "W": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "W"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O"
+          }
+        }
+      }
+    },
     "Waffe": {
       "extractionState": "manual",
       "localizations": {
@@ -6253,6 +6529,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "tra %@ colpi"
+          }
+        }
+      }
+    },
+    "m ü. M.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m a.s.l."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m d'altitude"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m s.l.m."
           }
         }
       }
