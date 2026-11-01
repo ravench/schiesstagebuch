@@ -60,8 +60,8 @@ icon("luger", "Parabellum", [
     rect(94.5, 10, 2.5, 2.6),
     rect(42, 10.5, 20, 9),  # receiver
     rect(31, 8, 22, 4.5), circle(32, 10.2, 3.6), circle(52, 10.2, 2.4),  # toggle
-    rect(42, 18, 22, 4),
-    "M33 14 L50 19.5 L50.5 22.5 Q44 33 40 44.5 L27 44.5 Q27.5 40 29 36 Q33 26 31 19 Z",
+    # Frame and grip as one piece, so the grip grows out of the frame.
+    "M29.5 11 L64 11 L64 22 L50.5 22 Q44 33 40 44.5 L27 44.5 Q27.5 40 29 36 Q32.5 26 29.5 17 Z",
     "M48 22 L62 22 Q63 31 56 32 Q50 32.5 46 28 Z",
 ], ["M50 22 L60 22 Q60.5 29 55.5 29.5 Q51.5 29.8 48.5 26.5 Z", rect(34, 9, 16, 1)])
 
