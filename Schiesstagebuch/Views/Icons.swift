@@ -57,8 +57,10 @@ extension Color {
 // MARK: - Weapon categories
 
 enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
-    case pistol, sportPistol = "sport_pistol", luger, revolver, pcc, serviceRifle = "service_rifle", sportRifle = "sport_rifle"
-    case longRange = "long_range", huntingRifle = "hunting_rifle", shotgun, airgun
+    case pistol, sportPistol = "sport_pistol", luger, revolver, airPistol = "air_pistol", pcc
+    case serviceCarbine = "service_carbine", serviceRifle = "service_rifle", sportRifle = "sport_rifle"
+    case longRange = "long_range", huntingRifle = "hunting_rifle", leverAction = "lever_action"
+    case shotgun, pumpShotgun = "pump_shotgun", airgun, crossbow
     case blackPowder = "black_powder", other
 
     var id: Self { self }
@@ -69,13 +71,18 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         case .sportPistol: "Sportpistole"
         case .luger: "Parabellum / Luger"
         case .revolver: "Revolver"
+        case .airPistol: "Luftpistole"
+        case .serviceCarbine: "Karabiner / Ordonnanzgewehr (K31)"
+        case .leverAction: "Unterhebelrepetierer"
+        case .pumpShotgun: "Vorderschaftrepetierflinte"
+        case .crossbow: "Armbrust"
         case .pcc: "PCC (Pistolenkaliber-Karabiner)"
         case .serviceRifle: "Sturmgewehr / Ordonnanz"
         case .sportRifle: "Sportgewehr / Kleinkaliber"
         case .longRange: "Präzisions- / Long-Range-Gewehr"
         case .huntingRifle: "Jagdgewehr"
         case .shotgun: "Flinte"
-        case .airgun: "Luftdruckwaffe"
+        case .airgun: "Luftgewehr"
         case .blackPowder: "Vorderlader / Schwarzpulver"
         case .other: "Andere"
         }
@@ -86,8 +93,10 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .pistol, .luger, .revolver, .pcc: ["Kurzwaffe", "Randfeuer"]
         case .sportPistol: ["Randfeuer", "Kurzwaffe"]
-        case .shotgun: ["Flinte"]
-        case .airgun: ["Luftdruck"]
+        case .shotgun, .pumpShotgun: ["Flinte"]
+        case .airgun, .airPistol: ["Luftdruck"]
+        case .crossbow: ["Andere"]
+        case .leverAction: ["Langwaffe", "Kurzwaffe", "Schwarzpulver"]
         case .blackPowder: ["Schwarzpulver"]
         default: ["Langwaffe", "Randfeuer"]
         }
@@ -100,10 +109,15 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.luger, ["parabellum", "luger", "p08", "p 08", "06/29", "1900", "1906"]),
             (.sportPistol, ["sportpistole", "gsp", "pardini", "hämmerli", "hammerli", "walther sp", "morini", "match"]),
             (.revolver, ["revolver", "357", "38 sp", "44 mag", "gp100", "python", "s&w 686", "korth"]),
-            (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15", "k31", "karabiner"]),
+            (.crossbow, ["armbrust", "crossbow"]),
+            (.airPistol, ["luftpistole", "lp10", "lp 10", "air pistol"]),
+            (.serviceCarbine, ["k31", "k 31", "k11", "k 11", "g11", "g 11", "karabiner", "schmidt-rubin", "langgewehr"]),
+            (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15"]),
+            (.leverAction, ["unterhebel", "lever", "marlin", "henry", "winchester 94", "winchester 73"]),
+            (.pumpShotgun, ["pump", "vorderschaft", "870", "590", "mossberg 500"]),
             (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
             (.shotgun, ["flinte", "shotgun", "bock"]),
-            (.airgun, ["luft", "air", "lg ", "lp "]),
+            (.airgun, ["luftgewehr", "luft", "air", "lg "]),
             (.longRange, ["long", "precision", "tikka tac", "accuracy"]),
             (.huntingRifle, ["jagd", "blaser", "sauer"]),
             (.blackPowder, ["vorderlader", "muzzle", "perkussion", "steinschloss"]),
