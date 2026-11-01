@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Optional sight and glasses settings in the entry editor: filter colour, diopter, ring size.
+/// Optional sport-shooter settings in the entry editor: filter, diopter, ring or iris, bipod.
 struct SightSection: View {
     @Binding var sight: SightSettings
     var aperture: SightSettings.Aperture = .both
@@ -15,10 +15,15 @@ struct SightSection: View {
                 }
                 if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
                 sliderRow("Diopter", value: $sight.diopter)
-                if aperture != .iris { sliderRow("Ringgrösse", value: $sight.ringSize) }
+                if aperture != .iris {
+                    sliderRow("Ringgrösse", value: $sight.ringSize)
+                    sliderRow("Zweibein", value: $sight.bipodLength, unit: " cm",
+                              range: SightSettings.bipodRange, step: SightSettings.bipodStep,
+                              start: 20, clamp: SightSettings.clampBipod)
+                }
             } label: {
                 HStack {
-                    Text("Visier & Brille")
+                    Text("Einstellungen für Sportschützen")
                     Spacer()
                     if !expanded, !sight.isEmpty {
                         Text(summary).font(.callout).foregroundStyle(.secondary).lineLimit(1)
@@ -36,30 +41,33 @@ struct SightSection: View {
         if let i = sight.irisSize, aperture != .ring { parts.append("I \(SightSettings.format(i))") }
         if let d = sight.diopter { parts.append("D \(SightSettings.format(d))") }
         if let r = sight.ringSize, aperture != .iris { parts.append("R \(SightSettings.format(r))") }
+        if let b = sight.bipodLength, aperture != .iris { parts.append("\(SightSettings.format(b)) cm") }
         return parts.joined(separator: " · ")
     }
 
-    private func sliderRow(_ title: String, value: Binding<Double?>) -> some View {
+    private func sliderRow(_ title: String, value: Binding<Double?>, unit: String = "",
+                           range: ClosedRange<Double> = SightSettings.range, step: Double = SightSettings.step,
+                           start: Double = 1.0, clamp: @escaping (Double) -> Double = SightSettings.clamp) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Toggle(isOn: Binding(
                 get: { value.wrappedValue != nil },
-                set: { value.wrappedValue = $0 ? (value.wrappedValue ?? 1.0) : nil })) {
+                set: { value.wrappedValue = $0 ? (value.wrappedValue ?? start) : nil })) {
                 HStack {
                     Text(title.loc)
                     Spacer()
                     if let v = value.wrappedValue {
-                        Text(SightSettings.format(v)).monospacedDigit().foregroundStyle(.secondary)
+                        Text(SightSettings.format(v) + unit).monospacedDigit().foregroundStyle(.secondary)
                     }
                 }
             }
             if let v = value.wrappedValue {
-                Slider(value: Binding(get: { v }, set: { value.wrappedValue = SightSettings.clamp($0) }),
-                       in: SightSettings.range, step: SightSettings.step) {
+                Slider(value: Binding(get: { v }, set: { value.wrappedValue = clamp($0) }),
+                       in: range, step: step) {
                     Text(title.loc)
                 } minimumValueLabel: {
-                    Text("0.1").font(.caption2)
+                    Text(SightSettings.format(range.lowerBound)).font(.caption2)
                 } maximumValueLabel: {
-                    Text("9.9").font(.caption2)
+                    Text(SightSettings.format(range.upperBound)).font(.caption2)
                 }
             }
         }
