@@ -40,11 +40,29 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertNil(SightSettings.lastUsed(for: nil, in: entries))
     }
 
+    func testPistolsUseIrisRiflesUseRing() {
+        XCTAssertEqual(SightSettings.aperture(for: .pistol), .iris)
+        XCTAssertEqual(SightSettings.aperture(for: .sportPistol), .iris)
+        XCTAssertEqual(SightSettings.aperture(for: .airPistol), .iris)
+        XCTAssertEqual(SightSettings.aperture(for: .serviceRifle), .ring)
+        XCTAssertEqual(SightSettings.aperture(for: .sportRifle), .ring)
+        XCTAssertEqual(SightSettings.aperture(for: .airgun), .ring)
+        XCTAssertEqual(SightSettings.aperture(for: nil), .both)
+        XCTAssertEqual(SightSettings.aperture(for: .other), .both)
+    }
+
+    func testFittingDropsTheApertureTheWeaponDoesNotHave() {
+        let s = SightSettings(filter: "Gelb", diopter: 1.2, ringSize: 3.4, irisSize: 2.1)
+        XCTAssertEqual(s.fitted(to: .iris), SightSettings(filter: "Gelb", diopter: 1.2, irisSize: 2.1))
+        XCTAssertEqual(s.fitted(to: .ring), SightSettings(filter: "Gelb", diopter: 1.2, ringSize: 3.4))
+        XCTAssertEqual(s.fitted(to: .both), s)
+    }
+
     func testEveryFilterColourIsTranslated() throws {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in FilterColor.all + ["Kein Filter", "Visier & Brille", "Diopter", "Ringgrösse"] {
+            for key in FilterColor.all + ["Kein Filter", "Visier & Brille", "Diopter", "Ringgrösse", "Iris (Brille)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
@@ -52,7 +70,7 @@ final class SightSettingsTests: ModelTestCase {
 
     func testBackupAndCSVKeepSightSettings() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
-        SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6).apply(to: e)
+        SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8).apply(to: e)
         try context.save()
 
         let data = try Backup.export(context)
@@ -61,7 +79,7 @@ final class SightSettingsTests: ModelTestCase {
         let target = ModelContext(other)
         try Backup.restore(from: data, into: target)
         let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
-        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6))
+        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8))
 
         let csv = String(decoding: Backup.csv(context), as: UTF8.self)
         let lines = csv.components(separatedBy: "\r\n")
@@ -70,5 +88,6 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertEqual(header.count, row.count)
         XCTAssertTrue(row.contains(SightSettings.format(4.2)))
         XCTAssertTrue(row.contains(SightSettings.format(3.6)))
+        XCTAssertTrue(row.contains(SightSettings.format(1.8)))
     }
 }

@@ -348,4 +348,5 @@ T = {
     "Grau": ("Grey", "Gris", "Grigio"),
     "Braun": ("Brown", "Brun", "Marrone"),
     "Polarisationsfilter": ("Polarising filter", "Filtre polarisant", "Filtro polarizzatore"),
+    "Iris (Brille)": ("Iris (glasses)", "Iris (lunettes)", "Iride (occhiali)"),
 }

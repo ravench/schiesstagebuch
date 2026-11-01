@@ -66,6 +66,7 @@ struct EntryDetailView: View {
             if !sight.isEmpty {
                 Section("Visier & Brille") {
                     row("Filter", FilterColor.title(sight.filter))
+                    row("Iris (Brille)", sight.irisSize.map(SightSettings.format))
                     row("Diopter", sight.diopter.map(SightSettings.format))
                     row("Ringgrösse", sight.ringSize.map(SightSettings.format))
                 }
