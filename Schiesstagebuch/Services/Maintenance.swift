@@ -65,12 +65,12 @@ struct MaintenanceStatus {
         var parts: [String] = []
         if let r = shotsRemaining { parts.append(r > 0 ? String(localized: "in \(r.formatted()) Schuss") : String(localized: "\((-r).formatted()) Schuss überfällig")) }
         if let d = dueDate { parts.append(d > .now ? String(localized: "bis \(d.formatted(date: .abbreviated, time: .omitted))") : String(localized: "seit \(d.formatted(date: .abbreviated, time: .omitted)) fällig")) }
-        if intervalDays > 0, lastDate != nil, countingStart == nil, parts.isEmpty {
-            return "Tage zählen ab der nächsten Nutzung".loc
-        }
-        guard !parts.isEmpty else { return nil }
+        let waiting = intervalDays > 0 && lastDate != nil && countingStart == nil
+        let waitingText = "Tage zählen ab der nächsten Nutzung".loc
+        guard !parts.isEmpty else { return waiting ? waitingText : nil }
         let joined = parts.joined(separator: " \("oder".loc) ")
-        return String(localized: "Fällig \(joined)")
+        let due = String(localized: "Fällig \(joined)")
+        return waiting ? "\(due) · \(waitingText)" : due
     }
 }
 

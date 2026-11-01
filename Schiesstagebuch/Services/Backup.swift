@@ -196,16 +196,30 @@ enum Backup {
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        var lines = [["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los", "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte", "Prozent", "Einzelschüsse", "Bemerkungen"]
-            .map(\.loc).joined(separator: ";")]
+        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los",
+                                "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
+                                "Prozent", "Einzelschüsse", "Bemerkungen"]
+        var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
         for e in entries {
-            lines.append([df.string(from: e.date), e.range?.name ?? "", e.range?.place ?? "", e.event,
-                          e.weapon?.name ?? "", e.caliber?.name ?? "", e.ammunition?.name ?? "",
-                          e.lot?.number ?? "", String(e.shotCount),
-                          e.sighterCount.map(String.init) ?? "", e.scoredCount.map(String.init) ?? "", e.result,
-                          e.score.effectiveMax.map(ScoreFormat.points) ?? "",
-                          e.score.percentage.map(ScoreFormat.percent) ?? "",
-                          e.shotValuesText.replacingOccurrences(of: "\n", with: " | "), e.notes].map(field).joined(separator: ";"))
+            let score = e.score
+            var cols: [String] = []
+            cols.append(df.string(from: e.date))
+            cols.append(e.range?.name ?? "")
+            cols.append(e.range?.place ?? "")
+            cols.append(e.event)
+            cols.append(e.weapon?.name ?? "")
+            cols.append(e.caliber?.name ?? "")
+            cols.append(e.ammunition?.name ?? "")
+            cols.append(e.lot?.number ?? "")
+            cols.append(String(e.shotCount))
+            cols.append(e.sighterCount.map { String($0) } ?? "")
+            cols.append(e.scoredCount.map { String($0) } ?? "")
+            cols.append(e.result)
+            cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
+            cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
+            cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
+            cols.append(e.notes)
+            lines.append(cols.map(field).joined(separator: ";"))
         }
         return Data(("\u{FEFF}" + lines.joined(separator: "\r\n")).utf8)
     }
