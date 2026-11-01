@@ -239,4 +239,13 @@ T = {
     "seit %@ fällig": ("due since %@", "à faire depuis le %@", "da fare dal %@"),
     "zuletzt %@": ("last %@", "dernier %@", "ultimo %@"),
     "Ø pro Eintrag": ("Avg. per entry", "Moy. par entrée", "Media per voce"),
+    "Auf der Karte gewählt": ("Picked on the map", "Choisi sur la carte", "Scelto sulla mappa"),
+    "In Karten öffnen": ("Open in Maps", "Ouvrir dans Plans", "Apri in Mappe"),
+    "Kartenposition entfernen": ("Remove map location", "Retirer la position", "Rimuovi posizione"),
+    "Los": ("Lot", "Lot", "Lotto"),
+    "Losnummer": ("Lot number", "Numéro de lot", "Numero di lotto"),
+    "Losnummer hinzufügen": ("Add lot number", "Ajouter un numéro de lot", "Aggiungi numero di lotto"),
+    "Losnummern": ("Lot numbers", "Numéros de lot", "Numeri di lotto"),
+    "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": ("Optional. You can pick the lot when logging an entry.", "Facultatif. Tu peux choisir le lot en saisissant une entrée.", "Facoltativo. Puoi scegliere il lotto quando registri una voce."),
+    "Pro Los": ("By lot", "Par lot", "Per lotto"),
 }
