@@ -19,6 +19,7 @@ struct EntryEditorView: View {
     @State private var weapon: Weapon?
     @State private var caliber: Caliber?
     @State private var ammunition: Ammunition?
+    @State private var lot: AmmoLot?
     @State private var shotCount = 0
     @State private var result = ""
     @State private var notes = ""
@@ -67,6 +68,15 @@ struct EntryEditorView: View {
                     }
                     pickerRow("Munition", selection: $ammunition, items: fittingAmmunition,
                               label: \.displayName, add: .ammunition)
+                    if let ammunition, !ammunition.sortedLots().isEmpty || lot != nil {
+                        Picker("Los", selection: $lot) {
+                            Text("–").tag(AmmoLot?.none)
+                            ForEach(ammunition.sortedLots()) { Text($0.number).tag(Optional($0)) }
+                            if let lot, !ammunition.sortedLots().contains(lot) {
+                                Text(lot.number).tag(Optional(lot))
+                            }
+                        }
+                    }
                     HStack {
                         Text("Schusszahl")
                         Spacer()
@@ -114,6 +124,11 @@ struct EntryEditorView: View {
                 if let ammunition, ammunition.fits(new) { return }
                 ammunition = suggestedAmmunition(weapon: weapon, caliber: new)
             }
+            .onChange(of: ammunition) { _, new in
+                guard didLoad else { return }
+                if let lot, lot.ammunition == new { return }
+                lot = suggestedLot(for: new)
+            }
             .onChange(of: pickerItems) { _, items in
                 Task { await loadPhotos(items) }
             }
@@ -148,7 +163,7 @@ struct EntryEditorView: View {
         guard !didLoad else { return }
         if let entry {
             date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
-            caliber = entry.caliber; ammunition = entry.ammunition; shotCount = entry.shotCount; result = entry.result
+            caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; shotCount = entry.shotCount; result = entry.result
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
         } else if let last = allEntries.first {
             // New entries start from the most recent range, weapon and ammo: usually what you shoot next.
@@ -156,6 +171,7 @@ struct EntryEditorView: View {
             weapon = last.weapon?.isArchived == false ? last.weapon : nil
             caliber = weapon?.preferredCaliber
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
+            lot = suggestedLot(for: ammunition)
         }
         didLoad = true
     }
@@ -169,6 +185,17 @@ struct EntryEditorView: View {
         }
         let fitting = ammunitions.filter { $0.fits(caliber) && $0.caliber != nil }
         return fitting.count == 1 ? fitting.first : nil
+    }
+
+    /// The lot last shot with this ammo if it is still active, else the only active lot.
+    private func suggestedLot(for ammunition: Ammunition?) -> AmmoLot? {
+        guard let ammunition else { return nil }
+        let active = ammunition.sortedLots()
+        if let used = allEntries.first(where: { $0.ammunition == ammunition && $0.lot != nil })?.lot,
+           active.contains(used) {
+            return used
+        }
+        return active.count == 1 ? active.first : nil
     }
 
     private func loadPhotos(_ items: [PhotosPickerItem]) async {
@@ -185,7 +212,8 @@ struct EntryEditorView: View {
         let oldWeapon = entry?.weapon
         let target = entry ?? Entry()
         target.date = date; target.range = range; target.event = event.trimmingCharacters(in: .whitespaces)
-        target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition; target.shotCount = max(0, shotCount)
+        target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
+        target.lot = lot?.ammunition == ammunition ? lot : nil; target.shotCount = max(0, shotCount)
         target.result = result; target.notes = notes
 
         let existing = target.sortedPhotos

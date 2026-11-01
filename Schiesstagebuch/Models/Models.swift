@@ -117,6 +117,10 @@ final class Ammunition: ArchivableItem {
     @Relationship(deleteRule: .nullify, inverse: \Entry.ammunition)
     var entries: [Entry]? = []
 
+    /// Optional production lots (Losnummern) of this ammo type.
+    @Relationship(deleteRule: .cascade, inverse: \AmmoLot.ammunition)
+    var lots: [AmmoLot]? = []
+
     init(name: String, caliber: Caliber? = nil) {
         self.name = name
         self.caliber = caliber
@@ -128,6 +132,31 @@ final class Ammunition: ArchivableItem {
     func fits(_ selected: Caliber?) -> Bool {
         guard let selected, let caliber else { return true }
         return caliber == selected
+    }
+
+    /// Lots, newest first; archived ones only when asked for.
+    func sortedLots(includeArchived: Bool = false) -> [AmmoLot] {
+        (lots ?? []).filter { includeArchived || !$0.isArchived }.sorted { $0.createdAt > $1.createdAt }
+    }
+}
+
+/// A production lot of an ammo type, e.g. "A2391" printed on the box.
+@Model
+final class AmmoLot {
+    var id: UUID = UUID()
+    var number: String = ""
+    var notes: String = ""
+    var isArchived: Bool = false
+    var createdAt: Date = Date.now
+    var ammunition: Ammunition?
+
+    @Relationship(deleteRule: .nullify, inverse: \Entry.lot)
+    var entries: [Entry]? = []
+
+    init(number: String, notes: String = "", ammunition: Ammunition? = nil) {
+        self.number = number
+        self.notes = notes
+        self.ammunition = ammunition
     }
 }
 
@@ -167,6 +196,8 @@ final class Entry {
     var caliber: Caliber?
     var range: ShootingRange?
     var ammunition: Ammunition?
+    /// Optional lot of the chosen ammunition.
+    var lot: AmmoLot?
 
     @Relationship(deleteRule: .cascade, inverse: \EntryPhoto.entry)
     var photos: [EntryPhoto]? = []
@@ -191,7 +222,7 @@ final class Entry {
     func matches(_ query: String) -> Bool {
         guard !query.isEmpty else { return true }
         return [range?.name ?? "", range?.place ?? "", event, weapon?.name ?? "",
-                ammunition?.name ?? "", caliber?.name ?? "", result, notes]
+                ammunition?.name ?? "", lot?.number ?? "", caliber?.name ?? "", result, notes]
             .contains { $0.localizedCaseInsensitiveContains(query) }
     }
 }

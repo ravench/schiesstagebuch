@@ -236,6 +236,14 @@ struct AmmunitionEditorView: View {
     @State private var name = ""
     @State private var caliber: Caliber?
     @State private var isArchived = false
+    @State private var lots: [LotDraft] = []
+
+    /// An editable lot row; `lot` is nil for lots added in this sheet.
+    private struct LotDraft: Identifiable {
+        let id = UUID()
+        var lot: AmmoLot?
+        var number: String
+    }
 
     /// Calibres used by a weapon first, the rest of the catalogue below.
     private var inUse: [Caliber] { calibers.filter { !($0.weapons ?? []).isEmpty } }
@@ -253,6 +261,21 @@ struct AmmunitionEditorView: View {
                     Section("Alle") { ForEach(others) { Text($0.name).tag(Optional($0)) } }
                 }
                 .pickerStyle(.navigationLink)
+                Section {
+                    ForEach($lots) { $draft in
+                        TextField("Losnummer", text: $draft.number)
+                    }
+                    .onDelete { lots.remove(atOffsets: $0) }
+                    Button {
+                        lots.insert(LotDraft(lot: nil, number: ""), at: 0)
+                    } label: {
+                        Label("Losnummer hinzufügen", systemImage: "plus.circle")
+                    }
+                } header: {
+                    Text("Losnummern")
+                } footer: {
+                    Text("Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.")
+                }
                 if ammunition != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
             .navigationTitle(ammunition == nil ? "Neue Munition".loc : "Munition bearbeiten".loc)
@@ -266,6 +289,7 @@ struct AmmunitionEditorView: View {
                         target.caliber = caliber
                         target.isArchived = isArchived
                         if ammunition == nil { context.insert(target); onCreate?(target) }
+                        saveLots(to: target)
                         try? context.save()
                         dismiss()
                     }
@@ -276,6 +300,25 @@ struct AmmunitionEditorView: View {
                 name = ammunition?.name ?? ""
                 caliber = ammunition?.caliber ?? suggestedCaliber
                 isArchived = ammunition?.isArchived ?? false
+                lots = (ammunition?.sortedLots() ?? []).map { LotDraft(lot: $0, number: $0.number) }
+            }
+        }
+    }
+
+    private func saveLots(to target: Ammunition) {
+        let kept = Set(lots.compactMap { $0.lot?.persistentModelID })
+        // Removed lots: delete unused ones, archive those already logged so old entries keep their lot.
+        for old in target.sortedLots() where !kept.contains(old.persistentModelID) {
+            if (old.entries ?? []).isEmpty { context.delete(old) } else { old.isArchived = true }
+        }
+        for draft in lots {
+            let number = draft.number.trimmingCharacters(in: .whitespaces)
+            if let lot = draft.lot {
+                if !number.isEmpty { lot.number = number }
+            } else if !number.isEmpty {
+                let lot = AmmoLot(number: number)
+                context.insert(lot)
+                lot.ammunition = target
             }
         }
     }
