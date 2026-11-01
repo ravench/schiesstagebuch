@@ -61,6 +61,9 @@ enum Backup {
         var sighterCount: Int?
         var maxPoints: Double?
         var shotValuesText: String?
+        var filterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
+        var bipodLength: Double?
+        var weather: WeatherRecord?
         var photos: [Data]
     }
 
@@ -92,6 +95,8 @@ enum Backup {
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, rangeID: $0.range?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
+                      filterColor: $0.filterColor, diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
+                      weather: $0.weather,
                       photos: $0.sortedPhotos.compactMap(\.imageData))
             },
             lots: try all(AmmoLot.self, context).map {
@@ -181,6 +186,8 @@ enum Backup {
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
+            SightSettings(filter: d.filterColor ?? "", diopter: d.diopter, ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
+            e.weather = d.weather
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
         }
@@ -201,7 +208,7 @@ enum Backup {
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
         let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
-                                "Prozent", "Einzelschüsse", "Bemerkungen"]
+                                "Prozent", "Einzelschüsse", "Filter", "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein (cm)", "Wetter", "Bemerkungen"]
         var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
         for e in entries {
             let score = e.score
@@ -221,6 +228,12 @@ enum Backup {
             cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
             cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
             cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
+            cols.append(e.filterColor)
+            cols.append(e.diopter.map { SightSettings.format($0) } ?? "")
+            cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")
+            cols.append(e.irisSize.map { SightSettings.format($0) } ?? "")
+            cols.append(e.bipodLength.map { SightSettings.format($0) } ?? "")
+            cols.append(e.weather?.summary { $0.formatted(date: .omitted, time: .shortened) } ?? "")
             cols.append(e.notes)
             lines.append(cols.map(field).joined(separator: ";"))
         }
