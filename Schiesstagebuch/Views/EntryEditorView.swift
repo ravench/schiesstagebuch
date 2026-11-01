@@ -38,6 +38,7 @@ struct EntryEditorView: View {
     @State private var photos: [Data] = []
     @State private var pickerItems: [PhotosPickerItem] = []
     @State private var quickAdd: QuickAdd?
+    @State private var showingScanner = false
     @State private var didLoad = false
 
     enum QuickAdd: Identifiable { case weapon, range, ammunition; var id: Self { self } }
@@ -53,6 +54,14 @@ struct EntryEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Button { showingScanner = true } label: {
+                        Label("Standblatt scannen", systemImage: "doc.text.viewfinder")
+                    }
+                } footer: {
+                    Text("Liest Datum, Anlass, Einzelschüsse und Total von einem Standblatt.")
+                }
+
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
                     pickerRow("Schiessanlage", selection: $range, items: ranges, label: \.name, add: .range)
@@ -206,6 +215,9 @@ struct EntryEditorView: View {
             .onChange(of: pickerItems) { _, items in
                 Task { await loadPhotos(items) }
             }
+            .sheet(isPresented: $showingScanner) {
+                StandblattScanView { scanned, scannedPhotos in applyScan(scanned, photos: scannedPhotos) }
+            }
             .sheet(item: $quickAdd) { kind in
                 switch kind {
                 case .weapon: WeaponEditorView(weapon: nil) { weapon = $0 }
@@ -293,6 +305,18 @@ struct EntryEditorView: View {
             return used
         }
         return active.count == 1 ? active.first : nil
+    }
+
+    /// Fills the form from a scanned Standblatt; nothing is saved until "Sichern".
+    private func applyScan(_ scanned: StandblattImport, photos scannedPhotos: [Data]) {
+        if let scannedDate = scanned.date { date = scannedDate }
+        if !scanned.event.isEmpty { event = scanned.event }
+        passes = scanned.passes.map { PassDraft(text: $0) }
+        mode = .shots
+        result = scanned.result
+        maxPoints = scanned.maxPoints
+        if !scanned.notes.isEmpty { notes = notes.isEmpty ? scanned.notes : notes + "\n" + scanned.notes }
+        for photo in scannedPhotos where photos.count < Limits.maxPhotos { photos.append(photo) }
     }
 
     private func loadPhotos(_ items: [PhotosPickerItem]) async {

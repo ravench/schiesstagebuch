@@ -284,4 +284,55 @@ T = {
     "Nr.": ("No.", "N°", "N."),
     "Seriennummer (optional)": ("Serial number (optional)", "Numéro de série (facultatif)", "Numero di serie (facoltativo)"),
     "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
+
+    # Standblatt scanner
+    "Alle Summen stimmen mit dem Standblatt überein.": (
+        "All sums match the score strip.", "Toutes les sommes correspondent à la feuille de stand.",
+        "Tutte le somme corrispondono al foglio di tiro."),
+    "Aus Fotos wählen": ("Choose from photos", "Choisir dans les photos", "Scegli dalle foto"),
+    "Ein langes Standblatt auf mehreren Fotos wird in der gewählten Reihenfolge zusammengesetzt. Die Texterkennung läuft auf dem Gerät.": (
+        "A long score strip on several photos is joined in the order you pick them. Text recognition runs on the device.",
+        "Une longue feuille de stand sur plusieurs photos est assemblée dans l'ordre choisi. La reconnaissance du texte se fait sur l'appareil.",
+        "Un foglio di tiro lungo su più foto viene unito nell'ordine scelto. Il riconoscimento del testo avviene sul dispositivo."),
+    "Es wurden mehrere Standblätter erkannt. Wähle das gewünschte aus.": (
+        "Several score strips were found. Pick the one you want.",
+        "Plusieurs feuilles de stand ont été détectées. Choisissez celle que vous voulez.",
+        "Sono stati riconosciuti più fogli di tiro. Scegli quello desiderato."),
+    "Fehlende Schüsse: %@": ("Missing shots: %@", "Coups manquants : %@", "Colpi mancanti: %@"),
+    "Fotos zum Eintrag hinzufügen": ("Add photos to the entry", "Ajouter les photos à l'entrée", "Aggiungi le foto alla voce"),
+    "Handschrift wird nur ungefähr erkannt. Bitte alle Werte prüfen.": (
+        "Handwriting is only roughly recognised. Please check every value.",
+        "L'écriture manuscrite n'est reconnue qu'approximativement. Vérifiez toutes les valeurs.",
+        "La scrittura a mano viene riconosciuta solo in modo approssimativo. Controlla tutti i valori."),
+    "Hunderterwertung": ("Hundreds scoring (A100)", "Valeur sur 100 (A100)", "Punteggio su 100 (A100)"),
+    "Innenzehner": ("Inner tens", "Mouches", "Mouches"),
+    "Innenzehner: %@": ("Inner tens: %@", "Mouches : %@", "Mouches: %@"),
+    "Keine Schüsse erkannt. Fotografiere das Standblatt möglichst gerade und gut beleuchtet.": (
+        "No shots found. Photograph the score strip as straight and well lit as possible.",
+        "Aucun coup détecté. Photographiez la feuille de stand bien droite et bien éclairée.",
+        "Nessun colpo riconosciuto. Fotografa il foglio di tiro il più dritto e illuminato possibile."),
+    "Keine gedruckten Summen zum Vergleichen.": (
+        "No printed sums to compare with.", "Aucune somme imprimée pour comparer.", "Nessuna somma stampata da confrontare."),
+    "Kontrolle": ("Check", "Contrôle", "Controllo"),
+    "Liest Datum, Anlass, Einzelschüsse und Total von einem Standblatt.": (
+        "Reads date, event, individual shots and total from a score strip.",
+        "Lit la date, l'événement, les coups et le total d'une feuille de stand.",
+        "Legge data, evento, singoli colpi e totale da un foglio di tiro."),
+    "Nach dem Übernehmen kannst du im Eintrag alles anpassen, bevor du ihn sicherst.": (
+        "After applying you can adjust everything in the entry before saving it.",
+        "Après la reprise, vous pouvez tout modifier dans l'entrée avant de l'enregistrer.",
+        "Dopo l'applicazione puoi modificare tutto nella voce prima di salvarla."),
+    "Passe %@: gedruckt %@, gelesen %@": (
+        "Series %1$@: printed %2$@, read %3$@", "Passe %1$@ : imprimé %2$@, lu %3$@", "Serie %1$@: stampato %2$@, letto %3$@"),
+    "Scheibe": ("Target", "Cible", "Bersaglio"),
+    "Standblatt": ("Score strip", "Feuille de stand", "Foglio di tiro"),
+    "Standblatt fotografieren": ("Photograph score strip", "Photographier la feuille de stand", "Fotografa il foglio di tiro"),
+    "Standblatt scannen": ("Scan score strip", "Scanner la feuille de stand", "Scansiona foglio di tiro"),
+    "Standblatt wird gelesen …": ("Reading score strip …", "Lecture de la feuille de stand …", "Lettura del foglio di tiro …"),
+    "Total: gedruckt %@, gelesen %@": ("Total: printed %1$@, read %2$@", "Total : imprimé %1$@, lu %2$@", "Totale: stampato %1$@, letto %2$@"),
+    "Unsicher gelesen, Schuss %@": ("Uncertain reading, shot %@", "Lecture incertaine, coup %@", "Lettura incerta, colpo %@"),
+    "Wiederholte Anzeigen (nicht gezählt)": (
+        "Repeated displays (not counted)", "Affichages répétés (non comptés)", "Visualizzazioni ripetute (non contate)"),
+    "Zehnerwertung": ("Tens scoring (A10)", "Valeur sur 10 (A10)", "Punteggio su 10 (A10)"),
+    "Übernehmen": ("Apply", "Reprendre", "Applica"),
 }
