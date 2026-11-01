@@ -72,3 +72,13 @@ python3 tools/localize.py   # fails if any UI string lacks a translation
 
 Write UI text in German. Literals in `Text`, `Button`, `Label` etc. are localized
 automatically; strings built at runtime go through `"…".loc` or `String(localized:)`.
+
+## License
+
+Source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md):
+anyone may read, build, modify and use the app for noncommercial purposes, and
+pull requests are welcome. Commercial use, including selling the app or a copy
+of it in the App Store, is reserved to the copyright holder.
+
+Contributions require agreeing to the [Contributor License Agreement](CLA.md);
+see [CONTRIBUTING.md](CONTRIBUTING.md).
