@@ -34,7 +34,7 @@ final class LicenceCard {
 enum LicenceBarcode: String, CaseIterable, Identifiable {
     case old, new
     var id: Self { self }
-    var title: String { self == .old ? "Barcode alt".loc : "SIUS-Barcode".loc }
+    var title: String { self == .old ? "Lizenznummer".loc : "SIUS-Barcode".loc }
 }
 
 /// Shooter number barcodes as read by the SIUS scoring systems at Swiss ranges.

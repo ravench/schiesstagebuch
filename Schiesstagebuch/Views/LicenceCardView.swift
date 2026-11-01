@@ -224,7 +224,7 @@ struct LicenceCardEditor: View {
                 }
                 if let number = draft.normalizedNumber {
                     Section("Vorschau") {
-                        LabeledContent("Barcode alt", value: ShooterNumber.oldBarcode(number) ?? "")
+                        LabeledContent("Lizenznummer", value: ShooterNumber.oldBarcode(number) ?? "")
                         LabeledContent("SIUS-Barcode", value: ShooterNumber.newBarcode(number) ?? "")
                     }
                     .monospacedDigit()
