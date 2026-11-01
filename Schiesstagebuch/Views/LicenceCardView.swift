@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 import UIKit
 
-/// Colours evoking the red SSV membership card (no logos or trademarks copied).
+/// Colours evoking the red SSV membership card (no logo, no trademarks copied).
 enum LicenceCardStyle {
     static let red = Color(red: 0.89, green: 0.12, blue: 0.15)
     static let darkRed = Color(red: 0.82, green: 0.08, blue: 0.12)
@@ -71,11 +71,6 @@ struct LicenceCardFront: View {
                 }
                 .padding(.leading, w * 0.05).padding(.top, w * 0.05)
 
-                TargetEmblem()
-                    .frame(width: w * 0.14, height: w * 0.14)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.top, w * 0.05).padding(.trailing, w * 0.05)
-
                 VStack(alignment: .leading, spacing: w * 0.01) {
                     Spacer()
                     if !card.licenceNumber.isEmpty {
@@ -125,22 +120,6 @@ struct LicenceCardBackground: View {
                 }
                 rings.fill(band, with: dark, style: FillStyle(eoFill: true))
             }
-        }
-    }
-}
-
-/// A plain target as the card's emblem (the association's logo is not reproduced).
-struct TargetEmblem: View {
-    var body: some View {
-        GeometryReader { geo in
-            let s = min(geo.size.width, geo.size.height)
-            ZStack {
-                ForEach([1.0, 0.68, 0.36], id: \.self) { f in
-                    Circle().stroke(.white, lineWidth: s * 0.07).frame(width: s * f, height: s * f)
-                }
-                Circle().fill(.white).frame(width: s * 0.12, height: s * 0.12)
-            }
-            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }
