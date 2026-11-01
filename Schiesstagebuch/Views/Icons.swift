@@ -57,7 +57,7 @@ extension Color {
 // MARK: - Weapon categories
 
 enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
-    case pistol, sportPistol = "sport_pistol", revolver, pcc, serviceRifle = "service_rifle", sportRifle = "sport_rifle"
+    case pistol, sportPistol = "sport_pistol", luger, revolver, pcc, serviceRifle = "service_rifle", sportRifle = "sport_rifle"
     case longRange = "long_range", huntingRifle = "hunting_rifle", shotgun, airgun
     case blackPowder = "black_powder", other
 
@@ -67,6 +67,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .pistol: "Pistole"
         case .sportPistol: "Sportpistole"
+        case .luger: "Parabellum / Luger"
         case .revolver: "Revolver"
         case .pcc: "PCC (Pistolenkaliber-Karabiner)"
         case .serviceRifle: "Sturmgewehr / Ordonnanz"
@@ -83,7 +84,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
     /// Calibre catalogue groups to list first when picking calibres for this kind of weapon.
     var preferredCaliberCategories: [String] {
         switch self {
-        case .pistol, .revolver, .pcc: ["Kurzwaffe", "Randfeuer"]
+        case .pistol, .luger, .revolver, .pcc: ["Kurzwaffe", "Randfeuer"]
         case .sportPistol: ["Randfeuer", "Kurzwaffe"]
         case .shotgun: ["Flinte"]
         case .airgun: ["Luftdruck"]
@@ -96,6 +97,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
     static func guess(from name: String) -> WeaponCategory {
         let n = name.lowercased()
         let rules: [(WeaponCategory, [String])] = [
+            (.luger, ["parabellum", "luger", "p08", "p 08", "06/29", "1900", "1906"]),
             (.sportPistol, ["sportpistole", "gsp", "pardini", "hämmerli", "hammerli", "walther sp", "morini", "match"]),
             (.revolver, ["revolver", "357", "38 sp", "44 mag", "gp100", "python", "s&w 686", "korth"]),
             (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15", "k31", "karabiner"]),
