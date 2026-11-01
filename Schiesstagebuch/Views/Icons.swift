@@ -6,7 +6,7 @@ import SwiftUI
 struct CartridgeView: View {
     let caliber: Caliber?
     /// When set, draws at true scale (points per millimetre) instead of fitting the frame.
-    var pointsPerMillimetre: CGFloat? = nil
+    var pointsPerMillimetre: CGFloat?
 
     private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let isShot: Bool }
 
