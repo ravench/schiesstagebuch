@@ -19,6 +19,7 @@ struct StatsView: View {
                 Section {
                     BreakdownChart(title: "Pro Waffe", entries: filtered, key: \.weapon, label: \.name)
                 }
+                if !weapons.isEmpty {
                 Section("Waffen") {
                     ForEach(weapons) { w in
                         NavigationLink {
@@ -32,12 +33,14 @@ struct StatsView: View {
                         }
                     }
                 }
+                }
                 Section {
                     BreakdownChart(title: "Pro Kaliber", entries: filtered, key: \.caliber, label: \.name)
                 }
                 Section {
                     BreakdownChart(title: "Pro Schiessanlage", entries: filtered, key: \.range, label: \.name)
                 }
+                if !ranges.isEmpty {
                 Section("Schiessanlagen") {
                     ForEach(ranges) { r in
                         NavigationLink {
@@ -47,6 +50,7 @@ struct StatsView: View {
                                          shots: filtered.filter { $0.range == r }.totalShots)
                         }
                     }
+                }
                 }
             }
             .navigationTitle("Statistik")
