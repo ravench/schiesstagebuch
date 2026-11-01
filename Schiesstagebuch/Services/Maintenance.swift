@@ -12,7 +12,7 @@ enum DayCounting: String, CaseIterable, Identifiable {
     var id: Self { self }
 
     var title: String {
-        self == .fromMaintenance ? "Ab Reinigung / Service".loc : "Ab erster Nutzung danach".loc
+        self == .fromMaintenance ? "Ab Reinigung / Service".loc : "Ab erstem Schuss danach".loc
     }
 
     static var appDefault: DayCounting {
@@ -66,7 +66,7 @@ struct MaintenanceStatus {
         if let r = shotsRemaining { parts.append(r > 0 ? String(localized: "in \(r.formatted()) Schuss") : String(localized: "\((-r).formatted()) Schuss überfällig")) }
         if let d = dueDate { parts.append(d > .now ? String(localized: "bis \(d.formatted(date: .abbreviated, time: .omitted))") : String(localized: "seit \(d.formatted(date: .abbreviated, time: .omitted)) fällig")) }
         let waiting = intervalDays > 0 && lastDate != nil && countingStart == nil
-        let waitingText = "Tage zählen ab der nächsten Nutzung".loc
+        let waitingText = "Tage zählen ab dem nächsten Schuss".loc
         guard !parts.isEmpty else { return waiting ? waitingText : nil }
         let joined = parts.joined(separator: " \("oder".loc) ")
         let due = String(localized: "Fällig \(joined)")
