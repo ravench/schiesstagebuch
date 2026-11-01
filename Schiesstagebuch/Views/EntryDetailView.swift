@@ -36,6 +36,7 @@ struct EntryDetailView: View {
                 row("Waffe", entry.weapon?.name)
                 row("Kaliber", entry.caliber?.name)
                 row("Munition", entry.ammunition?.name)
+                if let lot = entry.lot { row("Los", lot.number) }
             }
 
             if !entry.notes.isEmpty {

@@ -156,6 +156,7 @@ struct AmmunitionDetailView: View {
             if let c = ammunition.caliber { Section { LabeledContent("Kaliber", value: c.name) } }
         } breakdowns: { entries in
             Section { BreakdownChart(title: "Pro Waffe", entries: entries, key: \.weapon, label: \.name) }
+            Section { BreakdownChart(title: "Pro Los", entries: entries, key: \.lot, label: \.number) }
         }
         .navigationTitle(ammunition.name)
         .toolbar { Button("Bearbeiten") { editing = true } }
