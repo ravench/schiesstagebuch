@@ -55,6 +55,12 @@ struct KPIGrid: View {
                      entries.map(\.date).max()?.formatted(.dateTime.day().month().year(.twoDigits)) ?? "–",
                      "calendar")
             }
+            if entries.contains(where: { $0.sighterCount != nil }) {
+                GridRow {
+                    tile("Probeschüsse", entries.compactMap(\.sighterCount).reduce(0, +).formatted(), "scope")
+                    tile("Wertungsschüsse", entries.compactMap(\.scoredCount).reduce(0, +).formatted(), "target")
+                }
+            }
         }
     }
 

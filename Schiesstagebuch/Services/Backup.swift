@@ -55,6 +55,7 @@ enum Backup {
         var id: UUID; var date: Date; var event: String; var shotCount: Int; var result: String; var notes: String
         var weaponID: UUID?; var caliberID: UUID?; var rangeID: UUID?; var ammunitionID: UUID?
         var lotID: UUID?
+        var sighterCount: Int?
         var photos: [Data]
     }
 
@@ -82,7 +83,7 @@ enum Backup {
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, event: $0.event, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, rangeID: $0.range?.id, ammunitionID: $0.ammunition?.id,
-                      lotID: $0.lot?.id,
+                      lotID: $0.lot?.id, sighterCount: $0.sighterCount,
                       photos: $0.sortedPhotos.compactMap(\.imageData))
             },
             lots: try all(AmmoLot.self, context).map {
@@ -166,6 +167,7 @@ enum Backup {
             e.id = d.id
             context.insert(e)
             e.lot = d.lotID.flatMap { lots[$0] }
+            e.sighterCount = d.sighterCount
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
         }
@@ -184,12 +186,13 @@ enum Backup {
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        var lines = [["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los", "Schusszahl", "Resultat", "Bemerkungen"]
+        var lines = [["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los", "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Bemerkungen"]
             .map(\.loc).joined(separator: ";")]
         for e in entries {
             lines.append([df.string(from: e.date), e.range?.name ?? "", e.range?.place ?? "", e.event,
                           e.weapon?.name ?? "", e.caliber?.name ?? "", e.ammunition?.name ?? "",
-                          e.lot?.number ?? "", String(e.shotCount), e.result, e.notes].map(field).joined(separator: ";"))
+                          e.lot?.number ?? "", String(e.shotCount),
+                          e.sighterCount.map(String.init) ?? "", e.scoredCount.map(String.init) ?? "", e.result, e.notes].map(field).joined(separator: ";"))
         }
         return Data(("\u{FEFF}" + lines.joined(separator: "\r\n")).utf8)
     }

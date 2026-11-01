@@ -21,6 +21,9 @@ struct EntryEditorView: View {
     @State private var ammunition: Ammunition?
     @State private var lot: AmmoLot?
     @State private var shotCount = 0
+    @State private var splitShots = false
+    @State private var sighters = 0
+    @State private var scored = 0
     @State private var result = ""
     @State private var notes = ""
     @State private var photos: [Data] = []
@@ -77,15 +80,14 @@ struct EntryEditorView: View {
                             }
                         }
                     }
-                    HStack {
-                        Text("Schusszahl")
-                        Spacer()
-                        TextField("0", value: $shotCount, format: .number)
-                            .keyboardType(.numberPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(maxWidth: 80)
-                        Stepper("", value: $shotCount, in: 0...10_000, step: 5).labelsHidden()
+                    if splitShots {
+                        countRow("Probeschüsse", value: $sighters, step: 1)
+                        countRow("Wertungsschüsse", value: $scored, step: 5)
+                        LabeledContent("Total", value: (sighters + scored).formatted())
+                    } else {
+                        countRow("Schusszahl", value: $shotCount, step: 5)
                     }
+                    Toggle("Probe- und Wertungsschüsse", isOn: $splitShots)
                     TextField("Resultat", text: $result)
                 }
 
@@ -129,6 +131,14 @@ struct EntryEditorView: View {
                 if let lot, lot.ammunition == new { return }
                 lot = suggestedLot(for: new)
             }
+            .onChange(of: splitShots) { _, on in
+                guard didLoad else { return }
+                if on {
+                    sighters = 0; scored = shotCount
+                } else {
+                    shotCount = sighters + scored
+                }
+            }
             .onChange(of: pickerItems) { _, items in
                 Task { await loadPhotos(items) }
             }
@@ -159,11 +169,26 @@ struct EntryEditorView: View {
         }
     }
 
+    private func countRow(_ title: String, value: Binding<Int>, step: Int) -> some View {
+        HStack {
+            Text(title.loc)
+            Spacer()
+            TextField("0", value: value, format: .number)
+                .keyboardType(.numberPad)
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 80)
+            Stepper("", value: value, in: 0...10_000, step: step).labelsHidden()
+        }
+    }
+
     private func load() {
         guard !didLoad else { return }
         if let entry {
             date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
             caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; shotCount = entry.shotCount; result = entry.result
+            if let s = entry.sighterCount {
+                splitShots = true; sighters = s; scored = max(0, entry.shotCount - s)
+            }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
         } else if let last = allEntries.first {
             // New entries start from the most recent range, weapon and ammo: usually what you shoot next.
@@ -172,6 +197,8 @@ struct EntryEditorView: View {
             caliber = weapon?.preferredCaliber
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
             lot = suggestedLot(for: ammunition)
+            // Keep the split switched on for people who use it.
+            splitShots = last.sighterCount != nil
         }
         didLoad = true
     }
@@ -213,7 +240,8 @@ struct EntryEditorView: View {
         let target = entry ?? Entry()
         target.date = date; target.range = range; target.event = event.trimmingCharacters(in: .whitespaces)
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
-        target.lot = lot?.ammunition == ammunition ? lot : nil; target.shotCount = max(0, shotCount)
+        target.lot = lot?.ammunition == ammunition ? lot : nil; target.shotCount = splitShots ? max(0, sighters) + max(0, scored) : max(0, shotCount)
+        target.sighterCount = splitShots ? max(0, sighters) : nil
         target.result = result; target.notes = notes
 
         let existing = target.sortedPhotos

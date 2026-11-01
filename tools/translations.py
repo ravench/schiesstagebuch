@@ -251,4 +251,10 @@ T = {
     "App-Icon": ("App Icon", "Icône de l’app", "Icona dell’app"),
     "Offenes Tagebuch": ("Open journal", "Journal ouvert", "Diario aperto"),
     "Gebundenes Tagebuch": ("Hardcover journal", "Journal relié", "Diario rilegato"),
+    "Probe": ("Sighters", "Essai", "Prova"),
+    "Probe- und Wertungsschüsse": ("Sighters and scored shots", "Coups d'essai et coups comptés", "Colpi di prova e di gara"),
+    "Probeschüsse": ("Sighters", "Coups d'essai", "Colpi di prova"),
+    "Total": ("Total", "Total", "Totale"),
+    "Wertung": ("Scored", "Comptés", "Gara"),
+    "Wertungsschüsse": ("Scored shots", "Coups comptés", "Colpi di gara"),
 }
