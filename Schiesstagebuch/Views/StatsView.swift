@@ -24,8 +24,11 @@ struct StatsView: View {
                         NavigationLink {
                             WeaponDetailView(weapon: w)
                         } label: {
-                            StatsLinkRow(name: w.name, subtitle: w.caliberSummary, archived: w.isArchived,
-                                         shots: filtered.filter { $0.weapon == w }.totalShots)
+                            HStack {
+                                WeaponIcon(category: w.category).frame(width: 40, height: 16).foregroundStyle(.secondary)
+                                StatsLinkRow(name: w.name, subtitle: w.caliberSummary, archived: w.isArchived,
+                                             shots: filtered.filter { $0.weapon == w }.totalShots)
+                            }
                         }
                     }
                 }
@@ -103,8 +106,12 @@ struct WeaponDetailView: View {
 
     var body: some View {
         ItemStatsList(entries: weapon.entries ?? []) {
-            if !weapon.caliberSummary.isEmpty {
-                Section { LabeledContent("Kaliber", value: weapon.caliberSummary) }
+            Section {
+                WeaponIcon(category: weapon.category)
+                    .frame(maxWidth: .infinity).frame(height: 70)
+                    .listRowBackground(Color.clear)
+                LabeledContent("Kategorie", value: weapon.category.title)
+                if !weapon.caliberSummary.isEmpty { LabeledContent("Kaliber", value: weapon.caliberSummary) }
             }
             MaintenanceSection(weapon: weapon)
         } breakdowns: { entries in
@@ -158,7 +165,14 @@ struct CaliberDetailView: View {
 
     var body: some View {
         ItemStatsList(entries: caliber.entries ?? []) {
-            EmptyView()
+            if !caliber.catalogID.isEmpty {
+                Section {
+                    // True scale: 1 mm = 2 pt, so cartridges compare by size.
+                    CartridgeView(caliber: caliber, pointsPerMillimetre: 2)
+                        .frame(maxWidth: .infinity).frame(height: 290)
+                        .listRowBackground(Color.clear)
+                }
+            }
         } breakdowns: { entries in
             Section { BreakdownChart(title: "Pro Waffe", entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.name) }

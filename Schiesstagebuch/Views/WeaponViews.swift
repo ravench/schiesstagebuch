@@ -45,6 +45,15 @@ struct WeaponRow: View {
     let weapon: Weapon
 
     var body: some View {
+        HStack(spacing: 12) {
+            WeaponIcon(category: weapon.category)
+                .frame(width: 56, height: 22)
+                .foregroundStyle(weapon.isArchived ? .secondary : .primary)
+            details
+        }
+    }
+
+    private var details: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(weapon.name).font(.headline)
@@ -195,6 +204,7 @@ struct WeaponEditorView: View {
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var allCalibers: [Caliber]
 
     @State private var name = ""
+    @State private var category: WeaponCategory = .other
     @State private var calibers: Set<Caliber> = []
     @State private var defaultCaliber: Caliber?
     @State private var isArchived = false
@@ -211,7 +221,25 @@ struct WeaponEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section { TextField("Name, z. B. SIG P210", text: $name) }
+                Section {
+                    TextField("Name, z. B. SIG P210", text: $name)
+                    Picker(selection: $category) {
+                        ForEach(WeaponCategory.allCases) { c in
+                            HStack(spacing: 12) {
+                                WeaponIcon(category: c).frame(width: 48, height: 18)
+                                Text(c.title)
+                            }
+                            .tag(c)
+                        }
+                    } label: {
+                        HStack {
+                            Text("Kategorie")
+                            Spacer()
+                            WeaponIcon(category: category).frame(width: 48, height: 18).foregroundStyle(.secondary)
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                }
 
                 Section {
                     Button { choosingCalibers = true } label: {
@@ -224,6 +252,7 @@ struct WeaponEditorView: View {
                     }
                     ForEach(sortedSelection) { c in
                         HStack {
+                            CartridgeView(caliber: c).frame(width: 18, height: 30)
                             Text(c.name)
                             Spacer()
                             if c == defaultCaliber { Text("Standard").font(.caption).foregroundStyle(.secondary) }
@@ -257,7 +286,8 @@ struct WeaponEditorView: View {
                 }
             }
             .sheet(isPresented: $choosingCalibers) {
-                CaliberMultiPicker(all: allCalibers, selection: $calibers)
+                CaliberMultiPicker(all: allCalibers, selection: $calibers,
+                                   preferred: category.preferredCaliberCategories)
             }
             .onChange(of: calibers) { _, new in
                 if let d = defaultCaliber, new.contains(d) { return }
@@ -293,6 +323,7 @@ struct WeaponEditorView: View {
     private func load() {
         guard !didLoad, let weapon else { didLoad = true; return }
         name = weapon.name
+        category = weapon.category
         calibers = Set(weapon.calibers ?? [])
         defaultCaliber = weapon.defaultCaliber
         isArchived = weapon.isArchived
@@ -304,6 +335,7 @@ struct WeaponEditorView: View {
     private func save() {
         let target = weapon ?? Weapon(name: "")
         target.name = name.trimmingCharacters(in: .whitespaces)
+        target.category = category
         target.calibers = Array(calibers)
         target.defaultCaliber = defaultCaliber.flatMap { calibers.contains($0) ? $0 : nil }
         target.isArchived = isArchived
@@ -327,13 +359,15 @@ struct WeaponEditorView: View {
 struct CaliberMultiPicker: View {
     let all: [Caliber]
     @Binding var selection: Set<Caliber>
+    /// Catalogue groups shown first (e.g. handgun calibres for a pistol).
+    var preferred: [String] = []
     @Environment(\.dismiss) private var dismiss
     @State private var search = ""
     @State private var adding = false
 
     private var groups: [(String, [Caliber])] {
         let matches = all.filter { search.isEmpty || $0.name.localizedCaseInsensitiveContains(search) }
-        let order = CaliberCatalog.Category.allCases.map(\.rawValue)
+        let order = preferred + CaliberCatalog.Category.allCases.map(\.rawValue).filter { !preferred.contains($0) }
         return Dictionary(grouping: matches) { $0.category.isEmpty ? CaliberCatalog.Category.other.rawValue : $0.category }
             .sorted { (order.firstIndex(of: $0.key) ?? 99) < (order.firstIndex(of: $1.key) ?? 99) }
             .map { ($0.key, $0.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }) }
@@ -371,6 +405,7 @@ struct CaliberMultiPicker: View {
             if selection.contains(c) { selection.remove(c) } else { selection.insert(c) }
         } label: {
             HStack {
+                CartridgeView(caliber: c).frame(width: 18, height: 30)
                 Text(c.name).foregroundStyle(.primary)
                 Spacer()
                 if selection.contains(c) { Image(systemName: "checkmark").foregroundStyle(.tint) }

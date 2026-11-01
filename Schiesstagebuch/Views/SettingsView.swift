@@ -102,6 +102,7 @@ struct CaliberListView: View {
         List(visible) { c in
             NavigationLink { CaliberDetailView(caliber: c) } label: {
                 HStack {
+                    CartridgeView(caliber: c).frame(width: 20, height: 34)
                     VStack(alignment: .leading) {
                         Text(c.name).foregroundStyle(c.isArchived ? .secondary : .primary)
                         let weapons = (c.weapons ?? []).map(\.name).sorted()
@@ -200,6 +201,7 @@ struct AmmunitionListView: View {
                             ForEach(group.1) { a in
                                 NavigationLink { AmmunitionDetailView(ammunition: a) } label: {
                                     HStack {
+                                        CartridgeView(caliber: a.caliber).frame(width: 18, height: 30)
                                         Text(a.name).foregroundStyle(a.isArchived ? .secondary : .primary)
                                         Spacer()
                                         Text(a.totalShots.formatted()).monospacedDigit().foregroundStyle(.secondary)

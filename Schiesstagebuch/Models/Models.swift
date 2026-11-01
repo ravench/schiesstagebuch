@@ -28,6 +28,8 @@ final class Caliber: ArchivableItem {
     var name: String = ""
     /// Grouping for pickers, see CaliberCatalog.Category.
     var category: String = ""
+    /// Id of the built-in catalogue entry (drives the cartridge outline); empty for custom calibres.
+    var catalogID: String = ""
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 
@@ -56,6 +58,8 @@ final class Caliber: ArchivableItem {
 final class Weapon: ArchivableItem {
     var id: UUID = UUID()
     var name: String = ""
+    /// WeaponCategory raw value; drives the icon.
+    var categoryRaw: String = "other"
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 
@@ -75,6 +79,11 @@ final class Weapon: ArchivableItem {
     var serviceIntervalDays: Int = 0
 
     init(name: String) { self.name = name }
+
+    var category: WeaponCategory {
+        get { WeaponCategory(rawValue: categoryRaw) ?? .other }
+        set { categoryRaw = newValue.rawValue }
+    }
 
     var sortedCalibers: [Caliber] { (calibers ?? []).sorted { $0.name < $1.name } }
     /// Default calibre first, then alphabetical.
