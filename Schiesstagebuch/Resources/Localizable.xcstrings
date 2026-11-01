@@ -1450,6 +1450,29 @@
         }
       }
     },
+    "Einstellungen für Sportschützen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport shooter settings"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réglages pour tireurs sportifs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni per tiratori sportivi"
+          }
+        }
+      }
+    },
     "Eintrag bearbeiten": {
       "extractionState": "manual",
       "localizations": {
@@ -5705,29 +5728,6 @@
         }
       }
     },
-    "Visier & Brille": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sight & glasses"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Visée & lunettes"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mira & occhiali"
-          }
-        }
-      }
-    },
     "Vorderlader / Schwarzpulver": {
       "extractionState": "manual",
       "localizations": {
@@ -5912,6 +5912,29 @@
         }
       }
     },
+    "Waffen-Einstellungen für Sportschützen erfassen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record weapon settings for sport shooters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir les réglages d'arme pour tireurs sportifs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra le impostazioni dell'arma per tiratori sportivi"
+          }
+        }
+      }
+    },
     "Wertung": {
       "extractionState": "manual",
       "localizations": {
@@ -6050,6 +6073,29 @@
         }
       }
     },
+    "Zeigt in Einträgen Felder für Filter, Diopter, Ring oder Iris und Zweibein. Ausgeblendete Werte bleiben gespeichert.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows fields for filter, diopter, ring or iris and bipod in entries. Hidden values stay saved."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affiche dans les entrées des champs pour le filtre, la dioptrie, l'anneau ou l'iris et le bipied. Les valeurs masquées restent enregistrées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nelle voci i campi per filtro, diottra, anello o iride e bipiede. I valori nascosti restano salvati."
+          }
+        }
+      }
+    },
     "Zeitraum": {
       "extractionState": "manual",
       "localizations": {
@@ -6092,6 +6138,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultima"
+          }
+        }
+      }
+    },
+    "Zweibein": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bipod"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bipied"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bipiede"
+          }
+        }
+      }
+    },
+    "Zweibein (cm)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bipod (cm)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bipied (cm)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bipiede (cm)"
           }
         }
       }

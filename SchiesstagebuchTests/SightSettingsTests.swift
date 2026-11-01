@@ -62,7 +62,8 @@ final class SightSettingsTests: ModelTestCase {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in FilterColor.all + ["Kein Filter", "Visier & Brille", "Diopter", "Ringgrösse", "Iris (Brille)"] {
+            for key in FilterColor.all + ["Kein Filter", "Einstellungen für Sportschützen", "Waffen-Einstellungen für Sportschützen erfassen",
+                                             "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein", "Zweibein (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
@@ -70,7 +71,7 @@ final class SightSettingsTests: ModelTestCase {
 
     func testBackupAndCSVKeepSightSettings() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
-        SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8).apply(to: e)
+        SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5).apply(to: e)
         try context.save()
 
         let data = try Backup.export(context)
@@ -79,7 +80,7 @@ final class SightSettingsTests: ModelTestCase {
         let target = ModelContext(other)
         try Backup.restore(from: data, into: target)
         let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
-        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8))
+        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "Violett", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5))
 
         let csv = String(decoding: Backup.csv(context), as: UTF8.self)
         let lines = csv.components(separatedBy: "\r\n")
@@ -89,5 +90,36 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertTrue(row.contains(SightSettings.format(4.2)))
         XCTAssertTrue(row.contains(SightSettings.format(3.6)))
         XCTAssertTrue(row.contains(SightSettings.format(1.8)))
+        XCTAssertTrue(row.contains(SightSettings.format(32.5)))
+    }
+
+    func testSportShooterFieldsAreHiddenByDefault() {
+        let defaults = UserDefaults(suiteName: "SightSettingsTests")!
+        defaults.removePersistentDomain(forName: "SightSettingsTests")
+        XCTAssertFalse(defaults.bool(forKey: SightSettings.showKey))
+        XCTAssertEqual(SightSettings.showKey, "showSportShooterSettings")
+    }
+
+    func testBipodClampsToHalfCentimetres() {
+        XCTAssertEqual(SightSettings.clampBipod(1), 5)
+        XCTAssertEqual(SightSettings.clampBipod(80), 60)
+        XCTAssertEqual(SightSettings.clampBipod(23.3), 23.5)
+        XCTAssertEqual(SightSettings.clampBipod(23.2), 23)
+        XCTAssertEqual(SightSettings(bipodLength: 23.3).bipodLength, 23.5)
+        XCTAssertFalse(SightSettings(bipodLength: 20).isEmpty)
+    }
+
+    func testBipodIsRifleOnly() {
+        let s = SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
+        XCTAssertNil(s.fitted(to: .iris).bipodLength)
+        XCTAssertEqual(s.fitted(to: .ring).bipodLength, 30)
+        XCTAssertEqual(s.fitted(to: .both).bipodLength, 30)
+    }
+
+    func testApplyStoresBipodOnEntry() {
+        let e = addEntry(nil, on: day(1), shots: 10)
+        SightSettings(bipodLength: 41.7).apply(to: e)
+        XCTAssertEqual(e.bipodLength, 41.5)
+        XCTAssertEqual(SightSettings(entry: e).bipodLength, 41.5)
     }
 }

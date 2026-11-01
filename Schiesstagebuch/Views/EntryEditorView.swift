@@ -24,6 +24,7 @@ struct EntryEditorView: View {
     @State private var mode: ShotEntryMode = .total
     @State private var sight = SightSettings()
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
+    @AppStorage(SightSettings.showKey) private var showSport = false
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
     @State private var sighters = 0
     @State private var scored = 0
@@ -159,7 +160,9 @@ struct EntryEditorView: View {
                     }
                 }
 
-                SightSection(sight: $sight, aperture: SightSettings.aperture(for: weapon?.category))
+                if showSport {
+                    SightSection(sight: $sight, aperture: SightSettings.aperture(for: weapon?.category))
+                }
 
                 Section("Bemerkungen") {
                     TextField("Notizen", text: $notes, axis: .vertical).lineLimit(3...8)
@@ -351,7 +354,8 @@ struct EntryEditorView: View {
             target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
         }
         target.result = result; target.notes = notes
-        sight.fitted(to: SightSettings.aperture(for: weapon?.category)).apply(to: target)
+        // While the sport-shooter fields are hidden, values already stored stay untouched.
+        if showSport { sight.fitted(to: SightSettings.aperture(for: weapon?.category)).apply(to: target) }
         target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
         target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
 

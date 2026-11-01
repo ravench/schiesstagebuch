@@ -216,6 +216,8 @@ final class Entry {
     var ringSize: Double?
     /// Iris on the shooting glasses, used with pistols.
     var irisSize: Double?
+    /// Bipod length in cm, rifles only.
+    var bipodLength: Double?
     /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
     var shotValuesText: String = ""
     var notes: String = ""

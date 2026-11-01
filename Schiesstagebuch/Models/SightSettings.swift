@@ -1,6 +1,6 @@
 import Foundation
 
-/// Optional sight and shooting-glasses settings used for an entry.
+/// Optional sport-shooter settings for an entry: sight, shooting glasses and bipod.
 struct SightSettings: Equatable {
     /// Filter colour key from `FilterColor.all`; "" means no filter (the default).
     var filter: String = ""
@@ -9,6 +9,11 @@ struct SightSettings: Equatable {
     var ringSize: Double?
     /// Iris on the glasses; pistols only (they have no ring on the weapon).
     var irisSize: Double?
+    /// Bipod length in cm; rifles only.
+    var bipodLength: Double?
+
+    /// Settings key for showing the sport-shooter fields; off by default.
+    static let showKey = "showSportShooterSettings"
 
     /// Which aperture a weapon category uses.
     enum Aperture { case ring, iris, both }
@@ -31,23 +36,35 @@ struct SightSettings: Equatable {
         (min(max(v, range.lowerBound), range.upperBound) * 10).rounded() / 10
     }
 
-    var isEmpty: Bool { filter.isEmpty && diopter == nil && ringSize == nil && irisSize == nil }
+    /// Bipod slider range in cm, in steps of 0.5.
+    static let bipodRange: ClosedRange<Double> = 5...60
+    static let bipodStep = 0.5
 
-    init(filter: String = "", diopter: Double? = nil, ringSize: Double? = nil, irisSize: Double? = nil) {
+    /// Clamps to 5…60 cm and rounds to the nearest 0.5 cm.
+    static func clampBipod(_ v: Double) -> Double {
+        (min(max(v, bipodRange.lowerBound), bipodRange.upperBound) * 2).rounded() / 2
+    }
+
+    var isEmpty: Bool { filter.isEmpty && diopter == nil && ringSize == nil && irisSize == nil && bipodLength == nil }
+
+    init(filter: String = "", diopter: Double? = nil, ringSize: Double? = nil, irisSize: Double? = nil,
+         bipodLength: Double? = nil) {
         self.filter = filter
         self.diopter = diopter.map(Self.clamp)
         self.ringSize = ringSize.map(Self.clamp)
         self.irisSize = irisSize.map(Self.clamp)
+        self.bipodLength = bipodLength.map(Self.clampBipod)
     }
 
     init(entry: Entry) {
-        self.init(filter: entry.filterColor, diopter: entry.diopter, ringSize: entry.ringSize, irisSize: entry.irisSize)
+        self.init(filter: entry.filterColor, diopter: entry.diopter, ringSize: entry.ringSize, irisSize: entry.irisSize,
+                  bipodLength: entry.bipodLength)
     }
 
     /// Drops the aperture that doesn't exist for this kind of weapon.
     func fitted(to aperture: Aperture) -> SightSettings {
         var s = self
-        if aperture == .iris { s.ringSize = nil }
+        if aperture == .iris { s.ringSize = nil; s.bipodLength = nil }
         if aperture == .ring { s.irisSize = nil }
         return s
     }
@@ -57,6 +74,7 @@ struct SightSettings: Equatable {
         entry.diopter = diopter.map(Self.clamp)
         entry.ringSize = ringSize.map(Self.clamp)
         entry.irisSize = irisSize.map(Self.clamp)
+        entry.bipodLength = bipodLength.map(Self.clampBipod)
     }
 
     /// Settings of the newest entry with this weapon that recorded any; nil if none.

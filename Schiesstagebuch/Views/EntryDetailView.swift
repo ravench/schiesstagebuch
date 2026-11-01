@@ -4,6 +4,7 @@ struct EntryDetailView: View {
     let entry: Entry
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @AppStorage(SightSettings.showKey) private var showSport = false
     @State private var editing = false
     @State private var confirmDelete = false
 
@@ -63,12 +64,13 @@ struct EntryDetailView: View {
             }
 
             let sight = SightSettings(entry: entry)
-            if !sight.isEmpty {
-                Section("Visier & Brille") {
+            if showSport, !sight.isEmpty {
+                Section("Einstellungen für Sportschützen") {
                     row("Filter", FilterColor.title(sight.filter))
                     row("Iris (Brille)", sight.irisSize.map(SightSettings.format))
                     row("Diopter", sight.diopter.map(SightSettings.format))
                     row("Ringgrösse", sight.ringSize.map(SightSettings.format))
+                    row("Zweibein", sight.bipodLength.map { "\(SightSettings.format($0)) cm" })
                 }
             }
 
