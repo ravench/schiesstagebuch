@@ -86,8 +86,21 @@ final class Weapon: ArchivableItem {
     var cleaningIntervalDays: Int = 0
     var serviceIntervalShots: Int = 0
     var serviceIntervalDays: Int = 0
+    /// When the day interval starts: "" = app default, else a `DayCounting` raw value.
+    var dayCountingRaw: String = ""
+    /// Optional serial number (Waffennummer).
+    var serialNumber: String = ""
 
     init(name: String) { self.name = name }
+
+    /// Key of the setting that shows serial numbers in weapon pickers (on by default).
+    static let showSerialKey = "showSerialInPicker"
+
+    /// The serial number to show next to the name in a picker, if any.
+    func pickerSerial(show: Bool) -> String? {
+        let serial = serialNumber.trimmingCharacters(in: .whitespaces)
+        return show && !serial.isEmpty ? serial : nil
+    }
 
     var category: WeaponCategory {
         get { WeaponCategory(rawValue: categoryRaw) ?? .other }
@@ -188,9 +201,16 @@ final class Entry {
     var date: Date = Date.now
     /// Anlass (e.g. Training, Feldschiessen)
     var event: String = ""
+    /// All shots fired, sighters included.
     var shotCount: Int = 0
+    /// Probeschüsse, when the user splits the count; nil = only a total was entered.
+    var sighterCount: Int?
     /// Free text so "50", "96/100" or "Kranz" all work.
     var result: String = ""
+    /// Highest possible score, e.g. 100; nil when not entered.
+    var maxPoints: Double?
+    /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
+    var shotValuesText: String = ""
     var notes: String = ""
     var createdAt: Date = Date.now
     /// Set for entries imported from the old Schusszähler app, so re-importing skips them.
@@ -219,6 +239,9 @@ final class Entry {
         self.result = result
         self.notes = notes
     }
+
+    /// Wertungsschüsse, when the count is split.
+    var scoredCount: Int? { sighterCount.map { max(0, shotCount - $0) } }
 
     var sortedPhotos: [EntryPhoto] { (photos ?? []).sorted { $0.position < $1.position } }
     var year: Int { Calendar.current.component(.year, from: date) }

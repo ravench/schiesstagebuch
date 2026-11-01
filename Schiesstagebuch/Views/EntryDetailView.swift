@@ -26,10 +26,33 @@ struct EntryDetailView: View {
             Section {
                 HStack(spacing: 0) {
                     metric("Schüsse", entry.shotCount.formatted())
+                    if let sighters = entry.sighterCount, let scored = entry.scoredCount {
+                        Divider()
+                        metric("Probe", sighters.formatted())
+                        Divider()
+                        metric("Wertung", scored.formatted())
+                    }
                     Divider()
                     metric("Resultat", entry.result.isEmpty ? "–" : entry.result)
                 }
                 .frame(height: 64)
+            }
+
+            let score = entry.score
+            if score.percentage != nil || score.meanPerShot != nil {
+                Section("Auswertung") { ScoreSummary(score: score) }
+            }
+            if !score.passes.isEmpty {
+                Section("Einzelschüsse") {
+                    ForEach(Array(score.passes.enumerated()), id: \.offset) { i, pass in
+                        HStack {
+                            Text("Passe \(i + 1)").foregroundStyle(.secondary)
+                            Text(pass.map(ScoreFormat.points).joined(separator: " ")).monospacedDigit()
+                            Spacer()
+                            Text(ScoreFormat.points(pass.reduce(0, +))).monospacedDigit().bold()
+                        }
+                    }
+                }
             }
 
             Section("Ausrüstung") {

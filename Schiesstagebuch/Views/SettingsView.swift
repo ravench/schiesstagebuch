@@ -11,6 +11,10 @@ struct SettingsView: View {
     @State private var importing = false
     @State private var importingLegacy = false
     @State private var message: String?
+    @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
+    @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
+    @Query private var weapons: [Weapon]
+    @AppStorage(Weapon.showSerialKey) private var showSerial = true
 
     var body: some View {
         NavigationStack {
@@ -22,6 +26,33 @@ struct SettingsView: View {
                     NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "mappin.and.ellipse") }
                 } header: {
                     Text("Stammdaten")
+                }
+
+                Section {
+                    Picker(selection: $defaultMode) {
+                        ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
+                    } label: {
+                        Label("Schüsse erfassen als", systemImage: "list.number")
+                    }
+                    Toggle(isOn: $showSerial) {
+                        Label("Seriennummer in der Waffenauswahl", systemImage: "number")
+                    }
+                } header: {
+                    Text("Erfassung")
+                } footer: {
+                    Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
+                }
+
+                Section {
+                    Picker(selection: $dayCounting) {
+                        ForEach(DayCounting.allCases) { Text($0.title).tag($0) }
+                    } label: {
+                        Label("Tage zählen", systemImage: "calendar.badge.clock")
+                    }
+                } header: {
+                    Text("Erinnerungen")
+                } footer: {
+                    Text("Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.")
                 }
 
                 Section {
@@ -43,6 +74,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Einstellungen")
+            .onChange(of: dayCounting) { weapons.forEach { MaintenanceNotifier.refresh($0) } }
             .fileExporter(isPresented: Binding(get: { exportDoc != nil }, set: { if !$0 { exportDoc = nil } }),
                           document: exportDoc, contentType: exportType, defaultFilename: exportName) { result in
                 if case .failure(let e) = result { message = e.localizedDescription }

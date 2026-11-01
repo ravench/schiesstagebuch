@@ -65,6 +65,9 @@ struct WeaponRow: View {
             if !weapon.caliberSummary.isEmpty {
                 Text(weapon.caliberSummary).font(.subheadline).foregroundStyle(.secondary)
             }
+            if !weapon.serialNumber.isEmpty {
+                Text("\("Nr.".loc) \(weapon.serialNumber)").font(.caption).foregroundStyle(.secondary)
+            }
             HStack(spacing: 8) {
                 ForEach(MaintenanceKind.allCases) { kind in
                     let s = weapon.status(kind)
@@ -204,6 +207,7 @@ struct WeaponEditorView: View {
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var allCalibers: [Caliber]
 
     @State private var name = ""
+    @State private var serialNumber = ""
     @State private var category: WeaponCategory = .other
     @State private var calibers: Set<Caliber> = []
     @State private var defaultCaliber: Caliber?
@@ -212,6 +216,7 @@ struct WeaponEditorView: View {
     @State private var cleaningDays = 0
     @State private var serviceShots = 0
     @State private var serviceDays = 0
+    @State private var dayCountingRaw = ""
     @State private var choosingCalibers = false
     @State private var confirmDelete = false
     @State private var didLoad = false
@@ -223,6 +228,9 @@ struct WeaponEditorView: View {
             Form {
                 Section {
                     TextField("Name, z. B. SIG P210", text: $name)
+                    TextField("Seriennummer (optional)", text: $serialNumber)
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
                     Picker(selection: $category) {
                         ForEach(WeaponCategory.allCases) { c in
                             HStack(spacing: 12) {
@@ -267,6 +275,15 @@ struct WeaponEditorView: View {
                 intervalSection(.cleaning, shots: $cleaningShots, days: $cleaningDays)
                 intervalSection(.service, shots: $serviceShots, days: $serviceDays)
 
+                Section {
+                    Picker("Tage zählen", selection: $dayCountingRaw) {
+                        Text(String(localized: "Standard (\(DayCounting.appDefault.title))")).tag("")
+                        ForEach(DayCounting.allCases) { Text($0.title).tag($0.rawValue) }
+                    }
+                } footer: {
+                    Text("Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.")
+                }
+
                 if weapon != nil {
                     Section {
                         Toggle("Archiviert", isOn: $isArchived)
@@ -307,12 +324,10 @@ struct WeaponEditorView: View {
 
     private func intervalSection(_ kind: MaintenanceKind, shots: Binding<Int>, days: Binding<Int>) -> some View {
         Section {
-            Stepper(value: shots, in: 0...20_000, step: kind == .cleaning ? 50 : 500) {
-                LabeledContent("Nach Schüssen", value: shots.wrappedValue == 0 ? "Aus".loc : shots.wrappedValue.formatted())
-            }
-            Stepper(value: days, in: 0...730, step: kind == .cleaning ? 7 : 30) {
-                LabeledContent("Nach Tagen", value: days.wrappedValue == 0 ? "Aus".loc : days.wrappedValue.formatted())
-            }
+            NumberStepperRow(title: "Nach Schüssen", value: shots, range: 0...20_000,
+                             step: kind == .cleaning ? 50 : 500, zeroLabel: "Aus")
+            NumberStepperRow(title: "Nach Tagen", value: days, range: 0...730,
+                             step: kind == .cleaning ? 7 : 30, zeroLabel: "Aus")
         } header: {
             Label("Erinnerung \(kind.title)", systemImage: kind.icon)
         } footer: {
@@ -323,24 +338,28 @@ struct WeaponEditorView: View {
     private func load() {
         guard !didLoad, let weapon else { didLoad = true; return }
         name = weapon.name
+        serialNumber = weapon.serialNumber
         category = weapon.category
         calibers = Set(weapon.calibers ?? [])
         defaultCaliber = weapon.defaultCaliber
         isArchived = weapon.isArchived
         cleaningShots = weapon.cleaningIntervalShots; cleaningDays = weapon.cleaningIntervalDays
         serviceShots = weapon.serviceIntervalShots; serviceDays = weapon.serviceIntervalDays
+        dayCountingRaw = weapon.dayCountingRaw
         didLoad = true
     }
 
     private func save() {
         let target = weapon ?? Weapon(name: "")
         target.name = name.trimmingCharacters(in: .whitespaces)
+        target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
         target.category = category
         target.calibers = Array(calibers)
         target.defaultCaliber = defaultCaliber.flatMap { calibers.contains($0) ? $0 : nil }
         target.isArchived = isArchived
         target.cleaningIntervalShots = cleaningShots; target.cleaningIntervalDays = cleaningDays
         target.serviceIntervalShots = serviceShots; target.serviceIntervalDays = serviceDays
+        target.dayCountingRaw = dayCountingRaw
         if weapon == nil { context.insert(target); onCreate?(target) }
         try? context.save()
         if cleaningShots + cleaningDays + serviceShots + serviceDays > 0 {

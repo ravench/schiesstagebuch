@@ -43,6 +43,8 @@ enum Backup {
         var caliberIDs: [UUID]; var defaultCaliberID: UUID?
         var cleaningIntervalShots: Int; var cleaningIntervalDays: Int
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
+        var dayCounting: String?
+        var serialNumber: String?
     }
     struct AmmunitionDTO: Codable { var id: UUID; var name: String; var caliberID: UUID?; var isArchived: Bool }
     struct LotDTO: Codable { var id: UUID; var ammunitionID: UUID?; var number: String; var notes: String; var isArchived: Bool; var createdAt: Date }
@@ -55,6 +57,9 @@ enum Backup {
         var id: UUID; var date: Date; var event: String; var shotCount: Int; var result: String; var notes: String
         var weaponID: UUID?; var caliberID: UUID?; var rangeID: UUID?; var ammunitionID: UUID?
         var lotID: UUID?
+        var sighterCount: Int?
+        var maxPoints: Double?
+        var shotValuesText: String?
         var photos: [Data]
     }
 
@@ -71,7 +76,8 @@ enum Backup {
                 .init(id: $0.id, name: $0.name, isArchived: $0.isArchived, category: $0.categoryRaw,
                       caliberIDs: ($0.calibers ?? []).map(\.id), defaultCaliberID: $0.defaultCaliber?.id,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
-                      serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays)
+                      serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
+                      dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber)
             },
             ammunition: try all(Ammunition.self, context).map { .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived) },
             ranges: try all(ShootingRange.self, context).map {
@@ -82,7 +88,8 @@ enum Backup {
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, event: $0.event, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, rangeID: $0.range?.id, ammunitionID: $0.ammunition?.id,
-                      lotID: $0.lot?.id,
+                      lotID: $0.lot?.id, sighterCount: $0.sighterCount,
+                      maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
                       photos: $0.sortedPhotos.compactMap(\.imageData))
             },
             lots: try all(AmmoLot.self, context).map {
@@ -124,6 +131,8 @@ enum Backup {
             w.defaultCaliber = d.defaultCaliberID.flatMap { caliberMap[$0] }
             w.cleaningIntervalShots = d.cleaningIntervalShots; w.cleaningIntervalDays = d.cleaningIntervalDays
             w.serviceIntervalShots = d.serviceIntervalShots; w.serviceIntervalDays = d.serviceIntervalDays
+            w.dayCountingRaw = d.dayCounting ?? ""
+            w.serialNumber = d.serialNumber ?? ""
             context.insert(w); weapons[d.id] = w
         }
 
@@ -166,6 +175,9 @@ enum Backup {
             e.id = d.id
             context.insert(e)
             e.lot = d.lotID.flatMap { lots[$0] }
+            e.sighterCount = d.sighterCount
+            e.maxPoints = d.maxPoints
+            e.shotValuesText = d.shotValuesText ?? ""
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
         }
@@ -184,12 +196,30 @@ enum Backup {
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        var lines = [["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los", "Schusszahl", "Resultat", "Bemerkungen"]
-            .map(\.loc).joined(separator: ";")]
+        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los",
+                                "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
+                                "Prozent", "Einzelschüsse", "Bemerkungen"]
+        var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
         for e in entries {
-            lines.append([df.string(from: e.date), e.range?.name ?? "", e.range?.place ?? "", e.event,
-                          e.weapon?.name ?? "", e.caliber?.name ?? "", e.ammunition?.name ?? "",
-                          e.lot?.number ?? "", String(e.shotCount), e.result, e.notes].map(field).joined(separator: ";"))
+            let score = e.score
+            var cols: [String] = []
+            cols.append(df.string(from: e.date))
+            cols.append(e.range?.name ?? "")
+            cols.append(e.range?.place ?? "")
+            cols.append(e.event)
+            cols.append(e.weapon?.name ?? "")
+            cols.append(e.caliber?.name ?? "")
+            cols.append(e.ammunition?.name ?? "")
+            cols.append(e.lot?.number ?? "")
+            cols.append(String(e.shotCount))
+            cols.append(e.sighterCount.map { String($0) } ?? "")
+            cols.append(e.scoredCount.map { String($0) } ?? "")
+            cols.append(e.result)
+            cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
+            cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
+            cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
+            cols.append(e.notes)
+            lines.append(cols.map(field).joined(separator: ";"))
         }
         return Data(("\u{FEFF}" + lines.joined(separator: "\r\n")).utf8)
     }
