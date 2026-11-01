@@ -71,4 +71,12 @@ final class EntryModelTests: ModelTestCase {
         XCTAssertTrue(e.matches("2391"))
         XCTAssertFalse(e.matches("9999"))
     }
+
+    func testSerialNumberShownInPickerOnlyWhenEnabledAndSet() {
+        let w = Weapon(name: "P210"); context.insert(w)
+        XCTAssertNil(w.pickerSerial(show: true), "no serial entered")
+        w.serialNumber = "  P-123456 "
+        XCTAssertEqual(w.pickerSerial(show: true), "P-123456")
+        XCTAssertNil(w.pickerSerial(show: false))
+    }
 }

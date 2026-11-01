@@ -65,6 +65,9 @@ struct WeaponRow: View {
             if !weapon.caliberSummary.isEmpty {
                 Text(weapon.caliberSummary).font(.subheadline).foregroundStyle(.secondary)
             }
+            if !weapon.serialNumber.isEmpty {
+                Text("\("Nr.".loc) \(weapon.serialNumber)").font(.caption).foregroundStyle(.secondary)
+            }
             HStack(spacing: 8) {
                 ForEach(MaintenanceKind.allCases) { kind in
                     let s = weapon.status(kind)
@@ -204,6 +207,7 @@ struct WeaponEditorView: View {
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var allCalibers: [Caliber]
 
     @State private var name = ""
+    @State private var serialNumber = ""
     @State private var category: WeaponCategory = .other
     @State private var calibers: Set<Caliber> = []
     @State private var defaultCaliber: Caliber?
@@ -224,6 +228,9 @@ struct WeaponEditorView: View {
             Form {
                 Section {
                     TextField("Name, z. B. SIG P210", text: $name)
+                    TextField("Seriennummer (optional)", text: $serialNumber)
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
                     Picker(selection: $category) {
                         ForEach(WeaponCategory.allCases) { c in
                             HStack(spacing: 12) {
@@ -331,6 +338,7 @@ struct WeaponEditorView: View {
     private func load() {
         guard !didLoad, let weapon else { didLoad = true; return }
         name = weapon.name
+        serialNumber = weapon.serialNumber
         category = weapon.category
         calibers = Set(weapon.calibers ?? [])
         defaultCaliber = weapon.defaultCaliber
@@ -344,6 +352,7 @@ struct WeaponEditorView: View {
     private func save() {
         let target = weapon ?? Weapon(name: "")
         target.name = name.trimmingCharacters(in: .whitespaces)
+        target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
         target.category = category
         target.calibers = Array(calibers)
         target.defaultCaliber = defaultCaliber.flatMap { calibers.contains($0) ? $0 : nil }

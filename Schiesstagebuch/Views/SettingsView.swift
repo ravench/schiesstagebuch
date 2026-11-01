@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
     @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
     @Query private var weapons: [Weapon]
+    @AppStorage(Weapon.showSerialKey) private var showSerial = true
 
     var body: some View {
         NavigationStack {
@@ -32,6 +33,9 @@ struct SettingsView: View {
                         ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
                     } label: {
                         Label("Schüsse erfassen als", systemImage: "list.number")
+                    }
+                    Toggle(isOn: $showSerial) {
+                        Label("Seriennummer in der Waffenauswahl", systemImage: "number")
                     }
                 } header: {
                     Text("Erfassung")

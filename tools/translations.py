@@ -281,4 +281,7 @@ T = {
     "Standard (%@)": ("Default (%@)", "Par défaut (%@)", "Predefinito (%@)"),
     "Tage zählen": ("Count days", "Compter les jours", "Conta i giorni"),
     "Tage zählen ab der nächsten Nutzung": ("Days count from the next use", "Les jours comptent dès la prochaine utilisation", "I giorni contano dal prossimo utilizzo"),
+    "Nr.": ("No.", "N°", "N."),
+    "Seriennummer (optional)": ("Serial number (optional)", "Numéro de série (facultatif)", "Numero di serie (facoltativo)"),
+    "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
 }

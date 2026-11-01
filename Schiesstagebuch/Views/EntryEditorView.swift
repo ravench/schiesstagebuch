@@ -22,6 +22,7 @@ struct EntryEditorView: View {
     @State private var lot: AmmoLot?
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
+    @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
     @State private var sighters = 0
     @State private var scored = 0
@@ -66,7 +67,8 @@ struct EntryEditorView: View {
                 }
 
                 Section {
-                    pickerRow("Waffe", selection: $weapon, items: weapons, label: \.name, add: .weapon)
+                    pickerRow("Waffe", selection: $weapon, items: weapons, label: \.name, add: .weapon,
+                              subtitle: { $0.pickerSerial(show: showSerial) })
                     if let weapon, !(weapon.calibers ?? []).isEmpty {
                         Picker("Kaliber", selection: $caliber) {
                             ForEach(weapon.orderedCalibers) { c in
@@ -215,11 +217,14 @@ struct EntryEditorView: View {
     }
 
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
-                                               label: KeyPath<T, String>, add: QuickAdd) -> some View {
+                                               label: KeyPath<T, String>, add: QuickAdd,
+                                               subtitle: @escaping (T) -> String? = { _ in nil }) -> some View {
         HStack {
             Picker(title.loc, selection: selection) {
                 Text("–").tag(T?.none)
-                ForEach(items) { Text($0[keyPath: label]).tag(Optional($0)) }
+                ForEach(items) { item in
+                    PickerOption(title: item[keyPath: label], subtitle: subtitle(item)).tag(Optional(item))
+                }
                 // Keep an archived / non-matching selection visible when editing old entries.
                 if let current = selection.wrappedValue, !items.contains(current) {
                     Text(current[keyPath: label]).tag(Optional(current))
