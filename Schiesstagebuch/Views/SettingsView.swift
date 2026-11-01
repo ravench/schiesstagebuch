@@ -407,12 +407,23 @@ struct RangeEditorView: View {
     @State private var place = ""
     @State private var location: PickedLocation?
     @State private var isArchived = false
+    @State private var bearing: Double?
+    @State private var altitude: Double?
 
     var body: some View {
         NavigationStack {
             Form {
                 TextField("Name, z. B. Albisgüetli", text: $name)
                 PlaceField(place: $place, location: $location)
+                Section {
+                    RangeBearingRow(bearing: $bearing)
+                    LabeledContent("Höhe") {
+                        TextField("m ü. M.", value: $altitude, format: .number.precision(.fractionLength(0)))
+                            .keyboardType(.numberPad).multilineTextAlignment(.trailing)
+                    }
+                } footer: {
+                    Text("Optional. Mit Ort und Schussrichtung schlägt die App vor, woher die Sonne kommt.")
+                }
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
             .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)
@@ -427,6 +438,8 @@ struct RangeEditorView: View {
                         target.address = location?.address ?? ""
                         target.latitude = location?.latitude
                         target.longitude = location?.longitude
+                        target.shootingBearing = bearing.map(Compass.normalized)
+                        target.altitude = altitude
                         target.isArchived = isArchived
                         if range == nil { context.insert(target); onCreate?(target) }
                         try? context.save()
@@ -438,6 +451,7 @@ struct RangeEditorView: View {
             .onAppear {
                 name = range?.name ?? ""; place = range?.place ?? ""; isArchived = range?.isArchived ?? false
                 location = range.flatMap(PickedLocation.init(range:))
+                bearing = range?.shootingBearing; altitude = range?.altitude
             }
         }
         .presentationDetents([.medium, .large])
