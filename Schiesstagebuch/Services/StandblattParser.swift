@@ -499,7 +499,7 @@ enum StandblattParser {
     }
 
     private static let junk = try! NSRegularExpression(
-        pattern: #"gesellschaft|stadt|name|standard|kar\b|exemplar|benutzer|^\d[\d\s()]*$|^a10+$|^[□☐☑✓xX\s]+$|57\s*/\s*0"#,
+        pattern: #"sch[üu]tzen|der stadt|name|standard|kar\b|exemplar|benutzer|^\d[\d\s()]*$|^a10+$|^[□☐☑✓xX\s]+$|57\s*/\s*0"#,
         options: .caseInsensitive)
     private static let detailHint = try! NSRegularExpression(
         pattern: #"\b\d+\s*(EF|SF)\b|stich|waffen|sek\.|schuss|meisterschaft|match|probe|cible|coups"#,
