@@ -95,7 +95,7 @@ struct CaliberListView: View {
     @State private var adding = false
 
     private var visible: [Caliber] {
-        calibers.filter { (showArchived || !$0.isArchived) && (search.isEmpty || $0.name.localizedCaseInsensitiveContains(search)) }
+        calibers.filter { (showArchived || !$0.isArchived) && $0.matches(search) }
             .sorted { a, b in
                 // Calibres in use first, then alphabetical.
                 let ua = !(a.weapons ?? []).isEmpty, ub = !(b.weapons ?? []).isEmpty
@@ -110,6 +110,9 @@ struct CaliberListView: View {
                     CartridgeView(caliber: c).frame(width: 20, height: 34)
                     VStack(alignment: .leading) {
                         Text(c.name).foregroundStyle(c.isArchived ? .secondary : .primary)
+                        if !c.aliasSummary.isEmpty {
+                            Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
+                        }
                         let weapons = (c.weapons ?? []).map(\.name).sorted()
                         if !weapons.isEmpty { Text(weapons.joined(separator: ", ")).font(.caption).foregroundStyle(.secondary) }
                     }

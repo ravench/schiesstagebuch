@@ -27,6 +27,8 @@ enum CaliberCatalog {
         let name: String
         let category: String
         let aliases: [String]
+        /// Printable alternative names, e.g. "9 mm Luger" for 9x19 mm.
+        let displayAliases: [String]?
         let kind: String
         let outline: Outline
     }
@@ -48,7 +50,11 @@ enum CaliberCatalog {
     static func match(_ text: String) -> Item? {
         let key = normalizedAlias(text)
         guard !key.isEmpty else { return nil }
-        if let exact = items.first(where: { normalizedAlias($0.name) == key || $0.aliases.contains { normalizedAlias($0) == key } }) {
+        if let exact = items.first(where: {
+            normalizedAlias($0.name) == key
+                || $0.aliases.contains { normalizedAlias($0) == key }
+                || ($0.displayAliases ?? []).contains { normalizedAlias($0) == key }
+        }) {
             return exact
         }
         return items.first { normalizedAlias($0.name).hasPrefix(key) }

@@ -146,3 +146,24 @@ CATALOGUE = [
         pellet("5.5 mm Diabolo (.22)", 5.5, 6.5, ["5.5", "5.5mm"]),
     ]),
 ]
+
+# Printable alternative names (max 2), shown in the app's calibre lists and search,
+# and on the calibre poster. Never alias calibres that are separate cartridges:
+# .223 Rem / 5.56 NATO / GP 90 and .308 Win / 7.62 NATO differ in loading and are
+# not necessarily interchangeable, so each stays its own entry.
+DISPLAY_ALIASES = {
+    ".22 LR": [".22 Long Rifle", "KK"],
+    ".22 WMR": [".22 Magnum"],
+    "7.65 mm Browning (.32 ACP)": [".32 ACP", ".32 Auto"],
+    "7.65 mm Parabellum": [".30 Luger"],
+    "9 mm Browning kurz (.380 ACP)": [".380 ACP", ".380 Auto"],
+    "9x19 mm": ["9 mm Luger", "9 mm Para"],
+    ".38 Special": [".38 Spl"],
+    ".45 ACP": [".45 Auto", "11,43 mm"],
+    ".45 Colt": [".45 Long Colt"],
+    ".30-06 Springfield": ["7.62x63 mm"],
+    ".300 AAC Blackout": [".300 BLK", "7.62x35 mm"],
+    "7.5x55 mm Swiss (GP 11)": ["GP 11", "7.5 mm Swiss"],
+    "8x57 mm IS": ["8 mm Mauser"],
+    ".50 BMG": ["12,7x99 mm NATO"],
+}
