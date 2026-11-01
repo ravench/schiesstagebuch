@@ -183,6 +183,10 @@ final class ShootingRange: ArchivableItem {
     var address: String = ""
     var latitude: Double?
     var longitude: Double?
+    /// Direction from the firing line to the targets, degrees clockwise from north; nil when not set.
+    var shootingBearing: Double?
+    /// Height above sea level in metres; nil when not set.
+    var altitude: Double?
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 
