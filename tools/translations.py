@@ -248,4 +248,7 @@ T = {
     "Losnummern": ("Lot numbers", "Numéros de lot", "Numeri di lotto"),
     "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": ("Optional. You can pick the lot when logging an entry.", "Facultatif. Tu peux choisir le lot en saisissant une entrée.", "Facoltativo. Puoi scegliere il lotto quando registri una voce."),
     "Pro Los": ("By lot", "Par lot", "Per lotto"),
+    "App-Icon": ("App Icon", "Icône de l’app", "Icona dell’app"),
+    "Offenes Tagebuch": ("Open journal", "Journal ouvert", "Diario aperto"),
+    "Gebundenes Tagebuch": ("Hardcover journal", "Journal relié", "Diario rilegato"),
 }
