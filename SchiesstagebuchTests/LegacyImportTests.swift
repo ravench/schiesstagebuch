@@ -63,3 +63,29 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "Unknown thing"), .other)
     }
 }
+
+final class LegacyImportCandidatesTests: XCTestCase {
+    private var folder: URL!
+
+    override func setUpWithError() throws {
+        folder = FileManager.default.temporaryDirectory.appending(path: "Candidates-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: folder.appending(path: "Schusszähler-Export"), withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: folder.appending(path: "Backups"), withIntermediateDirectories: true)
+        for name in ["data.db", "ShootCounter-Export.tsv", "Schusszähler-Export/old.TXT", "Backups/Schiesstagebuch.json", "photo.jpg", ".hidden.db"] {
+            try Data().write(to: folder.appending(path: name))
+        }
+    }
+
+    override func tearDownWithError() throws {
+        try? FileManager.default.removeItem(at: folder)
+    }
+
+    func testFindsExportFilesInFolderAndSubfolders() {
+        let names = LegacyImport.candidates(in: folder).map(\.lastPathComponent)
+        XCTAssertEqual(names, ["data.db", "old.TXT", "ShootCounter-Export.tsv"])
+    }
+
+    func testMissingFolderGivesNothing() {
+        XCTAssertTrue(LegacyImport.candidates(in: folder.appending(path: "nope")).isEmpty)
+    }
+}
