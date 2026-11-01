@@ -40,6 +40,9 @@ line_length:
   error: 220
   ignores_urls: true
   ignores_interpolated_strings: true
+  # Long UI texts are localisation keys and can't be wrapped without changing the key.
+  excluded_lines_patterns:
+    - '"[^"]{80,}"'
 
 file_length:
   warning: 700
