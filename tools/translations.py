@@ -53,10 +53,6 @@ T = {
     "Bezeichnung, z. B. GP 11 oder Geco FMJ 124gr": (
         "Name, e.g. GP 11 or Geco FMJ 124gr", "Désignation, p. ex. GP 11 ou Geco FMJ 124gr", "Denominazione, ad es. GP 11 o Geco FMJ 124gr"),
     "Darstellung": ("View", "Affichage", "Visualizzazione"),
-    "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt.": (
-        "The backup contains all entries, photos and master data. Restoring never duplicates existing entries.",
-        "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique jamais les entrées existantes.",
-        "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica mai le voci esistenti."),
     "Datei wählen …": ("Choose file …", "Choisir un fichier …", "Scegli file …"),
     "Daten": ("Data", "Données", "Dati"),
     "Datensicherung": ("Backup", "Sauvegarde", "Backup"),
@@ -329,6 +325,7 @@ T = {
         "Repeated displays (not counted)", "Affichages répétés (non comptés)", "Visualizzazioni ripetute (non contate)"),
     "Zehnerwertung": ("Tens scoring (A10)", "Valeur sur 10 (A10)", "Punteggio su 10 (A10)"),
     "Übernehmen": ("Apply", "Reprendre", "Applica"),
+    "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.": ("The backup contains all entries, photos and master data. Restoring never duplicates existing entries. The last 10 backups are also kept in the Files app under On My iPhone › Schiesstagebuch › Backups.", "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique pas les entrées existantes. Les 10 dernières sauvegardes sont aussi conservées dans l'app Fichiers sous Sur mon iPhone › Schiesstagebuch › Backups.", "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica le voci esistenti. Gli ultimi 10 backup restano anche nell'app File in Sul mio iPhone › Schiesstagebuch › Backups."),
     "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
     "App von %@": ("App by %@", "App de %@", "App di %@"),
     "In «%@» von %@ unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": ("In “%@” by %@, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here.", "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici.", "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."),
@@ -353,4 +350,5 @@ T = {
     "Filter bearbeiten": ("Edit filter", "Modifier le filtre", "Modifica filtro"),
     "Zweibein (cm)": ("Bipod (cm)", "Bipied (cm)", "Bipiede (cm)"),
     "Iris (Brille)": ("Iris (glasses)", "Iris (lunettes)", "Iride (occhiali)"),
+    "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
 }
