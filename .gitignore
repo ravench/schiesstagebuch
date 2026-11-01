@@ -5,3 +5,4 @@ DerivedData/
 build/
 Schiesstagebuch/Schiesstagebuch.entitlements
 Schiesstagebuch/Info.plist
+__pycache__/
