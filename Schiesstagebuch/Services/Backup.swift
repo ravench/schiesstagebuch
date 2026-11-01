@@ -35,6 +35,8 @@ enum Backup {
         var entries: [EntryDTO]
         /// Optional so backups from before lot numbers still load.
         var lots: [LotDTO]?
+        /// Optional so backups from before the licence card still load.
+        var licenceCards: [LicenceCardDTO]?
     }
 
     struct CaliberDTO: Codable { var id: UUID; var name: String; var category: String; var isArchived: Bool; var catalogID: String? }
@@ -52,6 +54,7 @@ enum Backup {
         var id: UUID; var name: String; var place: String; var isArchived: Bool
         var address: String?; var latitude: Double?; var longitude: Double?
     }
+    struct LicenceCardDTO: Codable { var id: UUID; var holderName: String; var licenceNumber: String; var updatedAt: Date }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
     struct EntryDTO: Codable {
         var id: UUID; var date: Date; var event: String; var shotCount: Int; var result: String; var notes: String
@@ -95,6 +98,9 @@ enum Backup {
             lots: try all(AmmoLot.self, context).map {
                 .init(id: $0.id, ammunitionID: $0.ammunition?.id, number: $0.number, notes: $0.notes,
                       isArchived: $0.isArchived, createdAt: $0.createdAt)
+            },
+            licenceCards: try all(LicenceCard.self, context).map {
+                .init(id: $0.id, holderName: $0.holderName, licenceNumber: $0.licenceNumber, updatedAt: $0.updatedAt)
             })
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -163,6 +169,13 @@ enum Backup {
                                       weapon: d.weaponID.flatMap { weapons[$0] })
             r.id = d.id
             context.insert(r)
+        }
+
+        let existingCards = Set(try all(LicenceCard.self, context).map(\.id))
+        for d in file.licenceCards ?? [] where !existingCards.contains(d.id) {
+            let card = LicenceCard(holderName: d.holderName, licenceNumber: d.licenceNumber)
+            card.id = d.id; card.updatedAt = d.updatedAt
+            context.insert(card)
         }
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
