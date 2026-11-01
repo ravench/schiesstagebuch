@@ -240,15 +240,7 @@ struct EntryEditorView: View {
     private var passShotCount: Int { passes.map { Score.parseShots($0.text).count }.reduce(0, +) }
 
     private func countRow(_ title: String, value: Binding<Int>, step: Int) -> some View {
-        HStack {
-            Text(title.loc)
-            Spacer()
-            TextField("0", value: value, format: .number)
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 80)
-            Stepper("", value: value, in: 0...10_000, step: step).labelsHidden()
-        }
+        NumberStepperRow(title: title, value: value, step: step)
     }
 
     private func load() {
