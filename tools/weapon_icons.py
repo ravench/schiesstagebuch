@@ -44,7 +44,7 @@ def icon(key, title, solids, holes=()):
 
 # Handguns are drawn at roughly real proportions (length about 1.6x height), centred in the box.
 g_solid, g_hole = guard(52, 22, 17, 11)
-icon("pistol", "Pistole", [
+icon("pistol", "Ordonnanzpistole", [
     poly((28, 6), (98, 6), (100, 8), (100, 17), (28, 17)),
     rect(31, 3.5, 4, 2.5), rect(94, 3.5, 3, 2.5),
     rect(44, 17, 54, 5),
@@ -85,7 +85,8 @@ icon("sport_pistol", "Sportpistole", [
     rect(44, 16, 26, 4),
     g_solid,
     # Anatomical grip with hand shelf.
-    "M30 12 L50 16 L52 22 Q48 30 47 36 L53 40 L51 44 L31 46 Q26 46 26.5 42 Q27.5 32 28.5 24 Q24 20 22 15 Z",
+    # Grip axis about 13 degrees back; base plate square to that axis, palm shelf at the front.
+    "M30 12 L50 16 L52 22 L47 40 L53.5 42.5 L53 46.5 L28.8 41 Q27.4 40.6 27.7 38.8 L31.5 23 Q26 20 22 15 Z",
 ], [g_hole])
 
 # Long guns use roughly real length-to-height ratios (PCC ~3.2, service rifle ~3.8,
