@@ -343,4 +343,17 @@ T = {
     "W": ("W", "O", "O"),
     "NW": ("NW", "NO", "NO"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
+    # Lot number scanner
+    "Losnummer scannen": ("Scan lot number", "Scanner le numéro de lot", "Scansiona numero di lotto"),
+    "Losnummer wird gesucht …": ("Looking for the lot number …", "Recherche du numéro de lot …", "Ricerca del numero di lotto …"),
+    "Schachtel fotografieren": ("Photograph box", "Photographier la boîte", "Fotografa la scatola"),
+    "Neues Foto": ("New photo", "Nouvelle photo", "Nuova foto"),
+    "Fotografiere die Stelle der Schachtel, auf der die Losnummer steht. Text und Barcodes werden auf dem Gerät erkannt.": ("Photograph the part of the box where the lot number is printed. Text and barcodes are recognised on the device.", "Photographie la partie de la boîte où figure le numéro de lot. Le texte et les codes-barres sont reconnus sur l’appareil.", "Fotografa la parte della scatola con il numero di lotto. Testo e codici a barre vengono riconosciuti sul dispositivo."),
+    "Keine Losnummer erkannt. Versuche ein schärferes Foto oder tippe sie ein.": ("No lot number found. Try a sharper photo or type it in.", "Aucun numéro de lot reconnu. Essaie une photo plus nette ou saisis-le.", "Nessun numero di lotto riconosciuto. Prova una foto più nitida o inseriscilo a mano."),
+    "Der wahrscheinlichste Treffer steht oben. Tippe auf die richtige Nummer.": ("The most likely match is at the top. Tap the right number.", "Le résultat le plus probable est en haut. Touche le bon numéro.", "Il risultato più probabile è in alto. Tocca il numero giusto."),
+    "Aus dem Barcode (GS1)": ("From the barcode (GS1)", "Du code-barres (GS1)", "Dal codice a barre (GS1)"),
+    "Neben «Lot» / «Los»": ("Next to “Lot”", "À côté de « Lot »", "Accanto a «Lotto»"),
+    "Barcode": ("Barcode", "Code-barres", "Codice a barre"),
+    "Vermutung": ("Guess", "Supposition", "Ipotesi"),
+    "Neu": ("New", "Nouveau", "Nuovo"),
 }
