@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var exportType: UTType = .json
     @State private var exportName = ""
     @State private var importing = false
+    @State private var importingLegacy = false
     @State private var message: String?
 
     var body: some View {
@@ -27,6 +28,9 @@ struct SettingsView: View {
                     Button { export() } label: { Label("Backup exportieren", systemImage: "square.and.arrow.up") }
                     Button { importing = true } label: { Label("Backup wiederherstellen", systemImage: "square.and.arrow.down") }
                     Button { exportCSV() } label: { Label("Tagebuch als CSV", systemImage: "tablecells") }
+                    Button { importingLegacy = true } label: {
+                        Label("Aus Schusszähler-App importieren", systemImage: "arrow.down.doc")
+                    }
                 } header: {
                     Text("Daten")
                 } footer: {
@@ -48,6 +52,7 @@ struct SettingsView: View {
                 case .failure(let e): message = e.localizedDescription
                 }
             }
+            .sheet(isPresented: $importingLegacy) { LegacyImportView() }
             .alert("Datensicherung", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
                 Button("OK") {}
             } message: { Text(message ?? "") }

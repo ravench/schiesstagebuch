@@ -83,4 +83,28 @@ enum CaliberCatalog {
         try? context.save()
         UserDefaults.standard.set(true, forKey: seededKey)
     }
+
+    /// With iCloud sync every device seeds the catalogue once, so the same calibre can
+    /// arrive twice. Merge duplicates (same catalogue id) into the oldest record.
+    @MainActor
+    static func deduplicate(_ context: ModelContext) {
+        guard let all = try? context.fetch(FetchDescriptor<Caliber>(sortBy: [SortDescriptor(\.createdAt)])) else { return }
+        var keeper: [String: Caliber] = [:]
+        var changed = false
+        for c in all where !c.catalogID.isEmpty {
+            guard let keep = keeper[c.catalogID] else { keeper[c.catalogID] = c; continue }
+            for w in c.weapons ?? [] {
+                var list = (w.calibers ?? []).filter { $0 != c }
+                if !list.contains(keep) { list.append(keep) }
+                w.calibers = list
+            }
+            for w in c.defaultFor ?? [] { w.defaultCaliber = keep }
+            for a in c.ammunitions ?? [] { a.caliber = keep }
+            for e in c.entries ?? [] { e.caliber = keep }
+            if c.isArchived == false { keep.isArchived = false }
+            context.delete(c)
+            changed = true
+        }
+        if changed { try? context.save() }
+    }
 }

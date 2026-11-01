@@ -9,6 +9,18 @@ targets:
     type: application
     platform: iOS
     sources: [Schiesstagebuch]
+    info:
+      path: Schiesstagebuch/Info.plist
+      properties:
+        UIBackgroundModes: [remote-notification]
+    entitlements:
+      path: Schiesstagebuch/Schiesstagebuch.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.net.forestraven.schiesstagebuch
+        com.apple.developer.icloud-services:
+          - CloudKit
+        aps-environment: development
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: net.forestraven.schiesstagebuch
