@@ -8,7 +8,8 @@ struct SchiesstagebuchApp: App {
     let container: ModelContainer = Self.makeContainer()
 
     static let schema = Schema([Entry.self, Weapon.self, Caliber.self, Ammunition.self,
-                                ShootingRange.self, MaintenanceRecord.self, EntryPhoto.self, AmmoLot.self])
+                                ShootingRange.self, MaintenanceRecord.self, EntryPhoto.self, AmmoLot.self,
+                                LicenceCard.self])
 
     /// Syncs through the iCloud container from the entitlements when the user is signed in to iCloud,
     /// otherwise SwiftData simply keeps working locally.
