@@ -88,8 +88,19 @@ final class Weapon: ArchivableItem {
     var serviceIntervalDays: Int = 0
     /// When the day interval starts: "" = app default, else a `DayCounting` raw value.
     var dayCountingRaw: String = ""
+    /// Optional serial number (Waffennummer).
+    var serialNumber: String = ""
 
     init(name: String) { self.name = name }
+
+    /// Key of the setting that shows serial numbers in weapon pickers (on by default).
+    static let showSerialKey = "showSerialInPicker"
+
+    /// The serial number to show next to the name in a picker, if any.
+    func pickerSerial(show: Bool) -> String? {
+        let serial = serialNumber.trimmingCharacters(in: .whitespaces)
+        return show && !serial.isEmpty ? serial : nil
+    }
 
     var category: WeaponCategory {
         get { WeaponCategory(rawValue: categoryRaw) ?? .other }

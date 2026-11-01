@@ -16,6 +16,7 @@ final class BackupTests: ModelTestCase {
         let oldLot = AmmoLot(number: "TH-09"); context.insert(oldLot); oldLot.ammunition = ammo; oldLot.isArchived = true
         let weapon = Weapon(name: "Stgw 90"); context.insert(weapon)
         weapon.dayCountingRaw = DayCounting.fromMaintenance.rawValue
+        weapon.serialNumber = "A 123456"
         let range = ShootingRange(name: "Albisgüetli", place: "Zürich"); context.insert(range)
         range.address = "Uetlibergstrasse 341, 8045 Zürich"; range.latitude = 47.357; range.longitude = 8.505
         let e = Entry(date: day(5), range: range, weapon: weapon, caliber: cal, shotCount: 25, ammunition: ammo, result: "")
@@ -39,6 +40,7 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(restored.range?.latitude, 47.357)
         XCTAssertEqual(restored.range?.longitude, 8.505)
         XCTAssertEqual(restored.weapon?.dayCountingRaw, DayCounting.fromMaintenance.rawValue)
+        XCTAssertEqual(restored.weapon?.serialNumber, "A 123456")
 
         let lots = try target.fetch(FetchDescriptor<AmmoLot>())
         XCTAssertEqual(Set(lots.map(\.number)), ["TH-17", "TH-09"])

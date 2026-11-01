@@ -9,6 +9,7 @@ struct EntryListView: View {
 
     @State private var searchText = ""
     @State private var weaponFilter: Weapon?
+    @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @State private var rangeFilter: ShootingRange?
     @State private var yearFilter: Int?
     @State private var showingNewEntry = false
@@ -102,7 +103,9 @@ struct EntryListView: View {
         Menu {
             Picker("Waffe", selection: $weaponFilter) {
                 Text("Alle Waffen").tag(Weapon?.none)
-                ForEach(weapons) { Text($0.name).tag(Optional($0)) }
+                ForEach(weapons) { w in
+                    PickerOption(title: w.name, subtitle: w.pickerSerial(show: showSerial)).tag(Optional(w))
+                }
             }
             Picker("Schiessanlage", selection: $rangeFilter) {
                 Text("Alle Anlagen").tag(ShootingRange?.none)

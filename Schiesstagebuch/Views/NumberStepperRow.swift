@@ -47,3 +47,21 @@ struct NumberStepperRow: View {
         return min(max(next, range.lowerBound), range.upperBound)
     }
 }
+
+/// A picker option with an optional small second line (e.g. a weapon's serial number).
+/// Menus show the second text as a subtitle.
+struct PickerOption: View {
+    let title: String
+    let subtitle: String?
+
+    var body: some View {
+        if let subtitle {
+            VStack(alignment: .leading) {
+                Text(title)
+                Text(subtitle).font(.caption).foregroundStyle(.secondary)
+            }
+        } else {
+            Text(title)
+        }
+    }
+}
