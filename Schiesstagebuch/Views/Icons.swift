@@ -65,7 +65,9 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
 
     var id: Self { self }
 
-    var title: String {
+    var title: String { titleKey.loc }
+
+    private var titleKey: String {
         switch self {
         case .pistol: "Ordonnanzpistole"
         case .sportPistol: "Sportpistole"

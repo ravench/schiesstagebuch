@@ -31,8 +31,8 @@ enum LegacyImport {
         case unreadable, noRows
         var errorDescription: String? {
             switch self {
-            case .unreadable: "Die Datei konnte nicht gelesen werden. Erwartet wird ShootCounter-Export.tsv oder data.db."
-            case .noRows: "In der Datei wurden keine Einträge gefunden."
+            case .unreadable: "Die Datei konnte nicht gelesen werden. Erwartet wird ShootCounter-Export.tsv oder data.db.".loc
+            case .noRows: "In der Datei wurden keine Einträge gefunden.".loc
             }
         }
     }

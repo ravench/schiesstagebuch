@@ -190,7 +190,7 @@ final class Entry {
 enum MaintenanceKind: String, Codable, CaseIterable, Identifiable {
     case cleaning, service
     var id: Self { self }
-    var title: String { self == .cleaning ? "Reinigung" : "Service" }
+    var title: String { self == .cleaning ? "Reinigung".loc : "Service".loc }
     var icon: String { self == .cleaning ? "sparkles" : "wrench.and.screwdriver" }
 }
 

@@ -87,7 +87,7 @@ enum Backup {
         decoder.dateDecodingStrategy = .iso8601
         let file = try decoder.decode(File.self, from: data)
         guard file.version <= currentVersion else {
-            throw CocoaError(.fileReadUnsupportedScheme, userInfo: [NSLocalizedDescriptionKey: "Backup stammt aus einer neueren App-Version."])
+            throw CocoaError(.fileReadUnsupportedScheme, userInfo: [NSLocalizedDescriptionKey: "Backup stammt aus einer neueren App-Version.".loc])
         }
 
         // Calibres also match by name so the seeded catalogue isn't duplicated.
@@ -147,7 +147,9 @@ enum Backup {
         try context.save()
         weapons.values.forEach { MaintenanceNotifier.refresh($0) }
         let skipped = file.entries.count - added
-        return "\(added) Einträge wiederhergestellt" + (skipped > 0 ? ", \(skipped) waren schon vorhanden." : ".")
+        return skipped > 0
+            ? String(localized: "\(added) Einträge wiederhergestellt, \(skipped) waren schon vorhanden.")
+            : String(localized: "\(added) Einträge wiederhergestellt.")
     }
 
     static func csv(_ context: ModelContext) -> Data {
@@ -157,7 +159,8 @@ enum Backup {
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        var lines = ["Datum;Schiessanlage;Ort;Anlass;Waffe;Kaliber;Munition;Schusszahl;Resultat;Bemerkungen"]
+        var lines = [["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Schusszahl", "Resultat", "Bemerkungen"]
+            .map(\.loc).joined(separator: ";")]
         for e in entries {
             lines.append([df.string(from: e.date), e.range?.name ?? "", e.range?.place ?? "", e.event,
                           e.weapon?.name ?? "", e.caliber?.name ?? "", e.ammunition?.name ?? "",

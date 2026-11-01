@@ -65,7 +65,7 @@ struct SettingsView: View {
             exportName = "Schiesstagebuch-\(Date.now.formatted(.iso8601.year().month().day()))"
             exportDoc = BackupDocument(data: try Backup.export(context))
         }
-        catch { message = "Export fehlgeschlagen: \(error.localizedDescription)" }
+        catch { message = String(localized: "Export fehlgeschlagen: \(error.localizedDescription)") }
     }
 
     private func exportCSV() {
@@ -81,7 +81,7 @@ struct SettingsView: View {
             let summary = try Backup.restore(from: Data(contentsOf: url), into: context)
             message = summary
         } catch {
-            message = "Wiederherstellen fehlgeschlagen: \(error.localizedDescription)"
+            message = String(localized: "Wiederherstellen fehlgeschlagen: \(error.localizedDescription)")
         }
     }
 }
@@ -145,11 +145,11 @@ struct CaliberEditorView: View {
             Form {
                 TextField("Bezeichnung, z. B. 9x19 mm", text: $name)
                 Picker("Kategorie", selection: $category) {
-                    ForEach(CaliberCatalog.Category.allCases, id: \.rawValue) { Text($0.rawValue).tag($0.rawValue) }
+                    ForEach(CaliberCatalog.Category.allCases, id: \.rawValue) { Text($0.rawValue.loc).tag($0.rawValue) }
                 }
                 if caliber != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
-            .navigationTitle(caliber == nil ? "Neues Kaliber" : "Kaliber bearbeiten")
+            .navigationTitle(caliber == nil ? "Neues Kaliber".loc : "Kaliber bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
@@ -184,7 +184,7 @@ struct AmmunitionListView: View {
     @State private var adding = false
 
     private var groups: [(String, [Ammunition])] {
-        Dictionary(grouping: items.filter { showArchived || !$0.isArchived }) { $0.caliber?.name ?? "Ohne Kaliber" }
+        Dictionary(grouping: items.filter { showArchived || !$0.isArchived }) { $0.caliber?.name ?? "Ohne Kaliber".loc }
             .sorted { $0.key.localizedStandardCompare($1.key) == .orderedAscending }
             .map { ($0.key, $0.value) }
     }
@@ -257,7 +257,7 @@ struct AmmunitionEditorView: View {
                 .pickerStyle(.navigationLink)
                 if ammunition != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
-            .navigationTitle(ammunition == nil ? "Neue Munition" : "Munition bearbeiten")
+            .navigationTitle(ammunition == nil ? "Neue Munition".loc : "Munition bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
@@ -328,7 +328,7 @@ struct RangeEditorView: View {
                 TextField("Ort (optional)", text: $place)
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
-            .navigationTitle(range == nil ? "Neue Schiessanlage" : "Schiessanlage bearbeiten")
+            .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
@@ -359,7 +359,7 @@ struct ArchiveButton<Item: ArchivableItem>: View {
         Button {
             item.isArchived.toggle()
         } label: {
-            Label(item.isArchived ? "Reaktivieren" : "Archivieren",
+            Label(item.isArchived ? "Reaktivieren".loc : "Archivieren".loc,
                   systemImage: item.isArchived ? "tray.and.arrow.up" : "archivebox")
         }
         .tint(.orange)

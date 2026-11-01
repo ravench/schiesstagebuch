@@ -153,7 +153,7 @@ struct MaintenanceEditorView: View {
                         context.insert(MaintenanceRecord(kind: kind, date: date, notes: notes, weapon: weapon))
                         // A service usually includes a cleaning.
                         if kind == .service {
-                            context.insert(MaintenanceRecord(kind: .cleaning, date: date, notes: "Mit Service", weapon: weapon))
+                            context.insert(MaintenanceRecord(kind: .cleaning, date: date, notes: "Mit Service".loc, weapon: weapon))
                         }
                         try? context.save()
                         MaintenanceNotifier.refresh(weapon)
@@ -243,7 +243,7 @@ struct WeaponEditorView: View {
 
                 Section {
                     Button { choosingCalibers = true } label: {
-                        LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen" : "\(calibers.count)")
+                        LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
                     }
                     if calibers.count > 1 {
                         Picker("Standard", selection: $defaultCaliber) {
@@ -276,7 +276,7 @@ struct WeaponEditorView: View {
                     }
                 }
             }
-            .navigationTitle(weapon == nil ? "Neue Waffe" : "Waffe bearbeiten")
+            .navigationTitle(weapon == nil ? "Neue Waffe".loc : "Waffe bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
@@ -308,10 +308,10 @@ struct WeaponEditorView: View {
     private func intervalSection(_ kind: MaintenanceKind, shots: Binding<Int>, days: Binding<Int>) -> some View {
         Section {
             Stepper(value: shots, in: 0...20_000, step: kind == .cleaning ? 50 : 500) {
-                LabeledContent("Nach Schüssen", value: shots.wrappedValue == 0 ? "Aus" : shots.wrappedValue.formatted())
+                LabeledContent("Nach Schüssen", value: shots.wrappedValue == 0 ? "Aus".loc : shots.wrappedValue.formatted())
             }
             Stepper(value: days, in: 0...730, step: kind == .cleaning ? 7 : 30) {
-                LabeledContent("Nach Tagen", value: days.wrappedValue == 0 ? "Aus" : days.wrappedValue.formatted())
+                LabeledContent("Nach Tagen", value: days.wrappedValue == 0 ? "Aus".loc : days.wrappedValue.formatted())
             }
         } header: {
             Label("Erinnerung \(kind.title)", systemImage: kind.icon)
@@ -382,7 +382,7 @@ struct CaliberMultiPicker: View {
                     }
                 }
                 ForEach(groups, id: \.0) { group in
-                    Section(group.0) { ForEach(group.1) { row($0) } }
+                    Section(group.0.loc) { ForEach(group.1) { row($0) } }
                 }
             }
             .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Kaliber suchen")

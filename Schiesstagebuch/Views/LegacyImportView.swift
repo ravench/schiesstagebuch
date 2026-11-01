@@ -84,7 +84,7 @@ struct LegacyImportView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(summary == nil ? "Abbrechen" : "Fertig") { dismiss() }.disabled(running)
+                    Button(summary == nil ? "Abbrechen".loc : "Fertig".loc) { dismiss() }.disabled(running)
                 }
             }
             .fileImporter(isPresented: $picking, allowedContentTypes: Self.types) { result in

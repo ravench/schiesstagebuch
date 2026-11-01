@@ -58,7 +58,7 @@ struct EntryEditorView: View {
                     if let weapon, !(weapon.calibers ?? []).isEmpty {
                         Picker("Kaliber", selection: $caliber) {
                             ForEach(weapon.orderedCalibers) { c in
-                                Text(c == weapon.defaultCaliber ? "\(c.name) (Standard)" : c.name).tag(Optional(c))
+                                Text(c == weapon.defaultCaliber ? "\(c.name) (\("Standard".loc))" : c.name).tag(Optional(c))
                             }
                             if let caliber, !weapon.orderedCalibers.contains(caliber) {
                                 Text(caliber.name).tag(Optional(caliber))
@@ -96,7 +96,7 @@ struct EntryEditorView: View {
                     Text("Fotos (\(photos.count)/\(Limits.maxPhotos))")
                 }
             }
-            .navigationTitle(entry == nil ? "Neuer Eintrag" : "Eintrag bearbeiten")
+            .navigationTitle(entry == nil ? "Neuer Eintrag".loc : "Eintrag bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
@@ -130,7 +130,7 @@ struct EntryEditorView: View {
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
                                                label: KeyPath<T, String>, add: QuickAdd) -> some View {
         HStack {
-            Picker(title, selection: selection) {
+            Picker(title.loc, selection: selection) {
                 Text("–").tag(T?.none)
                 ForEach(items) { Text($0[keyPath: label]).tag(Optional($0)) }
                 // Keep an archived / non-matching selection visible when editing old entries.
@@ -140,7 +140,7 @@ struct EntryEditorView: View {
             }
             Button { quickAdd = add } label: { Image(systemName: "plus.circle") }
                 .buttonStyle(.borderless)
-                .accessibilityLabel("\(title) hinzufügen")
+                .accessibilityLabel(String(localized: "\(title.loc) hinzufügen"))
         }
     }
 

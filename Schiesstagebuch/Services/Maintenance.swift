@@ -34,18 +34,20 @@ struct MaintenanceStatus {
 
     var summary: String {
         var parts: [String] = []
-        if let lastDate { parts.append("zuletzt \(lastDate.formatted(date: .abbreviated, time: .omitted))") }
-        else { parts.append("noch nie erfasst") }
-        parts.append("\(shotsSince.formatted()) Schuss seither")
+        if let lastDate { parts.append(String(localized: "zuletzt \(lastDate.formatted(date: .abbreviated, time: .omitted))")) }
+        else { parts.append("noch nie erfasst".loc) }
+        parts.append(String(localized: "\(shotsSince.formatted()) Schuss seither"))
         return parts.joined(separator: " · ")
     }
 
     var dueText: String? {
         guard hasReminder else { return nil }
         var parts: [String] = []
-        if let r = shotsRemaining { parts.append(r > 0 ? "in \(r.formatted()) Schuss" : "\((-r).formatted()) Schuss überfällig") }
-        if let d = dueDate { parts.append(d > .now ? "bis \(d.formatted(date: .abbreviated, time: .omitted))" : "seit \(d.formatted(date: .abbreviated, time: .omitted)) fällig") }
-        return parts.isEmpty ? nil : "Fällig " + parts.joined(separator: " oder ")
+        if let r = shotsRemaining { parts.append(r > 0 ? String(localized: "in \(r.formatted()) Schuss") : String(localized: "\((-r).formatted()) Schuss überfällig")) }
+        if let d = dueDate { parts.append(d > .now ? String(localized: "bis \(d.formatted(date: .abbreviated, time: .omitted))") : String(localized: "seit \(d.formatted(date: .abbreviated, time: .omitted)) fällig")) }
+        guard !parts.isEmpty else { return nil }
+        let joined = parts.joined(separator: " \("oder".loc) ")
+        return String(localized: "Fällig \(joined)")
     }
 }
 
@@ -91,7 +93,7 @@ enum MaintenanceNotifier {
             guard status.hasReminder, !weapon.isArchived else { continue }
 
             let content = UNMutableNotificationContent()
-            content.title = "\(kind.title) fällig: \(weapon.name)"
+            content.title = String(localized: "\(kind.title) fällig: \(weapon.name)")
             content.body = status.dueText ?? status.summary
             content.sound = .default
 
