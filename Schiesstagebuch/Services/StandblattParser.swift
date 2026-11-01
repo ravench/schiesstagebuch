@@ -402,23 +402,24 @@ enum StandblattParser {
             }
             let numbers = p < draft.subtotals.count ? draft.subtotals[p] : []
             let passe = strip.passes[p]
-            assign(numbers, isA10: isA10, sums: (passe.sum(.rings), passe.sum(.hundredths)),
-                   rings: &strip.passes[p].printedRings, hundredths: &strip.passes[p].printedHundredths)
+            let printed = split(numbers, isA10: isA10, sums: (passe.sum(.rings), passe.sum(.hundredths)))
+            strip.passes[p].printedRings = printed.rings
+            strip.passes[p].printedHundredths = printed.hundredths
         }
-        assign(draft.total ?? [], isA10: isA10, sums: (strip.sum(.rings), strip.sum(.hundredths)),
-               rings: &strip.printedRings, hundredths: &strip.printedHundredths)
+        let printed = split(draft.total ?? [], isA10: isA10, sums: (strip.sum(.rings), strip.sum(.hundredths)))
+        strip.printedRings = printed.rings
+        strip.printedHundredths = printed.hundredths
         return strip
     }
 
     /// "91 866" on A10 strips, "430" on A100 strips. A single number on an A10 strip (one was
     /// not read) goes to whichever sum it is closer to.
-    private static func assign(_ numbers: [Int], isA10: Bool, sums: (rings: Int, hundredths: Int),
-                               rings: inout Int?, hundredths: inout Int?) {
-        if isA10 && numbers.count >= 2 {
-            rings = numbers[numbers.count - 2]; hundredths = numbers.last
-        } else if let last = numbers.last {
-            if isA10 && abs(last - sums.rings) <= abs(last - sums.hundredths) { rings = last } else { hundredths = last }
-        }
+    private static func split(_ numbers: [Int], isA10: Bool,
+                              sums: (rings: Int, hundredths: Int)) -> (rings: Int?, hundredths: Int?) {
+        if isA10 && numbers.count >= 2 { return (numbers[numbers.count - 2], numbers.last) }
+        guard let last = numbers.last else { return (nil, nil) }
+        if isA10 && abs(last - sums.rings) <= abs(last - sums.hundredths) { return (last, nil) }
+        return (nil, last)
     }
 
     // MARK: Layout
