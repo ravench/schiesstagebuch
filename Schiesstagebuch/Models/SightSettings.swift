@@ -99,6 +99,10 @@ enum FilterColor {
         var red: Double { Double((rgb >> 16) & 0xFF) / 255 }
         var green: Double { Double((rgb >> 8) & 0xFF) / 255 }
         var blue: Double { Double(rgb & 0xFF) / 255 }
+        /// Polarised lenses ("polar", "polarisiert") get a line pattern on their swatch.
+        var isPolarised: Bool { name.localizedCaseInsensitiveContains("polar") }
+        /// Relative luminance 0…1, used to pick a line colour that shows on the lens.
+        var luminance: Double { 0.2126 * red + 0.7152 * green + 0.0722 * blue }
     }
 
     static let filters: [Filter] = [
