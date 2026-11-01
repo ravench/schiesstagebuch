@@ -79,7 +79,8 @@ final class MaintenanceTests: ModelTestCase {
         var s = weapon.status(.cleaning)
         XCTAssertNil(s.countingStart)
         XCTAssertNil(s.dueDate)
-        XCTAssertEqual(s.dueText, "Tage zählen ab der nächsten Nutzung".loc)
+        XCTAssertTrue(s.dueText?.contains("Tage zählen ab der nächsten Nutzung".loc) == true)
+        XCTAssertFalse(s.isDue)
 
         addEntry(weapon, on: day(10), shots: 5)
         addEntry(weapon, on: day(12), shots: 5)
@@ -87,6 +88,14 @@ final class MaintenanceTests: ModelTestCase {
         s = weapon.status(.cleaning)
         XCTAssertEqual(s.countingStart, day(10))
         XCTAssertEqual(s.dueDate, Calendar.current.date(byAdding: .day, value: 30, to: day(10)))
+    }
+
+    func testWaitingTextAloneWithoutShotInterval() throws {
+        weapon.dayCountingRaw = DayCounting.fromFirstUse.rawValue
+        weapon.cleaningIntervalShots = 0
+        log(.cleaning, on: day(2))
+        try context.save()
+        XCTAssertEqual(weapon.status(.cleaning).dueText, "Tage zählen ab der nächsten Nutzung".loc)
     }
 
     func testWeaponFollowsAppDefaultUnlessOverridden() {
