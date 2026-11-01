@@ -16,6 +16,7 @@ struct StatsView: View {
                 Section { KPIGrid(entries: filtered) }
                     .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
                 Section { ShotsOverTimeChart(entries: filtered) }
+                if filtered.compactMap(\.score.percentage).count >= 2 { Section { ResultTrendChart(entries: filtered) } }
                 Section {
                     BreakdownChart(title: "Pro Waffe", entries: filtered, key: \.weapon, label: \.name)
                 }
@@ -93,6 +94,7 @@ struct ItemStatsList<Header: View, Extra: View>: View {
             Section { KPIGrid(entries: filtered) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
             Section { ShotsOverTimeChart(entries: filtered) }
+            if filtered.compactMap(\.score.percentage).count >= 2 { Section { ResultTrendChart(entries: filtered) } }
             breakdowns(filtered)
             Section("Einträge") {
                 if filtered.isEmpty { Text("Keine Einträge").foregroundStyle(.secondary) }

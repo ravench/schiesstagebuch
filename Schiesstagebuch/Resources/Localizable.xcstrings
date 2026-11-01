@@ -254,6 +254,75 @@
         }
       }
     },
+    "Ab Reinigung / Service": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From cleaning / service"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dès le nettoyage / service"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dalla pulizia / manutenzione"
+          }
+        }
+      }
+    },
+    "Ab erster Nutzung danach": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From first use afterwards"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dès la première utilisation suivante"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dal primo utilizzo successivo"
+          }
+        }
+      }
+    },
+    "Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When day-based reminders start counting. You can change this per firearm."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À partir de quand les rappels en jours comptent. Modifiable pour chaque arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni arma."
+          }
+        }
+      }
+    },
     "Abbrechen": {
       "extractionState": "manual",
       "localizations": {
@@ -737,6 +806,29 @@
         }
       }
     },
+    "Auswertung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scoring"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Évaluation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valutazione"
+          }
+        }
+      }
+    },
     "Backup exportieren": {
       "extractionState": "manual",
       "localizations": {
@@ -1197,6 +1289,29 @@
         }
       }
     },
+    "Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A cleaning resets the cleaning shots and days; a service also resets the service ones."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un nettoyage remet à zéro les coups et jours du nettoyage ; un service remet aussi ceux du service."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una pulizia azzera colpi e giorni della pulizia; una manutenzione azzera anche quelli della manutenzione."
+          }
+        }
+      }
+    },
     "Einstellungen": {
       "extractionState": "manual",
       "localizations": {
@@ -1335,6 +1450,29 @@
         }
       }
     },
+    "Einzelschüsse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Individual shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coups individuels"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi singoli"
+          }
+        }
+      }
+    },
     "Erfasse deine Munitionssorten, je mit Kaliber.": {
       "extractionState": "manual",
       "localizations": {
@@ -1404,6 +1542,29 @@
         }
       }
     },
+    "Erfassung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrazione"
+          }
+        }
+      }
+    },
     "Erinnert, sobald eine der beiden Grenzen seit der letzten %@ erreicht ist.": {
       "extractionState": "manual",
       "localizations": {
@@ -1446,6 +1607,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Promemoria: %@"
+          }
+        }
+      }
+    },
+    "Erinnerungen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rappels"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promemoria"
           }
         }
       }
@@ -1841,6 +2025,29 @@
         }
       }
     },
+    "Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applies to new entries. You can switch the mode in any entry."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S'applique aux nouvelles entrées. Tu peux changer le mode dans chaque entrée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vale per le nuove voci. Puoi cambiare modalità in ogni voce."
+          }
+        }
+      }
+    },
     "Hinzufügen": {
       "extractionState": "manual",
       "localizations": {
@@ -1860,6 +2067,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi"
+          }
+        }
+      }
+    },
+    "Historisches Ordonnanzgewehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historic service rifle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fusil d'ordonnance historique"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fucile d'ordinanza storico"
           }
         }
       }
@@ -2090,29 +2320,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegli i calibri"
-          }
-        }
-      }
-    },
-    "Karabiner / Ordonnanzgewehr (K31)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Carbine / service rifle (K31)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mousqueton / fusil d'ordonnance (K31)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moschetto / fucile d'ordinanza (K31)"
           }
         }
       }
@@ -2600,6 +2807,52 @@
         }
       }
     },
+    "Max. Punkte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max. points"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points max."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punti max."
+          }
+        }
+      }
+    },
+    "Median pro Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Median per shot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Médiane par coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mediana per colpo"
+          }
+        }
+      }
+    },
     "Mit Service": {
       "extractionState": "manual",
       "localizations": {
@@ -3060,6 +3313,29 @@
         }
       }
     },
+    "Nr.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N°"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N."
+          }
+        }
+      }
+    },
     "OK": {
       "extractionState": "manual",
       "localizations": {
@@ -3148,6 +3424,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativo. Puoi scegliere il lotto quando registri una voce."
+          }
+        }
+      }
+    },
+    "Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. With max. points the app calculates the percentage and the average per shot."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Avec les points max., l'app calcule le pourcentage et la moyenne par coup."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Con i punti max. l'app calcola la percentuale e la media per colpo."
+          }
+        }
+      }
+    },
+    "Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. Without a result the sum of the shots counts; with max. points the app calculates the percentage."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Sans résultat, la somme des coups compte ; avec les points max., l'app calcule le pourcentage."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Senza risultato conta la somma dei colpi; con i punti max. l'app calcola la percentuale."
+          }
+        }
+      }
+    },
+    "Ordonnanzgewehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Service rifle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fusil d'ordonnance"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fucile d'ordinanza"
           }
         }
       }
@@ -3263,6 +3608,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Parabellum / Luger"
+          }
+        }
+      }
+    },
+    "Passe %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Series %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passe %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serie %lld"
+          }
+        }
+      }
+    },
+    "Passe hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add series"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une passe"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi serie"
           }
         }
       }
@@ -3451,6 +3842,98 @@
         }
       }
     },
+    "Probe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sighters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essai"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prova"
+          }
+        }
+      }
+    },
+    "Probe/Wertung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sighters/Scored"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essai/Comptés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prova/Gara"
+          }
+        }
+      }
+    },
+    "Probeschüsse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sighters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coups d'essai"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi di prova"
+          }
+        }
+      }
+    },
+    "Prozent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Percent"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pourcentage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Percentuale"
+          }
+        }
+      }
+    },
     "Präzisions- / Long-Range-Gewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -3585,6 +4068,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato"
+          }
+        }
+      }
+    },
+    "Resultat in Prozent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result in percent"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat en pourcentage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato in percentuale"
           }
         }
       }
@@ -3819,6 +4325,29 @@
         }
       }
     },
+    "Schüsse erfassen als": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record shots as"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir les coups"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra i colpi come"
+          }
+        }
+      }
+    },
     "Schüsse über Zeit": {
       "extractionState": "manual",
       "localizations": {
@@ -3838,6 +4367,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colpi nel tempo"
+          }
+        }
+      }
+    },
+    "Seriennummer (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serial number (optional)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de série (facultatif)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di serie (facoltativo)"
+          }
+        }
+      }
+    },
+    "Seriennummer in der Waffenauswahl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serial number in firearm picker"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de série dans le choix d'arme"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di serie nella scelta dell'arma"
           }
         }
       }
@@ -3980,6 +4555,29 @@
         }
       }
     },
+    "Standard (%@)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default (%@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par défaut (%@)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Predefinito (%@)"
+          }
+        }
+      }
+    },
     "Statistik": {
       "extractionState": "manual",
       "localizations": {
@@ -4003,25 +4601,48 @@
         }
       }
     },
-    "Sturmgewehr / Ordonnanz": {
+    "Tage zählen": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Assault rifle / service rifle"
+            "value": "Count days"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fusil d'assaut / d'ordonnance"
+            "value": "Compter les jours"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fucile d'assalto / d'ordinanza"
+            "value": "Conta i giorni"
+          }
+        }
+      }
+    },
+    "Tage zählen ab der nächsten Nutzung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days count from the next use"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les jours comptent dès la prochaine utilisation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I giorni contano dal prossimo utilizzo"
           }
         }
       }
@@ -4068,6 +4689,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diario in CSV"
+          }
+        }
+      }
+    },
+    "Total": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totale"
           }
         }
       }
@@ -4348,6 +4992,52 @@
         }
       }
     },
+    "Wertung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scored"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comptés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gara"
+          }
+        }
+      }
+    },
+    "Wertungsschüsse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scored shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coups comptés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi di gara"
+          }
+        }
+      }
+    },
     "Wiederherstellen fehlgeschlagen: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -4555,6 +5245,29 @@
         }
       }
     },
+    "z. B. 10 9 10 8 9": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. 10 9 10 8 9"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p. ex. 10 9 10 8 9"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p. es. 10 9 10 8 9"
+          }
+        }
+      }
+    },
     "zuletzt %@": {
       "extractionState": "manual",
       "localizations": {
@@ -4578,6 +5291,29 @@
         }
       }
     },
+    "Ø Prozent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avg. percent"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moy. pourcentage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media percentuale"
+          }
+        }
+      }
+    },
     "Ø pro Eintrag": {
       "extractionState": "manual",
       "localizations": {
@@ -4597,6 +5333,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media per voce"
+          }
+        }
+      }
+    },
+    "Ø pro Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avg. per shot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moy. par coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media per colpo"
           }
         }
       }

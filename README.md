@@ -51,6 +51,18 @@ Calibres and icons are generated assets. After editing `tools/cartridges.py` or
 python3 tools/generate_assets.py --preview /tmp/preview.html   # preview is optional
 ```
 
+## Tests
+
+Unit tests live in `SchiesstagebuchTests` and run in CI on every push. Run them locally with
+⌘U in Xcode, or:
+
+```sh
+xcodebuild test -project Schiesstagebuch.xcodeproj -scheme Schiesstagebuch \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
+
+Every change should come with tests.
+
 ## Layout
 
 ```

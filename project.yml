@@ -41,3 +41,31 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Fotos von Scheiben und Resultaten zu einem Eintrag hinzufügen."
         INFOPLIST_KEY_NSCameraUsageDescription: "Scheiben direkt fotografieren und zum Eintrag speichern."
+  SchiesstagebuchTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [SchiesstagebuchTests]
+    dependencies:
+      - target: Schiesstagebuch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: net.forestraven.schiesstagebuch.tests
+        DEVELOPMENT_TEAM: PD9YC6KM5T
+        CODE_SIGN_STYLE: Automatic
+        SWIFT_VERSION: "5.10"
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Schiesstagebuch:
+    build:
+      targets:
+        Schiesstagebuch: all
+        SchiesstagebuchTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - SchiesstagebuchTests
+    archive:
+      config: Release
