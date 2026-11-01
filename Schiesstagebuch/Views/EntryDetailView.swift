@@ -79,6 +79,10 @@ struct EntryDetailView: View {
                 }
             }
 
+            if showSport, let weather = entry.weather {
+                WeatherDetailSections(record: weather)
+            }
+
             if !entry.notes.isEmpty {
                 Section("Bemerkungen") { Text(entry.notes) }
             }
