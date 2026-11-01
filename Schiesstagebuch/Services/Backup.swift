@@ -51,6 +51,7 @@ enum Backup {
     struct RangeDTO: Codable {
         var id: UUID; var name: String; var place: String; var isArchived: Bool
         var address: String?; var latitude: Double?; var longitude: Double?
+        var shootingBearing: Double?; var altitude: Double?
     }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
     struct EntryDTO: Codable {
@@ -84,7 +85,8 @@ enum Backup {
             ammunition: try all(Ammunition.self, context).map { .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived) },
             ranges: try all(ShootingRange.self, context).map {
                 .init(id: $0.id, name: $0.name, place: $0.place, isArchived: $0.isArchived,
-                      address: $0.address, latitude: $0.latitude, longitude: $0.longitude)
+                      address: $0.address, latitude: $0.latitude, longitude: $0.longitude,
+                      shootingBearing: $0.shootingBearing, altitude: $0.altitude)
             },
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
@@ -157,6 +159,7 @@ enum Backup {
         for d in file.ranges where ranges[d.id] == nil {
             let r = ShootingRange(name: d.name, place: d.place); r.id = d.id; r.isArchived = d.isArchived
             r.address = d.address ?? ""; r.latitude = d.latitude; r.longitude = d.longitude
+            r.shootingBearing = d.shootingBearing.map(Compass.normalized); r.altitude = d.altitude
             context.insert(r); ranges[d.id] = r
         }
 
