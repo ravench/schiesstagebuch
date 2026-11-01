@@ -1956,6 +1956,29 @@
         }
       }
     },
+    "Historisches Ordonnanzgewehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historic service rifle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fusil d'ordonnance historique"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fucile d'ordinanza storico"
+          }
+        }
+      }
+    },
     "Import": {
       "extractionState": "manual",
       "localizations": {
@@ -2182,29 +2205,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegli i calibri"
-          }
-        }
-      }
-    },
-    "Karabiner / Ordonnanzgewehr (K31)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Carbine / service rifle (K31)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mousqueton / fusil d'ordonnance (K31)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moschetto / fucile d'ordinanza (K31)"
           }
         }
       }
@@ -3336,6 +3336,29 @@
         }
       }
     },
+    "Ordonnanzgewehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Service rifle"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fusil d'ordonnance"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fucile d'ordinanza"
+          }
+        }
+      }
+    },
     "Ordonnanzpistole": {
       "extractionState": "manual",
       "localizations": {
@@ -4367,29 +4390,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statistiche"
-          }
-        }
-      }
-    },
-    "Sturmgewehr / Ordonnanz": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assault rifle / service rifle"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fusil d'assaut / d'ordonnance"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fucile d'assalto / d'ordinanza"
           }
         }
       }
