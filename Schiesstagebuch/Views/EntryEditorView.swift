@@ -21,10 +21,18 @@ struct EntryEditorView: View {
     @State private var ammunition: Ammunition?
     @State private var lot: AmmoLot?
     @State private var shotCount = 0
-    @State private var splitShots = false
+    @State private var mode: ShotEntryMode = .total
+    @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
     @State private var sighters = 0
     @State private var scored = 0
     @State private var result = ""
+    @State private var maxPoints: Double?
+    @State private var passes: [PassDraft] = []
+
+    private struct PassDraft: Identifiable {
+        let id = UUID()
+        var text: String
+    }
     @State private var notes = ""
     @State private var photos: [Data] = []
     @State private var pickerItems: [PhotosPickerItem] = []
@@ -80,15 +88,63 @@ struct EntryEditorView: View {
                             }
                         }
                     }
-                    if splitShots {
+                }
+
+                Section("Schüsse") {
+                    Picker("Erfassung", selection: $mode) {
+                        ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    switch mode {
+                    case .total:
+                        countRow("Schusszahl", value: $shotCount, step: 5)
+                    case .split:
                         countRow("Probeschüsse", value: $sighters, step: 1)
                         countRow("Wertungsschüsse", value: $scored, step: 5)
                         LabeledContent("Total", value: (sighters + scored).formatted())
-                    } else {
-                        countRow("Schusszahl", value: $shotCount, step: 5)
+                    case .shots:
+                        countRow("Probeschüsse", value: $sighters, step: 1)
+                        ForEach($passes) { $pass in
+                            HStack {
+                                Text("Passe \((passes.firstIndex { $0.id == pass.id } ?? 0) + 1)").foregroundStyle(.secondary)
+                                TextField("z. B. 10 9 10 8 9", text: $pass.text)
+                                    .keyboardType(.numbersAndPunctuation)
+                                let shots = Score.parseShots(pass.text)
+                                if !shots.isEmpty {
+                                    Text(ScoreFormat.points(shots.reduce(0, +))).monospacedDigit().bold()
+                                }
+                            }
+                        }
+                        .onDelete { passes.remove(atOffsets: $0) }
+                        Button {
+                            passes.append(PassDraft(text: ""))
+                        } label: {
+                            Label("Passe hinzufügen", systemImage: "plus.circle")
+                        }
+                        LabeledContent("Wertungsschüsse", value: passShotCount.formatted())
+                        LabeledContent("Total", value: (sighters + passShotCount).formatted())
                     }
-                    Toggle("Probe- und Wertungsschüsse", isOn: $splitShots)
+                }
+
+                Section {
                     TextField("Resultat", text: $result)
+                    HStack {
+                        Text("Max. Punkte")
+                        Spacer()
+                        TextField("optional", value: $maxPoints, format: .number)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(maxWidth: 100)
+                    }
+                    ScoreSummary(score: currentScore)
+                } header: {
+                    Text("Resultat")
+                } footer: {
+                    if mode == .shots {
+                        Text("Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.")
+                    } else {
+                        Text("Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
+                    }
                 }
 
                 Section("Bemerkungen") {
@@ -131,12 +187,18 @@ struct EntryEditorView: View {
                 if let lot, lot.ammunition == new { return }
                 lot = suggestedLot(for: new)
             }
-            .onChange(of: splitShots) { _, on in
+            .onChange(of: mode) { old, new in
                 guard didLoad else { return }
-                if on {
-                    sighters = 0; scored = shotCount
-                } else {
-                    shotCount = sighters + scored
+                // Carry the count over so switching modes never loses what was typed.
+                let total = switch old {
+                case .total: shotCount
+                case .split: sighters + scored
+                case .shots: sighters + passShotCount
+                }
+                switch new {
+                case .total: shotCount = total
+                case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
+                case .shots: if passes.isEmpty { passes = [PassDraft(text: "")] }
                 }
             }
             .onChange(of: pickerItems) { _, items in
@@ -169,6 +231,14 @@ struct EntryEditorView: View {
         }
     }
 
+    private var currentScore: Score {
+        Score(result: result, maxPoints: maxPoints,
+              shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
+              scoredShots: mode == .split ? scored : shotCount)
+    }
+
+    private var passShotCount: Int { passes.map { Score.parseShots($0.text).count }.reduce(0, +) }
+
     private func countRow(_ title: String, value: Binding<Int>, step: Int) -> some View {
         HStack {
             Text(title.loc)
@@ -186,9 +256,10 @@ struct EntryEditorView: View {
         if let entry {
             date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
             caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; shotCount = entry.shotCount; result = entry.result
-            if let s = entry.sighterCount {
-                splitShots = true; sighters = s; scored = max(0, entry.shotCount - s)
-            }
+            maxPoints = entry.maxPoints
+            passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
+            mode = ShotEntryMode(of: entry)
+            if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
         } else if let last = allEntries.first {
             // New entries start from the most recent range, weapon and ammo: usually what you shoot next.
@@ -197,8 +268,10 @@ struct EntryEditorView: View {
             caliber = weapon?.preferredCaliber
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
             lot = suggestedLot(for: ammunition)
-            // Keep the split switched on for people who use it.
-            splitShots = last.sighterCount != nil
+        }
+        if entry == nil {
+            mode = defaultMode
+            if mode == .shots { passes = [PassDraft(text: "")] }
         }
         didLoad = true
     }
@@ -240,9 +313,18 @@ struct EntryEditorView: View {
         let target = entry ?? Entry()
         target.date = date; target.range = range; target.event = event.trimmingCharacters(in: .whitespaces)
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
-        target.lot = lot?.ammunition == ammunition ? lot : nil; target.shotCount = splitShots ? max(0, sighters) + max(0, scored) : max(0, shotCount)
-        target.sighterCount = splitShots ? max(0, sighters) : nil
+        target.lot = lot?.ammunition == ammunition ? lot : nil; 
+        switch mode {
+        case .total:
+            target.shotCount = max(0, shotCount); target.sighterCount = nil
+        case .split:
+            target.shotCount = max(0, sighters) + max(0, scored); target.sighterCount = max(0, sighters)
+        case .shots:
+            target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
+        }
         target.result = result; target.notes = notes
+        target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
+        target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
 
         let existing = target.sortedPhotos
         if existing.compactMap(\.imageData) != photos {

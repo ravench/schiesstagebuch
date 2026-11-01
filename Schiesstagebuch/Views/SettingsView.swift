@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var importing = false
     @State private var importingLegacy = false
     @State private var message: String?
+    @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
 
     var body: some View {
         NavigationStack {
@@ -22,6 +23,18 @@ struct SettingsView: View {
                     NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "mappin.and.ellipse") }
                 } header: {
                     Text("Stammdaten")
+                }
+
+                Section {
+                    Picker(selection: $defaultMode) {
+                        ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
+                    } label: {
+                        Label("Schüsse erfassen als", systemImage: "list.number")
+                    }
+                } header: {
+                    Text("Erfassung")
+                } footer: {
+                    Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
                 }
 
                 Section {

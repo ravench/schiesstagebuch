@@ -61,6 +61,13 @@ struct KPIGrid: View {
                     tile("Wertungsschüsse", entries.compactMap(\.scoredCount).reduce(0, +).formatted(), "target")
                 }
             }
+            let percent = entries.averagePercentage, perShot = entries.averagePerShot
+            if percent != nil || perShot != nil {
+                GridRow {
+                    tile("Ø Prozent", percent.map(ScoreFormat.percent) ?? "–", "percent")
+                    tile("Ø pro Schuss", perShot.map(ScoreFormat.points) ?? "–", "scope")
+                }
+            }
         }
     }
 
@@ -72,6 +79,51 @@ struct KPIGrid: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+/// Percentage, mean and median of one entry; rows only for what can be computed.
+struct ScoreSummary: View {
+    let score: Score
+
+    var body: some View {
+        if let p = score.percentage { LabeledContent("Prozent", value: ScoreFormat.percent(p)) }
+        if let m = score.meanPerShot { LabeledContent("Ø pro Schuss", value: ScoreFormat.points(m)) }
+        if let m = score.medianPerShot { LabeledContent("Median pro Schuss", value: ScoreFormat.points(m)) }
+    }
+}
+
+/// Result percentage per entry over time; shown once two entries have one.
+struct ResultTrendChart: View {
+    let entries: [Entry]
+
+    private struct Point: Identifiable { let id: UUID; let date: Date; let percent: Double }
+
+    private var points: [Point] {
+        entries.compactMap { e in e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0) } }
+            .sorted { $0.date < $1.date }
+    }
+
+    var body: some View {
+        let data = points
+        if data.count >= 2 {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Resultat in Prozent").font(.headline)
+                Chart(data) { p in
+                    LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
+                        .symbol(.circle)
+                        .interpolationMethod(.monotone)
+                }
+                .chartYAxis {
+                    AxisMarks { value in
+                        AxisGridLine()
+                        AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
+                    }
+                }
+                .chartYScale(domain: .automatic(includesZero: false))
+                .frame(height: 180)
+            }
+        }
     }
 }
 

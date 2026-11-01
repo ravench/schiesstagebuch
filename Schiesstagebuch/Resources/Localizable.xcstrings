@@ -737,6 +737,29 @@
         }
       }
     },
+    "Auswertung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scoring"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Évaluation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valutazione"
+          }
+        }
+      }
+    },
     "Backup exportieren": {
       "extractionState": "manual",
       "localizations": {
@@ -1335,6 +1358,29 @@
         }
       }
     },
+    "Einzelschüsse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Individual shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coups individuels"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi singoli"
+          }
+        }
+      }
+    },
     "Erfasse deine Munitionssorten, je mit Kaliber.": {
       "extractionState": "manual",
       "localizations": {
@@ -1400,6 +1446,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra"
+          }
+        }
+      }
+    },
+    "Erfassung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recording"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrazione"
           }
         }
       }
@@ -1837,6 +1906,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Totale"
+          }
+        }
+      }
+    },
+    "Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applies to new entries. You can switch the mode in any entry."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S'applique aux nouvelles entrées. Tu peux changer le mode dans chaque entrée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vale per le nuove voci. Puoi cambiare modalità in ogni voce."
           }
         }
       }
@@ -2600,6 +2692,52 @@
         }
       }
     },
+    "Max. Punkte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max. points"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points max."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punti max."
+          }
+        }
+      }
+    },
+    "Median pro Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Median per shot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Médiane par coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mediana per colpo"
+          }
+        }
+      }
+    },
     "Mit Service": {
       "extractionState": "manual",
       "localizations": {
@@ -3152,6 +3290,52 @@
         }
       }
     },
+    "Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. With max. points the app calculates the percentage and the average per shot."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Avec les points max., l'app calcule le pourcentage et la moyenne par coup."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Con i punti max. l'app calcola la percentuale e la media per colpo."
+          }
+        }
+      }
+    },
+    "Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. Without a result the sum of the shots counts; with max. points the app calculates the percentage."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Sans résultat, la somme des coups compte ; avec les points max., l'app calcule le pourcentage."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Senza risultato conta la somma dei colpi; con i punti max. l'app calcola la percentuale."
+          }
+        }
+      }
+    },
     "Ordonnanzpistole": {
       "extractionState": "manual",
       "localizations": {
@@ -3263,6 +3447,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Parabellum / Luger"
+          }
+        }
+      }
+    },
+    "Passe %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Series %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passe %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serie %lld"
+          }
+        }
+      }
+    },
+    "Passe hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add series"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une passe"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi serie"
           }
         }
       }
@@ -3474,25 +3704,25 @@
         }
       }
     },
-    "Probe- und Wertungsschüsse": {
+    "Probe/Wertung": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sighters and scored shots"
+            "value": "Sighters/Scored"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Coups d'essai et coups comptés"
+            "value": "Essai/Comptés"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Colpi di prova e di gara"
+            "value": "Prova/Gara"
           }
         }
       }
@@ -3516,6 +3746,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colpi di prova"
+          }
+        }
+      }
+    },
+    "Prozent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Percent"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pourcentage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Percentuale"
           }
         }
       }
@@ -3654,6 +3907,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato"
+          }
+        }
+      }
+    },
+    "Resultat in Prozent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result in percent"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat en pourcentage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato in percentuale"
           }
         }
       }
@@ -3884,6 +4160,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colpi"
+          }
+        }
+      }
+    },
+    "Schüsse erfassen als": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record shots as"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir les coups"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra i colpi come"
           }
         }
       }
@@ -4693,6 +4992,29 @@
         }
       }
     },
+    "z. B. 10 9 10 8 9": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. 10 9 10 8 9"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p. ex. 10 9 10 8 9"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p. es. 10 9 10 8 9"
+          }
+        }
+      }
+    },
     "zuletzt %@": {
       "extractionState": "manual",
       "localizations": {
@@ -4716,6 +5038,29 @@
         }
       }
     },
+    "Ø Prozent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avg. percent"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moy. pourcentage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media percentuale"
+          }
+        }
+      }
+    },
     "Ø pro Eintrag": {
       "extractionState": "manual",
       "localizations": {
@@ -4735,6 +5080,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media per voce"
+          }
+        }
+      }
+    },
+    "Ø pro Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avg. per shot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moy. par coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media per colpo"
           }
         }
       }

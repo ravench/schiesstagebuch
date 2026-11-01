@@ -194,6 +194,10 @@ final class Entry {
     var sighterCount: Int?
     /// Free text so "50", "96/100" or "Kranz" all work.
     var result: String = ""
+    /// Highest possible score, e.g. 100; nil when not entered.
+    var maxPoints: Double?
+    /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
+    var shotValuesText: String = ""
     var notes: String = ""
     var createdAt: Date = Date.now
     /// Set for entries imported from the old Schusszähler app, so re-importing skips them.
