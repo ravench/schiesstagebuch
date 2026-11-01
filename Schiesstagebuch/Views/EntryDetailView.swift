@@ -26,6 +26,12 @@ struct EntryDetailView: View {
             Section {
                 HStack(spacing: 0) {
                     metric("Schüsse", entry.shotCount.formatted())
+                    if let sighters = entry.sighterCount, let scored = entry.scoredCount {
+                        Divider()
+                        metric("Probe", sighters.formatted())
+                        Divider()
+                        metric("Wertung", scored.formatted())
+                    }
                     Divider()
                     metric("Resultat", entry.result.isEmpty ? "–" : entry.result)
                 }

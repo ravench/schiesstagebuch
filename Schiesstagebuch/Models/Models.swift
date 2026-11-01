@@ -188,7 +188,10 @@ final class Entry {
     var date: Date = Date.now
     /// Anlass (e.g. Training, Feldschiessen)
     var event: String = ""
+    /// All shots fired, sighters included.
     var shotCount: Int = 0
+    /// Probeschüsse, when the user splits the count; nil = only a total was entered.
+    var sighterCount: Int?
     /// Free text so "50", "96/100" or "Kranz" all work.
     var result: String = ""
     var notes: String = ""
@@ -219,6 +222,9 @@ final class Entry {
         self.result = result
         self.notes = notes
     }
+
+    /// Wertungsschüsse, when the count is split.
+    var scoredCount: Int? { sighterCount.map { max(0, shotCount - $0) } }
 
     var sortedPhotos: [EntryPhoto] { (photos ?? []).sorted { $0.position < $1.position } }
     var year: Int { Calendar.current.component(.year, from: date) }
