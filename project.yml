@@ -26,6 +26,9 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: net.forestraven.schiesstagebuch
+        # Signing team of the maintainer. Forks: replace with your own team ID (or remove it and pick a team in Xcode).
+        DEVELOPMENT_TEAM: PD9YC6KM5T
+        CODE_SIGN_STYLE: Automatic
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_VERSION: "5.10"

@@ -39,7 +39,7 @@ xcodegen generate
 open Schiesstagebuch.xcodeproj
 ```
 
-Set your team under Signing & Capabilities, then run on a device or simulator.
+If you build your own copy, replace `DEVELOPMENT_TEAM` in `project.yml` with your team ID (or pick your team under Signing & Capabilities), then run on a device or simulator.
 For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates the
 container on first run. Change the bundle id / container in `project.yml` if
 `net.forestraven` isn't yours.
