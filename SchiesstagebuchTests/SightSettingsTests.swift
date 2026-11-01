@@ -77,6 +77,17 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertFalse(FilterColor.all.contains { $0.contains("Filterhalter") }, "the holder is not a filter")
     }
 
+    func testPolarisedFiltersAreMarked() {
+        let polarised = FilterColor.filters.filter(\.isPolarised).map(\.name)
+        XCTAssertEqual(Set(polarised), [
+            "Sunrise polar", "Waldfee polar", "Nasashield grey polarisiert", "Nasashield braun polarisiert",
+            "Serengeti polarisiert", "Eidgenoss polarisiert",
+        ])
+        XCTAssertFalse(FilterColor.filter(named: "Serengeti")!.isPolarised)
+        XCTAssertLessThan(FilterColor.filter(named: "Eidgenoss polarisiert")!.luminance, 0.5)
+        XCTAssertGreaterThan(FilterColor.filter(named: "Citron")!.luminance, 0.5)
+    }
+
     func testFilterLookupAndTitles() {
         let citron = FilterColor.filter(named: "Citron")
         XCTAssertEqual(citron?.rgb, 0xF2EA2E)

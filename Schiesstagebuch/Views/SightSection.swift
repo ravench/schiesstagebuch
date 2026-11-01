@@ -91,6 +91,22 @@ struct FilterSwatch: View {
         ZStack {
             if let filter {
                 Circle().fill(Color(.sRGB, red: filter.red, green: filter.green, blue: filter.blue))
+                if filter.isPolarised {
+                    // Thin parallel lines mark a polarised lens.
+                    Canvas { ctx, sz in
+                        var path = Path()
+                        let gap = max(2.5, sz.width / 6)
+                        var x = -sz.height
+                        while x < sz.width {
+                            path.move(to: CGPoint(x: x, y: sz.height))
+                            path.addLine(to: CGPoint(x: x + sz.height, y: 0))
+                            x += gap
+                        }
+                        ctx.stroke(path, with: .color(filter.luminance < 0.5 ? .white.opacity(0.7) : .black.opacity(0.55)),
+                                   lineWidth: 0.75)
+                    }
+                    .clipShape(Circle())
+                }
             } else if !name.isEmpty {
                 Circle().fill(Color.secondary.opacity(0.4))
             }
