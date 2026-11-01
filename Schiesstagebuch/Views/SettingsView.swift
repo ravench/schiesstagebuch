@@ -73,7 +73,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Daten")
                 } footer: {
-                    Text("Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt.")
+                    Text("Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.")
                 }
 
                 Section {
@@ -104,7 +104,11 @@ struct SettingsView: View {
         do {
             exportType = .json
             exportName = "Schiesstagebuch-\(Date.now.formatted(.iso8601.year().month().day()))"
-            exportDoc = BackupDocument(data: try Backup.export(context))
+            let data = try Backup.export(context)
+            exportDoc = BackupDocument(data: data)
+            // A copy stays in the app's folder in the Files app.
+            try? BackupStore.save(data, name: exportName)
+            BackupStore.prune()
         }
         catch { message = String(localized: "Export fehlgeschlagen: \(error.localizedDescription)") }
     }
