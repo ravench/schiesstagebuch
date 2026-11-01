@@ -254,6 +254,29 @@
         }
       }
     },
+    "AXIA-Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AXIA filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres AXIA"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri AXIA"
+          }
+        }
+      }
+    },
     "Ab Reinigung / Service": {
       "extractionState": "manual",
       "localizations": {
@@ -1289,6 +1312,29 @@
         }
       }
     },
+    "Diesen Namen gibt es schon.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This name already exists."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ce nom existe déjà."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo nome esiste già."
+          }
+        }
+      }
+    },
     "Diopter": {
       "extractionState": "manual",
       "localizations": {
@@ -1308,6 +1354,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diottra"
+          }
+        }
+      }
+    },
+    "Eigene Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mes filtres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I miei filtri"
           }
         }
       }
@@ -1795,6 +1864,29 @@
         }
       }
     },
+    "Farbe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colour"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couleur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colore"
+          }
+        }
+      }
+    },
     "Fehlende Schüsse: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -1860,6 +1952,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtro"
+          }
+        }
+      }
+    },
+    "Filter bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le filtre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica filtro"
+          }
+        }
+      }
+    },
+    "Filter hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un filtre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi filtro"
           }
         }
       }
@@ -3474,6 +3612,29 @@
         }
       }
     },
+    "Name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome"
+          }
+        }
+      }
+    },
     "Name, z. B. Albisgüetli": {
       "extractionState": "manual",
       "localizations": {
@@ -3654,6 +3815,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nuova voce"
+          }
+        }
+      }
+    },
+    "Neuer Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau filtre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo filtro"
           }
         }
       }
@@ -3907,6 +4091,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma."
+          }
+        }
+      }
+    },
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. New entries take the values of the last entry with this weapon. Choose your filters under Settings → Filter."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages → Filtre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni → Filtro."
           }
         }
       }
@@ -4183,6 +4390,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Storico manutenzione"
+          }
+        }
+      }
+    },
+    "Polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polarizzato"
           }
         }
       }
@@ -5770,6 +6000,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Visualizzazioni ripetute (non contate)"
+          }
+        }
+      }
+    },
+    "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select the filters you own. Only these appear in the picker. Existing entries keep their filter."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro."
           }
         }
       }

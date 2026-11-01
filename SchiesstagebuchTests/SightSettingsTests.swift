@@ -78,12 +78,12 @@ final class SightSettingsTests: ModelTestCase {
     }
 
     func testPolarisedFiltersAreMarked() {
-        let polarised = FilterColor.filters.filter(\.isPolarised).map(\.name)
+        let polarised = FilterColor.filters.filter(\.polarised).map(\.name)
         XCTAssertEqual(Set(polarised), [
             "Sunrise polar", "Waldfee polar", "Nasashield grey polarisiert", "Nasashield braun polarisiert",
             "Serengeti polarisiert", "Eidgenoss polarisiert",
         ])
-        XCTAssertFalse(FilterColor.filter(named: "Serengeti")!.isPolarised)
+        XCTAssertFalse(FilterColor.filter(named: "Serengeti")!.polarised)
         XCTAssertLessThan(FilterColor.filter(named: "Eidgenoss polarisiert")!.luminance, 0.5)
         XCTAssertGreaterThan(FilterColor.filter(named: "Citron")!.luminance, 0.5)
     }
@@ -150,5 +150,74 @@ final class SightSettingsTests: ModelTestCase {
         SightSettings(bipodLength: 41.7).apply(to: e)
         XCTAssertEqual(e.bipodLength, 41.5)
         XCTAssertEqual(SightSettings(entry: e).bipodLength, 41.5)
+    }
+
+    // MARK: Filter catalog (Settings → Filter)
+
+    func testCatalogStartsWithNoOwnedFilters() {
+        let c = FilterCatalog(data: Data())
+        XCTAssertEqual(c, FilterCatalog())
+        XCTAssertTrue(c.visible.isEmpty, "only filters the user ticks appear in the picker")
+        XCTAssertEqual(FilterCatalog(data: Data("garbage".utf8)), FilterCatalog())
+    }
+
+    func testOnlyOwnedBuiltInsAndCustomFiltersAreOffered() {
+        var c = FilterCatalog()
+        c.setOwned("Citron", true)
+        c.setOwned("Eidgenoss polarisiert", true)
+        c.setOwned("Not a filter", true)
+        XCTAssertTrue(c.save(.init(name: "Mein Orange", rgb: 0xFF8800, polarised: false)))
+        XCTAssertEqual(c.visible.map(\.name), ["Citron", "Eidgenoss polarisiert", "Mein Orange"])
+        c.setOwned("Citron", false)
+        XCTAssertEqual(c.visible.map(\.name), ["Eidgenoss polarisiert", "Mein Orange"])
+        XCTAssertFalse(c.owns("Not a filter"))
+    }
+
+    func testBuiltInFiltersCannotBeDeleted() {
+        var c = FilterCatalog(owned: ["ACE"])
+        c.remove("ACE")
+        XCTAssertEqual(c.visible.map(\.name), ["ACE"])
+        XCTAssertNotNil(c.filter(named: "ACE"))
+    }
+
+    func testCustomFilterNamesMustBeUniqueAndNonEmpty() {
+        var c = FilterCatalog()
+        XCTAssertEqual(c.problem(with: "  "), .empty)
+        XCTAssertEqual(c.problem(with: "citron"), .duplicate, "clashes with a built-in, ignoring case")
+        XCTAssertFalse(c.save(.init(name: "Citron", rgb: 0, polarised: false)))
+        XCTAssertTrue(c.save(.init(name: " Blau ", rgb: 0x0000FF, polarised: true)))
+        XCTAssertEqual(c.custom.first?.name, "Blau", "names are trimmed")
+        XCTAssertEqual(c.problem(with: "Blau"), .duplicate)
+        XCTAssertNil(c.problem(with: "Blau", replacing: "Blau"), "keeping the name while editing is fine")
+    }
+
+    func testEditingAndDeletingCustomFilters() {
+        var c = FilterCatalog()
+        c.save(.init(name: "Blau", rgb: 0x0000FF, polarised: false))
+        c.save(.init(name: "Dunkelblau", rgb: 0x000080, polarised: true), replacing: "Blau")
+        XCTAssertEqual(c.custom, [.init(name: "Dunkelblau", rgb: 0x000080, polarised: true)])
+        c.remove("Dunkelblau")
+        XCTAssertTrue(c.custom.isEmpty)
+    }
+
+    func testCatalogSurvivesStorageRoundTrip() {
+        var c = FilterCatalog(owned: ["Saphire", "HC Geor"])
+        c.save(.init(name: "Eigener", rgb: 0x123456, polarised: true))
+        XCTAssertEqual(FilterCatalog(data: c.data), c)
+    }
+
+    func testHiddenOrCustomFiltersStillResolveForOldEntries() {
+        let c = FilterCatalog(custom: [.init(name: "Eigener", rgb: 0x123456, polarised: false)])
+        XCTAssertEqual(c.filter(named: "Serengeti")?.rgb, 0xA0521E, "not owned but still known")
+        XCTAssertEqual(c.filter(named: "Eigener")?.rgb, 0x123456)
+        XCTAssertNil(c.filter(named: "Gelb"))
+    }
+
+    func testFilterFromColourComponents() {
+        let f = FilterColor.Filter(name: "x", red: 1, green: 0.5, blue: 0, polarised: false)
+        XCTAssertEqual(f.rgb, 0xFF8000)
+        XCTAssertEqual(FilterColor.Filter(name: "y", red: 2, green: -1, blue: 0, polarised: false).rgb, 0xFF0000, "out-of-range values are clamped")
+        XCTAssertTrue(FilterColor.Filter(name: "Sunrise polar", rgb: 0).polarised)
+        XCTAssertFalse(FilterColor.Filter(name: "Sunrise polar", rgb: 0, polarised: false).polarised)
     }
 }

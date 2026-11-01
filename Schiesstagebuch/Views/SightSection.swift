@@ -5,17 +5,19 @@ struct SightSection: View {
     @Binding var sight: SightSettings
     var aperture: SightSettings.Aperture = .both
     @State private var expanded = false
+    @AppStorage(FilterCatalog.key) private var catalogData = Data()
 
     var body: some View {
         Section {
             DisclosureGroup(isExpanded: $expanded) {
                 Picker("Filter", selection: $sight.filter) {
                     Label { Text("Kein Filter") } icon: { FilterSwatch(name: "") }.tag("")
-                    ForEach(FilterColor.filters, id: \.name) { f in
-                        Label { Text(f.name) } icon: { FilterSwatch(name: f.name) }.tag(f.name)
+                    let visible = FilterCatalog(data: catalogData).visible
+                    ForEach(visible, id: \.name) { f in
+                        Label { Text(f.name) } icon: { FilterSwatch(filter: f) }.tag(f.name)
                     }
-                    // Keep a stored name that is no longer sold selectable.
-                    if !sight.filter.isEmpty, FilterColor.filter(named: sight.filter) == nil {
+                    // Keep the entry's filter selectable even if it is hidden or was removed in Settings.
+                    if !sight.filter.isEmpty, !visible.contains(where: { $0.name == sight.filter }) {
                         Label { Text(sight.filter) } icon: { FilterSwatch(name: sight.filter) }.tag(sight.filter)
                     }
                 }
@@ -38,7 +40,11 @@ struct SightSection: View {
                 }
             }
         } footer: {
-            Text("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.")
+            if FilterCatalog(data: catalogData).visible.isEmpty {
+                Text("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.")
+            } else {
+                Text("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.")
+            }
         }
     }
 
@@ -82,17 +88,21 @@ struct SightSection: View {
 }
 
 /// Small round lens swatch for a filter; an empty ring for "no filter".
+/// Polarised lenses get thin diagonal lines.
 struct FilterSwatch: View {
-    let name: String
+    var name: String = ""
+    /// Shown directly when given (e.g. while editing a filter); otherwise looked up by `name`.
+    var filter: FilterColor.Filter?
     var size: CGFloat = 18
+    @AppStorage(FilterCatalog.key) private var catalogData = Data()
 
     var body: some View {
-        let filter = FilterColor.filter(named: name)
+        let shown = filter ?? FilterCatalog(data: catalogData).filter(named: name)
+        let isNone = shown == nil && name.isEmpty
         ZStack {
-            if let filter {
-                Circle().fill(Color(.sRGB, red: filter.red, green: filter.green, blue: filter.blue))
-                if filter.isPolarised {
-                    // Thin parallel lines mark a polarised lens.
+            if let shown {
+                Circle().fill(Color(.sRGB, red: shown.red, green: shown.green, blue: shown.blue))
+                if shown.polarised {
                     Canvas { ctx, sz in
                         var path = Path()
                         let gap = max(2.5, sz.width / 6)
@@ -102,15 +112,15 @@ struct FilterSwatch: View {
                             path.addLine(to: CGPoint(x: x + sz.height, y: 0))
                             x += gap
                         }
-                        ctx.stroke(path, with: .color(filter.luminance < 0.5 ? .white.opacity(0.7) : .black.opacity(0.55)),
+                        ctx.stroke(path, with: .color(shown.luminance < 0.5 ? .white.opacity(0.7) : .black.opacity(0.55)),
                                    lineWidth: 0.75)
                     }
                     .clipShape(Circle())
                 }
-            } else if !name.isEmpty {
+            } else if !isNone {
                 Circle().fill(Color.secondary.opacity(0.4))
             }
-            Circle().strokeBorder(Color.primary.opacity(name.isEmpty ? 0.5 : 0.8), lineWidth: 2)
+            Circle().strokeBorder(Color.primary.opacity(isNone ? 0.5 : 0.8), lineWidth: 2)
         }
         .frame(width: size, height: size)
         .accessibilityHidden(true)

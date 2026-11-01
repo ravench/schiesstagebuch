@@ -48,6 +48,11 @@ struct SettingsView: View {
                     Toggle(isOn: $showSport) {
                         Label("Waffen-Einstellungen für Sportschützen erfassen", systemImage: "scope")
                     }
+                    if showSport {
+                        NavigationLink { FilterSettingsView() } label: {
+                            Label("Filter", systemImage: "circle.lefthalf.filled")
+                        }
+                    }
                 } footer: {
                     Text("Zeigt in Einträgen Felder für Filter, Diopter, Ring oder Iris und Zweibein. Ausgeblendete Werte bleiben gespeichert.")
                 }
