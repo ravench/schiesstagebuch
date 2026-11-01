@@ -38,6 +38,23 @@ struct EntryDetailView: View {
                 .frame(height: 64)
             }
 
+            let score = entry.score
+            if score.percentage != nil || score.meanPerShot != nil {
+                Section("Auswertung") { ScoreSummary(score: score) }
+            }
+            if !score.passes.isEmpty {
+                Section("Einzelschüsse") {
+                    ForEach(Array(score.passes.enumerated()), id: \.offset) { i, pass in
+                        HStack {
+                            Text("Passe \(i + 1)").foregroundStyle(.secondary)
+                            Text(pass.map(ScoreFormat.points).joined(separator: " ")).monospacedDigit()
+                            Spacer()
+                            Text(ScoreFormat.points(pass.reduce(0, +))).monospacedDigit().bold()
+                        }
+                    }
+                }
+            }
+
             Section("Ausrüstung") {
                 row("Waffe", entry.weapon?.name)
                 row("Kaliber", entry.caliber?.name)

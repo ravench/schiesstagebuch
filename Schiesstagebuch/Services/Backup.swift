@@ -56,6 +56,8 @@ enum Backup {
         var weaponID: UUID?; var caliberID: UUID?; var rangeID: UUID?; var ammunitionID: UUID?
         var lotID: UUID?
         var sighterCount: Int?
+        var maxPoints: Double?
+        var shotValuesText: String?
         var photos: [Data]
     }
 
@@ -84,6 +86,7 @@ enum Backup {
                 .init(id: $0.id, date: $0.date, event: $0.event, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, rangeID: $0.range?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, sighterCount: $0.sighterCount,
+                      maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
                       photos: $0.sortedPhotos.compactMap(\.imageData))
             },
             lots: try all(AmmoLot.self, context).map {
@@ -168,6 +171,8 @@ enum Backup {
             context.insert(e)
             e.lot = d.lotID.flatMap { lots[$0] }
             e.sighterCount = d.sighterCount
+            e.maxPoints = d.maxPoints
+            e.shotValuesText = d.shotValuesText ?? ""
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
         }
@@ -186,13 +191,16 @@ enum Backup {
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        var lines = [["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los", "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Bemerkungen"]
+        var lines = [["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los", "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte", "Prozent", "Einzelschüsse", "Bemerkungen"]
             .map(\.loc).joined(separator: ";")]
         for e in entries {
             lines.append([df.string(from: e.date), e.range?.name ?? "", e.range?.place ?? "", e.event,
                           e.weapon?.name ?? "", e.caliber?.name ?? "", e.ammunition?.name ?? "",
                           e.lot?.number ?? "", String(e.shotCount),
-                          e.sighterCount.map(String.init) ?? "", e.scoredCount.map(String.init) ?? "", e.result, e.notes].map(field).joined(separator: ";"))
+                          e.sighterCount.map(String.init) ?? "", e.scoredCount.map(String.init) ?? "", e.result,
+                          e.score.effectiveMax.map(ScoreFormat.points) ?? "",
+                          e.score.percentage.map(ScoreFormat.percent) ?? "",
+                          e.shotValuesText.replacingOccurrences(of: "\n", with: " | "), e.notes].map(field).joined(separator: ";"))
         }
         return Data(("\u{FEFF}" + lines.joined(separator: "\r\n")).utf8)
     }
