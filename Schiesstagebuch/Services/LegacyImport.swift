@@ -63,6 +63,20 @@ enum LegacyImport {
         return f
     }()
 
+    /// Old-app export files in a folder and its direct subfolders (.tsv, .txt, .db), by name.
+    static func candidates(in folder: URL) -> [URL] {
+        let fm = FileManager.default
+        let keys: [URLResourceKey] = [.isDirectoryKey]
+        func children(_ url: URL) -> [URL] {
+            (try? fm.contentsOfDirectory(at: url, includingPropertiesForKeys: keys, options: [.skipsHiddenFiles])) ?? []
+        }
+        func isDirectory(_ url: URL) -> Bool { (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true }
+        let top = children(folder)
+        let all = top + top.filter(isDirectory).flatMap(children)
+        return all.filter { !isDirectory($0) && ["tsv", "txt", "db"].contains($0.pathExtension.lowercased()) }
+            .sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
+    }
+
     static func parseDate(_ s: String) -> Date? {
         guard let d = dateFormatter.date(from: s.trimmingCharacters(in: .whitespaces)) else { return nil }
         // Noon avoids the date shifting across time zones.

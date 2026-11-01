@@ -8,14 +8,19 @@ struct LegacyImportView: View {
     @Environment(\.dismiss) private var dismiss
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var calibers: [Caliber]
 
-    @State private var picking = true
+    /// Not opened automatically: presenting the picker while the sheet animates in
+    /// made it reopen the same folder instead of entering it.
+    @State private var picking = false
+    /// Export files already in the app's own folder (Files › On My iPhone › Schiesstagebuch).
+    @State private var found: [URL] = []
     @State private var plan: LegacyImport.Plan?
     @State private var loadPhotos = true
     @State private var running = false
     @State private var summary: LegacyImport.Summary?
     @State private var error: String?
 
-    private static let types: [UTType] = [.tabSeparatedText, .plainText, .data] + [UTType(filenameExtension: "db")].compactMap { $0 }
+    private static let types: [UTType] = [.tabSeparatedText, .plainText, .commaSeparatedText, .database]
+        + [UTType(filenameExtension: "db"), UTType(filenameExtension: "tsv")].compactMap { $0 }
 
     var body: some View {
         NavigationStack {
@@ -73,6 +78,15 @@ struct LegacyImportView: View {
                         .disabled(running || plan.newRows.isEmpty)
                     }
                 } else {
+                    if !found.isEmpty {
+                        Section("Im Ordner der App gefunden") {
+                            ForEach(found, id: \.self) { url in
+                                Button { load(url) } label: {
+                                    Label(url.lastPathComponent, systemImage: url.pathExtension == "db" ? "cylinder.split.1x2" : "doc.text")
+                                }
+                            }
+                        }
+                    }
                     Section {
                         Button("Datei wählen …") { picking = true }
                     } footer: {
@@ -97,6 +111,7 @@ struct LegacyImportView: View {
                 Button("OK") {}
             } message: { Text(error ?? "") }
             .interactiveDismissDisabled(running)
+            .onAppear { found = LegacyImport.candidates(in: URL.documentsDirectory) }
         }
     }
 
