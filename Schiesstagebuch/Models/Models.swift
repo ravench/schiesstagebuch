@@ -151,6 +151,8 @@ final class Entry {
     var result: String = ""
     var notes: String = ""
     var createdAt: Date = Date.now
+    /// Set for entries imported from the old Schusszähler app, so re-importing skips them.
+    var importKey: String = ""
 
     var weapon: Weapon?
     var caliber: Caliber?

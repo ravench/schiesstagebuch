@@ -20,6 +20,14 @@ replacing "Schusszähler-Schiesstagebuch". German UI, iOS 17+.
 - **Pflege**: log cleaning and service per weapon. Optional reminders after N shots
   and/or N days, as local notifications and a badge on the Waffen tab.
 - **Daten**: JSON backup with photos (restore merges, no duplicates), CSV export for Excel.
+- **Import** from the old Schusszähler app: its `ShootCounter-Export.tsv` or `data.db`.
+  Old ammo names are mapped to calibres (editable before importing), weapons get their
+  calibres and a guessed category, and photos are pulled from the Photos library when the
+  referenced pictures still exist there.
+- **iCloud sync** via SwiftData + CloudKit (container `iCloud.net.forestraven.schiesstagebuch`).
+  Works offline and without iCloud; calibres seeded on several devices are merged.
+- **Icons**: a silhouette per weapon category and a true-to-scale cartridge outline for
+  every catalogue calibre.
 
 ## Building
 
@@ -32,6 +40,16 @@ open Schiesstagebuch.xcodeproj
 ```
 
 Set your team under Signing & Capabilities, then run on a device or simulator.
+For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates the
+container on first run. Change the bundle id / container in `project.yml` if
+`net.forestraven` isn't yours.
+
+Calibres and icons are generated assets. After editing `tools/cartridges.py` or
+`tools/weapon_icons.py`, run:
+
+```sh
+python3 tools/generate_assets.py --preview /tmp/preview.html   # preview is optional
+```
 
 ## Layout
 
