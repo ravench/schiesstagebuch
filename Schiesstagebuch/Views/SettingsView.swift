@@ -60,7 +60,15 @@ struct SettingsView: View {
                     Button { importing = true } label: { Label("Backup wiederherstellen", systemImage: "square.and.arrow.down") }
                     Button { exportCSV() } label: { Label("Tagebuch als CSV", systemImage: "tablecells") }
                     Button { importingLegacy = true } label: {
-                        Label("Aus Schusszähler-App importieren", systemImage: "arrow.down.doc")
+                        Label {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Import aus «\(LegacyImport.sourceAppName)»")
+                                Text("App von \(LegacyImport.sourceDeveloper)")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "arrow.down.doc")
+                        }
                     }
                 } header: {
                     Text("Daten")

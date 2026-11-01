@@ -20,7 +20,7 @@ CONTEXTS = [
     r'\bcase \w+ = ' + LIT,             # CaliberCatalog.Category raw values
     r'\[' + LIT + r'(?:,\s*' + LIT + r')+\]\s*\n?\s*\.map\(\\\.loc\)',
 ]
-STRINGY = ("formatted", "name", "title", "Description", "joined", ".loc", "place")
+STRINGY = ("formatted", "name", "Name", "Developer", "title", "Description", "joined", ".loc", "place")
 
 
 def key_for(literal):
@@ -43,7 +43,7 @@ def keys():
                         if g and re.search(r'[A-Za-zÄÖÜäöü]{2}', g):
                             found.setdefault(key_for(g), f)
             # CSV header list
-            for m in re.finditer(r'\[("Datum".*?)\]\s*\n\s*\.map\(\\\.loc\)', src, re.S):
+            for m in re.finditer(r'\[("Datum".*?)\]', src, re.S):
                 for g in re.findall(LIT, m.group(1)):
                     found.setdefault(g, f)
     # SF Symbol names and other non-UI literals that the patterns can catch.
