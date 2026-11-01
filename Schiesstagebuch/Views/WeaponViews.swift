@@ -307,12 +307,10 @@ struct WeaponEditorView: View {
 
     private func intervalSection(_ kind: MaintenanceKind, shots: Binding<Int>, days: Binding<Int>) -> some View {
         Section {
-            Stepper(value: shots, in: 0...20_000, step: kind == .cleaning ? 50 : 500) {
-                LabeledContent("Nach Schüssen", value: shots.wrappedValue == 0 ? "Aus".loc : shots.wrappedValue.formatted())
-            }
-            Stepper(value: days, in: 0...730, step: kind == .cleaning ? 7 : 30) {
-                LabeledContent("Nach Tagen", value: days.wrappedValue == 0 ? "Aus".loc : days.wrappedValue.formatted())
-            }
+            NumberStepperRow(title: "Nach Schüssen", value: shots, range: 0...20_000,
+                             step: kind == .cleaning ? 50 : 500, zeroLabel: "Aus")
+            NumberStepperRow(title: "Nach Tagen", value: days, range: 0...730,
+                             step: kind == .cleaning ? 7 : 30, zeroLabel: "Aus")
         } header: {
             Label("Erinnerung \(kind.title)", systemImage: kind.icon)
         } footer: {
