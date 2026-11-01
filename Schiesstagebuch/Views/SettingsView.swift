@@ -282,6 +282,7 @@ struct AmmunitionEditorView: View {
     @State private var caliber: Caliber?
     @State private var isArchived = false
     @State private var lots: [LotDraft] = []
+    @State private var scanningLot = false
 
     /// An editable lot row; `lot` is nil for lots added in this sheet.
     private struct LotDraft: Identifiable {
@@ -316,6 +317,9 @@ struct AmmunitionEditorView: View {
                     } label: {
                         Label("Losnummer hinzufügen", systemImage: "plus.circle")
                     }
+                    Button { scanningLot = true } label: {
+                        Label("Losnummer scannen", systemImage: "barcode.viewfinder")
+                    }
                 } header: {
                     Text("Losnummern")
                 } footer: {
@@ -341,12 +345,26 @@ struct AmmunitionEditorView: View {
                     .bold().disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
+            .sheet(isPresented: $scanningLot) {
+                LotScanView(knownLots: lots.map(\.number)) { addScannedLot($0) }
+            }
             .onAppear {
                 name = ammunition?.name ?? ""
                 caliber = ammunition?.caliber ?? suggestedCaliber
                 isArchived = ammunition?.isArchived ?? false
                 lots = (ammunition?.sortedLots() ?? []).map { LotDraft(lot: $0, number: $0.number) }
             }
+        }
+    }
+
+    /// Adds a scanned number unless the same lot is already listed.
+    private func addScannedLot(_ number: String) {
+        let key = LotNumber.normalized(number)
+        guard !key.isEmpty, !lots.contains(where: { LotNumber.normalized($0.number) == key }) else { return }
+        if let empty = lots.firstIndex(where: { $0.lot == nil && $0.number.trimmingCharacters(in: .whitespaces).isEmpty }) {
+            lots[empty].number = number
+        } else {
+            lots.insert(LotDraft(lot: nil, number: number), at: 0)
         }
     }
 

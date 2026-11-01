@@ -20,6 +20,9 @@ struct EntryEditorView: View {
     @State private var caliber: Caliber?
     @State private var ammunition: Ammunition?
     @State private var lot: AmmoLot?
+    /// A scanned lot number not saved for this ammo yet; created on "Sichern".
+    @State private var newLotNumber: String?
+    @State private var scanningLot = false
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
@@ -90,15 +93,7 @@ struct EntryEditorView: View {
                     }
                     pickerRow("Munition", selection: $ammunition, items: fittingAmmunition,
                               label: \.displayName, add: .ammunition)
-                    if let ammunition, !ammunition.sortedLots().isEmpty || lot != nil {
-                        Picker("Los", selection: $lot) {
-                            Text("–").tag(AmmoLot?.none)
-                            ForEach(ammunition.sortedLots()) { Text($0.number).tag(Optional($0)) }
-                            if let lot, !ammunition.sortedLots().contains(lot) {
-                                Text(lot.number).tag(Optional(lot))
-                            }
-                        }
-                    }
+                    if let ammunition { lotRows(ammunition) }
                 }
 
                 Section("Schüsse") {
@@ -195,6 +190,7 @@ struct EntryEditorView: View {
             }
             .onChange(of: ammunition) { _, new in
                 guard didLoad else { return }
+                newLotNumber = nil
                 if let lot, lot.ammunition == new { return }
                 lot = suggestedLot(for: new)
             }
@@ -214,6 +210,9 @@ struct EntryEditorView: View {
             }
             .onChange(of: pickerItems) { _, items in
                 Task { await loadPhotos(items) }
+            }
+            .sheet(isPresented: $scanningLot) {
+                LotScanView(knownLots: ammunition?.sortedLots(includeArchived: true).map(\.number) ?? []) { applyLotScan($0) }
             }
             .sheet(isPresented: $showingScanner) {
                 StandblattScanView { scanned, scannedPhotos in applyScan(scanned, photos: scannedPhotos) }
@@ -296,6 +295,43 @@ struct EntryEditorView: View {
         return fitting.count == 1 ? fitting.first : nil
     }
 
+    @ViewBuilder
+    private func lotRows(_ ammunition: Ammunition) -> some View {
+        if let newLotNumber {
+            LabeledContent("Los") {
+                HStack {
+                    Text(newLotNumber)
+                    Text("Neu").font(.caption).foregroundStyle(.secondary)
+                    Button { self.newLotNumber = nil } label: { Image(systemName: "xmark.circle.fill") }
+                        .buttonStyle(.borderless).foregroundStyle(.secondary)
+                }
+            }
+        } else if !ammunition.sortedLots().isEmpty || lot != nil {
+            Picker("Los", selection: $lot) {
+                Text("–").tag(AmmoLot?.none)
+                ForEach(ammunition.sortedLots()) { Text($0.number).tag(Optional($0)) }
+                if let lot, !ammunition.sortedLots().contains(lot) {
+                    Text(lot.number).tag(Optional(lot))
+                }
+            }
+        }
+        Button { scanningLot = true } label: {
+            Label("Losnummer scannen", systemImage: "barcode.viewfinder")
+        }
+    }
+
+    /// Picks the scanned lot if this ammo has it, else remembers it as a new lot.
+    private func applyLotScan(_ number: String) {
+        guard let ammunition else { return }
+        if let existing = LotNumber.match(number, in: ammunition.sortedLots(includeArchived: true)) {
+            lot = existing
+            newLotNumber = nil
+        } else {
+            lot = nil
+            newLotNumber = number
+        }
+    }
+
     /// The lot last shot with this ammo if it is still active, else the only active lot.
     private func suggestedLot(for ammunition: Ammunition?) -> AmmoLot? {
         guard let ammunition else { return nil }
@@ -335,6 +371,9 @@ struct EntryEditorView: View {
         target.date = date; target.range = range; target.event = event.trimmingCharacters(in: .whitespaces)
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
         target.lot = lot?.ammunition == ammunition ? lot : nil
+        if let newLotNumber, let ammunition {
+            target.lot = LotNumber.lot(newLotNumber, for: ammunition, in: context)
+        }
         switch mode {
         case .total:
             target.shotCount = max(0, shotCount); target.sighterCount = nil

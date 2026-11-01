@@ -783,6 +783,29 @@
         }
       }
     },
+    "Aus dem Barcode (GS1)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the barcode (GS1)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du code-barres (GS1)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dal codice a barre (GS1)"
+          }
+        }
+      }
+    },
     "Ausgewählt": {
       "extractionState": "manual",
       "localizations": {
@@ -917,6 +940,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ripristina backup"
+          }
+        }
+      }
+    },
+    "Barcode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barcode"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code-barres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codice a barre"
           }
         }
       }
@@ -1216,6 +1262,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le tue armi"
+          }
+        }
+      }
+    },
+    "Der wahrscheinlichste Treffer steht oben. Tippe auf die richtige Nummer.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The most likely match is at the top. Tap the right number."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le résultat le plus probable est en haut. Touche le bon numéro."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il risultato più probabile è in alto. Tocca il numero giusto."
           }
         }
       }
@@ -1860,6 +1929,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fucile a canna liscia"
+          }
+        }
+      }
+    },
+    "Fotografiere die Stelle der Schachtel, auf der die Losnummer steht. Text und Barcodes werden auf dem Gerät erkannt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photograph the part of the box where the lot number is printed. Text and barcodes are recognised on the device."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photographie la partie de la boîte où figure le numéro de lot. Le texte et les codes-barres sont reconnus sur l’appareil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotografa la parte della scatola con il numero di lotto. Testo e codici a barre vengono riconosciuti sul dispositivo."
           }
         }
       }
@@ -2715,6 +2807,29 @@
         }
       }
     },
+    "Keine Losnummer erkannt. Versuche ein schärferes Foto oder tippe sie ein.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No lot number found. Try a sharper photo or type it in."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun numéro de lot reconnu. Essaie une photo plus nette ou saisis-le."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun numero di lotto riconosciuto. Prova una foto più nitida o inseriscilo a mano."
+          }
+        }
+      }
+    },
     "Keine Munition": {
       "extractionState": "manual",
       "localizations": {
@@ -3056,6 +3171,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi numero di lotto"
+          }
+        }
+      }
+    },
+    "Losnummer scannen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan lot number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanner le numéro de lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scansiona numero di lotto"
+          }
+        }
+      }
+    },
+    "Losnummer wird gesucht …": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking for the lot number …"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherche du numéro de lot …"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ricerca del numero di lotto …"
           }
         }
       }
@@ -3543,6 +3704,52 @@
         }
       }
     },
+    "Neben «Lot» / «Los»": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next to “Lot”"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À côté de « Lot »"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accanto a «Lotto»"
+          }
+        }
+      }
+    },
+    "Neu": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo"
+          }
+        }
+      }
+    },
     "Neue Munition": {
       "extractionState": "manual",
       "localizations": {
@@ -3677,6 +3884,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nuova voce"
+          }
+        }
+      }
+    },
+    "Neues Foto": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New photo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouvelle photo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova foto"
           }
         }
       }
@@ -4739,6 +4969,29 @@
         }
       }
     },
+    "Schachtel fotografieren": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photograph box"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photographier la boîte"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotografa la scatola"
+          }
+        }
+      }
+    },
     "Scheibe": {
       "extractionState": "manual",
       "localizations": {
@@ -5586,6 +5839,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostra storico"
+          }
+        }
+      }
+    },
+    "Vermutung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guess"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supposition"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ipotesi"
           }
         }
       }
