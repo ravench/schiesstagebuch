@@ -111,7 +111,7 @@ final class SightSettingsTests: ModelTestCase {
         let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
         XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "ACE", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5))
 
-        let csv = String(decoding: Backup.csv(context), as: UTF8.self)
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         let lines = csv.components(separatedBy: "\r\n")
         let header = lines[0].components(separatedBy: ";")
         let row = lines[1].components(separatedBy: ";")

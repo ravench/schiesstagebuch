@@ -352,7 +352,7 @@ struct EntryEditorView: View {
         let target = entry ?? Entry()
         target.date = date; target.range = range; target.event = event.trimmingCharacters(in: .whitespaces)
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
-        target.lot = lot?.ammunition == ammunition ? lot : nil; 
+        target.lot = lot?.ammunition == ammunition ? lot : nil
         switch mode {
         case .total:
             target.shotCount = max(0, shotCount); target.sighterCount = nil

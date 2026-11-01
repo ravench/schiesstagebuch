@@ -8,7 +8,7 @@ struct NumberStepperRow: View {
     var range: ClosedRange<Int> = 0...10_000
     var step: Int = 1
     /// Shown instead of 0, e.g. "Aus" for a disabled reminder.
-    var zeroLabel: String? = nil
+    var zeroLabel: String?
 
     var body: some View {
         HStack {
