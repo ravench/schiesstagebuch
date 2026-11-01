@@ -254,6 +254,75 @@
         }
       }
     },
+    "Ab Reinigung / Service": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From cleaning / service"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dès le nettoyage / service"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dalla pulizia / manutenzione"
+          }
+        }
+      }
+    },
+    "Ab erster Nutzung danach": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From first use afterwards"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dès la première utilisation suivante"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dal primo utilizzo successivo"
+          }
+        }
+      }
+    },
+    "Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When day-based reminders start counting. You can change this per firearm."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À partir de quand les rappels en jours comptent. Modifiable pour chaque arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni arma."
+          }
+        }
+      }
+    },
     "Abbrechen": {
       "extractionState": "manual",
       "localizations": {
@@ -1220,6 +1289,29 @@
         }
       }
     },
+    "Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A cleaning resets the cleaning shots and days; a service also resets the service ones."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un nettoyage remet à zéro les coups et jours du nettoyage ; un service remet aussi ceux du service."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una pulizia azzera colpi e giorni della pulizia; una manutenzione azzera anche quelli della manutenzione."
+          }
+        }
+      }
+    },
     "Einstellungen": {
       "extractionState": "manual",
       "localizations": {
@@ -1515,6 +1607,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Promemoria: %@"
+          }
+        }
+      }
+    },
+    "Erinnerungen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rappels"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promemoria"
           }
         }
       }
@@ -4371,6 +4486,29 @@
         }
       }
     },
+    "Standard (%@)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default (%@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par défaut (%@)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Predefinito (%@)"
+          }
+        }
+      }
+    },
     "Statistik": {
       "extractionState": "manual",
       "localizations": {
@@ -4390,6 +4528,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statistiche"
+          }
+        }
+      }
+    },
+    "Tage zählen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Count days"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compter les jours"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conta i giorni"
+          }
+        }
+      }
+    },
+    "Tage zählen ab der nächsten Nutzung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days count from the next use"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les jours comptent dès la prochaine utilisation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I giorni contano dal prossimo utilizzo"
           }
         }
       }

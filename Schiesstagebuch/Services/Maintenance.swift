@@ -2,9 +2,29 @@ import Foundation
 import UserNotifications
 
 /// Where a weapon stands for one maintenance kind, derived from its records, entries and intervals.
+/// Where the day interval starts after a cleaning or service.
+enum DayCounting: String, CaseIterable, Identifiable {
+    /// On the day of the cleaning / service.
+    case fromMaintenance
+    /// On the first day the weapon is used afterwards.
+    case fromFirstUse
+    static let defaultsKey = "dayCountingDefault"
+    var id: Self { self }
+
+    var title: String {
+        self == .fromMaintenance ? "Ab Reinigung / Service".loc : "Ab erster Nutzung danach".loc
+    }
+
+    static var appDefault: DayCounting {
+        UserDefaults.standard.string(forKey: defaultsKey).flatMap(DayCounting.init) ?? .fromFirstUse
+    }
+}
+
 struct MaintenanceStatus {
     let kind: MaintenanceKind
     let lastDate: Date?
+    /// Start of the day interval; nil while it waits for the first use.
+    let countingStart: Date?
     let shotsSince: Int
     let intervalShots: Int
     let intervalDays: Int
@@ -12,8 +32,8 @@ struct MaintenanceStatus {
     var hasReminder: Bool { intervalShots > 0 || intervalDays > 0 }
 
     var dueDate: Date? {
-        guard intervalDays > 0, let lastDate else { return nil }
-        return Calendar.current.date(byAdding: .day, value: intervalDays, to: lastDate)
+        guard intervalDays > 0, let countingStart else { return nil }
+        return Calendar.current.date(byAdding: .day, value: intervalDays, to: countingStart)
     }
 
     var shotsRemaining: Int? { intervalShots > 0 ? intervalShots - shotsSince : nil }
@@ -45,6 +65,9 @@ struct MaintenanceStatus {
         var parts: [String] = []
         if let r = shotsRemaining { parts.append(r > 0 ? String(localized: "in \(r.formatted()) Schuss") : String(localized: "\((-r).formatted()) Schuss überfällig")) }
         if let d = dueDate { parts.append(d > .now ? String(localized: "bis \(d.formatted(date: .abbreviated, time: .omitted))") : String(localized: "seit \(d.formatted(date: .abbreviated, time: .omitted)) fällig")) }
+        if intervalDays > 0, lastDate != nil, countingStart == nil, parts.isEmpty {
+            return "Tage zählen ab der nächsten Nutzung".loc
+        }
         guard !parts.isEmpty else { return nil }
         let joined = parts.joined(separator: " \("oder".loc) ")
         return String(localized: "Fällig \(joined)")
@@ -56,16 +79,25 @@ extension Weapon {
         (maintenance ?? []).filter { $0.kind == kind }.max { $0.date < $1.date }
     }
 
+    var dayCounting: DayCounting { DayCounting(rawValue: dayCountingRaw) ?? .appDefault }
+
     func status(_ kind: MaintenanceKind) -> MaintenanceStatus {
-        let last = lastMaintenance(kind)
+        // A service includes a cleaning, so it resets the cleaning counters too.
+        let records = (maintenance ?? []).filter { kind == .service ? $0.kind == .service : true }
+        let lastDate = records.map(\.date).max()
         // Entries on the same day as the cleaning count as before it (you clean after shooting).
         let since = (entries ?? []).filter { e in
-            guard let last else { return true }
-            return Calendar.current.startOfDay(for: e.date) > Calendar.current.startOfDay(for: last.date)
+            guard let lastDate else { return true }
+            return Calendar.current.startOfDay(for: e.date) > Calendar.current.startOfDay(for: lastDate)
+        }
+        let countingStart: Date? = switch dayCounting {
+        case .fromMaintenance: lastDate
+        case .fromFirstUse: lastDate == nil ? nil : since.map(\.date).min()
         }
         return MaintenanceStatus(
             kind: kind,
-            lastDate: last?.date,
+            lastDate: lastDate,
+            countingStart: countingStart,
             shotsSince: since.totalShots,
             intervalShots: kind == .cleaning ? cleaningIntervalShots : serviceIntervalShots,
             intervalDays: kind == .cleaning ? cleaningIntervalDays : serviceIntervalDays)
