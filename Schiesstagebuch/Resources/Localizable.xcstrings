@@ -2577,6 +2577,29 @@
         }
       }
     },
+    "Iris (Brille)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iris (glasses)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iris (lunettes)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iride (occhiali)"
+          }
+        }
+      }
+    },
     "Jagdgewehr": {
       "extractionState": "manual",
       "localizations": {

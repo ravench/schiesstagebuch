@@ -159,7 +159,7 @@ struct EntryEditorView: View {
                     }
                 }
 
-                SightSection(sight: $sight)
+                SightSection(sight: $sight, aperture: SightSettings.aperture(for: weapon?.category))
 
                 Section("Bemerkungen") {
                     TextField("Notizen", text: $notes, axis: .vertical).lineLimit(3...8)
@@ -351,7 +351,7 @@ struct EntryEditorView: View {
             target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
         }
         target.result = result; target.notes = notes
-        sight.apply(to: target)
+        sight.fitted(to: SightSettings.aperture(for: weapon?.category)).apply(to: target)
         target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
         target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
 

@@ -212,7 +212,10 @@ final class Entry {
     /// Optional sight / glasses settings: filter colour key ("" = none), diopter and ring size (0.1–9.9).
     var filterColor: String = ""
     var diopter: Double?
+    /// Ring (aperture) on a rifle's sight.
     var ringSize: Double?
+    /// Iris on the shooting glasses, used with pistols.
+    var irisSize: Double?
     /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
     var shotValuesText: String = ""
     var notes: String = ""

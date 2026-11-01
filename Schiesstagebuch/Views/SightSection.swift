@@ -3,6 +3,7 @@ import SwiftUI
 /// Optional sight and glasses settings in the entry editor: filter colour, diopter, ring size.
 struct SightSection: View {
     @Binding var sight: SightSettings
+    var aperture: SightSettings.Aperture = .both
     @State private var expanded = false
 
     var body: some View {
@@ -12,8 +13,9 @@ struct SightSection: View {
                     Text("Kein Filter").tag("")
                     ForEach(FilterColor.all, id: \.self) { Text($0.loc).tag($0) }
                 }
+                if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
                 sliderRow("Diopter", value: $sight.diopter)
-                sliderRow("Ringgrösse", value: $sight.ringSize)
+                if aperture != .iris { sliderRow("Ringgrösse", value: $sight.ringSize) }
             } label: {
                 HStack {
                     Text("Visier & Brille")
@@ -31,8 +33,9 @@ struct SightSection: View {
     private var summary: String {
         var parts: [String] = []
         if !sight.filter.isEmpty { parts.append(FilterColor.title(sight.filter)) }
+        if let i = sight.irisSize, aperture != .ring { parts.append("I \(SightSettings.format(i))") }
         if let d = sight.diopter { parts.append("D \(SightSettings.format(d))") }
-        if let r = sight.ringSize { parts.append("R \(SightSettings.format(r))") }
+        if let r = sight.ringSize, aperture != .iris { parts.append("R \(SightSettings.format(r))") }
         return parts.joined(separator: " · ")
     }
 
