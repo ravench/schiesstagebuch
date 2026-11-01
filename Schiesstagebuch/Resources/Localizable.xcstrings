@@ -576,6 +576,29 @@
         }
       }
     },
+    "Auf der Karte gewählt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picked on the map"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisi sur la carte"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scelto sulla mappa"
+          }
+        }
+      }
+    },
     "Aus": {
       "extractionState": "manual",
       "localizations": {
@@ -1818,6 +1841,29 @@
         }
       }
     },
+    "In Karten öffnen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open in Maps"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir dans Plans"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri in Mappe"
+          }
+        }
+      }
+    },
     "In der Datei wurden keine Einträge gefunden.": {
       "extractionState": "manual",
       "localizations": {
@@ -2021,6 +2067,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Moschetto / fucile d'ordinanza (K31)"
+          }
+        }
+      }
+    },
+    "Kartenposition entfernen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove map location"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer la position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi posizione"
           }
         }
       }
@@ -2297,6 +2366,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultimi 12 mesi"
+          }
+        }
+      }
+    },
+    "Los": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lotto"
+          }
+        }
+      }
+    },
+    "Losnummer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lot number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di lotto"
+          }
+        }
+      }
+    },
+    "Losnummer hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add lot number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un numéro de lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi numero di lotto"
+          }
+        }
+      }
+    },
+    "Losnummern": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lot numbers"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéros de lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numeri di lotto"
           }
         }
       }
@@ -2899,6 +3060,29 @@
         }
       }
     },
+    "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. You can pick the lot when logging an entry."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Tu peux choisir le lot en saisissant une entrée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Puoi scegliere il lotto quando registri una voce."
+          }
+        }
+      }
+    },
     "Ordonnanzpistole": {
       "extractionState": "manual",
       "localizations": {
@@ -3102,6 +3286,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per calibro"
+          }
+        }
+      }
+    },
+    "Pro Los": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By lot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per lotto"
           }
         }
       }

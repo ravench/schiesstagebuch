@@ -166,6 +166,10 @@ final class ShootingRange: ArchivableItem {
     var name: String = ""
     /// Optional town, e.g. "Zürich" for "Albisgüetli".
     var place: String = ""
+    /// Full address picked from Apple Maps, with its position; empty / nil when none was picked.
+    var address: String = ""
+    var latitude: Double?
+    var longitude: Double?
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 

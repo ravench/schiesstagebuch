@@ -135,7 +135,7 @@ struct RangeDetailView: View {
 
     var body: some View {
         ItemStatsList(entries: range.entries ?? []) {
-            if !range.place.isEmpty { Section { LabeledContent("Ort", value: range.place) } }
+            if !range.place.isEmpty || range.coordinate != nil { RangeMapSection(range: range) }
         } breakdowns: { entries in
             Section { BreakdownChart(title: "Pro Waffe", entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Anlass", entries: entries,

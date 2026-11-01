@@ -360,13 +360,14 @@ struct RangeEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var place = ""
+    @State private var location: PickedLocation?
     @State private var isArchived = false
 
     var body: some View {
         NavigationStack {
             Form {
                 TextField("Name, z. B. Albisgüetli", text: $name)
-                TextField("Ort (optional)", text: $place)
+                PlaceField(place: $place, location: $location)
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
             .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)
@@ -378,6 +379,9 @@ struct RangeEditorView: View {
                         let target = range ?? ShootingRange(name: "")
                         target.name = name.trimmingCharacters(in: .whitespaces)
                         target.place = place.trimmingCharacters(in: .whitespaces)
+                        target.address = location?.address ?? ""
+                        target.latitude = location?.latitude
+                        target.longitude = location?.longitude
                         target.isArchived = isArchived
                         if range == nil { context.insert(target); onCreate?(target) }
                         try? context.save()
@@ -388,9 +392,10 @@ struct RangeEditorView: View {
             }
             .onAppear {
                 name = range?.name ?? ""; place = range?.place ?? ""; isArchived = range?.isArchived ?? false
+                location = range.flatMap(PickedLocation.init(range:))
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 }
 

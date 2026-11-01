@@ -46,7 +46,10 @@ enum Backup {
     }
     struct AmmunitionDTO: Codable { var id: UUID; var name: String; var caliberID: UUID?; var isArchived: Bool }
     struct LotDTO: Codable { var id: UUID; var ammunitionID: UUID?; var number: String; var notes: String; var isArchived: Bool; var createdAt: Date }
-    struct RangeDTO: Codable { var id: UUID; var name: String; var place: String; var isArchived: Bool }
+    struct RangeDTO: Codable {
+        var id: UUID; var name: String; var place: String; var isArchived: Bool
+        var address: String?; var latitude: Double?; var longitude: Double?
+    }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
     struct EntryDTO: Codable {
         var id: UUID; var date: Date; var event: String; var shotCount: Int; var result: String; var notes: String
@@ -71,7 +74,10 @@ enum Backup {
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays)
             },
             ammunition: try all(Ammunition.self, context).map { .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived) },
-            ranges: try all(ShootingRange.self, context).map { .init(id: $0.id, name: $0.name, place: $0.place, isArchived: $0.isArchived) },
+            ranges: try all(ShootingRange.self, context).map {
+                .init(id: $0.id, name: $0.name, place: $0.place, isArchived: $0.isArchived,
+                      address: $0.address, latitude: $0.latitude, longitude: $0.longitude)
+            },
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, event: $0.event, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
@@ -138,6 +144,7 @@ enum Backup {
         var ranges = Dictionary(uniqueKeysWithValues: try all(ShootingRange.self, context).map { ($0.id, $0) })
         for d in file.ranges where ranges[d.id] == nil {
             let r = ShootingRange(name: d.name, place: d.place); r.id = d.id; r.isArchived = d.isArchived
+            r.address = d.address ?? ""; r.latitude = d.latitude; r.longitude = d.longitude
             context.insert(r); ranges[d.id] = r
         }
 
