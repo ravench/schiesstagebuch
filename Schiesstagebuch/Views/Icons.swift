@@ -57,7 +57,7 @@ extension Color {
 // MARK: - Weapon categories
 
 enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
-    case pistol, revolver, pcc, serviceRifle = "service_rifle", sportRifle = "sport_rifle"
+    case pistol, sportPistol = "sport_pistol", revolver, pcc, serviceRifle = "service_rifle", sportRifle = "sport_rifle"
     case longRange = "long_range", huntingRifle = "hunting_rifle", shotgun, airgun
     case blackPowder = "black_powder", other
 
@@ -66,6 +66,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
     var title: String {
         switch self {
         case .pistol: "Pistole"
+        case .sportPistol: "Sportpistole"
         case .revolver: "Revolver"
         case .pcc: "PCC (Pistolenkaliber-Karabiner)"
         case .serviceRifle: "Sturmgewehr / Ordonnanz"
@@ -83,6 +84,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
     var preferredCaliberCategories: [String] {
         switch self {
         case .pistol, .revolver, .pcc: ["Kurzwaffe", "Randfeuer"]
+        case .sportPistol: ["Randfeuer", "Kurzwaffe"]
         case .shotgun: ["Flinte"]
         case .airgun: ["Luftdruck"]
         case .blackPowder: ["Schwarzpulver"]
@@ -94,6 +96,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
     static func guess(from name: String) -> WeaponCategory {
         let n = name.lowercased()
         let rules: [(WeaponCategory, [String])] = [
+            (.sportPistol, ["sportpistole", "gsp", "pardini", "hämmerli", "hammerli", "walther sp", "morini", "match"]),
             (.revolver, ["revolver", "357", "38 sp", "44 mag", "gp100", "python", "s&w 686", "korth"]),
             (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15", "k31", "karabiner"]),
             (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
