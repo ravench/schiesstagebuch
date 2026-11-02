@@ -4348,29 +4348,6 @@
         }
       }
     },
-    "Mit Service": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "With service"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avec révision"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Con revisione"
-          }
-        }
-      }
-    },
     "Monat": {
       "extractionState": "manual",
       "localizations": {
