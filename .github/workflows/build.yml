@@ -24,6 +24,8 @@ jobs:
       - run: xcodegen generate
       - name: Check translations
         run: python3 tools/localize.py && git diff --exit-code Schiesstagebuch/Resources/Localizable.xcstrings
+      - name: Tool tests
+        run: python3 -m unittest discover -s tools -p 'test_*.py'
       - name: Build for simulator
         run: |
           xcodebuild build \
