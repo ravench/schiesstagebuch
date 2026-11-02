@@ -117,6 +117,15 @@ enum Backup {
 
     /// Returns a short German summary for the user.
     @discardableResult
+    private static func restoreLicenceCards(_ cards: [LicenceCardDTO], into context: ModelContext) throws {
+        let existing = Set(try all(LicenceCard.self, context).map(\.id))
+        for d in cards where !existing.contains(d.id) {
+            let card = LicenceCard(holderName: d.holderName, licenceNumber: d.licenceNumber)
+            card.id = d.id; card.updatedAt = d.updatedAt
+            context.insert(card)
+        }
+    }
+
     static func restore(from data: Data, into context: ModelContext) throws -> String {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -179,12 +188,7 @@ enum Backup {
             context.insert(r)
         }
 
-        let existingCards = Set(try all(LicenceCard.self, context).map(\.id))
-        for d in file.licenceCards ?? [] where !existingCards.contains(d.id) {
-            let card = LicenceCard(holderName: d.holderName, licenceNumber: d.licenceNumber)
-            card.id = d.id; card.updatedAt = d.updatedAt
-            context.insert(card)
-        }
+        try restoreLicenceCards(file.licenceCards ?? [], into: context)
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
