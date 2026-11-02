@@ -314,6 +314,11 @@ extension Sequence where Element == Entry {
     var totalShots: Int { reduce(0) { $0 + $1.shotCount } }
 }
 
+extension Collection where Element == Entry {
+    /// Mean shots per entry, unrounded (149 shots in 2 entries = 74.5, shown rounded as 75).
+    var averageShotsPerEntry: Double { isEmpty ? 0 : Double(totalShots) / Double(count) }
+}
+
 enum Limits {
     static let maxPhotos = 4
 }

@@ -378,6 +378,34 @@ struct WeatherRecord: Codable, Hashable {
         guard let weapon else { return false }
         return entries.filter { $0.weapon == weapon }.max { $0.date < $1.date }?.weatherData != nil
     }
+
+    /// Nothing recorded yet apart from the time: the switch may follow the weapon's default.
+    var hasValues: Bool { !conditions.isEmpty || !relays.isEmpty }
+
+    /// What a new entry shows after the weapon changed: recorded weather stays whatever the new
+    /// weapon's habit is; an empty record follows the weapon's default (on outdoors, off indoors).
+    static func carriedOver(from current: WeatherRecord?, to weapon: Weapon?, in entries: [Entry], now: Date = .now) -> WeatherRecord? {
+        if let current, current.hasValues { return current }
+        return recordsByDefault(for: weapon, in: entries) ? (current ?? WeatherRecord(time: now)) : nil
+    }
+
+    /// The record as it is stored: every value re-checked against its field, so a note typed with
+    /// surrounding spaces is trimmed and a blank one dropped.
+    func normalized() -> WeatherRecord {
+        var r = self
+        r.conditions = conditions.normalized()
+        r.relays = relays.map { var relay = $0; relay.conditions = relay.conditions.normalized(); return relay }
+        return r
+    }
+}
+
+extension WeatherConditions {
+    /// Every value passed through `validated`; the text field writes raw text while typing.
+    func normalized() -> WeatherConditions {
+        var c = WeatherConditions()
+        for (key, value) in values { c.set(key, value) }
+        return c
+    }
 }
 
 extension Entry {

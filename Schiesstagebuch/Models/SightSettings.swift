@@ -86,6 +86,12 @@ struct SightSettings: Equatable {
             .first { !$0.isEmpty }
     }
 
+    /// What a new entry shows after the weapon changed: values the user already typed stay,
+    /// an empty form takes the last values used with the new weapon.
+    static func carriedOver(from current: SightSettings, to weapon: Weapon?, in entries: [Entry]) -> SightSettings {
+        current.isEmpty ? (lastUsed(for: weapon, in: entries) ?? SightSettings()) : current
+    }
+
     static func format(_ v: Double) -> String { v.formatted(.number.precision(.fractionLength(1))) }
 }
 
