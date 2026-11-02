@@ -21,4 +21,16 @@ enum BarcodeRenderer {
         let scaled = output.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
         return context.createCGImage(scaled, from: scaled.extent)
     }
+
+    /// Width of the Code 128 symbol in modules, quiet zones included.
+    static func code128Modules(_ value: String) -> Int? {
+        code128(value, scale: 1)?.width
+    }
+
+    /// Largest whole number of pixels per module so a symbol of `modules` fits into `pixels`.
+    /// Whole pixels keep every bar the same width, which scanners need.
+    static func moduleScale(fitting pixels: CGFloat, modules: Int) -> Int {
+        guard modules > 0, pixels.isFinite else { return 1 }
+        return max(1, Int(pixels) / modules)
+    }
 }

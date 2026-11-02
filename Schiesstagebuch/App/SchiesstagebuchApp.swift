@@ -47,6 +47,7 @@ struct SchiesstagebuchApp: App {
 
 struct RootView: View {
     @Query(filter: #Predicate<Weapon> { !$0.isArchived }) private var weapons: [Weapon]
+    @Query private var licenceCards: [LicenceCard]
 
     private var dueCount: Int { weapons.reduce(0) { $0 + $1.dueMaintenance.count } }
 
@@ -59,6 +60,11 @@ struct RootView: View {
             WeaponsTab()
                 .tabItem { Label("Waffen", systemImage: "scope") }
                 .badge(dueCount)
+            // The licence card gets its own tab once one has been entered (Einstellungen › SSV-Lizenz).
+            if LicenceCard.hasCard(licenceCards) {
+                NavigationStack { LicenceCardScreen() }
+                    .tabItem { Label("SSV-Lizenz", systemImage: "person.text.rectangle") }
+            }
             SettingsView()
                 .tabItem { Label("Einstellungen", systemImage: "gearshape") }
         }
