@@ -167,6 +167,26 @@ enum Backup {
         return caliberMap
     }
 
+    private static func restoreEvents(_ dtos: [EventDTO], ranges: [UUID: ShootingRange],
+                                      into context: ModelContext) throws -> [UUID: ShootingEvent] {
+        var events = Dictionary(uniqueKeysWithValues: try all(ShootingEvent.self, context).map { ($0.id, $0) })
+        for d in dtos where events[d.id] == nil {
+            let event = ShootingEvent(date: d.date, name: d.name); event.id = d.id
+            event.weather = d.weather; event.createdAt = d.createdAt
+            context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
+            events[d.id] = event
+        }
+        return events
+    }
+
+    /// Version 1 backups had no events: each entry becomes an event of its own.
+    private static func versionOneEvent(of d: EntryDTO, ranges: [UUID: ShootingRange], into context: ModelContext) -> ShootingEvent {
+        let event = ShootingEvent(date: d.date, name: d.event ?? "")
+        event.weather = d.weather
+        context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
+        return event
+    }
+
     /// Returns a short German summary for the user.
     @discardableResult
     static func restore(from data: Data, into context: ModelContext) throws -> String {
@@ -227,13 +247,7 @@ enum Backup {
 
         try restoreLicenceCards(file.licenceCards ?? [], into: context)
 
-        var events = Dictionary(uniqueKeysWithValues: try all(ShootingEvent.self, context).map { ($0.id, $0) })
-        for d in file.events ?? [] where events[d.id] == nil {
-            let event = ShootingEvent(date: d.date, name: d.name); event.id = d.id
-            event.weather = d.weather; event.createdAt = d.createdAt
-            context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
-            events[d.id] = event
-        }
+        let events = try restoreEvents(file.events ?? [], ranges: ranges, into: context)
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
@@ -247,15 +261,7 @@ enum Backup {
             e.importKey = d.importKey ?? ""
             if let created = d.createdAt { e.createdAt = created }
             context.insert(e)
-            if let event = d.eventID.flatMap({ events[$0] }) {
-                event.add(e)
-            } else {
-                // Version 1: each entry was its own event.
-                let event = ShootingEvent(date: d.date, name: d.event ?? "")
-                event.weather = d.weather
-                context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
-                event.add(e)
-            }
+            (d.eventID.flatMap { events[$0] } ?? versionOneEvent(of: d, ranges: ranges, into: context)).add(e)
             e.lot = d.lotID.flatMap { lots[$0] }
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
