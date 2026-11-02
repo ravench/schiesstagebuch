@@ -46,7 +46,7 @@ struct FilterSettingsView: View {
                     }
                 }
             } header: {
-                Text("AXIA-Filter")
+                Text("Farbfilter (AXIA)")
             } footer: {
                 Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
             }
