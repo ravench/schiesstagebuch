@@ -147,8 +147,15 @@ enum LegacyImport {
         let existing = Set(((try? context.fetch(FetchDescriptor<Entry>())) ?? []).map(\.importKey))
         let newRows = rows.filter { !existing.contains($0.key) }
         let ammos = Set(rows.map(\.ammo).filter { !$0.isEmpty })
+        let calibers = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
         var mapping: [String: String] = [:]
-        for a in ammos { if let item = CaliberCatalog.match(a) { mapping[a] = item.name } }
+        for a in ammos {
+            // The user's calibre for this catalogue entry may have been renamed; its name is what
+            // the picker offers, so map to that and not to the catalogue's own name.
+            if let item = CaliberCatalog.match(a) {
+                mapping[a] = calibers.first { $0.catalogID == item.id && !$0.isArchived }?.name ?? item.name
+            }
+        }
         return Plan(rows: rows, newRows: newRows, ammoCaliber: mapping,
                     weapons: Array(Set(rows.map(\.weapon).filter { !$0.isEmpty })).sorted(),
                     ranges: Array(Set(rows.map(\.range).filter { !$0.isEmpty })).sorted(),
@@ -165,9 +172,13 @@ enum LegacyImport {
         func norm(_ s: String) -> String { s.trimmingCharacters(in: .whitespaces).lowercased() }
 
         let calibers = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
+        /// By exact name, by normalised name, and last by the catalogue entry the name stands for.
         func caliber(named name: String?) -> Caliber? {
             guard let name else { return nil }
-            return calibers.first { $0.name == name } ?? calibers.first { Caliber.normalized($0.name) == Caliber.normalized(name) }
+            if let c = calibers.first(where: { $0.name == name }) { return c }
+            if let c = calibers.first(where: { Caliber.normalized($0.name) == Caliber.normalized(name) }) { return c }
+            guard let id = CaliberCatalog.match(name)?.id else { return nil }
+            return calibers.first { $0.catalogID == id }
         }
 
         var ranges = Dictionary(((try? context.fetch(FetchDescriptor<ShootingRange>())) ?? []).map { (norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
