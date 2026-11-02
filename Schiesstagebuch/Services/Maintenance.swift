@@ -129,21 +129,18 @@ enum MaintenanceNotifier {
             content.body = status.dueText ?? status.summary
             content.sound = .default
 
-            let trigger: UNNotificationTrigger?
-            if status.isDue {
+            let trigger: UNNotificationTrigger
+            switch plan(status, archived: weapon.isArchived, previouslyDue: previouslyDue.contains(kind)) {
+            case .none:
+                continue
+            case .now:
                 // Notify once when the limit is crossed, not on every later refresh.
-                guard !previouslyDue.contains(kind) else { continue }
                 trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-            } else if let due = status.dueDate {
-                var comps = Calendar.current.dateComponents([.year, .month, .day], from: due)
-                comps.hour = 9
+            case .at(let date):
+                let comps = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
                 trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
-            } else {
-                trigger = nil
             }
-            if let trigger {
-                center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
-            }
+            center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
         }
     }
 }
