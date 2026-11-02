@@ -264,13 +264,13 @@ T = {
     "Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.": ("Optional. Without a result the sum of the shots counts; with max. points the app calculates the percentage.", "Facultatif. Sans résultat, la somme des coups compte ; avec les points max., l'app calcule le pourcentage.", "Facoltativo. Senza risultato conta la somma dei colpi; con i punti max. l'app calcola la percentuale."),
     "Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.": ("Optional. With max. points the app calculates the percentage and the average per shot.", "Facultatif. Avec les points max., l'app calcule le pourcentage et la moyenne par coup.", "Facoltativo. Con i punti max. l'app calcola la percentuale e la media per colpo."),
     "Ab Reinigung / Service": ("From cleaning / service", "Dès le nettoyage / service", "Dalla pulizia / manutenzione"),
-    "Ab erster Nutzung danach": ("From first use afterwards", "Dès la première utilisation suivante", "Dal primo utilizzo successivo"),
+    "Ab erstem Schuss danach": ("From the first shot afterwards", "Dès le premier tir suivant", "Dal primo colpo successivo"),
     "Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.": ("When day-based reminders start counting. You can change this per firearm.", "À partir de quand les rappels en jours comptent. Modifiable pour chaque arme.", "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni arma."),
     "Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.": ("A cleaning resets the cleaning shots and days; a service also resets the service ones.", "Un nettoyage remet à zéro les coups et jours du nettoyage ; un service remet aussi ceux du service.", "Una pulizia azzera colpi e giorni della pulizia; una manutenzione azzera anche quelli della manutenzione."),
     "Erinnerungen": ("Reminders", "Rappels", "Promemoria"),
     "Standard (%@)": ("Default (%@)", "Par défaut (%@)", "Predefinito (%@)"),
     "Tage zählen": ("Count days", "Compter les jours", "Conta i giorni"),
-    "Tage zählen ab der nächsten Nutzung": ("Days count from the next use", "Les jours comptent dès la prochaine utilisation", "I giorni contano dal prossimo utilizzo"),
+    "Tage zählen ab dem nächsten Schuss": ("Days count from the next shot", "Les jours comptent dès le prochain tir", "I giorni contano dal prossimo colpo"),
     "Nr.": ("No.", "N°", "N."),
     "Seriennummer (optional)": ("Serial number (optional)", "Numéro de série (facultatif)", "Numero di serie (facoltativo)"),
     "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
@@ -329,6 +329,27 @@ T = {
     "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
     "App von %@": ("App by %@", "App de %@", "App di %@"),
     "In «%@» von %@ unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": ("In “%@” by %@, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here.", "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici.", "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."),
+    "Diopter": ("Diopter", "Dioptre", "Diottra"),
+    "Kein Filter": ("No filter", "Sans filtre", "Nessun filtro"),
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.": ("Optional. New entries take the values of the last entry with this firearm.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma."),
+    "Ringgrösse": ("Ring size", "Taille de l'anneau", "Dimensione dell'anello"),
+    "Einstellungen für Sportschützen": ("Sport shooter settings", "Réglages pour tireurs sportifs", "Impostazioni per tiratori sportivi"),
+    "Waffen-Einstellungen für Sportschützen erfassen": ("Record weapon settings for sport shooters", "Saisir les réglages d'arme pour tireurs sportifs", "Registra le impostazioni dell'arma per tiratori sportivi"),
+    "Zeigt in Einträgen Felder für Filter, Diopter, Ring oder Iris und Zweibein. Ausgeblendete Werte bleiben gespeichert.": ("Shows fields for filter, diopter, ring or iris and bipod in entries. Hidden values stay saved.", "Affiche dans les entrées des champs pour le filtre, la dioptrie, l'anneau ou l'iris et le bipied. Les valeurs masquées restent enregistrées.", "Mostra nelle voci i campi per filtro, diottra, anello o iride e bipiede. I valori nascosti restano salvati."),
+    "Zweibein": ("Bipod", "Bipied", "Bipiede"),
+    "Eigene Filter": ("My filters", "Mes filtres", "I miei filtri"),
+    "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
+    "AXIA-Filter": ("AXIA filters", "Filtres AXIA", "Filtri AXIA"),
+    "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.": ("Select the filters you own. Only these appear in the picker. Existing entries keep their filter.", "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre.", "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro."),
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.": ("Optional. New entries take the values of the last entry with this weapon. Choose your filters under Settings → Filter.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages → Filtre.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni → Filtro."),
+    "Name": ("Name", "Nom", "Nome"),
+    "Farbe": ("Colour", "Couleur", "Colore"),
+    "Polarisiert": ("Polarised", "Polarisé", "Polarizzato"),
+    "Diesen Namen gibt es schon.": ("This name already exists.", "Ce nom existe déjà.", "Questo nome esiste già."),
+    "Neuer Filter": ("New filter", "Nouveau filtre", "Nuovo filtro"),
+    "Filter bearbeiten": ("Edit filter", "Modifier le filtre", "Modifica filtro"),
+    "Zweibein (cm)": ("Bipod (cm)", "Bipied (cm)", "Bipiede (cm)"),
+    "Iris (Brille)": ("Iris (glasses)", "Iris (lunettes)", "Iride (occhiali)"),
     "Höhe": ("Altitude", "Altitude", "Altitudine"),
     "m ü. M.": ("m a.s.l.", "m d'altitude", "m s.l.m."),
     "Schussrichtung": ("Shooting direction", "Direction de tir", "Direzione di tiro"),
@@ -357,3 +378,10 @@ T = {
     "Vermutung": ("Guess", "Supposition", "Ipotesi"),
     "Neu": ("New", "Nouveau", "Nuovo"),
 }
+
+# Weather block: kept in its own file; same German key must mean the same thing.
+from translations_weather import W  # noqa: E402
+
+for _k, _v in W.items():
+    assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
+    T[_k] = _v

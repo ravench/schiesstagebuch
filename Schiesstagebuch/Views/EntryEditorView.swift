@@ -25,7 +25,10 @@ struct EntryEditorView: View {
     @State private var scanningLot = false
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
+    @State private var sight = SightSettings()
+    @State private var weather: WeatherRecord?
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
+    @AppStorage(SightSettings.showKey) private var showSport = false
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
     @State private var sighters = 0
     @State private var scored = 0
@@ -153,6 +156,11 @@ struct EntryEditorView: View {
                     }
                 }
 
+                if showSport {
+                    SightSection(sight: $sight, aperture: SightSettings.aperture(for: weapon?.category))
+                    WeatherSection(weather: $weather, day: date, range: range)
+                }
+
                 Section("Bemerkungen") {
                     TextField("Notizen", text: $notes, axis: .vertical).lineLimit(3...8)
                 }
@@ -179,6 +187,11 @@ struct EntryEditorView: View {
             .onAppear(perform: load)
             .onChange(of: weapon) { _, new in
                 guard didLoad else { return }
+                // New entries take the sight settings last used with this weapon.
+                if entry == nil {
+                    sight = SightSettings.lastUsed(for: new, in: allEntries) ?? SightSettings()
+                    weather = WeatherRecord.recordsByDefault(for: new, in: allEntries) ? (weather ?? WeatherRecord(time: .now)) : nil
+                }
                 // Only the weapon's own calibres are valid; fall back to its default.
                 if let caliber, new?.calibers?.contains(caliber) == true { return }
                 caliber = new?.preferredCaliber
@@ -265,6 +278,8 @@ struct EntryEditorView: View {
             date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
             caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; shotCount = entry.shotCount; result = entry.result
             maxPoints = entry.maxPoints
+            sight = SightSettings(entry: entry)
+            weather = entry.weather
             passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
             mode = ShotEntryMode(of: entry)
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
@@ -278,6 +293,9 @@ struct EntryEditorView: View {
             lot = suggestedLot(for: ammunition)
         }
         if entry == nil {
+            sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
+            // Weather starts on when the last entry with this weapon had it (off for indoor shooting).
+            weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: .now) : nil
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
         }
@@ -383,6 +401,11 @@ struct EntryEditorView: View {
             target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
         }
         target.result = result; target.notes = notes
+        // While the sport-shooter fields are hidden, values already stored stay untouched.
+        if showSport {
+            sight.fitted(to: SightSettings.aperture(for: weapon?.category)).apply(to: target)
+            target.weather = weather
+        }
         target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
         target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
 
