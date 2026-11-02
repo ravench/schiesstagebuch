@@ -1,6 +1,6 @@
 name: iPad screens
 # Screenshots of every main screen on an iPad simulator, portrait and landscape, with sample data.
-# Download them from the run's "ipad-screens" artifact. Runs by hand (Actions › iPad screens ›
+# See them on the ipad-screens branch, or download the run's "ipad-screens" artifact. Runs by hand (Actions › iPad screens ›
 # Run workflow) and on pull requests that touch the screenshot run itself.
 on:
   workflow_dispatch:
@@ -15,6 +15,9 @@ defaults:
 jobs:
   screens:
     runs-on: macos-26
+    permissions:
+      # Pushes the screenshots to the ipad-screens branch.
+      contents: write
     steps:
       - uses: actions/checkout@v5
       - run: brew install xcodegen
@@ -40,3 +43,17 @@ jobs:
         with:
           name: ipad-screens
           path: ipad-screens
+      - name: Publish to the ipad-screens branch
+        # Browsable on GitHub without downloading the zip; only the latest set is kept.
+        # Pull requests from forks get a read-only token, so they only get the artifact.
+        if: always() && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository)
+        run: |
+          [ -n "$(ls ipad-screens 2>/dev/null)" ] || exit 0
+          cd ipad-screens
+          git init -q -b ipad-screens
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -q -m "iPad screens for ${{ github.event.pull_request.head.sha || github.sha }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ipad-screens
+          echo "Screenshots: https://github.com/${{ github.repository }}/tree/ipad-screens" >> "$GITHUB_STEP_SUMMARY"
