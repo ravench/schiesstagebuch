@@ -1,6 +1,6 @@
 name: Schiesstagebuch
 options:
-  bundleIdPrefix: net.forestraven
+  bundleIdPrefix: ch.giotta
   deploymentTarget:
     iOS: "17.0"
   developmentLanguage: de
@@ -22,13 +22,13 @@ targets:
       path: Schiesstagebuch/Schiesstagebuch.entitlements
       properties:
         com.apple.developer.icloud-container-identifiers:
-          - iCloud.net.forestraven.schiesstagebuch
+          - iCloud.ch.giotta.schiesstagebuch
         com.apple.developer.icloud-services:
           - CloudKit
         aps-environment: development
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: net.forestraven.schiesstagebuch
+        PRODUCT_BUNDLE_IDENTIFIER: ch.giotta.schiesstagebuch
         # Signing team of the maintainer. Forks: replace with your own team ID (or remove it and pick a team in Xcode).
         DEVELOPMENT_TEAM: PD9YC6KM5T
         CODE_SIGN_STYLE: Automatic
@@ -54,7 +54,7 @@ targets:
       - target: Schiesstagebuch
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: net.forestraven.schiesstagebuch.tests
+        PRODUCT_BUNDLE_IDENTIFIER: ch.giotta.schiesstagebuch.tests
         DEVELOPMENT_TEAM: PD9YC6KM5T
         CODE_SIGN_STYLE: Automatic
         SWIFT_VERSION: "5.10"
