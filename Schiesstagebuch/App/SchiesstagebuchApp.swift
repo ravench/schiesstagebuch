@@ -33,7 +33,8 @@ struct SchiesstagebuchApp: App {
                     CaliberCatalog.seedIfNeeded(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
                 }
-                .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)) { _ in
+                // Core Data posts this from a background queue; mainContext must only be used on the main thread.
+                .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: RunLoop.main)) { _ in
                     CaliberCatalog.deduplicate(container.mainContext)
                 }
         }

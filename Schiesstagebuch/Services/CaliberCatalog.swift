@@ -69,7 +69,7 @@ enum CaliberCatalog {
             .trimmingCharacters(in: CharacterSet(charactersIn: "."))
     }
 
-    private static let seededKey = "caliberCatalogSeeded.v2"
+    static let seededKey = "caliberCatalogSeeded.v2"
 
     /// Inserts the catalogue once, and links existing calibres with the same name to it.
     @MainActor
@@ -92,13 +92,18 @@ enum CaliberCatalog {
 
     /// With iCloud sync every device seeds the catalogue once, so the same calibre can
     /// arrive twice. Merge duplicates (same catalogue id) into the oldest record.
+    /// Returns the number of records merged away.
     @MainActor
-    static func deduplicate(_ context: ModelContext) {
-        guard let all = try? context.fetch(FetchDescriptor<Caliber>(sortBy: [SortDescriptor(\.createdAt)])) else { return }
+    @discardableResult
+    static func deduplicate(_ context: ModelContext) -> Int {
+        guard let all = try? context.fetch(FetchDescriptor<Caliber>(sortBy: [SortDescriptor(\.createdAt)])) else { return 0 }
         var keeper: [String: Caliber] = [:]
-        var changed = false
+        var merged = 0
         for c in all where !c.catalogID.isEmpty {
             guard let keep = keeper[c.catalogID] else { keeper[c.catalogID] = c; continue }
+            // A freshly seeded duplicate carries no intent of the user, so the oldest record keeps
+            // its archived state. Only a duplicate that is actually in use brings the calibre back.
+            let inUse = !(c.weapons ?? []).isEmpty || !(c.ammunitions ?? []).isEmpty || !(c.entries ?? []).isEmpty
             for w in c.weapons ?? [] {
                 var list = (w.calibers ?? []).filter { $0 != c }
                 if !list.contains(keep) { list.append(keep) }
@@ -107,10 +112,11 @@ enum CaliberCatalog {
             for w in c.defaultFor ?? [] { w.defaultCaliber = keep }
             for a in c.ammunitions ?? [] { a.caliber = keep }
             for e in c.entries ?? [] { e.caliber = keep }
-            if c.isArchived == false { keep.isArchived = false }
+            if inUse, !c.isArchived { keep.isArchived = false }
             context.delete(c)
-            changed = true
+            merged += 1
         }
-        if changed { try? context.save() }
+        if merged > 0 { try? context.save() }
+        return merged
     }
 }
