@@ -33,7 +33,6 @@ T = {
     "Lizenz löschen?": ("Delete licence?", "Supprimer la licence ?", "Eliminare la licenza?"),
     "Lizenz-Nr.": ("Licence no.", "N° de licence", "N. licenza"),
     "Lizenznummer": ("Licence number", "Numéro de licence", "Numero di licenza"),
-    "Name": ("Name", "Nom", "Nome"),
     "SIUS-Barcode": ("SIUS barcode", "Code-barres SIUS", "Codice a barre SIUS"),
     "SSV-Lizenz": ("SSV licence", "Licence FST", "Licenza FST"),
     "Tippe auf einen Barcode, um ihn gross und hell anzuzeigen.": (
