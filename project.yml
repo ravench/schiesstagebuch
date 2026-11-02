@@ -47,7 +47,7 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Fotos von Scheiben und Resultaten zu einem Eintrag hinzufügen."
-        INFOPLIST_KEY_NSCameraUsageDescription: "Scheiben direkt fotografieren und zum Eintrag speichern."
+        INFOPLIST_KEY_NSCameraUsageDescription: "Standblätter direkt fotografieren und zum Eintrag speichern."
   SchiesstagebuchTests:
     type: bundle.unit-test
     platform: iOS
