@@ -300,6 +300,7 @@ final class StandblattParserTests: XCTestCase {
         XCTAssertEqual(strips.map(\.title), ["Übungskehr EF", "Vereinsstich EF", "Auszahlungsstich EF"])
         XCTAssertTrue(strips.allSatisfy(\.handwritten))
         XCTAssertEqual(strips[0].details, ["Rehalp-Schiessen 2026"])
+        XCTAssertEqual(strips[0].issues(.rings), [], "practice series of 2 shots on handwritten sheets are not flagged")
 
         XCTAssertEqual(rings(strips[0]), [[9, 10]])
         XCTAssertNil(strips[0].printedRings)
@@ -440,7 +441,7 @@ final class StandblattParserTests: XCTestCase {
         Total 19 181
         """
         let s = try XCTUnwrap(StandblattParser.parse(text: text).first)
-        XCTAssertEqual(s.issues(.rings), [.missingShots([2])])
+        XCTAssertEqual(s.issues(.rings), [.missingShots([2]), .unusualPasseLength(1, shots: 2)])
     }
 
     func testCopyHeadersWithoutK() {

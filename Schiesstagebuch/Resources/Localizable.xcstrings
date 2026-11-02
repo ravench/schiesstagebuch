@@ -921,6 +921,29 @@
         }
       }
     },
+    "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No total was read on the score strip. The shots add up to %@."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun total n'a été lu sur la feuille de stand. Les coups font %@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sul foglio di tiro non è stato letto nessun totale. I colpi danno %@."
+          }
+        }
+      }
+    },
     "Auf der Karte gewählt": {
       "extractionState": "manual",
       "localizations": {
@@ -6280,6 +6303,29 @@
         }
       }
     },
+    "Passe %@ hat %@ Schüsse, üblich sind 3, 4, 5, 6 oder 10.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Series %1$@ has %2$@ shots; usual are 3, 4, 5, 6 or 10."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La passe %1$@ compte %2$@ coups ; l'usage est 3, 4, 5, 6 ou 10."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La serie %1$@ ha %2$@ colpi; di solito sono 3, 4, 5, 6 o 10."
+          }
+        }
+      }
+    },
     "Passe %@: gedruckt %@, gelesen %@": {
       "extractionState": "manual",
       "localizations": {
@@ -6713,6 +6759,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fucile di precisione / long range"
+          }
+        }
+      }
+    },
+    "Prüfe die Schüsse im Eintrag, bevor du ihn sicherst. Ein Hinweis steht in den Notizen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the shots in the entry before saving it. A note has been added."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifiez les coups dans l'entrée avant de l'enregistrer. Une remarque a été ajoutée aux notes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla i colpi nella voce prima di salvarla. È stata aggiunta una nota."
           }
         }
       }
@@ -8028,6 +8097,98 @@
         }
       }
     },
+    "Summe nicht geprüft": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sum not checked"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somme non vérifiée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somma non verificata"
+          }
+        }
+      }
+    },
+    "Summe nicht geprüft, kein gedrucktes Total gelesen (Schüsse ergeben %@)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sum not checked, no printed total read (shots add up to %@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somme non vérifiée, aucun total imprimé lu (les coups font %@)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somma non verificata, nessun totale stampato letto (i colpi danno %@)"
+          }
+        }
+      }
+    },
+    "Summe prüfen: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the sum: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifier la somme : %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controllare la somma: %@"
+          }
+        }
+      }
+    },
+    "Summe stimmt nicht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sum doesn't match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La somme ne correspond pas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La somma non corrisponde"
+          }
+        }
+      }
+    },
     "Tage zählen": {
       "extractionState": "manual",
       "localizations": {
@@ -8323,6 +8484,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tamburo"
+          }
+        }
+      }
+    },
+    "Trotzdem übernehmen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply anyway"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reprendre quand même"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applica comunque"
           }
         }
       }
@@ -8760,6 +8944,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra le impostazioni dell'arma per tiratori sportivi"
+          }
+        }
+      }
+    },
+    "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left out so the series matches the printed sum: shot %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omis pour que la passe corresponde à la somme imprimée : coup %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omesso perché la serie corrisponda alla somma stampata: colpo %@"
           }
         }
       }
@@ -9220,6 +9427,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultima"
+          }
+        }
+      }
+    },
+    "Zurück": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retour"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indietro"
           }
         }
       }

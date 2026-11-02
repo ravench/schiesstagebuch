@@ -360,4 +360,12 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(cols[index], "Umbausatz")
         XCTAssertEqual(header.count, cols.count)
     }
+
+    func testBarrelSheetsHaveDistinctIDs() {
+        let a = barrel("A", nine)
+        let b = barrel("B", nine)
+        let ids = [BarrelSheet.add, .edit(a), .edit(b)].map(\.id)
+        XCTAssertEqual(Set(ids).count, 3)
+        XCTAssertEqual(BarrelSheet.edit(a).id, BarrelSheet.edit(a).id, "stable while the sheet is shown")
+    }
 }

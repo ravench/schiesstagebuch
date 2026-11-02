@@ -347,6 +347,23 @@ T = {
         "Repeated displays (not counted)", "Affichages répétés (non comptés)", "Visualizzazioni ripetute (non contate)"),
     "Zehnerwertung": ("Tens scoring (A10)", "Valeur sur 10 (A10)", "Punteggio su 10 (A10)"),
     "Übernehmen": ("Apply", "Reprendre", "Applica"),
+    "Trotzdem übernehmen": ("Apply anyway", "Reprendre quand même", "Applica comunque"),
+    "Zurück": ("Back", "Retour", "Indietro"),
+    "Summe stimmt nicht": ("Sum doesn't match", "La somme ne correspond pas", "La somma non corrisponde"),
+    "Summe nicht geprüft": ("Sum not checked", "Somme non vérifiée", "Somma non verificata"),
+    "Summe prüfen: %@": ("Check the sum: %@", "Vérifier la somme : %@", "Controllare la somma: %@"),
+    "Summe nicht geprüft, kein gedrucktes Total gelesen (Schüsse ergeben %@)": (
+        "Sum not checked, no printed total read (shots add up to %@)",
+        "Somme non vérifiée, aucun total imprimé lu (les coups font %@)",
+        "Somma non verificata, nessun totale stampato letto (i colpi danno %@)"),
+    "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben %@.": (
+        "No total was read on the score strip. The shots add up to %@.",
+        "Aucun total n'a été lu sur la feuille de stand. Les coups font %@.",
+        "Sul foglio di tiro non è stato letto nessun totale. I colpi danno %@."),
+    "Prüfe die Schüsse im Eintrag, bevor du ihn sicherst. Ein Hinweis steht in den Notizen.": (
+        "Check the shots in the entry before saving it. A note has been added.",
+        "Vérifiez les coups dans l'entrée avant de l'enregistrer. Une remarque a été ajoutée aux notes.",
+        "Controlla i colpi nella voce prima di salvarla. È stata aggiunta una nota."),
     "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.": ("The backup contains all entries, photos and master data. Restoring never duplicates existing entries. The last 10 backups are also kept in the Files app under On My iPhone › Schiesstagebuch › Backups.", "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique pas les entrées existantes. Les 10 dernières sauvegardes sont aussi conservées dans l'app Fichiers sous Sur mon iPhone › Schiesstagebuch › Backups.", "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica le voci esistenti. Gli ultimi 10 backup restano anche nell'app File in Sul mio iPhone › Schiesstagebuch › Backups."),
     "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
     "App von %@": ("App by %@", "App de %@", "App di %@"),
@@ -464,6 +481,14 @@ T = {
     "Schüsse vor der Erfassung": ("Shots before logging", "Coups avant l'enregistrement", "Colpi prima della registrazione"),
     "ausgebaut am %@": ("removed %@", "démonté le %@", "smontata il %@"),
     "montiert seit %@": ("fitted since %@", "monté depuis le %@", "montata dal %@"),
+    "Passe %@ hat %@ Schüsse, üblich sind 3, 4, 5, 6 oder 10.": (
+        "Series %1$@ has %2$@ shots; usual are 3, 4, 5, 6 or 10.",
+        "La passe %1$@ compte %2$@ coups ; l'usage est 3, 4, 5, 6 ou 10.",
+        "La serie %1$@ ha %2$@ colpi; di solito sono 3, 4, 5, 6 o 10."),
+    "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": (
+        "Left out so the series matches the printed sum: shot %@",
+        "Omis pour que la passe corresponde à la somme imprimée : coup %@",
+        "Omesso perché la serie corrisponda alla somma stampata: colpo %@"),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.
