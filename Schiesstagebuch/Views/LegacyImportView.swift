@@ -48,6 +48,18 @@ struct LegacyImportView: View {
                         LabeledContent("Waffen", value: plan.weapons.joined(separator: ", "))
                         LabeledContent("Schiessanlagen", value: "\(plan.ranges.count)")
                     }
+                    if !plan.overMaxRows.isEmpty {
+                        Section {
+                            ForEach(plan.overMaxRows, id: \.self) { row in
+                                LabeledContent(row.date.formatted(date: .numeric, time: .omitted) + " · " + row.weapon,
+                                               value: row.result)
+                            }
+                        } header: {
+                            Text("Resultate über dem Maximum")
+                        } footer: {
+                            Text("Ein Resultat kann höchstens 100 Prozent erreichen. Diese Einträge werden übernommen, zählen aber nicht in die Prozent-Statistik. Korrigiere das Resultat danach im Eintrag.")
+                        }
+                    }
                     Section {
                         ForEach(ammoKeys(plan), id: \.self) { ammo in
                             Picker(ammo, selection: Binding(

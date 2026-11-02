@@ -112,6 +112,42 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "P75"), .pistol)
         XCTAssertEqual(WeaponCategory.guess(from: "Unknown thing"), .other)
     }
+
+    /// Rows as they are in the real old-app export (data.db, 2025–2026).
+    private let realRows = """
+    Datum\tSchiessanlage\tAnlass\tWaffe\tSchusszahl\tMunition\tResultat\tBemerkungen
+    28.03.2025\tAlbisgüetli\tTraining\tP75\t100\t9x19\t\t
+    10.05.2025\tAlbisgüetli\tSSM\tStgw-90 Skye\t10\tGP90\t88\t
+    09.08.2025\tAlbisgüetli\tTraining\tPE550\t48\tGP90\t90/75\t
+    09.05.2026\tAlbisgüetli\tGM\tPE550\t36\tGP90\t130 / 131\t
+    08.08.2026\tAlbisgüetli\tTraining\tPE550\t13\tGP90\t93%\t
+    """
+
+    func testImportedShotsCountAsScoredShots() async throws {
+        let plan = LegacyImport.plan(LegacyImport.parseTSV(realRows), context: context)
+        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        // One entry of the user's own with sighters makes the stats show the split.
+        let own = addEntry(nil, on: day(1), shots: 25); own.sighterCount = 5
+
+        let entries = try context.fetch(FetchDescriptor<Entry>())
+        XCTAssertEqual(entries.count, 6)
+        XCTAssertEqual(entries.sighterShots, 5)
+        XCTAssertEqual(entries.scoredShots, 100 + 10 + 48 + 36 + 13 + 20, "imported shots were counted as 0")
+        XCTAssertEqual(entries.sighterShots + entries.scoredShots, entries.totalShots)
+    }
+
+    func testResultsOverMaximumAreFlaggedNotCounted() async throws {
+        let plan = LegacyImport.plan(LegacyImport.parseTSV(realRows), context: context)
+        XCTAssertEqual(plan.overMaxRows.map(\.result), ["90/75"])
+
+        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        let entries = try context.fetch(FetchDescriptor<Entry>())
+        let over = try XCTUnwrap(entries.first { $0.result == "90/75" }, "the row is still imported")
+        XCTAssertEqual(over.shotCount, 48)
+        XCTAssertTrue(over.score.exceedsMax)
+        XCTAssertNil(over.score.percentage)
+        XCTAssertTrue(entries.compactMap(\.score.percentage).allSatisfy { $0 <= 1 }, "no result above 100 %")
+    }
 }
 
 final class LegacyImportCandidatesTests: XCTestCase {
