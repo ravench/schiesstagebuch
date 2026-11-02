@@ -349,11 +349,6 @@ T = {
         "The result is above the maximum. Correct the result or the max. points.",
         "Le résultat dépasse le maximum. Corrige le résultat ou les points max.",
         "Il risultato supera il massimo. Correggi il risultato o i punti max."),
-    "Resultate über dem Maximum": ("Results above the maximum", "Résultats au-dessus du maximum", "Risultati sopra il massimo"),
-    "Ein Resultat kann höchstens 100 Prozent erreichen. Diese Einträge werden übernommen, zählen aber nicht in die Prozent-Statistik. Korrigiere das Resultat danach im Eintrag.": (
-        "A result can be at most 100 percent. These entries are imported but left out of the percentage statistics. Correct the result in the entry afterwards.",
-        "Un résultat ne peut pas dépasser 100 pour cent. Ces entrées sont importées mais ne comptent pas dans les statistiques en pourcentage. Corrige ensuite le résultat dans l'entrée.",
-        "Un risultato può arrivare al massimo al 100 per cento. Queste voci vengono importate ma non contano nelle statistiche in percentuale. Correggi poi il risultato nella voce."),
     "Total: gedruckt %@, gelesen %@": ("Total: printed %1$@, read %2$@", "Total : imprimé %1$@, lu %2$@", "Totale: stampato %1$@, letto %2$@"),
     "Unsicher gelesen, Schuss %@": ("Uncertain reading, shot %@", "Lecture incertaine, coup %@", "Lettura incerta, colpo %@"),
     "Wiederholte Anzeigen (nicht gezählt)": (

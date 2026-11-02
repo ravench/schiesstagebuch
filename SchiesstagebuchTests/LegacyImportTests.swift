@@ -136,17 +136,25 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(entries.sighterShots + entries.scoredShots, entries.totalShots)
     }
 
-    func testResultsOverMaximumAreFlaggedNotCounted() async throws {
+    func testImportedResultsGetNoPercentageOrPerShotAverage() async throws {
         let plan = LegacyImport.plan(LegacyImport.parseTSV(realRows), context: context)
-        XCTAssertEqual(plan.overMaxRows.map(\.result), ["90/75"])
-
         _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
         let entries = try context.fetch(FetchDescriptor<Entry>())
-        let over = try XCTUnwrap(entries.first { $0.result == "90/75" }, "the row is still imported")
-        XCTAssertEqual(over.shotCount, 48)
-        XCTAssertTrue(over.score.exceedsMax)
-        XCTAssertNil(over.score.percentage)
-        XCTAssertTrue(entries.compactMap(\.score.percentage).allSatisfy { $0 <= 1 }, "no result above 100 %")
+        XCTAssertTrue(entries.allSatisfy(\.isLegacyImport))
+        // "/" separated the results of several Stiche in the old app, it is not "of max".
+        XCTAssertTrue(entries.allSatisfy { $0.score.percentage == nil && !$0.score.exceedsMax })
+        // The shot totals may include sighters, so points per shot would be too low.
+        XCTAssertTrue(entries.allSatisfy { $0.score.meanPerShot == nil })
+        XCTAssertNil(entries.averagePercentage)
+        XCTAssertNil(entries.averagePerShot)
+
+        // Once the user enters the maximum and splits off the sighters, both work again.
+        let ssm = try XCTUnwrap(entries.first { $0.result == "88" })
+        ssm.maxPoints = 100
+        XCTAssertEqual(ssm.score.percentage!, 0.88, accuracy: 1e-9)
+        XCTAssertNil(ssm.score.meanPerShot)
+        ssm.sighterCount = 0
+        XCTAssertEqual(ssm.score.meanPerShot!, 8.8, accuracy: 1e-9, "88 points over 10 scored shots")
     }
 }
 
