@@ -36,12 +36,12 @@ final class BackupStoreTests: XCTestCase {
 
     func testPruneKeepsNewest() throws {
         for i in 0..<5 {
-            let url = try BackupStore.save(Data(), name: "b\(i)", in: folder)
+            let url = try BackupStore.save(Data(), name: "Schiesstagebuch-2026-10-0\(i + 1)", in: folder)
             try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: Double(i - 10) * 60)],
                                                   ofItemAtPath: url.path)
         }
         BackupStore.prune(keep: 2, in: folder)
-        XCTAssertEqual(BackupStore.list(in: folder).map(\.lastPathComponent), ["b4.json", "b3.json"])
+        XCTAssertEqual(BackupStore.list(in: folder).map(\.lastPathComponent), ["Schiesstagebuch-2026-10-05.json", "Schiesstagebuch-2026-10-04.json"])
     }
 
     func testPruneLeavesFilesTheAppDidNotWrite() throws {
