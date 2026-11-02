@@ -45,12 +45,18 @@ struct EntryEditorView: View {
     @State private var quickAdd: QuickAdd?
     @State private var showingScanner = false
     @State private var didLoad = false
+    @FocusState private var eventFocused: Bool
 
     enum QuickAdd: Identifiable { case weapon, range, ammunition; var id: Self { self } }
 
     private var recentEvents: [String] {
         var seen = Set<String>()
         return allEntries.map(\.event).filter { !$0.isEmpty && seen.insert($0).inserted }.prefix(8).map { $0 }
+    }
+
+    /// Earlier event names matching what is typed, shown below the field while it has focus.
+    private var eventSuggestions: [String] {
+        eventFocused ? EventSuggestions.suggestions(for: event, in: allEntries) : []
     }
 
     /// Barrels fitted on the entry's day; the picker only shows when there is a real choice.
@@ -85,10 +91,16 @@ struct EntryEditorView: View {
                     pickerRow("Schiessanlage", selection: $range, items: ranges, label: \.name, add: .range)
                     HStack {
                         TextField("Anlass", text: $event)
+                            .focused($eventFocused)
                         if !recentEvents.isEmpty {
                             Menu {
                                 ForEach(recentEvents, id: \.self) { e in Button(e) { event = e } }
                             } label: { Image(systemName: "clock.arrow.circlepath") }
+                        }
+                    }
+                    ForEach(eventSuggestions, id: \.self) { s in
+                        Button { event = s } label: {
+                            Label { Text(verbatim: s) } icon: { Image(systemName: "arrow.up.left") }
                         }
                     }
                 }
