@@ -264,6 +264,10 @@ extension ScannedStandblatt.Issue {
             String(localized: "Fehlende Schüsse: \(Self.joined(numbers))")
         case let .uncertainShots(numbers):
             String(localized: "Unsicher gelesen, Schuss \(Self.joined(numbers))")
+        case let .unusualPasseLength(passe, shots):
+            String(localized: "Passe \(passe.formatted()) hat \(shots.formatted()) Schüsse, üblich sind 3, 4, 5, 6 oder 10.")
+        case let .removedShots(numbers):
+            String(localized: "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss \(Self.joined(numbers))")
         }
     }
 

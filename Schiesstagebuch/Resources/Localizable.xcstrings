@@ -5521,6 +5521,29 @@
         }
       }
     },
+    "Passe %@ hat %@ Schüsse, üblich sind 3, 4, 5, 6 oder 10.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Series %1$@ has %2$@ shots; usual are 3, 4, 5, 6 or 10."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La passe %1$@ compte %2$@ coups ; l'usage est 3, 4, 5, 6 ou 10."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La serie %1$@ ha %2$@ colpi; di solito sono 3, 4, 5, 6 o 10."
+          }
+        }
+      }
+    },
     "Passe %@: gedruckt %@, gelesen %@": {
       "extractionState": "manual",
       "localizations": {
@@ -8001,6 +8024,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra le impostazioni dell'arma per tiratori sportivi"
+          }
+        }
+      }
+    },
+    "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left out so the series matches the printed sum: shot %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omis pour que la passe corresponde à la somme imprimée : coup %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omesso perché la serie corrisponda alla somma stampata: colpo %@"
           }
         }
       }

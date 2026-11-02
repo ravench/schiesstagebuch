@@ -82,6 +82,8 @@ struct ScannedStandblatt: Equatable {
     var repeats = 0
     /// Read from a handwritten sheet: values are suggestions.
     var handwritten = false
+    /// Shots dropped because the Passe only matched its printed sum without them (see StandblattPasseCheck).
+    var removedShots: [Int] = []
 
     var shots: [ScannedShot] { passes.flatMap(\.shots) }
     var innerTens: Int { shots.filter(\.innerTen).count }
@@ -108,6 +110,10 @@ struct ScannedStandblatt: Equatable {
         case missingShots([Int])
         /// Shot numbers whose ring did not match the hundredths.
         case uncertainShots([Int])
+        /// Passe number (1-based) and its shot count, when that is not a usual Passe length.
+        case unusualPasseLength(Int, shots: Int)
+        /// Shots left out so that a Passe matches its printed sum.
+        case removedShots([Int])
     }
 
     /// Checks the read shots against the printed subtotals and total.
@@ -123,11 +129,12 @@ struct ScannedStandblatt: Equatable {
         }
         let numbers = shots.map(\.number)
         if let first = numbers.first, let last = numbers.max(), !handwritten {
-            let missing = (first...max(first, last)).filter { !numbers.contains($0) }
+            let missing = (first...max(first, last)).filter { !numbers.contains($0) && !removedShots.contains($0) }
             if !missing.isEmpty { result.append(.missingShots(missing)) }
         }
         let uncertain = shots.filter(\.uncertain).map(\.number)
         if scoring == .rings, !uncertain.isEmpty { result.append(.uncertainShots(uncertain)) }
+        result += passeLengthIssues
         return result
     }
 
@@ -410,6 +417,7 @@ enum StandblattParser {
         let printed = split(draft.total ?? [], isA10: isA10, sums: (strip.sum(.rings), strip.sum(.hundredths)))
         strip.printedRings = printed.rings
         strip.printedHundredths = printed.hundredths
+        strip.dropExtraShots()
         return strip
     }
 

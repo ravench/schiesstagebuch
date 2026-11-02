@@ -403,6 +403,14 @@ T = {
     "W": ("W", "O", "O"),
     "NW": ("NW", "NO", "NO"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
+    "Passe %@ hat %@ Schüsse, üblich sind 3, 4, 5, 6 oder 10.": (
+        "Series %1$@ has %2$@ shots; usual are 3, 4, 5, 6 or 10.",
+        "La passe %1$@ compte %2$@ coups ; l'usage est 3, 4, 5, 6 ou 10.",
+        "La serie %1$@ ha %2$@ colpi; di solito sono 3, 4, 5, 6 o 10."),
+    "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": (
+        "Left out so the series matches the printed sum: shot %@",
+        "Omis pour que la passe corresponde à la somme imprimée : coup %@",
+        "Omesso perché la serie corrisponda alla somma stampata: colpo %@"),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.
