@@ -24,7 +24,7 @@ replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French a
   Old ammo names are mapped to calibres (editable before importing), weapons get their
   calibres and a guessed category, and photos are pulled from the Photos library when the
   referenced pictures still exist there.
-- **iCloud sync** via SwiftData + CloudKit (container `iCloud.net.forestraven.schiesstagebuch`).
+- **iCloud sync** via SwiftData + CloudKit (container `iCloud.ch.giotta.schiesstagebuch`).
   Works offline and without iCloud; calibres seeded on several devices are merged.
 - **Icons**: a silhouette per weapon category and a true-to-scale cartridge outline for
   every catalogue calibre.
@@ -42,7 +42,7 @@ open Schiesstagebuch.xcodeproj
 If you build your own copy, replace `DEVELOPMENT_TEAM` in `project.yml` with your team ID (or pick your team under Signing & Capabilities), then run on a device or simulator.
 For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates the
 container on first run. Change the bundle id / container in `project.yml` if
-`net.forestraven` isn't yours.
+`ch.giotta` isn't yours.
 
 Calibres and icons are generated assets. After editing `tools/cartridges.py` or
 `tools/weapon_icons.py`, run:
@@ -62,6 +62,18 @@ xcodebuild test -project Schiesstagebuch.xcodeproj -scheme Schiesstagebuch \
 ```
 
 Every change should come with tests.
+
+## TestFlight
+
+Every push to `main` whose Build workflow passes is archived and uploaded to TestFlight
+by `.github/workflows/testflight.yml` (it can also be started by hand under Actions).
+The build number is the workflow run number plus 1000 (`tools/testflight.py`); bump
+`MARKETING_VERSION` in `project.yml` for a new version.
+
+The upload needs three repository secrets from an App Store Connect API key with the
+Admin role (Users and Access, Integrations, Team Keys): `ASC_KEY_ID` (Key ID),
+`ASC_ISSUER_ID` (Issuer ID) and `ASC_KEY_P8` (the whole content of the downloaded
+`AuthKey_….p8`). Without them the workflow skips the upload. Forks don't get the secrets.
 
 ## Code style
 
