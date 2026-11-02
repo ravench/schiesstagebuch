@@ -41,13 +41,13 @@ final class StandblattPasseLengthTests: XCTestCase {
         XCTAssertEqual(StandblattImport(s, scoring: .rings).passes, ["10 10 9 7 10 9 10 9 8 9"])
     }
 
-    func testStrayShotInTheMiddleIsDroppedWithoutReportingAGap() throws {
-        // Shot 5 printed twice with different numbers: dropping the extra row restores the sums.
+    func testStrayRowWithAFarOffNumberNeverBecomesAShot() throws {
+        // A misread row numbered far beyond the last shot is skipped before the length check.
         let body = tenShots.replacingOccurrences(of: "5 ← 10 95\n", with: "5 ← 10 95\n55 ← 10 95\n")
         let s = try parse(body + "\nSubtota 91 866")
-        XCTAssertEqual(s.shots.count, 10)
-        XCTAssertEqual(s.removedShots.count, 1)
-        XCTAssertFalse(s.issues(.rings).contains { if case .missingShots = $0 { return true }; return false })
+        XCTAssertEqual(s.shots.map(\.number), Array(1...10))
+        XCTAssertEqual(s.removedShots, [])
+        XCTAssertEqual(s.issues(.rings), [])
     }
 
     func testSinglePasseUsesTheTotalWhenThereIsNoSubtotal() throws {
