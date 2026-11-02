@@ -49,15 +49,16 @@ enum Backup {
     struct WeaponDTO: Codable {
         var id: UUID; var name: String; var isArchived: Bool; var category: String?
         var createdAt: Date?
-        var caliberIDs: [UUID]; var defaultCaliberID: UUID?
+        /// Only in backups from before barrels: each calibre becomes a barrel on restore.
+        var caliberIDs: [UUID]?; var defaultCaliberID: UUID?
         var cleaningIntervalShots: Int; var cleaningIntervalDays: Int
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
         var dayCounting: String?
         var serialNumber: String?
-        var boltSerialNumber: String?
+        var extraSerials: [PartSerial]?
     }
     struct BarrelDTO: Codable {
-        var id: UUID; var weaponID: UUID?; var caliberID: UUID?; var name: String; var serialNumber: String
+        var id: UUID; var weaponID: UUID?; var caliberIDs: [UUID]; var isDefault: Bool; var name: String; var serialNumber: String
         var installedOn: Date?; var removedOn: Date?; var previousShots: Int; var expectedLifeShots: Int
         var notes: String; var createdAt: Date
     }
@@ -101,11 +102,11 @@ enum Backup {
             },
             weapons: try all(Weapon.self, context).map {
                 .init(id: $0.id, name: $0.name, isArchived: $0.isArchived, category: $0.categoryRaw, createdAt: $0.createdAt,
-                      caliberIDs: ($0.calibers ?? []).map(\.id), defaultCaliberID: $0.defaultCaliber?.id,
+                      caliberIDs: nil, defaultCaliberID: nil,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
                       dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber,
-                      boltSerialNumber: $0.boltSerialNumber)
+                      extraSerials: $0.extraSerials)
             },
             ammunition: try all(Ammunition.self, context).map {
                 .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived, createdAt: $0.createdAt)
@@ -134,7 +135,8 @@ enum Backup {
                 .init(id: $0.id, holderName: $0.holderName, licenceNumber: $0.licenceNumber, updatedAt: $0.updatedAt)
             },
             barrels: try all(Barrel.self, context).map {
-                .init(id: $0.id, weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, name: $0.name, serialNumber: $0.serialNumber,
+                .init(id: $0.id, weaponID: $0.weapon?.id, caliberIDs: ($0.calibers ?? []).map(\.id), isDefault: $0.isDefault,
+                      name: $0.name, serialNumber: $0.serialNumber,
                       installedOn: $0.installedOn, removedOn: $0.removedOn, previousShots: $0.previousShots,
                       expectedLifeShots: $0.expectedLifeShots, notes: $0.notes, createdAt: $0.createdAt)
             })
@@ -175,15 +177,30 @@ enum Backup {
         for d in dtos where barrels[d.id] == nil {
             let b = Barrel(name: d.name); b.id = d.id
             b.serialNumber = d.serialNumber
+            b.isDefault = d.isDefault
             b.installedOn = d.installedOn; b.removedOn = d.removedOn
             b.previousShots = d.previousShots; b.expectedLifeShots = d.expectedLifeShots
             b.notes = d.notes; b.createdAt = d.createdAt
             context.insert(b)
-            b.caliber = d.caliberID.flatMap { calibers[$0] }
+            b.calibers = d.caliberIDs.compactMap { calibers[$0] }
             b.weapon = d.weaponID.flatMap { weapons[$0] }
             barrels[d.id] = b
         }
         return barrels
+    }
+
+    /// Backups from before barrels list calibres on the weapon: each becomes a barrel, the
+    /// default calibre's barrel the default one.
+    private static func restoreOldWeaponCalibers(_ dtos: [WeaponDTO], weapons: [UUID: Weapon], calibers: [UUID: Caliber],
+                                                 into context: ModelContext) {
+        for d in dtos {
+            guard let w = weapons[d.id], let ids = d.caliberIDs else { continue }
+            for c in ids.compactMap({ calibers[$0] }) { w.ensureBarrel(for: c, in: context) }
+            if let def = d.defaultCaliberID.flatMap({ calibers[$0] }),
+               let barrel = w.sortedBarrels.first(where: { ($0.calibers ?? []).contains(def) }) {
+                w.makeDefault(barrel)
+            }
+        }
     }
 
     /// Returns a short German summary for the user.
@@ -202,13 +219,11 @@ enum Backup {
         for d in file.weapons where weapons[d.id] == nil {
             let w = Weapon(name: d.name); w.id = d.id; w.isArchived = d.isArchived
             w.categoryRaw = d.category ?? WeaponCategory.other.rawValue
-            w.calibers = d.caliberIDs.compactMap { caliberMap[$0] }
-            w.defaultCaliber = d.defaultCaliberID.flatMap { caliberMap[$0] }
             w.cleaningIntervalShots = d.cleaningIntervalShots; w.cleaningIntervalDays = d.cleaningIntervalDays
             w.serviceIntervalShots = d.serviceIntervalShots; w.serviceIntervalDays = d.serviceIntervalDays
             w.dayCountingRaw = d.dayCounting ?? ""
             w.serialNumber = d.serialNumber ?? ""
-            w.boltSerialNumber = d.boltSerialNumber ?? ""
+            w.extraSerials = d.extraSerials ?? []
             if let created = d.createdAt { w.createdAt = created }
             context.insert(w); weapons[d.id] = w
         }
@@ -247,6 +262,7 @@ enum Backup {
 
         try restoreLicenceCards(file.licenceCards ?? [], into: context)
         let barrels = try restoreBarrels(file.barrels ?? [], weapons: weapons, calibers: caliberMap, into: context)
+        restoreOldWeaponCalibers(file.weapons, weapons: weapons, calibers: caliberMap, into: context)
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0

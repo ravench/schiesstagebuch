@@ -5,14 +5,14 @@ import SwiftData
 // schema stays compatible with SwiftData + CloudKit sync later on.
 //
 // Reference data (configurable in Einstellungen):
-//   Caliber  <-many-to-many->  Weapon      (e.g. SIG P210 with 9x19 and .22 LR barrels)
-//   Weapon.defaultCaliber                  (preselected in new entries)
+//   Weapon   <-one-to-many-->  Barrel      (at least one; e.g. SIG P210 with a 9x19 and a .22 LR barrel)
+//   Barrel   <-many-to-many->  Caliber     (at least one; several when the chamber fits them all)
 //   Caliber  <-one-to-many-->  Ammunition  (ammo belongs to one calibre)
 //   ShootingRange
 // Journal data:
 //   Entry -> Weapon, Caliber, ShootingRange, Ammunition; Entry -> EntryPhoto (max 4)
 // Shots per calibre are counted from Entry.caliber.
-// Optional barrels: Weapon -> Barrel (calibre, serial, dates, shots); Entry -> Barrel (see Barrel.swift).
+// Shots per barrel: Entry -> Barrel, or matched by calibre and date (see Barrel.swift).
 // Maintenance: Weapon -> MaintenanceRecord (cleaning / service), with optional
 // intervals per weapon in shots and/or days (see MaintenanceStatus).
 
@@ -34,15 +34,11 @@ final class Caliber: ArchivableItem {
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 
-    @Relationship(deleteRule: .nullify, inverse: \Weapon.calibers)
-    var weapons: [Weapon]? = []
     @Relationship(deleteRule: .nullify, inverse: \Ammunition.caliber)
     var ammunitions: [Ammunition]? = []
-    @Relationship(deleteRule: .nullify, inverse: \Weapon.defaultCaliber)
-    var defaultFor: [Weapon]? = []
     @Relationship(deleteRule: .nullify, inverse: \Entry.caliber)
     var entries: [Entry]? = []
-    @Relationship(deleteRule: .nullify, inverse: \Barrel.caliber)
+    @Relationship(deleteRule: .nullify, inverse: \Barrel.calibers)
     var barrels: [Barrel]? = []
 
     init(name: String, category: String = "") {
@@ -53,6 +49,21 @@ final class Caliber: ArchivableItem {
     /// Alternative names from the catalogue, e.g. "9 mm Luger, 9 mm Para".
     var aliasSummary: String {
         (CaliberCatalog.item(id: catalogID)?.displayAliases ?? []).joined(separator: ", ")
+    }
+
+    /// Firearms with a barrel for this calibre.
+    var weapons: [Weapon] {
+        var seen = Set<PersistentIdentifier>()
+        return (barrels ?? []).compactMap(\.weapon).filter { seen.insert($0.persistentModelID).inserted }
+    }
+
+    /// Catalogue group of cartridges with identical measurements (e.g. .308 Win and 7.62 NATO); nil when alone.
+    var dimensionGroup: String? { CaliberCatalog.item(id: catalogID)?.dimensionGroup }
+
+    /// Other calibres from `all` with the same measurements, so a barrel for one can take them too.
+    func sameDimensions(in all: [Caliber]) -> [Caliber] {
+        guard let group = dimensionGroup else { return [] }
+        return all.filter { $0 != self && $0.dimensionGroup == group }
     }
 
     func matches(_ query: String) -> Bool {
@@ -73,15 +84,11 @@ final class Weapon: ArchivableItem {
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 
-    var calibers: [Caliber]? = []
-    /// Calibre preselected for new entries with this weapon. Always one of `calibers`.
-    var defaultCaliber: Caliber?
-
     @Relationship(deleteRule: .nullify, inverse: \Entry.weapon)
     var entries: [Entry]? = []
     @Relationship(deleteRule: .cascade, inverse: \MaintenanceRecord.weapon)
     var maintenance: [MaintenanceRecord]? = []
-    /// Optional barrels (Läufe), see Barrel.swift. Empty for a firearm tracked as one piece.
+    /// Barrels (Läufe), at least one; they carry the calibres. See Barrel.swift.
     @Relationship(deleteRule: .cascade, inverse: \Barrel.weapon)
     var barrels: [Barrel]? = []
 
@@ -92,10 +99,10 @@ final class Weapon: ArchivableItem {
     var serviceIntervalDays: Int = 0
     /// When the day interval starts: "" = app default, else a `DayCounting` raw value.
     var dayCountingRaw: String = ""
-    /// Optional serial number (Waffennummer), as on the frame.
+    /// Main serial number (Hauptnummer), optional. Each barrel has its own number.
     var serialNumber: String = ""
-    /// Optional serial number of the bolt when it differs from the frame's.
-    var boltSerialNumber: String = ""
+    /// Further numbered parts as JSON `[PartSerial]`, e.g. bolt or cylinder; see `extraSerials`.
+    var extraSerialsData: Data?
 
     init(name: String) { self.name = name }
 
@@ -113,14 +120,14 @@ final class Weapon: ArchivableItem {
         set { categoryRaw = newValue.rawValue }
     }
 
-    var sortedCalibers: [Caliber] { (calibers ?? []).sorted { $0.name < $1.name } }
-    /// Default calibre first, then alphabetical.
-    var orderedCalibers: [Caliber] {
-        sortedCalibers.sorted { ($0 == defaultCaliber ? 0 : 1, $0.name) < ($1 == defaultCaliber ? 0 : 1, $1.name) }
+    /// Calibres of the barrels in use (all barrels when every one is removed), default barrel first.
+    var calibers: [Caliber] {
+        let current = sortedBarrels.filter { !$0.isRemoved }
+        var seen = Set<PersistentIdentifier>()
+        return (current.isEmpty ? sortedBarrels : current).flatMap(\.sortedCalibers)
+            .filter { seen.insert($0.persistentModelID).inserted }
     }
-    var caliberSummary: String { orderedCalibers.map(\.name).joined(separator: ", ") }
-    /// The calibre to preselect: the default, or the only one.
-    var preferredCaliber: Caliber? { defaultCaliber ?? (calibers?.count == 1 ? calibers?.first : nil) }
+    var caliberSummary: String { calibers.map(\.name).joined(separator: ", ") }
 }
 
 @Model

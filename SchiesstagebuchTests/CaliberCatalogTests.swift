@@ -57,7 +57,7 @@ final class CaliberCatalogTests: ModelTestCase {
         let keep = catalogCaliber(nineMM, createdAt: day(1))
         let dupe = catalogCaliber(nineMM, createdAt: day(2))
         let weapon = Weapon(name: "P210"); context.insert(weapon)
-        weapon.calibers = [dupe]; weapon.defaultCaliber = dupe
+        let barrel = Barrel(); context.insert(barrel); barrel.calibers = [dupe]; barrel.weapon = weapon
         let ammo = Ammunition(name: "Geco", caliber: dupe); context.insert(ammo)
         let entry = Entry(date: day(3), weapon: weapon, caliber: dupe, shotCount: 10); context.insert(entry)
         try context.save()
@@ -65,8 +65,8 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CaliberCatalog.deduplicate(context), 1)
 
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 1)
+        XCTAssertEqual(barrel.calibers, [keep])
         XCTAssertEqual(weapon.calibers, [keep])
-        XCTAssertEqual(weapon.defaultCaliber, keep)
         XCTAssertEqual(ammo.caliber, keep)
         XCTAssertEqual(entry.caliber, keep)
         XCTAssertEqual(CaliberCatalog.deduplicate(context), 0, "idempotent")
@@ -76,10 +76,10 @@ final class CaliberCatalogTests: ModelTestCase {
         let keep = catalogCaliber(nineMM, createdAt: day(1))
         let dupe = catalogCaliber(nineMM, createdAt: day(2))
         let weapon = Weapon(name: "P210"); context.insert(weapon)
-        weapon.calibers = [keep, dupe]
+        let barrel = Barrel(); context.insert(barrel); barrel.calibers = [keep, dupe]; barrel.weapon = weapon
         try context.save()
         CaliberCatalog.deduplicate(context)
-        XCTAssertEqual(weapon.calibers, [keep])
+        XCTAssertEqual(barrel.calibers, [keep])
     }
 
     func testFreshlySeededDuplicateDoesNotUnarchive() throws {
@@ -94,7 +94,7 @@ final class CaliberCatalogTests: ModelTestCase {
         let keep = catalogCaliber(nineMM, createdAt: day(1), archived: true)
         let dupe = catalogCaliber(nineMM, createdAt: day(2))
         let weapon = Weapon(name: "P210"); context.insert(weapon)
-        weapon.calibers = [dupe]
+        let barrel = Barrel(); context.insert(barrel); barrel.calibers = [dupe]; barrel.weapon = weapon
         try context.save()
         CaliberCatalog.deduplicate(context)
         XCTAssertFalse(keep.isArchived, "shot with on the other device, so it is active")

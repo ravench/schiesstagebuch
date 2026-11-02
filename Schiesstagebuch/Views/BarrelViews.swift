@@ -1,8 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// Barrels block on the firearm detail screen. Collapsed to one button while the firearm
-/// has no barrels, so single-barrel firearms look as before.
+/// Barrels block on the firearm detail screen: each barrel with its shots and wear.
 struct BarrelSection: View {
     @Bindable var weapon: Weapon
     @Environment(\.modelContext) private var context
@@ -14,18 +13,14 @@ struct BarrelSection: View {
     var body: some View {
         Section {
             ForEach(weapon.sortedBarrels) { b in
-                Button { editing = b } label: { BarrelRow(barrel: b) }
+                Button { editing = b } label: { BarrelRow(barrel: b, showsDefault: weapon.hasSeveralBarrels) }
                     .foregroundStyle(.primary)
             }
             Button { adding = true } label: { Label("Lauf hinzufügen", systemImage: "plus") }
         } header: {
             Text("Läufe")
         } footer: {
-            if (weapon.barrels ?? []).isEmpty {
-                Text("Optional: erfasse Läufe, um Schüsse pro Lauf zu zählen, z. B. bei Wechselläufen oder nach einem Laufwechsel.")
-            } else {
-                Text("Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.")
-            }
+            Text("Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.")
         }
         .sheet(item: $editing, onDismiss: deletePending) { b in
             BarrelEditorView(weapon: weapon, barrel: b, onDelete: { pendingDelete = b })
@@ -42,19 +37,21 @@ struct BarrelSection: View {
 
 struct BarrelRow: View {
     let barrel: Barrel
+    var showsDefault = false
 
     var body: some View {
         HStack(spacing: 12) {
-            if let c = barrel.caliber { CartridgeView(caliber: c).frame(width: 18, height: 30) }
+            if let c = barrel.sortedCalibers.first { CartridgeView(caliber: c).frame(width: 18, height: 30) }
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
                     Text(barrel.displayName).font(.headline)
                     if barrel.isRemoved { Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small) }
+                    if showsDefault && barrel.isDefault { Text("Standard").font(.caption).foregroundStyle(.secondary) }
                     Spacer()
                     Text("\(barrel.totalShots.formatted()) Schuss").monospacedDigit().foregroundStyle(.secondary)
                 }
-                if !barrel.name.isEmpty, let c = barrel.caliber {
-                    Text(c.name).font(.subheadline).foregroundStyle(.secondary)
+                if !barrel.name.isEmpty, !barrel.caliberSummary.isEmpty {
+                    Text(barrel.caliberSummary).font(.subheadline).foregroundStyle(.secondary)
                 }
                 if !barrel.serialNumber.isEmpty {
                     Text("\("Nr.".loc) \(barrel.serialNumber)").font(.caption).foregroundStyle(.secondary)
@@ -99,6 +96,7 @@ struct BarrelEditorView: View {
     let weapon: Weapon
     let barrel: Barrel?
     /// Called instead of deleting here; the presenting screen deletes once the sheet is gone.
+    /// Without it (or for the only barrel) there is no delete button.
     var onDelete: (() -> Void)?
 
     @Environment(\.modelContext) private var context
@@ -107,7 +105,8 @@ struct BarrelEditorView: View {
 
     @State private var name = ""
     @State private var serialNumber = ""
-    @State private var caliber: Caliber?
+    @State private var calibers: Set<Caliber> = []
+    @State private var isDefault = false
     @State private var hasInstalled = false
     @State private var installedOn = Date.now
     @State private var hasRemoved = false
@@ -115,29 +114,38 @@ struct BarrelEditorView: View {
     @State private var previousShots = 0
     @State private var lifeShots = 0
     @State private var notes = ""
+    @State private var choosingCalibers = false
     @State private var confirmDelete = false
     @State private var didLoad = false
 
-    /// The firearm's own calibres first, then the rest of the catalogue.
-    private var caliberOptions: [Caliber] {
-        let own = weapon.orderedCalibers
-        return own + allCalibers.filter { !own.contains($0) }
-    }
+    private var sortedSelection: [Caliber] { calibers.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending } }
+    private var canDelete: Bool { barrel != nil && onDelete != nil && (weapon.barrels ?? []).count > 1 }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Bezeichnung (optional)", text: $name)
-                    Picker("Kaliber", selection: $caliber) {
-                        Text("–").tag(Caliber?.none)
-                        ForEach(caliberOptions) { Text($0.name).tag(Optional($0)) }
+                    Button { choosingCalibers = true } label: {
+                        LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
                     }
-                    TextField("Seriennummer (optional)", text: $serialNumber)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
+                    ForEach(sortedSelection) { c in
+                        HStack {
+                            CartridgeView(caliber: c).frame(width: 18, height: 30)
+                            Text(c.name)
+                        }
+                    }
                 } footer: {
-                    Text("Nur ausfüllen, wenn der Lauf eine eigene Nummer hat.")
+                    Text("Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.")
+                }
+
+                Section {
+                    TextField("Bezeichnung (optional)", text: $name)
+                    SerialField(title: "Nummer Lauf (optional)", text: $serialNumber)
+                    if weapon.hasSeveralBarrels || barrel == nil {
+                        Toggle("Standardlauf", isOn: $isDefault)
+                    }
+                } footer: {
+                    Text("Der Standardlauf ist bei neuen Einträgen vorausgewählt.")
                 }
 
                 Section {
@@ -166,7 +174,7 @@ struct BarrelEditorView: View {
                     TextField("Notizen (optional)", text: $notes, axis: .vertical).lineLimit(2...5)
                 }
 
-                if barrel != nil {
+                if canDelete {
                     Section {
                         Button("Lauf löschen", role: .destructive) { confirmDelete = true }
                     }
@@ -176,7 +184,13 @@ struct BarrelEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Sichern", action: save).bold() }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Sichern", action: save).bold().disabled(calibers.isEmpty)
+                }
+            }
+            .sheet(isPresented: $choosingCalibers) {
+                CaliberMultiPicker(all: allCalibers, selection: $calibers,
+                                   preferred: weapon.category.preferredCaliberCategories)
             }
             .confirmationDialog("Lauf löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
@@ -194,13 +208,15 @@ struct BarrelEditorView: View {
         guard !didLoad else { return }
         didLoad = true
         guard let barrel else {
-            // A new barrel usually replaces or adds to the default calibre.
-            caliber = weapon.preferredCaliber
+            // A new barrel is often a replacement: start from the default barrel's calibres.
+            calibers = Set(weapon.preferredBarrel(on: .now)?.calibers ?? [])
+            isDefault = (weapon.barrels ?? []).isEmpty
             return
         }
         name = barrel.name
         serialNumber = barrel.serialNumber
-        caliber = barrel.caliber
+        calibers = Set(barrel.calibers ?? [])
+        isDefault = barrel.isDefault
         if let d = barrel.installedOn { hasInstalled = true; installedOn = d }
         if let d = barrel.removedOn { hasRemoved = true; removedOn = d }
         previousShots = barrel.previousShots
@@ -210,19 +226,17 @@ struct BarrelEditorView: View {
 
     private func save() {
         let target = barrel ?? Barrel()
+        if barrel == nil { context.insert(target) }
         target.name = name.trimmingCharacters(in: .whitespaces)
         target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
-        target.caliber = caliber
+        target.calibers = sortedSelection
         target.installedOn = hasInstalled ? installedOn : nil
         target.removedOn = hasRemoved ? max(removedOn, target.installedOn ?? removedOn) : nil
         target.previousShots = max(0, previousShots)
         target.expectedLifeShots = max(0, lifeShots)
         target.notes = notes
-        if barrel == nil {
-            context.insert(target)
-            target.weapon = weapon
-        }
-        weapon.adoptBarrelCalibers()
+        if barrel == nil { target.weapon = weapon }
+        if isDefault { weapon.makeDefault(target) } else { target.isDefault = false }
         try? context.save()
         dismiss()
     }

@@ -20,7 +20,7 @@ struct EntryEditorView: View {
     @State private var caliber: Caliber?
     @State private var ammunition: Ammunition?
     @State private var lot: AmmoLot?
-    /// Barrel picked explicitly; nil = automatic (by calibre and date).
+    /// Barrel used; saved only when it differs from the automatic match (see Weapon.barrelToStore).
     @State private var barrel: Barrel?
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
@@ -53,11 +53,21 @@ struct EntryEditorView: View {
         return allEntries.map(\.event).filter { !$0.isEmpty && seen.insert($0).inserted }.prefix(8).map { $0 }
     }
 
-    /// Barrels to choose from; the picker only shows when there is a real choice.
-    private var barrelChoices: [Barrel] { weapon?.barrelChoices(for: caliber, on: date) ?? [] }
+    /// Barrels fitted on the entry's day; the picker only shows when there is a real choice.
+    private var barrelChoices: [Barrel] { weapon?.mountedBarrels(on: date) ?? [] }
 
-    /// Only ammo of the selected calibre.
-    private var fittingAmmunition: [Ammunition] { ammunitions.filter { $0.fits(caliber) } }
+    /// Calibres of the selected barrel, plus the entry's own if it is not among them.
+    private var caliberChoices: [Caliber] {
+        var list = barrel?.sortedCalibers ?? []
+        if let caliber, !list.contains(caliber) { list.append(caliber) }
+        return list
+    }
+
+    /// Ammo for any calibre of the selected barrel (picking one sets the calibre), else of the calibre.
+    private var fittingAmmunition: [Ammunition] {
+        if let barrel { return ammunitions.filter { barrel.fits($0) } }
+        return ammunitions.filter { $0.fits(caliber) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -86,21 +96,15 @@ struct EntryEditorView: View {
                 Section {
                     pickerRow("Waffe", selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
-                    if let weapon, !(weapon.calibers ?? []).isEmpty {
-                        Picker("Kaliber", selection: $caliber) {
-                            ForEach(weapon.orderedCalibers) { c in
-                                Text(c == weapon.defaultCaliber ? "\(c.name) (\("Standard".loc))" : c.name).tag(Optional(c))
-                            }
-                            if let caliber, !weapon.orderedCalibers.contains(caliber) {
-                                Text(caliber.name).tag(Optional(caliber))
-                            }
+                    if barrelChoices.count > 1 {
+                        Picker("Lauf", selection: $barrel) {
+                            ForEach(barrelChoices) { Text($0.displayName).tag(Optional($0)) }
+                            if let barrel, !barrelChoices.contains(barrel) { Text(barrel.displayName).tag(Optional(barrel)) }
                         }
                     }
-                    if barrelChoices.count > 1, let weapon {
-                        Picker("Lauf", selection: $barrel) {
-                            let autoName = weapon.barrel(for: caliber, on: date)?.displayName ?? "–"
-                            Text(String(localized: "Automatisch (\(autoName))")).tag(Barrel?.none)
-                            ForEach(barrelChoices) { Text($0.displayName).tag(Optional($0)) }
+                    if caliberChoices.count > 1 {
+                        Picker("Kaliber", selection: $caliber) {
+                            ForEach(caliberChoices) { Text($0.name).tag(Optional($0)) }
                         }
                     }
                     pickerRow("Munition", selection: $ammunition, items: fittingAmmunition,
@@ -204,25 +208,36 @@ struct EntryEditorView: View {
             .onAppear(perform: load)
             .onChange(of: weapon) { _, new in
                 guard didLoad else { return }
-                if barrel?.weapon != new { barrel = nil }
                 // New entries take the sight settings and weather switch of the last entry with this
                 // weapon, but never throw away values the user has typed already.
                 if entry == nil {
                     sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
                     weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
                 }
-                // Only the weapon's own calibres are valid; fall back to its default.
-                if let caliber, new?.calibers?.contains(caliber) == true { return }
-                caliber = new?.preferredCaliber
+                // The weapon's default barrel (or the one for the current calibre) with its calibre.
+                if let barrel, barrel.weapon == new { return }
+                barrel = caliber.flatMap { new?.barrel(for: $0, on: date) } ?? new?.preferredBarrel(on: date)
+                if barrel == nil { caliber = nil }
+            }
+            .onChange(of: barrel) { _, new in
+                guard didLoad, let new else { return }
+                if let caliber, new.fits(caliber) { return }
+                caliber = weapon?.preferredCaliber(for: new)
+            }
+            .onChange(of: date) { _, new in
+                guard didLoad, let barrel, let weapon, !barrel.isMounted(on: new) else { return }
+                // A barrel that was not fitted on the new day: switch to the one that was.
+                self.barrel = weapon.barrel(for: caliber, on: new) ?? weapon.preferredBarrel(on: new) ?? barrel
             }
             .onChange(of: caliber) { _, new in
                 guard didLoad else { return }
-                if let barrel, !barrel.fits(new) { self.barrel = nil }
                 if let ammunition, ammunition.fits(new) { return }
                 ammunition = suggestedAmmunition(weapon: weapon, caliber: new)
             }
             .onChange(of: ammunition) { _, new in
                 guard didLoad else { return }
+                // Ammo of another calibre of the same barrel (e.g. 5.56 NATO in a .223 barrel) sets the calibre.
+                if let c = new?.caliber, c != caliber, barrel?.fits(c) ?? true { caliber = c }
                 if let lot, lot.ammunition == new { return }
                 lot = suggestedLot(for: new)
             }
@@ -301,7 +316,7 @@ struct EntryEditorView: View {
         guard !didLoad else { return }
         if let entry {
             date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
-            caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; barrel = entry.barrel; shotCount = entry.shotCount; result = entry.result
+            caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; barrel = entry.effectiveBarrel; shotCount = entry.shotCount; result = entry.result
             maxPoints = entry.maxPoints
             sight = SightSettings(entry: entry)
             weather = entry.weather
@@ -313,7 +328,8 @@ struct EntryEditorView: View {
             // New entries start from the most recent range, weapon and ammo: usually what you shoot next.
             range = last.range?.isArchived == false ? last.range : nil
             weapon = last.weapon?.isArchived == false ? last.weapon : nil
-            caliber = weapon?.preferredCaliber
+            barrel = weapon?.preferredBarrel(on: date)
+            caliber = weapon?.preferredCaliber(for: barrel)
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
             lot = suggestedLot(for: ammunition)
         }

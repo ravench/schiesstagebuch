@@ -30,6 +30,8 @@ enum CaliberCatalog {
         /// Printable alternative names, e.g. "9 mm Luger" for 9x19 mm.
         let displayAliases: [String]?
         let kind: String
+        /// Shared by cartridges with identical measurements (e.g. .308 Win / 7.62 NATO); nil when alone.
+        let dimensionGroup: String?
         let outline: Outline
     }
 
@@ -103,13 +105,12 @@ enum CaliberCatalog {
             guard let keep = keeper[c.catalogID] else { keeper[c.catalogID] = c; continue }
             // A freshly seeded duplicate carries no intent of the user, so the oldest record keeps
             // its archived state. Only a duplicate that is actually in use brings the calibre back.
-            let inUse = !(c.weapons ?? []).isEmpty || !(c.ammunitions ?? []).isEmpty || !(c.entries ?? []).isEmpty
-            for w in c.weapons ?? [] {
-                var list = (w.calibers ?? []).filter { $0 != c }
+            let inUse = !(c.barrels ?? []).isEmpty || !(c.ammunitions ?? []).isEmpty || !(c.entries ?? []).isEmpty
+            for b in c.barrels ?? [] {
+                var list = (b.calibers ?? []).filter { $0 != c }
                 if !list.contains(keep) { list.append(keep) }
-                w.calibers = list
+                b.calibers = list
             }
-            for w in c.defaultFor ?? [] { w.defaultCaliber = keep }
             for a in c.ammunitions ?? [] { a.caliber = keep }
             for e in c.entries ?? [] { e.caliber = keep }
             if inUse, !c.isArchived { keep.isArchived = false }
