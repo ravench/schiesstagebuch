@@ -1,5 +1,6 @@
 import XCTest
 import SwiftData
+import SQLite3
 @testable import Schiesstagebuch
 
 final class LegacyImportTests: ModelTestCase {
@@ -46,6 +47,55 @@ final class LegacyImportTests: ModelTestCase {
 
         let again = LegacyImport.plan(rows, context: context)
         XCTAssertTrue(again.newRows.isEmpty)
+    }
+
+    func testRenamedCatalogueCalibreIsStillFound() async throws {
+        // The user renamed the seeded 9x19 to its Swiss shop name; the import must map "9x19" to it.
+        let nine = Caliber(name: "9 mm Para", category: "Kurzwaffe")
+        nine.catalogID = CaliberCatalog.match("9x19")!.id
+        context.insert(nine)
+        try context.save()
+
+        let rows = LegacyImport.parseTSV(tsv)
+        let plan = LegacyImport.plan(rows, context: context)
+        XCTAssertEqual(plan.ammoCaliber["9x19"], "9 mm Para", "the picker offers the user's name")
+
+        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        let p75 = try XCTUnwrap(try context.fetch(FetchDescriptor<Weapon>()).first { $0.name == "P75" })
+        XCTAssertEqual(p75.calibers, [nine])
+        XCTAssertEqual(p75.defaultCaliber, nine)
+        let entry = try XCTUnwrap(try context.fetch(FetchDescriptor<Entry>()).first { $0.weapon == p75 })
+        XCTAssertEqual(entry.caliber, nine)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 1, "no second 9x19 is created")
+    }
+
+    func testReadsTheOldAppsSQLiteDatabase() throws {
+        // Same columns (with the old app's typos) as the real data.db: table "wepon".
+        let url = FileManager.default.temporaryDirectory.appending(path: "legacy-\(UUID().uuidString).db")
+        defer { try? FileManager.default.removeItem(at: url) }
+        var db: OpaquePointer?
+        XCTAssertEqual(sqlite3_open(url.path, &db), SQLITE_OK)
+        defer { sqlite3_close(db) }
+        let sql = """
+        CREATE TABLE wepon (id integer primary key autoincrement, datum TEXT NOT NULL, schiessanlage TEXT NOT NULL,
+            anlass TEXT NOT NULL, wafee TEXT NOT NULL, schusszahi TEXT NOT NULL, muntition TEXT NOT NULL,
+            resultat TEXT NOT NULL, picture1 TEXT, picture2 TEXT, benerkungen TEXT NOT NULL, picture3 TEXT, picture4 TEXT);
+        INSERT INTO wepon VALUES (1, '28.03.2025', 'Galliker', 'Training', 'P75', '100', '9x19', '', '', '', '', '', '');
+        INSERT INTO wepon VALUES (2, '12.06.2026', 'Albisgüetli', 'Obligatorisches', 'Stgw-90 Skye', '20', 'GP90', '85',
+            'ABC/L0/001', NULL, 'gut', NULL, NULL);
+        INSERT INTO wepon VALUES (3, 'kein Datum', '', '', '', '', '', '', NULL, NULL, '', NULL, NULL);
+        """
+        XCTAssertEqual(sqlite3_exec(db, sql, nil, nil, nil), SQLITE_OK)
+
+        let rows = try LegacyImport.read(url)
+        XCTAssertEqual(rows.count, 2, "the row without a date is skipped")
+        XCTAssertEqual(rows[0].weapon, "P75")
+        XCTAssertEqual(rows[0].shots, 100)
+        XCTAssertEqual(rows[0].ammo, "9x19")
+        XCTAssertEqual(rows[1].range, "Albisgüetli")
+        XCTAssertEqual(rows[1].notes, "gut")
+        XCTAssertEqual(rows[1].pictures, ["ABC/L0/001"])
+        XCTAssertEqual(Calendar.current.component(.year, from: rows[1].date), 2026)
     }
 
     func testServiceRiflesStaySeparateCalibres() {
