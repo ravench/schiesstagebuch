@@ -369,7 +369,7 @@ T = {
     "Zweibein": ("Bipod", "Bipied", "Bipiede"),
     "Eigene Filter": ("My filters", "Mes filtres", "I miei filtri"),
     "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
-    "Farbfilter (AXIA)": ("Colour filters (AXIA)", "Filtres de couleur (AXIA)", "Filtri colorati (AXIA)"),
+    "Farbfilter": ("Colour filters", "Filtres de couleur", "Filtri colorati"),
     "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.": ("Select the filters you own. Only these appear in the picker. Existing entries keep their filter.", "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre.", "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro."),
     "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.": ("Optional. New entries take the values of the last entry with this weapon. Choose your filters under Settings → Filter.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages → Filtre.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni → Filtro."),
     "Name": ("Name", "Nom", "Nome"),

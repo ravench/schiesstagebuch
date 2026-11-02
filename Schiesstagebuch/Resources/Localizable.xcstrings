@@ -2301,25 +2301,25 @@
         }
       }
     },
-    "Farbfilter (AXIA)": {
+    "Farbfilter": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Colour filters (AXIA)"
+            "value": "Colour filters"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtres de couleur (AXIA)"
+            "value": "Filtres de couleur"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtri colorati (AXIA)"
+            "value": "Filtri colorati"
           }
         }
       }
