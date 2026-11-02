@@ -219,6 +219,7 @@ enum StandblattParser {
         text.split(separator: " ").dropFirst().compactMap { number(String($0)) }
     }
 
+    // swiftlint:disable:next force_try
     private static let dateRegex = try! NSRegularExpression(
         pattern: #"(\d{1,2})\s?[.,]\s?(\d{1,2})\s?[.,]\s?(\d{4})(?:\s+(\d{1,2})\s?[:.;,'‘’]?\s?(\d{2}))?"#)
 
@@ -498,9 +499,11 @@ enum StandblattParser {
         return columns.indices.filter { keep[$0] }.flatMap { columns[$0].sorted { $0.y < $1.y } }.map { .line($0.text) }
     }
 
+    // swiftlint:disable:next force_try
     private static let junk = try! NSRegularExpression(
         pattern: #"sch[üu]tzen|der stadt|name|standard|kar\b|exemplar|benutzer|^\d[\d\s()]*$|^a10+$|^[□☐☑✓xX\s]+$|57\s*/\s*0"#,
         options: .caseInsensitive)
+    // swiftlint:disable:next force_try
     private static let detailHint = try! NSRegularExpression(
         pattern: #"\b\d+\s*(EF|SF)\b|stich|waffen|sek\.|schuss|meisterschaft|match|probe|cible|coups"#,
         options: .caseInsensitive)
@@ -531,6 +534,7 @@ enum StandblattParser {
 /// Best effort for handwritten score sheets: each "… Scheibe P-10" heading followed by a row of
 /// boxed values, the last box (above the per-shot maximum) being the total.
 enum HandwrittenParser {
+    // swiftlint:disable:next force_try
     private static let section = try! NSRegularExpression(
         pattern: #"scheibe\s*([AP])\s*-?\s*(100|10)\b"#, options: .caseInsensitive)
 

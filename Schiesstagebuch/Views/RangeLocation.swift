@@ -177,3 +177,46 @@ struct RangeMapSection: View {
         }
     }
 }
+
+/// Optional shooting direction of a range: a switch, then a compass rose and a slider in 5° steps.
+struct RangeBearingRow: View {
+    @Binding var bearing: Double?
+
+    var body: some View {
+        Toggle(isOn: Binding(get: { bearing != nil }, set: { bearing = $0 ? (bearing ?? 0) : nil })) {
+            HStack {
+                Text("Schussrichtung")
+                Spacer()
+                if let bearing { Text(Compass.label(for: bearing)).monospacedDigit().foregroundStyle(.secondary) }
+            }
+        }
+        if let value = bearing {
+            HStack(spacing: 12) {
+                CompassArrow(degrees: value).frame(width: 36, height: 36)
+                Slider(value: Binding(get: { value }, set: { bearing = Compass.normalized(($0 / 5).rounded() * 5) }),
+                       in: 0...355, step: 5) {
+                    Text("Schussrichtung")
+                }
+            }
+            Text("Richtung von der Schützenlinie zu den Scheiben. 0° = Nord, 90° = Ost.")
+                .font(.footnote).foregroundStyle(.secondary)
+        }
+    }
+}
+
+/// A small compass rose with an arrow pointing along the shooting direction.
+struct CompassArrow: View {
+    let degrees: Double
+
+    var body: some View {
+        ZStack {
+            Circle().strokeBorder(.secondary, lineWidth: 1)
+            Text("N".loc).font(.system(size: 8, weight: .bold)).foregroundStyle(.secondary)
+                .frame(maxHeight: .infinity, alignment: .top).padding(.top, 1)
+            Image(systemName: "location.north.fill")
+                .font(.system(size: 14)).foregroundStyle(.tint)
+                .rotationEffect(.degrees(degrees))
+        }
+        .accessibilityHidden(true)
+    }
+}

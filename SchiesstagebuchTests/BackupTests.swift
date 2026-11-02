@@ -89,7 +89,7 @@ final class BackupTests: ModelTestCase {
         let e = Entry(date: day(1), shotCount: 12, ammunition: ammo, result: "95"); context.insert(e)
         e.lot = lot; e.sighterCount = 2; e.maxPoints = 100; e.shotValuesText = "10 9\n8 7"
         try context.save()
-        let csv = String(decoding: Backup.csv(context), as: UTF8.self)
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         let row = try XCTUnwrap(csv.components(separatedBy: "\r\n").dropFirst().first)
         let cols = row.components(separatedBy: ";")
         XCTAssertTrue(cols.contains("LOT-77"))

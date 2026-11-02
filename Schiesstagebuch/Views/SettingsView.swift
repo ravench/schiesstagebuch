@@ -15,6 +15,7 @@ struct SettingsView: View {
     @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
     @Query private var weapons: [Weapon]
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
+    @AppStorage(SightSettings.showKey) private var showSport = false
 
     var body: some View {
         NavigationStack {
@@ -45,6 +46,19 @@ struct SettingsView: View {
                     Text("Erfassung")
                 } footer: {
                     Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
+                }
+
+                Section {
+                    Toggle(isOn: $showSport) {
+                        Label("Waffen-Einstellungen für Sportschützen erfassen", systemImage: "scope")
+                    }
+                    if showSport {
+                        NavigationLink { FilterSettingsView() } label: {
+                            Label("Filter", systemImage: "circle.lefthalf.filled")
+                        }
+                    }
+                } footer: {
+                    Text("Zeigt in Einträgen Felder für Filter, Diopter, Ring oder Iris und Zweibein. Ausgeblendete Werte bleiben gespeichert.")
                 }
 
                 Section {
@@ -185,7 +199,7 @@ struct CaliberListView: View {
 struct CaliberEditorView: View {
     let caliber: Caliber?
     var initialName = ""
-    var onCreate: ((Caliber) -> Void)? = nil
+    var onCreate: ((Caliber) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -277,8 +291,8 @@ struct AmmunitionListView: View {
 
 struct AmmunitionEditorView: View {
     let ammunition: Ammunition?
-    var suggestedCaliber: Caliber? = nil
-    var onCreate: ((Ammunition) -> Void)? = nil
+    var suggestedCaliber: Caliber?
+    var onCreate: ((Ammunition) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var calibers: [Caliber]
@@ -404,19 +418,30 @@ struct RangeListView: View {
 
 struct RangeEditorView: View {
     let range: ShootingRange?
-    var onCreate: ((ShootingRange) -> Void)? = nil
+    var onCreate: ((ShootingRange) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var place = ""
     @State private var location: PickedLocation?
     @State private var isArchived = false
+    @State private var bearing: Double?
+    @State private var altitude: Double?
 
     var body: some View {
         NavigationStack {
             Form {
                 TextField("Name, z. B. Albisgüetli", text: $name)
                 PlaceField(place: $place, location: $location)
+                Section {
+                    RangeBearingRow(bearing: $bearing)
+                    LabeledContent("Höhe") {
+                        TextField("m ü. M.", value: $altitude, format: .number.precision(.fractionLength(0)))
+                            .keyboardType(.numberPad).multilineTextAlignment(.trailing)
+                    }
+                } footer: {
+                    Text("Optional. Mit Ort und Schussrichtung schlägt die App vor, woher die Sonne kommt.")
+                }
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
             .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)
@@ -431,6 +456,8 @@ struct RangeEditorView: View {
                         target.address = location?.address ?? ""
                         target.latitude = location?.latitude
                         target.longitude = location?.longitude
+                        target.shootingBearing = bearing.map(Compass.normalized)
+                        target.altitude = altitude
                         target.isArchived = isArchived
                         if range == nil { context.insert(target); onCreate?(target) }
                         try? context.save()
@@ -442,6 +469,7 @@ struct RangeEditorView: View {
             .onAppear {
                 name = range?.name ?? ""; place = range?.place ?? ""; isArchived = range?.isArchived ?? false
                 location = range.flatMap(PickedLocation.init(range:))
+                bearing = range?.shootingBearing; altitude = range?.altitude
             }
         }
         .presentationDetents([.medium, .large])

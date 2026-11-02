@@ -1,0 +1,223 @@
+import XCTest
+import SwiftData
+@testable import Schiesstagebuch
+
+final class SightSettingsTests: ModelTestCase {
+    func testClampAndRoundToOneDecimal() {
+        XCTAssertEqual(SightSettings.clamp(0), 0.1)
+        XCTAssertEqual(SightSettings.clamp(12), 9.9)
+        XCTAssertEqual(SightSettings.clamp(3.04), 3.0)
+        XCTAssertEqual(SightSettings.clamp(3.06), 3.1)
+    }
+
+    func testDefaultIsNoFilterAndEmpty() {
+        let s = SightSettings()
+        XCTAssertEqual(s.filter, "")
+        XCTAssertTrue(s.isEmpty)
+        XCTAssertEqual(FilterColor.title(""), "Kein Filter".loc)
+    }
+
+    func testApplyAndReadBack() {
+        let e = addEntry(nil, on: day(1), shots: 10)
+        SightSettings(filter: "Citron", diopter: 2.34, ringSize: 15).apply(to: e)
+        XCTAssertEqual(e.filterColor, "Citron")
+        XCTAssertEqual(e.diopter, 2.3)
+        XCTAssertEqual(e.ringSize, 9.9)
+        XCTAssertEqual(SightSettings(entry: e), SightSettings(filter: "Citron", diopter: 2.3, ringSize: 9.9))
+    }
+
+    func testLastUsedComesFromNewestEntryWithSameWeapon() throws {
+        let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
+        let p210 = Weapon(name: "P210"); context.insert(p210)
+        let old = addEntry(stgw, on: day(1), shots: 10); old.filterColor = "Saphire"; old.diopter = 1.5
+        let newer = addEntry(stgw, on: day(5), shots: 10); newer.filterColor = "Citron"; newer.ringSize = 3.2
+        addEntry(stgw, on: day(8), shots: 10)                         // nothing recorded: skipped
+        let other = addEntry(p210, on: day(9), shots: 10); other.filterColor = "CALM"
+        try context.save()
+        let entries = try context.fetch(FetchDescriptor<Entry>())
+        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries), SightSettings(filter: "Citron", ringSize: 3.2))
+        XCTAssertEqual(SightSettings.lastUsed(for: p210, in: entries)?.filter, "CALM")
+        XCTAssertNil(SightSettings.lastUsed(for: nil, in: entries))
+    }
+
+    func testPistolsUseIrisRiflesUseRing() {
+        XCTAssertEqual(SightSettings.aperture(for: .pistol), .iris)
+        XCTAssertEqual(SightSettings.aperture(for: .sportPistol), .iris)
+        XCTAssertEqual(SightSettings.aperture(for: .airPistol), .iris)
+        XCTAssertEqual(SightSettings.aperture(for: .serviceRifle), .ring)
+        XCTAssertEqual(SightSettings.aperture(for: .sportRifle), .ring)
+        XCTAssertEqual(SightSettings.aperture(for: .airgun), .ring)
+        XCTAssertEqual(SightSettings.aperture(for: nil), .both)
+        XCTAssertEqual(SightSettings.aperture(for: .other), .both)
+    }
+
+    func testFittingDropsTheApertureTheWeaponDoesNotHave() {
+        let s = SightSettings(filter: "Citron", diopter: 1.2, ringSize: 3.4, irisSize: 2.1)
+        XCTAssertEqual(s.fitted(to: .iris), SightSettings(filter: "Citron", diopter: 1.2, irisSize: 2.1))
+        XCTAssertEqual(s.fitted(to: .ring), SightSettings(filter: "Citron", diopter: 1.2, ringSize: 3.4))
+        XCTAssertEqual(s.fitted(to: .both), s)
+    }
+
+    func testEveryFilterColourIsTranslated() throws {
+        for lang in ["en", "fr", "it"] {
+            let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
+            let bundle = try XCTUnwrap(Bundle(path: path))
+            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Waffen-Einstellungen für Sportschützen erfassen",
+                                             "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein", "Zweibein (cm)"] {
+                XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
+            }
+        }
+    }
+
+    func testFilterListMatchesTheShop() {
+        XCTAssertEqual(FilterColor.all.count, 17)
+        XCTAssertEqual(Set(FilterColor.all).count, FilterColor.all.count, "names are unique")
+        XCTAssertEqual(Set(FilterColor.filters.map(\.rgb)).count, FilterColor.filters.count, "swatches are distinct")
+        XCTAssertTrue(FilterColor.all.contains("Eidgenoss polarisiert"))
+        XCTAssertFalse(FilterColor.all.contains { $0.contains("Filterhalter") }, "the holder is not a filter")
+    }
+
+    func testPolarisedFiltersAreMarked() {
+        let polarised = FilterColor.filters.filter(\.polarised).map(\.name)
+        XCTAssertEqual(Set(polarised), [
+            "Sunrise polar", "Waldfee polar", "Nasashield grey polarisiert", "Nasashield braun polarisiert",
+            "Serengeti polarisiert", "Eidgenoss polarisiert",
+        ])
+        XCTAssertFalse(FilterColor.filter(named: "Serengeti")!.polarised)
+        XCTAssertLessThan(FilterColor.filter(named: "Eidgenoss polarisiert")!.luminance, 0.5)
+        XCTAssertGreaterThan(FilterColor.filter(named: "Citron")!.luminance, 0.5)
+    }
+
+    func testFilterLookupAndTitles() {
+        let citron = FilterColor.filter(named: "Citron")
+        XCTAssertEqual(citron?.rgb, 0xF2EA2E)
+        XCTAssertEqual(citron?.red ?? 0, 242.0 / 255, accuracy: 0.0001)
+        XCTAssertNil(FilterColor.filter(named: ""))
+        XCTAssertNil(FilterColor.filter(named: "Gelb"))
+        XCTAssertEqual(FilterColor.title("Supergreen"), "Supergreen", "product names are not translated")
+        XCTAssertEqual(FilterColor.title("Gelb"), "Gelb", "unknown stored names are shown as they are")
+    }
+
+    func testBackupAndCSVKeepSightSettings() throws {
+        let e = addEntry(nil, on: day(1), shots: 10)
+        SightSettings(filter: "ACE", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5).apply(to: e)
+        try context.save()
+
+        let data = try Backup.export(context)
+        let other = try ModelContainer(for: SchiesstagebuchApp.schema,
+                                       configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+        let target = ModelContext(other)
+        try Backup.restore(from: data, into: target)
+        let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
+        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "ACE", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5))
+
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
+        let lines = csv.components(separatedBy: "\r\n")
+        let header = lines[0].components(separatedBy: ";")
+        let row = lines[1].components(separatedBy: ";")
+        XCTAssertEqual(header.count, row.count)
+        XCTAssertTrue(row.contains(SightSettings.format(4.2)))
+        XCTAssertTrue(row.contains(SightSettings.format(3.6)))
+        XCTAssertTrue(row.contains(SightSettings.format(1.8)))
+        XCTAssertTrue(row.contains(SightSettings.format(32.5)))
+    }
+
+    func testSportShooterFieldsAreHiddenByDefault() {
+        let defaults = UserDefaults(suiteName: "SightSettingsTests")!
+        defaults.removePersistentDomain(forName: "SightSettingsTests")
+        XCTAssertFalse(defaults.bool(forKey: SightSettings.showKey))
+        XCTAssertEqual(SightSettings.showKey, "showSportShooterSettings")
+    }
+
+    func testBipodClampsToHalfCentimetres() {
+        XCTAssertEqual(SightSettings.clampBipod(1), 5)
+        XCTAssertEqual(SightSettings.clampBipod(80), 60)
+        XCTAssertEqual(SightSettings.clampBipod(23.3), 23.5)
+        XCTAssertEqual(SightSettings.clampBipod(23.2), 23)
+        XCTAssertEqual(SightSettings(bipodLength: 23.3).bipodLength, 23.5)
+        XCTAssertFalse(SightSettings(bipodLength: 20).isEmpty)
+    }
+
+    func testBipodIsRifleOnly() {
+        let s = SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
+        XCTAssertNil(s.fitted(to: .iris).bipodLength)
+        XCTAssertEqual(s.fitted(to: .ring).bipodLength, 30)
+        XCTAssertEqual(s.fitted(to: .both).bipodLength, 30)
+    }
+
+    func testApplyStoresBipodOnEntry() {
+        let e = addEntry(nil, on: day(1), shots: 10)
+        SightSettings(bipodLength: 41.7).apply(to: e)
+        XCTAssertEqual(e.bipodLength, 41.5)
+        XCTAssertEqual(SightSettings(entry: e).bipodLength, 41.5)
+    }
+
+    // MARK: Filter catalog (Settings → Filter)
+
+    func testCatalogStartsWithNoOwnedFilters() {
+        let c = FilterCatalog(data: Data())
+        XCTAssertEqual(c, FilterCatalog())
+        XCTAssertTrue(c.visible.isEmpty, "only filters the user ticks appear in the picker")
+        XCTAssertEqual(FilterCatalog(data: Data("garbage".utf8)), FilterCatalog())
+    }
+
+    func testOnlyOwnedBuiltInsAndCustomFiltersAreOffered() {
+        var c = FilterCatalog()
+        c.setOwned("Citron", true)
+        c.setOwned("Eidgenoss polarisiert", true)
+        c.setOwned("Not a filter", true)
+        XCTAssertTrue(c.save(.init(name: "Mein Orange", rgb: 0xFF8800, polarised: false)))
+        XCTAssertEqual(c.visible.map(\.name), ["Citron", "Eidgenoss polarisiert", "Mein Orange"])
+        c.setOwned("Citron", false)
+        XCTAssertEqual(c.visible.map(\.name), ["Eidgenoss polarisiert", "Mein Orange"])
+        XCTAssertFalse(c.owns("Not a filter"))
+    }
+
+    func testBuiltInFiltersCannotBeDeleted() {
+        var c = FilterCatalog(owned: ["ACE"])
+        c.remove("ACE")
+        XCTAssertEqual(c.visible.map(\.name), ["ACE"])
+        XCTAssertNotNil(c.filter(named: "ACE"))
+    }
+
+    func testCustomFilterNamesMustBeUniqueAndNonEmpty() {
+        var c = FilterCatalog()
+        XCTAssertEqual(c.problem(with: "  "), .empty)
+        XCTAssertEqual(c.problem(with: "citron"), .duplicate, "clashes with a built-in, ignoring case")
+        XCTAssertFalse(c.save(.init(name: "Citron", rgb: 0, polarised: false)))
+        XCTAssertTrue(c.save(.init(name: " Blau ", rgb: 0x0000FF, polarised: true)))
+        XCTAssertEqual(c.custom.first?.name, "Blau", "names are trimmed")
+        XCTAssertEqual(c.problem(with: "Blau"), .duplicate)
+        XCTAssertNil(c.problem(with: "Blau", replacing: "Blau"), "keeping the name while editing is fine")
+    }
+
+    func testEditingAndDeletingCustomFilters() {
+        var c = FilterCatalog()
+        c.save(.init(name: "Blau", rgb: 0x0000FF, polarised: false))
+        c.save(.init(name: "Dunkelblau", rgb: 0x000080, polarised: true), replacing: "Blau")
+        XCTAssertEqual(c.custom, [.init(name: "Dunkelblau", rgb: 0x000080, polarised: true)])
+        c.remove("Dunkelblau")
+        XCTAssertTrue(c.custom.isEmpty)
+    }
+
+    func testCatalogSurvivesStorageRoundTrip() {
+        var c = FilterCatalog(owned: ["Saphire", "HC Geor"])
+        c.save(.init(name: "Eigener", rgb: 0x123456, polarised: true))
+        XCTAssertEqual(FilterCatalog(data: c.data), c)
+    }
+
+    func testHiddenOrCustomFiltersStillResolveForOldEntries() {
+        let c = FilterCatalog(custom: [.init(name: "Eigener", rgb: 0x123456, polarised: false)])
+        XCTAssertEqual(c.filter(named: "Serengeti")?.rgb, 0xA0521E, "not owned but still known")
+        XCTAssertEqual(c.filter(named: "Eigener")?.rgb, 0x123456)
+        XCTAssertNil(c.filter(named: "Gelb"))
+    }
+
+    func testFilterFromColourComponents() {
+        let f = FilterColor.Filter(name: "x", red: 1, green: 0.5, blue: 0, polarised: false)
+        XCTAssertEqual(f.rgb, 0xFF8000)
+        XCTAssertEqual(FilterColor.Filter(name: "y", red: 2, green: -1, blue: 0, polarised: false).rgb, 0xFF0000, "out-of-range values are clamped")
+        XCTAssertTrue(FilterColor.Filter(name: "Sunrise polar", rgb: 0).polarised)
+        XCTAssertFalse(FilterColor.Filter(name: "Sunrise polar", rgb: 0, polarised: false).polarised)
+    }
+}
