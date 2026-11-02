@@ -208,10 +208,11 @@ struct WeaponEditorView: View {
 
     @State private var name = ""
     @State private var serialNumber = ""
-    @State private var boltSerialNumber = ""
+    @State private var extraSerials: [PartSerial] = []
     @State private var category: WeaponCategory = .other
+    /// Calibres and serial of the first barrel, for a new weapon.
     @State private var calibers: Set<Caliber> = []
-    @State private var defaultCaliber: Caliber?
+    @State private var barrelSerial = ""
     @State private var isArchived = false
     @State private var cleaningShots = 0
     @State private var cleaningDays = 0
@@ -219,22 +220,22 @@ struct WeaponEditorView: View {
     @State private var serviceDays = 0
     @State private var dayCountingRaw = ""
     @State private var choosingCalibers = false
+    @State private var editingBarrel: Barrel?
+    @State private var addingBarrel = false
     @State private var confirmDelete = false
     @State private var didLoad = false
 
     private var sortedSelection: [Caliber] { calibers.sorted { $0.name < $1.name } }
+    private var canSave: Bool {
+        !name.trimmingCharacters(in: .whitespaces).isEmpty && (weapon != nil || !calibers.isEmpty)
+            && PartSerial.cleaned(extraSerials) != nil
+    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
                     TextField("Name, z. B. SIG P210", text: $name)
-                    TextField("Seriennummer (optional)", text: $serialNumber)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                    TextField("Seriennummer Verschluss (optional)", text: $boltSerialNumber)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
                     Picker(selection: $category) {
                         ForEach(WeaponCategory.allCases) { c in
                             HStack(spacing: 12) {
@@ -253,27 +254,12 @@ struct WeaponEditorView: View {
                     .pickerStyle(.navigationLink)
                 }
 
-                Section {
-                    Button { choosingCalibers = true } label: {
-                        LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
-                    }
-                    if calibers.count > 1 {
-                        Picker("Standard", selection: $defaultCaliber) {
-                            ForEach(sortedSelection) { Text($0.name).tag(Optional($0)) }
-                        }
-                    }
-                    ForEach(sortedSelection) { c in
-                        HStack {
-                            CartridgeView(caliber: c).frame(width: 18, height: 30)
-                            Text(c.name)
-                            Spacer()
-                            if c == defaultCaliber { Text("Standard").font(.caption).foregroundStyle(.secondary) }
-                        }
-                    }
-                } header: {
-                    Text("Kaliber")
-                } footer: {
-                    Text("Beim Erfassen werden nur diese Kaliber angeboten. Das Standardkaliber ist vorausgewählt.")
+                SerialNumbersSection(main: $serialNumber, extras: $extraSerials)
+
+                if let weapon {
+                    barrelsSection(weapon)
+                } else {
+                    firstBarrelSection
                 }
 
                 intervalSection(.cleaning, shots: $cleaningShots, days: $cleaningDays)
@@ -302,17 +288,18 @@ struct WeaponEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Sichern", action: save).bold()
-                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                    Button("Sichern", action: save).bold().disabled(!canSave)
                 }
             }
             .sheet(isPresented: $choosingCalibers) {
                 CaliberMultiPicker(all: allCalibers, selection: $calibers,
                                    preferred: category.preferredCaliberCategories)
             }
-            .onChange(of: calibers) { _, new in
-                if let d = defaultCaliber, new.contains(d) { return }
-                defaultCaliber = new.min { $0.name < $1.name }
+            .sheet(item: $editingBarrel) { b in
+                if let weapon { BarrelEditorView(weapon: weapon, barrel: b) }
+            }
+            .sheet(isPresented: $addingBarrel) {
+                if let weapon { BarrelEditorView(weapon: weapon, barrel: nil) }
             }
             .confirmationDialog("Waffe löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
@@ -323,6 +310,41 @@ struct WeaponEditorView: View {
                 Text("Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.")
             }
             .onAppear(perform: load)
+        }
+    }
+
+    /// A new weapon starts with one barrel: its calibres and optional number.
+    private var firstBarrelSection: some View {
+        Section {
+            Button { choosingCalibers = true } label: {
+                LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
+            }
+            ForEach(sortedSelection) { c in
+                HStack {
+                    CartridgeView(caliber: c).frame(width: 18, height: 30)
+                    Text(c.name)
+                }
+            }
+            SerialField(title: "Nummer Lauf (optional)", text: $barrelSerial)
+        } header: {
+            Text("Lauf")
+        } footer: {
+            Text("Mindestens ein Kaliber. Weitere Läufe, z. B. Wechselläufe, fügst du nach dem Sichern hinzu.")
+        }
+    }
+
+    /// Barrels of an existing weapon; changes there are saved right away.
+    private func barrelsSection(_ weapon: Weapon) -> some View {
+        Section {
+            ForEach(weapon.sortedBarrels) { b in
+                Button { editingBarrel = b } label: { BarrelRow(barrel: b) }
+                    .foregroundStyle(.primary)
+            }
+            Button { addingBarrel = true } label: { Label("Lauf hinzufügen", systemImage: "plus") }
+        } header: {
+            Text("Läufe")
+        } footer: {
+            Text("Die Kaliber gehören zum Lauf. Beim Erfassen werden nur die Kaliber der montierten Läufe angeboten.")
         }
     }
 
@@ -343,10 +365,8 @@ struct WeaponEditorView: View {
         guard !didLoad, let weapon else { didLoad = true; return }
         name = weapon.name
         serialNumber = weapon.serialNumber
-        boltSerialNumber = weapon.boltSerialNumber
+        extraSerials = weapon.extraSerials
         category = weapon.category
-        calibers = Set(weapon.calibers ?? [])
-        defaultCaliber = weapon.defaultCaliber
         isArchived = weapon.isArchived
         cleaningShots = weapon.cleaningIntervalShots; cleaningDays = weapon.cleaningIntervalDays
         serviceShots = weapon.serviceIntervalShots; serviceDays = weapon.serviceIntervalDays
@@ -358,15 +378,22 @@ struct WeaponEditorView: View {
         let target = weapon ?? Weapon(name: "")
         target.name = name.trimmingCharacters(in: .whitespaces)
         target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
-        target.boltSerialNumber = boltSerialNumber.trimmingCharacters(in: .whitespaces)
+        target.extraSerials = PartSerial.cleaned(extraSerials) ?? target.extraSerials
         target.category = category
-        target.calibers = Array(calibers)
-        target.defaultCaliber = defaultCaliber.flatMap { calibers.contains($0) ? $0 : nil }
         target.isArchived = isArchived
         target.cleaningIntervalShots = cleaningShots; target.cleaningIntervalDays = cleaningDays
         target.serviceIntervalShots = serviceShots; target.serviceIntervalDays = serviceDays
         target.dayCountingRaw = dayCountingRaw
-        if weapon == nil { context.insert(target); onCreate?(target) }
+        if weapon == nil {
+            context.insert(target)
+            let barrel = Barrel(calibers: [])
+            context.insert(barrel)
+            barrel.calibers = sortedSelection
+            barrel.serialNumber = barrelSerial.trimmingCharacters(in: .whitespaces)
+            barrel.isDefault = true
+            barrel.weapon = target
+            onCreate?(target)
+        }
         try? context.save()
         if cleaningShots + cleaningDays + serviceShots + serviceDays > 0 {
             Task {
@@ -380,6 +407,52 @@ struct WeaponEditorView: View {
     }
 }
 
+/// Main number, then any further numbered parts, each with a required name.
+struct SerialNumbersSection: View {
+    @Binding var main: String
+    @Binding var extras: [PartSerial]
+
+    var body: some View {
+        Section {
+            SerialField(title: "Hauptnummer (optional)", text: $main)
+            ForEach($extras) { $row in
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        TextField("Bezeichnung, z. B. Verschluss", text: $row.label)
+                        Menu {
+                            ForEach(PartSerial.suggestedLabels, id: \.self) { l in Button(l.loc) { row.label = l.loc } }
+                        } label: { Image(systemName: "list.bullet") }
+                    }
+                    SerialField(title: "Nummer", text: $row.number)
+                    if row.isIncomplete {
+                        Text(row.trimmed.label.isEmpty ? "Jede Nummer braucht eine Bezeichnung.".loc : "Nummer fehlt.".loc)
+                            .font(.caption).foregroundStyle(.red)
+                    }
+                }
+            }
+            .onDelete { extras.remove(atOffsets: $0) }
+            Button { extras.append(PartSerial(label: "", number: "")) } label: {
+                Label("Weitere Nummer", systemImage: "plus")
+            }
+        } header: {
+            Text("Nummern")
+        } footer: {
+            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.")
+        }
+    }
+}
+
+struct SerialField: View {
+    let title: String
+    @Binding var text: String
+
+    var body: some View {
+        TextField(title.loc, text: $text)
+            .textInputAutocapitalization(.characters)
+            .autocorrectionDisabled()
+    }
+}
+
 /// Searchable, grouped multi-select over the calibre catalogue.
 struct CaliberMultiPicker: View {
     let all: [Caliber]
@@ -389,6 +462,14 @@ struct CaliberMultiPicker: View {
     @Environment(\.dismiss) private var dismiss
     @State private var search = ""
     @State private var adding = false
+
+    /// Calibres with the same measurements as a selected one (e.g. 7.62 NATO for .308 Win), not yet selected.
+    private var sameDimensions: [Caliber] {
+        var seen = Set<PersistentIdentifier>()
+        return selection.flatMap { $0.sameDimensions(in: all) }
+            .filter { !selection.contains($0) && seen.insert($0.persistentModelID).inserted }
+            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
 
     private var groups: [(String, [Caliber])] {
         let matches = all.filter { $0.matches(search) }
@@ -404,6 +485,15 @@ struct CaliberMultiPicker: View {
                 if !selection.isEmpty && search.isEmpty {
                     Section("Ausgewählt") {
                         ForEach(selection.sorted { $0.name < $1.name }) { row($0) }
+                    }
+                    if !sameDimensions.isEmpty {
+                        Section {
+                            ForEach(sameDimensions) { row($0) }
+                        } header: {
+                            Text("Gleiche Abmessungen")
+                        } footer: {
+                            Text("Diese Patronen haben dieselben Masse. Prüfe die Angaben des Herstellers, bevor du sie im selben Lauf verschiesst.")
+                        }
                     }
                 }
                 ForEach(groups, id: \.0) { group in

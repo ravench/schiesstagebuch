@@ -12,8 +12,6 @@ final class BarrelTests: ModelTestCase {
         nine = Caliber(name: "9x19 mm"); context.insert(nine)
         rimfire = Caliber(name: ".22 LR"); context.insert(rimfire)
         weapon = Weapon(name: "SIG P210"); context.insert(weapon)
-        weapon.calibers = [nine]
-        weapon.defaultCaliber = nine
     }
 
     override func tearDown() async throws {
@@ -22,9 +20,10 @@ final class BarrelTests: ModelTestCase {
     }
 
     @discardableResult
-    private func barrel(_ name: String, _ caliber: Caliber?, from: Date? = nil, to: Date? = nil) -> Barrel {
-        let b = Barrel(name: name, caliber: caliber)
+    private func barrel(_ name: String, _ calibers: Caliber..., from: Date? = nil, to: Date? = nil) -> Barrel {
+        let b = Barrel(name: name)
         context.insert(b)
+        b.calibers = calibers
         b.weapon = weapon
         b.installedOn = from
         b.removedOn = to
@@ -38,16 +37,7 @@ final class BarrelTests: ModelTestCase {
         return e
     }
 
-    // MARK: - Firearms without barrels stay as before
-
-    func testFirearmWithoutBarrelsHasNoBarrelDetail() throws {
-        let e = shoot(nine, on: day(1), shots: 30)
-        try context.save()
-        XCTAssertNil(e.effectiveBarrel)
-        XCTAssertFalse(weapon.hasSeveralBarrels)
-        XCTAssertTrue(weapon.barrelChoices(for: nine, on: day(1)).isEmpty)
-        XCTAssertEqual((weapon.entries ?? []).totalShots, 30)
-    }
+    // MARK: - Calibres come from the barrels
 
     func testSingleBarrelWithoutDatesCountsEveryEntry() throws {
         let b = barrel("", nine)
@@ -55,7 +45,104 @@ final class BarrelTests: ModelTestCase {
         shoot(nil, on: day(2), shots: 20)
         try context.save()
         XCTAssertEqual(b.loggedShots, 50, "entries without a calibre fall to the only barrel too")
-        XCTAssertEqual(b.displayName, "9x19 mm", "an unnamed barrel shows its calibre")
+        XCTAssertEqual(b.displayName, "9x19 mm", "an unnamed barrel shows its calibres")
+        XCTAssertFalse(weapon.hasSeveralBarrels)
+        XCTAssertEqual(weapon.calibers, [nine])
+    }
+
+    func testFirearmCalibresAreThoseOfItsBarrelsInUse() throws {
+        let worn = barrel("Alt", rimfire, to: day(5))
+        barrel("", nine)
+        try context.save()
+        XCTAssertEqual(weapon.calibers, [nine], "a removed barrel's calibre is not offered any more")
+        XCTAssertTrue(worn.isRemoved)
+        XCTAssertEqual(weapon.caliberSummary, "9x19 mm")
+    }
+
+    func testOneBarrelCanFireSeveralCalibres() throws {
+        let nato = Caliber(name: "7.62x51 mm NATO"); context.insert(nato)
+        let win = Caliber(name: ".308 Winchester"); context.insert(win)
+        let b = barrel("", nato, win)
+        let a = shoot(nato, on: day(1), shots: 20)
+        let c = shoot(win, on: day(2), shots: 30)
+        try context.save()
+        XCTAssertEqual(a.effectiveBarrel, b)
+        XCTAssertEqual(c.effectiveBarrel, b)
+        XCTAssertEqual(b.loggedShots, 50)
+        XCTAssertEqual(b.displayName, ".308 Winchester, 7.62x51 mm NATO")
+        XCTAssertEqual(Set(weapon.calibers), [nato, win])
+    }
+
+    func testAmmoFitsAnyCalibreOfTheBarrel() throws {
+        let nato = Caliber(name: "5.56x45 mm NATO"); context.insert(nato)
+        let rem = Caliber(name: ".223 Remington"); context.insert(rem)
+        let b = barrel("", nato, rem)
+        let ammo = Ammunition(name: "Hornady .223", caliber: rem); context.insert(ammo)
+        let other = Ammunition(name: "GP 11", caliber: nine); context.insert(other)
+        XCTAssertTrue(b.fits(ammo))
+        XCTAssertFalse(b.fits(other))
+    }
+
+    func testCataloguedCalibresWithIdenticalMeasurementsAreSuggested() throws {
+        func catalogued(_ id: String) throws -> Caliber {
+            let item = try XCTUnwrap(CaliberCatalog.item(id: id))
+            let c = Caliber(name: item.name, category: item.category); c.catalogID = item.id
+            context.insert(c)
+            return c
+        }
+        let win = try catalogued(".308 Winchester")
+        let nato = try catalogued("7.62x51 mm NATO")
+        let rem = try catalogued(".223 Remington")
+        let para = try catalogued("9x19 mm")
+        let all = [win, nato, rem, para]
+        XCTAssertEqual(win.sameDimensions(in: all), [nato])
+        XCTAssertEqual(nato.sameDimensions(in: all), [win])
+        XCTAssertTrue(rem.sameDimensions(in: all).isEmpty, "5.56 / GP 90 are not in this list")
+        XCTAssertNil(para.dimensionGroup)
+        XCTAssertTrue(para.sameDimensions(in: all).isEmpty)
+    }
+
+    func testWeaponsOfACalibreComeFromItsBarrels() throws {
+        barrel("", nine)
+        let other = Weapon(name: "P75"); context.insert(other)
+        let b = Barrel(); context.insert(b); b.calibers = [nine]; b.weapon = other
+        try context.save()
+        XCTAssertEqual(Set(nine.weapons.map(\.name)), ["SIG P210", "P75"])
+        XCTAssertTrue(rimfire.weapons.isEmpty)
+    }
+
+    func testPreferredBarrelAndCalibreForANewEntry() throws {
+        let nineBarrel = barrel("", nine)
+        let rimfireBarrel = barrel("Umbausatz", rimfire)
+        XCTAssertNotNil(weapon.preferredBarrel(on: day(1)))
+        weapon.makeDefault(rimfireBarrel)
+        XCTAssertEqual(weapon.preferredBarrel(on: day(1)), rimfireBarrel)
+        XCTAssertFalse(nineBarrel.isDefault)
+        XCTAssertEqual(weapon.preferredCaliber(for: rimfireBarrel), rimfire)
+        XCTAssertEqual(weapon.sortedBarrels.first, rimfireBarrel, "default barrel first")
+    }
+
+    func testPreferredCaliberIsTheOneLastShotThroughTheBarrel() throws {
+        let nato = Caliber(name: "7.62x51 mm NATO"); context.insert(nato)
+        let win = Caliber(name: ".308 Winchester"); context.insert(win)
+        let b = barrel("", nato, win)
+        XCTAssertEqual(weapon.preferredCaliber(for: b), win, "alphabetical first without history")
+        shoot(nato, on: day(3), shots: 10)
+        shoot(win, on: day(1), shots: 10)
+        try context.save()
+        XCTAssertEqual(weapon.preferredCaliber(for: b), nato)
+    }
+
+    func testEnsureBarrelAddsOneBarrelPerCalibre() throws {
+        let first = weapon.ensureBarrel(for: nine, in: context)
+        let again = weapon.ensureBarrel(for: nine, in: context)
+        let second = weapon.ensureBarrel(for: rimfire, in: context)
+        try context.save()
+        XCTAssertEqual(first, again)
+        XCTAssertNotEqual(first, second)
+        XCTAssertTrue(first.isDefault)
+        XCTAssertFalse(second.isDefault)
+        XCTAssertEqual(weapon.barrels?.count, 2)
     }
 
     // MARK: - Replacement barrels
@@ -108,13 +195,6 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(weapon.barrelChoices(for: rimfire, on: day(1)), [rimfireBarrel])
     }
 
-    func testSavingABarrelAddsItsCalibreToTheFirearm() throws {
-        barrel("", rimfire)
-        weapon.adoptBarrelCalibers()
-        XCTAssertEqual(Set(weapon.calibers ?? []), [nine, rimfire])
-        XCTAssertEqual(weapon.defaultCaliber, nine, "the default calibre stays")
-    }
-
     // MARK: - Explicit pick in the editor
 
     func testExplicitBarrelWinsOverTheMatch() throws {
@@ -142,7 +222,7 @@ final class BarrelTests: ModelTestCase {
     func testBarrelOfAnotherFirearmIsIgnored() throws {
         let own = barrel("", nine)
         let other = Weapon(name: "P75"); context.insert(other)
-        let foreign = Barrel(name: "Fremd", caliber: nine); context.insert(foreign); foreign.weapon = other
+        let foreign = Barrel(name: "Fremd"); context.insert(foreign); foreign.calibers = [nine]; foreign.weapon = other
         let e = shoot(nine, on: day(1), shots: 10)
         e.barrel = foreign
         try context.save()
@@ -201,6 +281,7 @@ final class BarrelTests: ModelTestCase {
         b.previousShots = 300
         b.expectedLifeShots = 8_000
         b.notes = "Match"
+        b.isDefault = true
         barrel("Original", nine)
         let e = shoot(nine, on: day(5), shots: 40)
         e.barrel = b
@@ -222,7 +303,8 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(restored.previousShots, 300)
         XCTAssertEqual(restored.expectedLifeShots, 8_000)
         XCTAssertEqual(restored.notes, "Match")
-        XCTAssertEqual(restored.caliber?.name, "9x19 mm")
+        XCTAssertEqual(restored.calibers?.map(\.name), ["9x19 mm"])
+        XCTAssertTrue(restored.isDefault)
         XCTAssertEqual(restored.weapon?.name, "SIG P210")
         let entry = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
         XCTAssertEqual(entry.barrel, restored)
@@ -243,7 +325,27 @@ final class BarrelTests: ModelTestCase {
         XCTAssertNil(e.barrel)
         XCTAssertNil(e.effectiveBarrel)
         XCTAssertEqual(e.weapon?.name, "P75")
-        XCTAssertEqual(e.weapon?.boltSerialNumber, "", "no bolt serial in old backups")
+        XCTAssertTrue(e.weapon?.extraSerials.isEmpty == true)
+    }
+
+    func testBackupWithWeaponCalibresGetsABarrelPerCalibre() throws {
+        let json = """
+        {"version":1,"exportedAt":"2026-01-01T00:00:00Z","ranges":[],"ammunition":[],"maintenance":[],"entries":[],
+         "calibers":[{"id":"6A1C5E3E-0000-4000-8000-0000000000A1","name":"9x19 mm","category":"Kurzwaffe","isArchived":false},
+                     {"id":"6A1C5E3E-0000-4000-8000-0000000000A2","name":".22 LR","category":"Randfeuer","isArchived":false}],
+         "weapons":[{"id":"6A1C5E3E-0000-4000-8000-000000000001","name":"P210","isArchived":false,
+                     "caliberIDs":["6A1C5E3E-0000-4000-8000-0000000000A1","6A1C5E3E-0000-4000-8000-0000000000A2"],
+                     "defaultCaliberID":"6A1C5E3E-0000-4000-8000-0000000000A2",
+                     "cleaningIntervalShots":0,"cleaningIntervalDays":0,"serviceIntervalShots":0,"serviceIntervalDays":0}]}
+        """
+        let container = try ModelContainer(for: SchiesstagebuchApp.schema,
+                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+        let target = ModelContext(container)
+        try Backup.restore(from: Data(json.utf8), into: target)
+        let w = try XCTUnwrap(try target.fetch(FetchDescriptor<Weapon>()).first)
+        XCTAssertEqual(w.barrels?.count, 2)
+        XCTAssertEqual(Set(w.calibers.map(\.name)), ["9x19 mm", ".22 LR"])
+        XCTAssertEqual(w.sortedBarrels.first(where: \.isDefault)?.caliberSummary, ".22 LR")
     }
 
     func testCSVHasTheBarrelColumn() throws {

@@ -507,6 +507,29 @@
         }
       }
     },
+    "Abzugsgehäuse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trigger housing"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carcasse de détente"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Castello di scatto"
+          }
+        }
+      }
+    },
     "Alle": {
       "extractionState": "manual",
       "localizations": {
@@ -1082,29 +1105,6 @@
         }
       }
     },
-    "Automatisch (%@)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatic (%@)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatique (%@)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatica (%@)"
-          }
-        }
-      }
-    },
     "Backup exportieren": {
       "extractionState": "manual",
       "localizations": {
@@ -1381,6 +1381,29 @@
         }
       }
     },
+    "Bezeichnung, z. B. Verschluss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name, e.g. bolt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désignation, p. ex. culasse"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denominazione, p. es. otturatore"
+          }
+        }
+      }
+    },
     "Bise": {
       "extractionState": "manual",
       "localizations": {
@@ -1634,6 +1657,29 @@
         }
       }
     },
+    "Der Standardlauf ist bei neuen Einträgen vorausgewählt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The default barrel is preselected for new entries."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le canon par défaut est présélectionné pour les nouvelles entrées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La canna predefinita è preselezionata per le nuove voci."
+          }
+        }
+      }
+    },
     "Die Datei konnte nicht gelesen werden. Erwartet wird ShootCounter-Export.tsv oder data.db.": {
       "extractionState": "manual",
       "localizations": {
@@ -1653,6 +1699,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Impossibile leggere il file. Previsto: ShootCounter-Export.tsv o data.db."
+          }
+        }
+      }
+    },
+    "Die Kaliber gehören zum Lauf. Beim Erfassen werden nur die Kaliber der montierten Läufe angeboten.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calibres belong to the barrel. New entries only offer the calibres of the fitted barrels."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les calibres appartiennent au canon. Les entrées ne proposent que les calibres des canons montés."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I calibri appartengono alla canna. Le voci propongono solo i calibri delle canne montate."
           }
         }
       }
@@ -1722,6 +1791,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "La vecchia app non conosceva i calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."
+          }
+        }
+      }
+    },
+    "Diese Patronen haben dieselben Masse. Prüfe die Angaben des Herstellers, bevor du sie im selben Lauf verschiesst.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These cartridges have the same dimensions. Check the manufacturer's specifications before firing them in the same barrel."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ces cartouches ont les mêmes dimensions. Vérifie les indications du fabricant avant de les tirer dans le même canon."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queste cartucce hanno le stesse dimensioni. Verifica le indicazioni del produttore prima di spararle nella stessa canna."
           }
         }
       }
@@ -2922,6 +3014,29 @@
         }
       }
     },
+    "Gehäuse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receiver"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boîtier de culasse"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Castello"
+          }
+        }
+      }
+    },
     "Gesamt": {
       "extractionState": "manual",
       "localizations": {
@@ -3014,6 +3129,52 @@
         }
       }
     },
+    "Gleiche Abmessungen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same dimensions"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mêmes dimensions"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stesse dimensioni"
+          }
+        }
+      }
+    },
+    "Griffstück": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frame"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carcasse"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fusto"
+          }
+        }
+      }
+    },
     "Hagel": {
       "extractionState": "manual",
       "localizations": {
@@ -3079,6 +3240,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "guanto"
+          }
+        }
+      }
+    },
+    "Hauptnummer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main serial number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro principal"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero principale"
+          }
+        }
+      }
+    },
+    "Hauptnummer (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Main serial number (optional)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro principal (facultatif)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero principale (facoltativo)"
           }
         }
       }
@@ -3493,6 +3700,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anno"
+          }
+        }
+      }
+    },
+    "Jede Nummer braucht eine Bezeichnung.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every number needs a name."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chaque numéro a besoin d'une désignation."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni numero ha bisogno di una denominazione."
           }
         }
       }
@@ -4647,6 +4877,52 @@
         }
       }
     },
+    "Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least one calibre. Several when the chamber takes them all, e.g. .308 Win and 7.62 NATO."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Au moins un calibre. Plusieurs si la chambre les accepte tous, p. ex. .308 Win et 7.62 OTAN."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almeno un calibro. Più di uno se la camera li accetta tutti, p. es. .308 Win e 7.62 NATO."
+          }
+        }
+      }
+    },
+    "Mindestens ein Kaliber. Weitere Läufe, z. B. Wechselläufe, fügst du nach dem Sichern hinzu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least one calibre. Add more barrels, e.g. swappable ones, after saving."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Au moins un calibre. Ajoute d'autres canons, p. ex. interchangeables, après l'enregistrement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almeno un calibro. Aggiungi altre canne, p. es. intercambiabili, dopo il salvataggio."
+          }
+        }
+      }
+    },
     "Mit einer Lebensdauer zeigt die App, wie weit der Lauf abgenutzt ist.": {
       "extractionState": "manual",
       "localizations": {
@@ -5475,6 +5751,98 @@
         }
       }
     },
+    "Nummer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero"
+          }
+        }
+      }
+    },
+    "Nummer Lauf (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barrel number (optional)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro du canon (facultatif)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero della canna (facoltativo)"
+          }
+        }
+      }
+    },
+    "Nummer fehlt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Number missing."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro manquant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero mancante."
+          }
+        }
+      }
+    },
+    "Nummern": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serial numbers"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéros"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numeri"
+          }
+        }
+      }
+    },
     "Nur ausfüllen, wenn der Lauf eine eigene Nummer hat.": {
       "extractionState": "manual",
       "localizations": {
@@ -5770,29 +6138,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativo: meteo per turno o serie, con l'ora, per annotare i cambiamenti."
-          }
-        }
-      }
-    },
-    "Optional: erfasse Läufe, um Schüsse pro Lauf zu zählen, z. B. bei Wechselläufen oder nach einem Laufwechsel.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Optional: add barrels to count shots per barrel, e.g. for swappable barrels or after a barrel replacement."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Facultatif : ajoute des canons pour compter les coups par canon, p. ex. canons interchangeables ou après un changement de canon."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Facoltativo: aggiungi le canne per contare i colpi per canna, p. es. canne intercambiabili o dopo una sostituzione."
           }
         }
       }
@@ -6947,6 +7292,29 @@
         }
       }
     },
+    "Schlitten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Culasse mobile"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carrello"
+          }
+        }
+      }
+    },
     "Schnee": {
       "extractionState": "manual",
       "localizations": {
@@ -7177,29 +7545,6 @@
         }
       }
     },
-    "Seriennummer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serial number"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numéro de série"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numero di serie"
-          }
-        }
-      }
-    },
     "Seriennummer (optional)": {
       "extractionState": "manual",
       "localizations": {
@@ -7219,29 +7564,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Numero di serie (facoltativo)"
-          }
-        }
-      }
-    },
-    "Seriennummer Verschluss (optional)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bolt serial number (optional)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numéro de série de la culasse (facultatif)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numero di serie dell'otturatore (facoltativo)"
           }
         }
       }
@@ -7518,6 +7840,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Predefinito (%@)"
+          }
+        }
+      }
+    },
+    "Standardlauf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default barrel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canon par défaut"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canna predefinita"
           }
         }
       }
@@ -7959,6 +8304,29 @@
         }
       }
     },
+    "Trommel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cylinder"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barillet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamburo"
+          }
+        }
+      }
+    },
     "Uhrzeit": {
       "extractionState": "manual",
       "localizations": {
@@ -8396,6 +8764,29 @@
         }
       }
     },
+    "Weitere Nummer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un numéro"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi numero"
+          }
+        }
+      }
+    },
     "Wertung": {
       "extractionState": "manual",
       "localizations": {
@@ -8714,6 +9105,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegli"
+          }
+        }
+      }
+    },
+    "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E.g. for parts numbered differently from the main number. A barrel's number is entered with the barrel."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro d'un canon se saisit avec le canon."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P. es. per parti con un numero diverso da quello principale. Il numero di una canna si inserisce con la canna."
           }
         }
       }
