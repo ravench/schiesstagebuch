@@ -1680,6 +1680,29 @@
         }
       }
     },
+    "Diopter-Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diopter filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres dioptriques"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri diottrici"
+          }
+        }
+      }
+    },
     "Dunst": {
       "extractionState": "manual",
       "localizations": {
@@ -4952,29 +4975,6 @@
         }
       }
     },
-    "Neutrale Filter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Neutral filters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtres neutres"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtri neutri"
-          }
-        }
-      }
-    },
     "Niederschlag": {
       "extractionState": "manual",
       "localizations": {
@@ -5734,25 +5734,25 @@
         }
       }
     },
-    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einem neutralen ±0.25 dpt.": {
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit +0.25 oder -0.25.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Two filters can be combined per entry, usually a colour filter with a neutral ±0.25 dpt."
+            "value": "Two filters can be combined per entry, usually a colour filter with +0.25 or -0.25."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un neutre ±0.25 dpt."
+            "value": "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec +0.25 ou -0.25."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con uno neutro ±0.25 dpt."
+            "value": "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con +0.25 o -0.25."
           }
         }
       }

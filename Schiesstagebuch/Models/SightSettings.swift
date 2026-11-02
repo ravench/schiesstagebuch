@@ -4,7 +4,7 @@ import Foundation
 struct SightSettings: Equatable {
     /// Filter name from the catalogue; "" means no filter (the default).
     var filter: String = ""
-    /// A second filter stacked with the first, most often a colour-neutral ±0.25 dpt with a colour
+    /// A second filter stacked with the first, most often a +0.25 or -0.25 dioptre lens with a colour
     /// filter, but two colour filters work too; "" means none. Only set when `filter` is set.
     var secondFilter: String = ""
 
@@ -131,7 +131,7 @@ enum FilterColor {
         var rgb: UInt32
         /// Polarised lenses get a line pattern on their swatch.
         var polarised: Bool
-        /// Correction of a colour-neutral filter in dioptres (e.g. +0.25); nil for colour filters.
+        /// Dioptre change of a +0.25 / -0.25 lens (e.g. +0.25); nil for colour filters.
         var dioptre: Double?
 
         /// `polarised` defaults to whether the name says so ("polar", "polarisiert").
@@ -174,14 +174,14 @@ enum FilterColor {
         .init(name: "ACE", rgb: 0xC98AF0),
     ]
 
-    /// Colour-neutral correction filters, usually stacked with a colour filter.
-    static let neutral: [Filter] = [
-        .init(name: "+0.25 dpt", rgb: 0xEEF1F3, polarised: false, dioptre: 0.25),
-        .init(name: "−0.25 dpt", rgb: 0xE6E9EC, polarised: false, dioptre: -0.25),
+    /// Dioptre-changing lenses (+0.25 / -0.25), usually stacked with a colour filter.
+    static let dioptre: [Filter] = [
+        .init(name: "+0.25", rgb: 0xEEF1F3, polarised: false, dioptre: 0.25),
+        .init(name: "-0.25", rgb: 0xE6E9EC, polarised: false, dioptre: -0.25),
     ]
 
-    /// Every built-in filter: colour filters, then the neutral ones.
-    static var builtIn: [Filter] { filters + neutral }
+    /// Every built-in filter: colour filters, then the dioptre lenses.
+    static var builtIn: [Filter] { filters + dioptre }
 
     static var all: [String] { builtIn.map(\.name) }
 
@@ -190,13 +190,13 @@ enum FilterColor {
 
     static func title(_ key: String) -> String { key.isEmpty ? "Kein Filter".loc : key }
 
-    /// One or two filters for display, e.g. "Citron + +0.25 dpt"; "Kein Filter" when there are none.
+    /// One or two filters for display, e.g. "Citron + +0.25"; "Kein Filter" when there are none.
     static func title(_ names: [String]) -> String {
         names.isEmpty ? title("") : names.map { title($0) }.joined(separator: " + ")
     }
 }
 
-/// The user's filter list, set in Settings: the built-in AXIA and neutral filters they own (these can't be
+/// The user's filter list, set in Settings: the built-in AXIA and dioptre filters they own (these can't be
 /// deleted, only ticked) plus their own filters. Stored as JSON in UserDefaults under `key`.
 struct FilterCatalog: Codable, Equatable {
     static let key = "filterCatalog"
