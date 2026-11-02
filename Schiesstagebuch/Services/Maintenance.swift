@@ -115,11 +115,25 @@ enum MaintenanceNotifier {
         _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
     }
 
+    /// Identifier of the pending notification for one reminder of a weapon.
+    static func identifier(_ weapon: Weapon, _ kind: MaintenanceKind) -> String {
+        "maintenance-\(weapon.id.uuidString)-\(kind.rawValue)"
+    }
+
+    static func identifiers(_ weapon: Weapon) -> [String] {
+        MaintenanceKind.allCases.map { identifier(weapon, $0) }
+    }
+
+    /// Removes every pending reminder of a weapon, e.g. before it is deleted.
+    static func cancel(_ weapon: Weapon) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers(weapon))
+    }
+
     /// Re-schedule all reminders for a weapon. Call after saving an entry, a record or intervals.
     static func refresh(_ weapon: Weapon, previouslyDue: Set<MaintenanceKind> = []) {
         let center = UNUserNotificationCenter.current()
         for kind in MaintenanceKind.allCases {
-            let id = "maintenance-\(weapon.id.uuidString)-\(kind.rawValue)"
+            let id = identifier(weapon, kind)
             center.removePendingNotificationRequests(withIdentifiers: [id])
             let status = weapon.status(kind)
             guard status.hasReminder, !weapon.isArchived else { continue }
