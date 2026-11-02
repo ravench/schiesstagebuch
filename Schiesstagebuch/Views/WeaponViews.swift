@@ -153,11 +153,8 @@ struct MaintenanceEditorView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Sichern") {
+                        // A service counts as a cleaning too (see Weapon.status), so one record is enough.
                         context.insert(MaintenanceRecord(kind: kind, date: date, notes: notes, weapon: weapon))
-                        // A service usually includes a cleaning.
-                        if kind == .service {
-                            context.insert(MaintenanceRecord(kind: .cleaning, date: date, notes: "Mit Service".loc, weapon: weapon))
-                        }
                         try? context.save()
                         MaintenanceNotifier.refresh(weapon)
                         dismiss()

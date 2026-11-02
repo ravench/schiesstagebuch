@@ -165,7 +165,6 @@ T = {
     "Luftgewehr": ("Air rifle", "Carabine à air comprimé", "Carabina ad aria compressa"),
     "Luftpistole": ("Air pistol", "Pistolet à air comprimé", "Pistola ad aria compressa"),
     "Löschen": ("Delete", "Supprimer", "Elimina"),
-    "Mit Service": ("With service", "Avec révision", "Con revisione"),
     "Monat": ("Month", "Mois", "Mese"),
     "Munition": ("Ammunition", "Munition", "Munizione"),
     "Munition bearbeiten": ("Edit ammunition", "Modifier la munition", "Modifica munizione"),
