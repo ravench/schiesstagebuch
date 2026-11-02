@@ -18,6 +18,7 @@ struct StandblattScanView: View {
     @State private var attachPhotos = true
     @State private var isReading = false
     @State private var didRead = false
+    @State private var confirmingSums = false
 
     var body: some View {
         NavigationStack {
@@ -33,7 +34,7 @@ struct StandblattScanView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 if strips.indices.contains(selected) {
-                    ToolbarItem(placement: .confirmationAction) { Button("Übernehmen") { apply() }.bold() }
+                    ToolbarItem(placement: .confirmationAction) { Button("Übernehmen") { applyChecked() }.bold() }
                 }
             }
             .fullScreenCover(isPresented: $showingCamera) {
@@ -42,6 +43,12 @@ struct StandblattScanView: View {
                     Task { await read(scanned) }
                 }
                 .ignoresSafeArea()
+            }
+            .alert(sumAlertTitle, isPresented: $confirmingSums) {
+                Button("Trotzdem übernehmen") { apply() }
+                Button("Zurück", role: .cancel) {}
+            } message: {
+                Text(sumAlertMessage)
             }
             .onChange(of: pickerItems) { _, items in
                 Task { await loadPicked(items) }
@@ -146,8 +153,9 @@ struct StandblattScanView: View {
 
         Section("Kontrolle") {
             let issues = strip.issues(scoring)
-            if issues.isEmpty && strip.printedTotal(scoring) == nil {
-                Label("Keine gedruckten Summen zum Vergleichen.", systemImage: "info.circle")
+            if strip.sumCheck(scoring) == .unchecked {
+                Label("Keine gedruckten Summen zum Vergleichen.", systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.orange)
             } else if issues.isEmpty {
                 Label("Alle Summen stimmen mit dem Standblatt überein.", systemImage: "checkmark.seal")
             }
@@ -199,6 +207,31 @@ struct StandblattScanView: View {
             scoring = first.defaultScoring
             event = first.title
         }
+    }
+
+    /// Shots that don't add up to the printed sums (or can't be checked) are only taken after asking.
+    private func applyChecked() {
+        if strips[selected].sumCheck(scoring) == .matches { apply() } else { confirmingSums = true }
+    }
+
+    private var sumAlertTitle: String {
+        guard strips.indices.contains(selected), strips[selected].sumCheck(scoring) == .unchecked else {
+            return "Summe stimmt nicht".loc
+        }
+        return "Summe nicht geprüft".loc
+    }
+
+    private var sumAlertMessage: String {
+        guard strips.indices.contains(selected) else { return "" }
+        let strip = strips[selected]
+        var lines: [String]
+        if case let .mismatch(issues) = strip.sumCheck(scoring) {
+            lines = issues.map(\.message)
+        } else {
+            lines = [String(localized: "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben \(strip.sum(scoring).formatted()).")]
+        }
+        lines.append("Prüfe die Schüsse im Eintrag, bevor du ihn sicherst. Ein Hinweis steht in den Notizen.".loc)
+        return lines.joined(separator: "\n\n")
     }
 
     private func apply() {

@@ -618,6 +618,8 @@ struct StandblattImport: Equatable {
     var result: String
     var maxPoints: Double
     var notes: String
+    /// Set when the read shots don't match the printed sums or could not be checked; it heads the notes.
+    var sumWarning: String?
 
     init(_ strip: ScannedStandblatt, scoring: StandblattScoring, event: String? = nil) {
         self.event = (event ?? strip.title).trimmingCharacters(in: .whitespaces)
@@ -636,6 +638,7 @@ struct StandblattImport: Equatable {
             let label = other == .rings ? "A10" : "A100"
             parts.append("\(label): \(strip.total(other))")
         }
-        notes = parts.joined(separator: " · ")
+        sumWarning = strip.sumWarning(scoring)
+        notes = ([sumWarning] + [parts.joined(separator: " · ")]).compactMap { $0 }.joined(separator: "\n")
     }
 }
