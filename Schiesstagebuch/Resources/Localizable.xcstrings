@@ -1410,13 +1410,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The date of sale can’t be before the date of purchase."
+            "value": "The date of sale can't be before the date of purchase."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La date de vente ne peut pas précéder la date d’achat."
+            "value": "La date de vente ne peut pas précéder la date d'achat."
           }
         },
         "it": {
@@ -3532,7 +3532,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Date d’achat"
+            "value": "Date d'achat"
           }
         },
         "it": {
