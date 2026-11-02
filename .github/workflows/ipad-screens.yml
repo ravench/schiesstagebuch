@@ -1,0 +1,42 @@
+name: iPad screens
+# Screenshots of every main screen on an iPad simulator, portrait and landscape, with sample data.
+# Download them from the run's "ipad-screens" artifact. Runs by hand (Actions › iPad screens ›
+# Run workflow) and on pull requests that touch the screenshot run itself.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/ipad-screens.yml
+      - SchiesstagebuchUITests/**
+      - Schiesstagebuch/Services/ScreenshotData.swift
+defaults:
+  run:
+    shell: bash -eo pipefail {0}
+jobs:
+  screens:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+      - run: brew install xcodegen
+      - run: xcodegen generate
+      - name: Take screenshots
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 tools/ipad_screens.py pick-ipad)
+          echo "Screenshots on $UDID"
+          xcodebuild test \
+            -project Schiesstagebuch.xcodeproj \
+            -scheme SchiesstagebuchScreens \
+            -destination "id=$UDID" \
+            -resultBundlePath "$RUNNER_TEMP/Screens.xcresult" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
+      - name: Export screenshots
+        if: always()
+        run: |
+          xcrun xcresulttool export attachments --path "$RUNNER_TEMP/Screens.xcresult" --output-path "$RUNNER_TEMP/raw"
+          python3 tools/ipad_screens.py rename "$RUNNER_TEMP/raw" ipad-screens
+          ls ipad-screens
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: ipad-screens
+          path: ipad-screens

@@ -75,6 +75,13 @@ Admin role (Users and Access, Integrations, Team Keys): `ASC_KEY_ID` (Key ID),
 `ASC_ISSUER_ID` (Issuer ID) and `ASC_KEY_P8` (the whole content of the downloaded
 `AuthKey_….p8`). Without them the workflow skips the upload. Forks don't get the secrets.
 
+## iPad screens
+
+The **iPad screens** workflow (Actions › iPad screens › Run workflow) starts the app on an iPad simulator
+with sample data (launch argument `-screenshotData`, kept in memory only) and screenshots every tab in
+portrait and landscape. Download them from the run's `ipad-screens` artifact. The UI test lives in
+`SchiesstagebuchUITests` and has its own scheme, `SchiesstagebuchScreens`, so the normal test run skips it.
+
 ## Code style
 
 CI runs [SwiftLint](https://github.com/realm/SwiftLint) 0.59.1 in strict mode, so any warning
