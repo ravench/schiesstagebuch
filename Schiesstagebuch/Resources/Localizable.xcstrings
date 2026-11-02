@@ -875,6 +875,29 @@
         }
       }
     },
+    "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No total was read on the score strip. The shots add up to %@."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun total n'a été lu sur la feuille de stand. Les coups font %@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sul foglio di tiro non è stato letto nessun totale. I colpi danno %@."
+          }
+        }
+      }
+    },
     "Auf der Karte gewählt": {
       "extractionState": "manual",
       "localizations": {
@@ -5912,6 +5935,29 @@
         }
       }
     },
+    "Prüfe die Schüsse im Eintrag, bevor du ihn sicherst. Ein Hinweis steht in den Notizen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the shots in the entry before saving it. A note has been added."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifiez les coups dans l'entrée avant de l'enregistrer. Une remarque a été ajoutée aux notes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla i colpi nella voce prima di salvarla. È stata aggiunta una nota."
+          }
+        }
+      }
+    },
     "Prüfe unter Waffen die Kategorie und die Kaliber der importierten Waffen.": {
       "extractionState": "manual",
       "localizations": {
@@ -7154,6 +7200,98 @@
         }
       }
     },
+    "Summe nicht geprüft": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sum not checked"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somme non vérifiée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somma non verificata"
+          }
+        }
+      }
+    },
+    "Summe nicht geprüft, kein gedrucktes Total gelesen (Schüsse ergeben %@)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sum not checked, no printed total read (shots add up to %@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somme non vérifiée, aucun total imprimé lu (les coups font %@)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Somma non verificata, nessun totale stampato letto (i colpi danno %@)"
+          }
+        }
+      }
+    },
+    "Summe prüfen: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the sum: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifier la somme : %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controllare la somma: %@"
+          }
+        }
+      }
+    },
+    "Summe stimmt nicht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sum doesn't match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La somme ne correspond pas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La somma non corrisponde"
+          }
+        }
+      }
+    },
     "Tage zählen": {
       "extractionState": "manual",
       "localizations": {
@@ -7426,6 +7564,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultati"
+          }
+        }
+      }
+    },
+    "Trotzdem übernehmen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply anyway"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reprendre quand même"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applica comunque"
           }
         }
       }
@@ -8254,6 +8415,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultima"
+          }
+        }
+      }
+    },
+    "Zurück": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retour"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indietro"
           }
         }
       }
