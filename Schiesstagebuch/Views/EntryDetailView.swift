@@ -7,6 +7,8 @@ struct EntryDetailView: View {
     @AppStorage(SightSettings.showKey) private var showSport = false
     @State private var editing = false
     @State private var confirmDelete = false
+    /// The screen pops first and deletes in `onDisappear`, so it never renders a deleted entry.
+    @State private var deleting = false
 
     var body: some View {
         List {
@@ -103,12 +105,14 @@ struct EntryDetailView: View {
         .sheet(isPresented: $editing) { EntryEditorView(entry: entry) }
         .confirmationDialog("Eintrag löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Löschen", role: .destructive) {
-                let weapon = entry.weapon
-                context.delete(entry)
-                try? context.save()
-                if let weapon { MaintenanceNotifier.refresh(weapon) }
+                deleting = true
                 dismiss()
             }
+        }
+        .onDisappear {
+            guard deleting else { return }
+            deleting = false
+            try? Deletion.delete(entry, in: context)
         }
     }
 

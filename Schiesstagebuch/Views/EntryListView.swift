@@ -85,7 +85,7 @@ struct EntryListView: View {
                         NavigationLink(value: entry) { EntryRow(entry: entry) }
                     }
                     .onDelete { offsets in
-                        for i in offsets { context.delete(section.entries[i]) }
+                        try? Deletion.delete(offsets.map { section.entries[$0] }, in: context)
                     }
                 } header: {
                     HStack {

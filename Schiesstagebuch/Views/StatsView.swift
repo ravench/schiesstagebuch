@@ -108,7 +108,12 @@ struct ItemStatsList<Header: View, Extra: View>: View {
 
 struct WeaponDetailView: View {
     @Bindable var weapon: Weapon
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
     @State private var editing = false
+    /// Set when the user chose to delete: the screen pops first and deletes in `onDisappear`,
+    /// so no view still shows the weapon when its record disappears from the store.
+    @State private var deleting = false
 
     var body: some View {
         ItemStatsList(entries: weapon.entries ?? []) {
@@ -127,7 +132,18 @@ struct WeaponDetailView: View {
         }
         .navigationTitle(weapon.name)
         .toolbar { Button("Bearbeiten") { editing = true } }
-        .sheet(isPresented: $editing) { WeaponEditorView(weapon: weapon) }
+        .sheet(isPresented: $editing) {
+            WeaponEditorView(weapon: weapon, onDelete: { deleting = true })
+        }
+        .onChange(of: editing) { _, shown in
+            // Pop once the editor sheet is gone, not while it is still animating away.
+            if !shown, deleting { dismiss() }
+        }
+        .onDisappear {
+            guard deleting else { return }
+            deleting = false
+            try? Deletion.delete(weapon, in: context)
+        }
     }
 }
 
