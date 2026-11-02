@@ -26,7 +26,12 @@ enum ScreenshotData {
         pistol.category = .pistol
         pistol.calibers = [luger]
         let ammo = Ammunition(name: "GP 11", caliber: gp11)
-        [range, gp11, luger, rifle, pistol, ammo].forEach { context.insert($0) }
+        context.insert(range)
+        context.insert(gp11)
+        context.insert(luger)
+        context.insert(rifle)
+        context.insert(pistol)
+        context.insert(ammo)
 
         let samples = [
             Sample(daysAgo: 2, event: "Obligatorisch", weapon: rifle, shots: 20, result: "78"),
