@@ -33,4 +33,11 @@ final class LocalizationTests: XCTestCase {
         let en = String(format: try localized("Import aus «%@»", "en"), LegacyImport.sourceAppName)
         XCTAssertEqual(en, "Import from “Schusszähler-Schiesstagebuch”")
     }
+
+    func testShotBoxLabelIsTranslated() throws {
+        let expected = ["en": "Shot 3", "fr": "Coup 3", "it": "Colpo 3"]
+        for (lang, text) in expected {
+            XCTAssertEqual(String(format: try localized("Schuss %lld", lang), 3), text, lang)
+        }
+    }
 }

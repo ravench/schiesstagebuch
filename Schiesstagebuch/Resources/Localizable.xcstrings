@@ -6717,6 +6717,29 @@
         }
       }
     },
+    "Schuss %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shot %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coup %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpo %lld"
+          }
+        }
+      }
+    },
     "Schussrichtung": {
       "extractionState": "manual",
       "localizations": {
@@ -10048,29 +10071,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "calma"
-          }
-        }
-      }
-    },
-    "z. B. 10 9 10 8 9": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "e.g. 10 9 10 8 9"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "p. ex. 10 9 10 8 9"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "p. es. 10 9 10 8 9"
           }
         }
       }
