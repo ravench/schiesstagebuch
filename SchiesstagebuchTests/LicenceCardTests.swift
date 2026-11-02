@@ -65,6 +65,32 @@ final class BarcodeRendererTests: XCTestCase {
         XCTAssertNil(BarcodeRenderer.code128("a\nb"))
         XCTAssertTrue(BarcodeRenderer.canEncode("004711"))
     }
+
+    func testModuleCountIsImageWidthAtScaleOne() throws {
+        let modules = try XCTUnwrap(BarcodeRenderer.code128Modules("1000152159"))
+        XCTAssertGreaterThan(modules, 20, "symbol plus two quiet zones of 10 modules")
+        XCTAssertEqual(try XCTUnwrap(BarcodeRenderer.code128("1000152159", scale: 7)).width, modules * 7)
+        XCTAssertNil(BarcodeRenderer.code128Modules(""))
+    }
+
+    func testModuleScaleFillsTheWidthWithWholePixels() {
+        XCTAssertEqual(BarcodeRenderer.moduleScale(fitting: 990, modules: 110), 9)
+        XCTAssertEqual(BarcodeRenderer.moduleScale(fitting: 989, modules: 110), 8)
+        XCTAssertEqual(BarcodeRenderer.moduleScale(fitting: 50, modules: 110), 1, "never below one pixel")
+        XCTAssertEqual(BarcodeRenderer.moduleScale(fitting: 500, modules: 0), 1)
+        XCTAssertEqual(BarcodeRenderer.moduleScale(fitting: .infinity, modules: 110), 1)
+    }
+
+    /// A panel on an iPhone (about 340 pt at 3x) gets a barcode spanning almost all of it.
+    func testFittedBarcodeUsesMostOfThePanel() throws {
+        let pixels: CGFloat = 340 * 3
+        for value in ["004711", "1000152159"] {
+            let modules = try XCTUnwrap(BarcodeRenderer.code128Modules(value))
+            let width = modules * BarcodeRenderer.moduleScale(fitting: pixels, modules: modules)
+            XCTAssertLessThanOrEqual(CGFloat(width), pixels, value)
+            XCTAssertGreaterThan(CGFloat(width), pixels - CGFloat(modules), value)
+        }
+    }
 }
 
 final class LicenceCardTests: ModelTestCase {
@@ -142,5 +168,12 @@ final class LicenceCardTests: ModelTestCase {
         XCTAssertEqual(cards.first?.holderName, "Erika Muster")
         XCTAssertEqual(cards.first?.licenceNumber, "004711")
         XCTAssertEqual(cards.first?.updatedAt, day(3))
+    }
+
+    func testTabShowsOnlyWithAUsableLicenceNumber() {
+        XCTAssertFalse(LicenceCard.hasCard([]))
+        XCTAssertFalse(LicenceCard.hasCard([LicenceCard(holderName: "Erika Muster", licenceNumber: "")]))
+        XCTAssertFalse(LicenceCard.hasCard([LicenceCard(licenceNumber: "12x")]))
+        XCTAssertTrue(LicenceCard.hasCard([LicenceCard(), LicenceCard(licenceNumber: "004711")]))
     }
 }
