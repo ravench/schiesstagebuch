@@ -278,7 +278,7 @@ T = {
     "Resultat in Prozent": ("Result in percent", "Résultat en pourcentage", "Risultato in percentuale"),
     "Ø Prozent": ("Avg. percent", "Moy. pourcentage", "Media percentuale"),
     "Ø pro Schuss": ("Avg. per shot", "Moy. par coup", "Media per colpo"),
-    "z. B. 10 9 10 8 9": ("e.g. 10 9 10 8 9", "p. ex. 10 9 10 8 9", "p. es. 10 9 10 8 9"),
+    "Schuss %lld": ("Shot %lld", "Coup %lld", "Colpo %lld"),
     "Erfassung": ("Recording", "Saisie", "Registrazione"),
     "Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.": ("Applies to new entries. You can switch the mode in any entry.", "S'applique aux nouvelles entrées. Tu peux changer le mode dans chaque entrée.", "Vale per le nuove voci. Puoi cambiare modalità in ogni voce."),
     "Probe/Wertung": ("Sighters/Scored", "Essai/Comptés", "Prova/Gara"),
