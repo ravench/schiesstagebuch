@@ -1404,6 +1404,29 @@
         }
       }
     },
+    "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The result is above the maximum. Correct the result or the max. points."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le résultat dépasse le maximum. Corrige le résultat ou les points max."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il risultato supera il massimo. Correggi il risultato o i punti max."
+          }
+        }
+      }
+    },
     "Datei wählen …": {
       "extractionState": "manual",
       "localizations": {
@@ -1791,6 +1814,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Calibro personalizzato"
+          }
+        }
+      }
+    },
+    "Ein Resultat kann höchstens 100 Prozent erreichen. Diese Einträge werden übernommen, zählen aber nicht in die Prozent-Statistik. Korrigiere das Resultat danach im Eintrag.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A result can be at most 100 percent. These entries are imported but left out of the percentage statistics. Correct the result in the entry afterwards."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un résultat ne peut pas dépasser 100 pour cent. Ces entrées sont importées mais ne comptent pas dans les statistiques en pourcentage. Corrige ensuite le résultat dans l'entrée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un risultato può arrivare al massimo al 100 per cento. Queste voci vengono importate ma non contano nelle statistiche in percentuale. Correggi poi il risultato nella voce."
           }
         }
       }
@@ -6119,6 +6165,29 @@
         }
       }
     },
+    "Resultate über dem Maximum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Results above the maximum"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultats au-dessus du maximum"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultati sopra il massimo"
+          }
+        }
+      }
+    },
     "Revolver": {
       "extractionState": "manual",
       "localizations": {
@@ -7380,6 +7449,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Totale"
+          }
+        }
+      }
+    },
+    "Total %@ liegt über dem Maximum von %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total %1$@ is above the maximum of %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le total %1$@ dépasse le maximum de %2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il totale %1$@ supera il massimo di %2$@"
           }
         }
       }

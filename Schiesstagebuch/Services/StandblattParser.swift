@@ -108,6 +108,8 @@ struct ScannedStandblatt: Equatable {
         case missingShots([Int])
         /// Shot numbers whose ring did not match the hundredths.
         case uncertainShots([Int])
+        /// The total is more than the strip's shots can reach: something was misread.
+        case exceedsMax(total: Int, max: Int)
     }
 
     /// Checks the read shots against the printed subtotals and total.
@@ -128,6 +130,10 @@ struct ScannedStandblatt: Equatable {
         }
         let uncertain = shots.filter(\.uncertain).map(\.number)
         if scoring == .rings, !uncertain.isEmpty { result.append(.uncertainShots(uncertain)) }
+        let limit = maxPoints(scoring)
+        if !shots.isEmpty, Double(total(scoring)) > limit {
+            result.append(.exceedsMax(total: total(scoring), max: Int(limit)))
+        }
         return result
     }
 

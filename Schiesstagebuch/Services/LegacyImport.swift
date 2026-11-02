@@ -23,6 +23,11 @@ enum LegacyImport {
         var notes: String
         var pictures: [String]
 
+        /// A result like "90/75" reads as 90 of 75 points, which is impossible (over 100 %).
+        var exceedsMax: Bool {
+            Score(result: result, maxPoints: nil, shotValuesText: "", scoredShots: shots).exceedsMax
+        }
+
         /// Stable key so the same row isn't imported twice.
         var key: String {
             let d = Calendar.current.dateComponents([.year, .month, .day], from: date)
@@ -140,6 +145,8 @@ enum LegacyImport {
         var weapons: [String]
         var ranges: [String]
         var photoCount: Int
+        /// New rows whose result is over the maximum: imported as written, flagged in the preview.
+        var overMaxRows: [Row] { newRows.filter(\.exceedsMax) }
     }
 
     @MainActor

@@ -491,4 +491,16 @@ final class StandblattParserTests: XCTestCase {
         XCTAssertEqual(score.shotValues.reduce(0, +), 95)
         XCTAssertEqual(score.percentage!, 0.95, accuracy: 1e-9)
     }
+
+    func testTotalAboveMaximumIsReported() throws {
+        let text = """
+        Scheibe 1/1
+        1 ↖ 10 92
+        2 ↖ 9 89
+        Total 29 181
+        """
+        let s = try XCTUnwrap(StandblattParser.parse(text: text).first)
+        XCTAssertEqual(s.issues(.rings), [.totalMismatch(printed: 29, read: 19), .exceedsMax(total: 29, max: 20)])
+        XCTAssertEqual(s.issues(.hundredths), [])
+    }
 }

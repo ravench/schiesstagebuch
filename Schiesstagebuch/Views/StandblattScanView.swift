@@ -231,6 +231,8 @@ extension ScannedStandblatt.Issue {
             String(localized: "Fehlende Schüsse: \(Self.joined(numbers))")
         case let .uncertainShots(numbers):
             String(localized: "Unsicher gelesen, Schuss \(Self.joined(numbers))")
+        case let .exceedsMax(total, max):
+            String(localized: "Total \(total.formatted()) liegt über dem Maximum von \(max.formatted())")
         }
     }
 

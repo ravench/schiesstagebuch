@@ -28,13 +28,21 @@ struct Score {
         return result.contains("/") && n.count >= 2 && n[1] > 0 ? n[1] : nil
     }
 
+    /// More points than the maximum: impossible, a result is at most 100 %. Such data is
+    /// flagged in the editor and import and left out of percentages and averages.
+    var exceedsMax: Bool {
+        guard let points, let max = effectiveMax else { return false }
+        return points > max + 1e-9
+    }
+
     var percentage: Double? {
-        guard let points, let max = effectiveMax else { return nil }
+        guard let points, let max = effectiveMax, !exceedsMax else { return nil }
         return points / max
     }
 
     /// Points and shot count the per-shot average is based on.
     var perShotBasis: (points: Double, shots: Int)? {
+        guard !exceedsMax else { return nil }
         let shots = shotValues
         if !shots.isEmpty { return (shots.reduce(0, +), shots.count) }
         guard let points, scoredShots > 0 else { return nil }
@@ -80,6 +88,13 @@ extension Entry {
 }
 
 extension Sequence where Element == Entry {
+    /// Probeschüsse of the entries that record them.
+    var sighterShots: Int { reduce(0) { $0 + ($1.sighterCount ?? 0) } }
+
+    /// Wertungsschüsse. An entry without a sighter count (e.g. imported from the old app, which
+    /// only knew a total) counts all its shots, as its score does.
+    var scoredShots: Int { reduce(0) { $0 + ($1.scoredCount ?? $1.shotCount) } }
+
     /// Average percentage over the entries that have one.
     var averagePercentage: Double? {
         let p = compactMap(\.score.percentage)
