@@ -95,6 +95,13 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("if: always()", upload)
         self.assertIn("name: ipad-screens", upload)
 
+    def test_publishes_to_branch_except_from_forks(self):
+        self.assertIn("contents: write", self.workflow)
+        publish = self.workflow.split("Publish to the ipad-screens branch")[1]
+        self.assertIn("git push -q -f", publish)
+        self.assertIn("ipad-screens", publish)
+        self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", publish)
+
     def test_normal_scheme_skips_ui_tests(self):
         normal = self.project.split("  Schiesstagebuch:\n    build:")[1].split("SchiesstagebuchScreens:")[0]
         self.assertNotIn("SchiesstagebuchUITests", normal)
