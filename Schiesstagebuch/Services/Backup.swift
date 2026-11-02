@@ -39,21 +39,27 @@ enum Backup {
         var licenceCards: [LicenceCardDTO]?
     }
 
-    struct CaliberDTO: Codable { var id: UUID; var name: String; var category: String; var isArchived: Bool; var catalogID: String? }
+    // `createdAt` fields are optional so backups from before they were exported still load.
+    struct CaliberDTO: Codable {
+        var id: UUID; var name: String; var category: String; var isArchived: Bool; var catalogID: String?
+        var createdAt: Date?
+    }
     struct WeaponDTO: Codable {
         var id: UUID; var name: String; var isArchived: Bool; var category: String?
+        var createdAt: Date?
         var caliberIDs: [UUID]; var defaultCaliberID: UUID?
         var cleaningIntervalShots: Int; var cleaningIntervalDays: Int
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
         var dayCounting: String?
         var serialNumber: String?
     }
-    struct AmmunitionDTO: Codable { var id: UUID; var name: String; var caliberID: UUID?; var isArchived: Bool }
+    struct AmmunitionDTO: Codable { var id: UUID; var name: String; var caliberID: UUID?; var isArchived: Bool; var createdAt: Date? }
     struct LotDTO: Codable { var id: UUID; var ammunitionID: UUID?; var number: String; var notes: String; var isArchived: Bool; var createdAt: Date }
     struct RangeDTO: Codable {
         var id: UUID; var name: String; var place: String; var isArchived: Bool
         var address: String?; var latitude: Double?; var longitude: Double?
         var shootingBearing: Double?; var altitude: Double?
+        var createdAt: Date?
     }
     struct LicenceCardDTO: Codable { var id: UUID; var holderName: String; var licenceNumber: String; var updatedAt: Date }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
@@ -68,6 +74,9 @@ enum Backup {
         var bipodLength: Double?
         var weather: WeatherRecord?
         var photos: [Data]
+        /// Marker of entries imported from the old app, so a re-import after a restore skips them.
+        var importKey: String?
+        var createdAt: Date?
     }
 
     private static func all<T: PersistentModel>(_ type: T.Type, _ context: ModelContext) throws -> [T] {
@@ -78,19 +87,23 @@ enum Backup {
         let file = File(
             version: currentVersion,
             exportedAt: .now,
-            calibers: try all(Caliber.self, context).map { .init(id: $0.id, name: $0.name, category: $0.category, isArchived: $0.isArchived, catalogID: $0.catalogID) },
+            calibers: try all(Caliber.self, context).map {
+                .init(id: $0.id, name: $0.name, category: $0.category, isArchived: $0.isArchived, catalogID: $0.catalogID, createdAt: $0.createdAt)
+            },
             weapons: try all(Weapon.self, context).map {
-                .init(id: $0.id, name: $0.name, isArchived: $0.isArchived, category: $0.categoryRaw,
+                .init(id: $0.id, name: $0.name, isArchived: $0.isArchived, category: $0.categoryRaw, createdAt: $0.createdAt,
                       caliberIDs: ($0.calibers ?? []).map(\.id), defaultCaliberID: $0.defaultCaliber?.id,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
                       dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber)
             },
-            ammunition: try all(Ammunition.self, context).map { .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived) },
+            ammunition: try all(Ammunition.self, context).map {
+                .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived, createdAt: $0.createdAt)
+            },
             ranges: try all(ShootingRange.self, context).map {
                 .init(id: $0.id, name: $0.name, place: $0.place, isArchived: $0.isArchived,
                       address: $0.address, latitude: $0.latitude, longitude: $0.longitude,
-                      shootingBearing: $0.shootingBearing, altitude: $0.altitude)
+                      shootingBearing: $0.shootingBearing, altitude: $0.altitude, createdAt: $0.createdAt)
             },
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
@@ -100,7 +113,8 @@ enum Backup {
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
                       filterColor: $0.filterColor, diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
                       weather: $0.weather,
-                      photos: $0.sortedPhotos.compactMap(\.imageData))
+                      photos: $0.sortedPhotos.compactMap(\.imageData),
+                      importKey: $0.importKey, createdAt: $0.createdAt)
             },
             lots: try all(AmmoLot.self, context).map {
                 .init(id: $0.id, ammunitionID: $0.ammunition?.id, number: $0.number, notes: $0.notes,
@@ -136,13 +150,15 @@ enum Backup {
 
         // Calibres also match by name so the seeded catalogue isn't duplicated.
         var calibers = Dictionary(uniqueKeysWithValues: try all(Caliber.self, context).map { ($0.id, $0) })
-        let calibersByName = Dictionary(calibers.values.map { (Caliber.normalized($0.name), $0) }, uniquingKeysWith: { a, _ in a })
+        var calibersByName = Dictionary(calibers.values.map { (Caliber.normalized($0.name), $0) }, uniquingKeysWith: { a, _ in a })
         var caliberMap: [UUID: Caliber] = [:]
         for d in file.calibers {
-            if let c = calibers[d.id] ?? calibersByName[Caliber.normalized(d.name)] { caliberMap[d.id] = c; continue }
+            let key = Caliber.normalized(d.name)
+            if let c = calibers[d.id] ?? calibersByName[key] { caliberMap[d.id] = c; continue }
             let c = Caliber(name: d.name, category: d.category); c.id = d.id; c.isArchived = d.isArchived
             c.catalogID = d.catalogID ?? ""
-            context.insert(c); calibers[d.id] = c; caliberMap[d.id] = c
+            if let created = d.createdAt { c.createdAt = created }
+            context.insert(c); calibers[d.id] = c; calibersByName[key] = c; caliberMap[d.id] = c
         }
 
         var weapons = Dictionary(uniqueKeysWithValues: try all(Weapon.self, context).map { ($0.id, $0) })
@@ -155,12 +171,14 @@ enum Backup {
             w.serviceIntervalShots = d.serviceIntervalShots; w.serviceIntervalDays = d.serviceIntervalDays
             w.dayCountingRaw = d.dayCounting ?? ""
             w.serialNumber = d.serialNumber ?? ""
+            if let created = d.createdAt { w.createdAt = created }
             context.insert(w); weapons[d.id] = w
         }
 
         var ammo = Dictionary(uniqueKeysWithValues: try all(Ammunition.self, context).map { ($0.id, $0) })
         for d in file.ammunition where ammo[d.id] == nil {
             let a = Ammunition(name: d.name, caliber: d.caliberID.flatMap { caliberMap[$0] }); a.id = d.id; a.isArchived = d.isArchived
+            if let created = d.createdAt { a.createdAt = created }
             context.insert(a); ammo[d.id] = a
         }
 
@@ -177,6 +195,7 @@ enum Backup {
             let r = ShootingRange(name: d.name, place: d.place); r.id = d.id; r.isArchived = d.isArchived
             r.address = d.address ?? ""; r.latitude = d.latitude; r.longitude = d.longitude
             r.shootingBearing = d.shootingBearing.map(Compass.normalized); r.altitude = d.altitude
+            if let created = d.createdAt { r.createdAt = created }
             context.insert(r); ranges[d.id] = r
         }
 
@@ -198,6 +217,8 @@ enum Backup {
                           shotCount: d.shotCount, ammunition: d.ammunitionID.flatMap { ammo[$0] },
                           result: d.result, notes: d.notes)
             e.id = d.id
+            e.importKey = d.importKey ?? ""
+            if let created = d.createdAt { e.createdAt = created }
             context.insert(e)
             e.lot = d.lotID.flatMap { lots[$0] }
             e.sighterCount = d.sighterCount
@@ -219,7 +240,7 @@ enum Backup {
     static func csv(_ context: ModelContext) -> Data {
         let entries = ((try? all(Entry.self, context)) ?? []).sorted { $0.date < $1.date }
         func field(_ s: String) -> String {
-            s.contains(where: { ";\"\n".contains($0) }) ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
+            s.contains(where: { ";\"\n\r".contains($0) }) ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.

@@ -49,6 +49,40 @@ final class BackupTests: ModelTestCase {
         XCTAssertTrue(lots.allSatisfy { $0.ammunition?.name == "GP 90" })
     }
 
+    func testRoundTripKeepsImportKeyAndCreationDates() throws {
+        let cal = Caliber(name: ".45 ACP"); cal.createdAt = day(1); context.insert(cal)
+        let weapon = Weapon(name: "1911"); weapon.createdAt = day(2); context.insert(weapon)
+        let ammo = Ammunition(name: "45 Auto", caliber: cal); ammo.createdAt = day(3); context.insert(ammo)
+        let range = ShootingRange(name: "Rehalp"); range.createdAt = day(4); context.insert(range)
+        let e = Entry(date: day(5), range: range, weapon: weapon, caliber: cal, shotCount: 50, ammunition: ammo)
+        e.importKey = "legacy|2026-3-5|1911|Training|Rehalp|50|"
+        e.createdAt = day(6)
+        context.insert(e)
+        try context.save()
+
+        let (keep, target) = try freshContext()
+        _ = keep
+        try Backup.restore(from: try Backup.export(context), into: target)
+
+        let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
+        XCTAssertEqual(restored.importKey, e.importKey, "a re-import after the restore must skip this entry")
+        XCTAssertEqual(restored.createdAt, day(6))
+        XCTAssertEqual(restored.caliber?.createdAt, day(1))
+        XCTAssertEqual(restored.weapon?.createdAt, day(2))
+        XCTAssertEqual(restored.ammunition?.createdAt, day(3))
+        XCTAssertEqual(restored.range?.createdAt, day(4))
+    }
+
+    func testCalibresWithTheSameNameRestoreAsOne() throws {
+        let json = """
+        {"version":1,"exportedAt":"2026-01-01T00:00:00Z","weapons":[],"ammunition":[],"ranges":[],"maintenance":[],"entries":[],
+         "calibers":[{"id":"6A1C5E3E-0000-4000-8000-000000000001","name":".45 ACP","category":"Kurzwaffe","isArchived":false},
+                     {"id":"6A1C5E3E-0000-4000-8000-000000000002","name":"45 ACP","category":"Kurzwaffe","isArchived":false}]}
+        """
+        try Backup.restore(from: Data(json.utf8), into: context)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 1)
+    }
+
     func testRestoringTwiceDoesNotDuplicate() throws {
         let ammo = Ammunition(name: "GP 11"); context.insert(ammo)
         let lot = AmmoLot(number: "X1"); context.insert(lot); lot.ammunition = ammo
@@ -98,5 +132,13 @@ final class BackupTests: ModelTestCase {
         XCTAssertTrue(cols.contains("10"))
         XCTAssertTrue(cols.contains("10 9 | 8 7"))
         XCTAssertEqual(csv.components(separatedBy: "\r\n").first?.components(separatedBy: ";").count, cols.count)
+    }
+
+    func testCSVQuotesCarriageReturns() throws {
+        let e = Entry(date: day(1), shotCount: 1, notes: "Zeile 1\r\nZeile 2"); context.insert(e)
+        try context.save()
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
+        XCTAssertTrue(csv.contains("\"Zeile 1\r\nZeile 2\""), "a note with a Windows line break stays one quoted field")
+        XCTAssertEqual(csv.components(separatedBy: "\r\n").count, 3, "header, one row, and the break inside the quoted note")
     }
 }

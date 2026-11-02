@@ -35,9 +35,16 @@ enum BackupStore {
             .sorted { (date($0), $0.lastPathComponent) > (date($1), $1.lastPathComponent) }
     }
 
-    /// Removes all but the newest `keep` backups.
+    /// Files the app wrote itself: "Schiesstagebuch-2026-11-01.json", "Schiesstagebuch-2026-11-01 2.json".
+    /// Anything else in the folder (a backup copied in from another device) is never pruned.
+    static func isAppBackup(_ url: URL) -> Bool {
+        url.lastPathComponent.range(of: #"^Schiesstagebuch-\d{4}-\d{2}-\d{2}( \d+)?\.[A-Za-z0-9]+$"#,
+                                    options: .regularExpression) != nil
+    }
+
+    /// Removes all but the newest `keep` backups the app wrote; other files stay.
     static func prune(keep: Int = keep, ext: String = "json", in folder: URL = defaultFolder) {
-        for url in list(ext: ext, in: folder).dropFirst(keep) {
+        for url in list(ext: ext, in: folder).filter(isAppBackup).dropFirst(keep) {
             try? FileManager.default.removeItem(at: url)
         }
     }
