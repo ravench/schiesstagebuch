@@ -10,18 +10,9 @@ struct SightSection: View {
     var body: some View {
         Section {
             DisclosureGroup(isExpanded: $expanded) {
-                Picker("Filter", selection: $sight.filter) {
-                    Label { Text("Kein Filter") } icon: { FilterSwatch(name: "") }.tag("")
-                    let visible = FilterCatalog(data: catalogData).visible
-                    ForEach(visible, id: \.name) { f in
-                        Label { Text(f.name) } icon: { FilterSwatch(filter: f) }.tag(f.name)
-                    }
-                    // Keep the entry's filter selectable even if it is hidden or was removed in Settings.
-                    if !sight.filter.isEmpty, !visible.contains(where: { $0.name == sight.filter }) {
-                        Label { Text(sight.filter) } icon: { FilterSwatch(name: sight.filter) }.tag(sight.filter)
-                    }
-                }
-                .pickerStyle(.navigationLink)
+                filterPicker("Filter", index: 0)
+                // A second filter can be stacked on the first, e.g. a neutral ±0.25 dpt.
+                if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
                 if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
                 sliderRow("Diopter", value: $sight.diopter)
                 if aperture != .iris {
@@ -50,12 +41,30 @@ struct SightSection: View {
 
     private var summary: String {
         var parts: [String] = []
-        if !sight.filter.isEmpty { parts.append(FilterColor.title(sight.filter)) }
+        if !sight.filters.isEmpty { parts.append(FilterColor.title(sight.filters)) }
         if let i = sight.irisSize, aperture != .ring { parts.append("I \(SightSettings.format(i))") }
         if let d = sight.diopter { parts.append("D \(SightSettings.format(d))") }
         if let r = sight.ringSize, aperture != .iris { parts.append("R \(SightSettings.format(r))") }
         if let b = sight.bipodLength, aperture != .iris { parts.append("\(SightSettings.format(b)) cm") }
         return parts.joined(separator: " · ")
+    }
+
+    /// Picker for the first (index 0) or second (index 1) filter. The second one doesn't offer the first again.
+    private func filterPicker(_ title: String, index: Int) -> some View {
+        let selected = index == 0 ? sight.filter : sight.secondFilter
+        let other = index == 0 ? sight.secondFilter : sight.filter
+        let visible = FilterCatalog(data: catalogData).visible.filter { $0.name != other }
+        return Picker(title.loc, selection: Binding(get: { selected }, set: { sight.setFilter($0, at: index) })) {
+            Label { Text("Kein Filter") } icon: { FilterSwatch(name: "") }.tag("")
+            ForEach(visible, id: \.name) { f in
+                Label { Text(f.name) } icon: { FilterSwatch(filter: f) }.tag(f.name)
+            }
+            // Keep the entry's filter selectable even if it is hidden or was removed in Settings.
+            if !selected.isEmpty, !visible.contains(where: { $0.name == selected }) {
+                Label { Text(selected) } icon: { FilterSwatch(name: selected) }.tag(selected)
+            }
+        }
+        .pickerStyle(.navigationLink)
     }
 
     private func sliderRow(_ title: String, value: Binding<Double?>, unit: String = "",
@@ -88,7 +97,7 @@ struct SightSection: View {
 }
 
 /// Small round lens swatch for a filter; an empty ring for "no filter".
-/// Polarised lenses get thin diagonal lines.
+/// Polarised lenses get thin diagonal lines, neutral correction filters a + or −.
 struct FilterSwatch: View {
     var name: String = ""
     /// Shown directly when given (e.g. while editing a filter); otherwise looked up by `name`.
@@ -116,6 +125,11 @@ struct FilterSwatch: View {
                                    lineWidth: 0.75)
                     }
                     .clipShape(Circle())
+                }
+                if let d = shown.dioptre {
+                    Text(verbatim: d < 0 ? "−" : "+")
+                        .font(.system(size: size * 0.7, weight: .bold))
+                        .foregroundStyle(.black.opacity(0.7))
                 }
             } else if !isNone {
                 Circle().fill(Color.secondary.opacity(0.4))

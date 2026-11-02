@@ -2393,6 +2393,35 @@
         }
       }
     },
+    "Filter (Mehrzahl)": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri"
+          }
+        }
+      }
+    },
     "Filter bearbeiten": {
       "extractionState": "manual",
       "localizations": {
@@ -4923,6 +4952,29 @@
         }
       }
     },
+    "Neutrale Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neutral filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres neutres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri neutri"
+          }
+        }
+      }
+    },
     "Niederschlag": {
       "extractionState": "manual",
       "localizations": {
@@ -5678,6 +5730,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per evento"
+          }
+        }
+      }
+    },
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einem neutralen ±0.25 dpt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two filters can be combined per entry, usually a colour filter with a neutral ±0.25 dpt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un neutre ±0.25 dpt."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con uno neutro ±0.25 dpt."
           }
         }
       }
@@ -8300,6 +8375,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bipiede (cm)"
+          }
+        }
+      }
+    },
+    "Zweiter Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Second filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deuxième filtre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secondo filtro"
           }
         }
       }

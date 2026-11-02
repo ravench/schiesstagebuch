@@ -68,10 +68,13 @@ struct EntryDetailView: View {
             let sight = SightSettings(entry: entry)
             if showSport, !sight.isEmpty {
                 Section("Einstellungen für Sportschützen") {
-                    LabeledContent("Filter") {
+                    let filterLabel = sight.filters.count > 1 ? "Filter (Mehrzahl)".loc : "Filter".loc
+                    LabeledContent(filterLabel) {
                         HStack(spacing: 6) {
-                            FilterSwatch(name: sight.filter, size: 14)
-                            Text(FilterColor.title(sight.filter))
+                            ForEach(sight.filters.isEmpty ? [""] : sight.filters, id: \.self) { name in
+                                FilterSwatch(name: name, size: 14)
+                            }
+                            Text(FilterColor.title(sight.filters))
                         }
                     }
                     row("Iris (Brille)", sight.irisSize.map(SightSettings.format))

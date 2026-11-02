@@ -54,7 +54,7 @@ struct SettingsView: View {
                     }
                     if showSport {
                         NavigationLink { FilterSettingsView() } label: {
-                            Label("Filter", systemImage: "circle.lefthalf.filled")
+                            Label("Filter (Mehrzahl)", systemImage: "circle.lefthalf.filled")
                         }
                     }
                 } footer: {
