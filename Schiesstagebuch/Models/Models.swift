@@ -88,8 +88,19 @@ final class Weapon: ArchivableItem {
     var dayCountingRaw: String = ""
     /// Optional serial number (Waffennummer).
     var serialNumber: String = ""
+    /// Optional dates the weapon was bought and sold (day precision).
+    var purchaseDate: Date?
+    var saleDate: Date?
 
     init(name: String) { self.name = name }
+
+    /// A sale may be on the purchase day but not before it. Missing dates are always valid.
+    static func ownershipDatesValid(purchase: Date?, sale: Date?, calendar: Calendar = .current) -> Bool {
+        guard let purchase, let sale else { return true }
+        return calendar.startOfDay(for: sale) >= calendar.startOfDay(for: purchase)
+    }
+
+    var ownershipDatesValid: Bool { Self.ownershipDatesValid(purchase: purchaseDate, sale: saleDate) }
 
     /// Key of the setting that shows serial numbers in weapon pickers (on by default).
     static let showSerialKey = "showSerialInPicker"

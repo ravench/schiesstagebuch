@@ -1404,6 +1404,29 @@
         }
       }
     },
+    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The date of sale can’t be before the date of purchase."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La date de vente ne peut pas précéder la date d’achat."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La data di vendita non può precedere la data di acquisto."
+          }
+        }
+      }
+    },
     "Datei wählen …": {
       "extractionState": "manual",
       "localizations": {
@@ -3470,6 +3493,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Categoria"
+          }
+        }
+      }
+    },
+    "Kauf und Verkauf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchase and sale"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Achat et vente"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acquisto e vendita"
+          }
+        }
+      }
+    },
+    "Kaufdatum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date of purchase"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date d’achat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data di acquisto"
           }
         }
       }
@@ -7518,6 +7587,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terreno / appoggio"
+          }
+        }
+      }
+    },
+    "Verkaufsdatum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date of sale"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date de vente"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data di vendita"
           }
         }
       }
