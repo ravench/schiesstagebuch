@@ -92,7 +92,8 @@ final class NearbyRangesTests: ModelTestCase {
     }
 
     func testDistanceFormat() {
-        let fr = Locale(identifier: "fr_CH")
+        // fr_FR writes a decimal comma; Swiss locales (de_CH, fr_CH) use a decimal point in ICU.
+        let fr = Locale(identifier: "fr_FR")
         let en = Locale(identifier: "en_GB")
         XCTAssertEqual(NearbyRanges.format(3, locale: en), "10 m")
         XCTAssertEqual(NearbyRanges.format(347, locale: en), "350 m")
