@@ -16,6 +16,7 @@ struct SettingsView: View {
     @Query private var weapons: [Weapon]
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @AppStorage(SightSettings.showKey) private var showSport = false
+    @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
 
     var body: some View {
         NavigationStack {
@@ -46,6 +47,14 @@ struct SettingsView: View {
                     Text("Erfassung")
                 } footer: {
                     Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
+                }
+
+                Section {
+                    Toggle(isOn: $rangeByLocation) {
+                        Label("Schiessanlage nach Standort wählen", systemImage: "location")
+                    }
+                } footer: {
+                    Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
                 }
 
                 Section {
