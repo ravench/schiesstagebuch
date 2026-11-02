@@ -103,7 +103,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", publish)
 
     def test_landscape_screenshots_turned_upright(self):
-        self.assertIn('sips -q -r 270 "$f"', self.workflow)
+        self.assertIn('sips -r 270 "$f"', self.workflow)
         self.assertIn("landscapeLeft", self.uitest)  # sips -r 270 matches this orientation
 
     def test_normal_scheme_skips_ui_tests(self):
