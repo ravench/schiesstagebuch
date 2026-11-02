@@ -35,6 +35,8 @@ enum Backup {
         var entries: [EntryDTO]
         /// Optional so backups from before lot numbers still load.
         var lots: [LotDTO]?
+        /// Optional so backups from before the licence card still load.
+        var licenceCards: [LicenceCardDTO]?
     }
 
     struct CaliberDTO: Codable { var id: UUID; var name: String; var category: String; var isArchived: Bool; var catalogID: String? }
@@ -53,6 +55,7 @@ enum Backup {
         var address: String?; var latitude: Double?; var longitude: Double?
         var shootingBearing: Double?; var altitude: Double?
     }
+    struct LicenceCardDTO: Codable { var id: UUID; var holderName: String; var licenceNumber: String; var updatedAt: Date }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
     struct EntryDTO: Codable {
         var id: UUID; var date: Date; var event: String; var shotCount: Int; var result: String; var notes: String
@@ -102,6 +105,9 @@ enum Backup {
             lots: try all(AmmoLot.self, context).map {
                 .init(id: $0.id, ammunitionID: $0.ammunition?.id, number: $0.number, notes: $0.notes,
                       isArchived: $0.isArchived, createdAt: $0.createdAt)
+            },
+            licenceCards: try all(LicenceCard.self, context).map {
+                .init(id: $0.id, holderName: $0.holderName, licenceNumber: $0.licenceNumber, updatedAt: $0.updatedAt)
             })
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -111,6 +117,15 @@ enum Backup {
 
     /// Returns a short German summary for the user.
     @discardableResult
+    private static func restoreLicenceCards(_ cards: [LicenceCardDTO], into context: ModelContext) throws {
+        let existing = Set(try all(LicenceCard.self, context).map(\.id))
+        for d in cards where !existing.contains(d.id) {
+            let card = LicenceCard(holderName: d.holderName, licenceNumber: d.licenceNumber)
+            card.id = d.id; card.updatedAt = d.updatedAt
+            context.insert(card)
+        }
+    }
+
     static func restore(from data: Data, into context: ModelContext) throws -> String {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -172,6 +187,8 @@ enum Backup {
             r.id = d.id
             context.insert(r)
         }
+
+        try restoreLicenceCards(file.licenceCards ?? [], into: context)
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
