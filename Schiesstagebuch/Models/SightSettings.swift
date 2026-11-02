@@ -54,8 +54,8 @@ struct SightSettings: Equatable {
         (min(max(v, bipodRange.lowerBound), bipodRange.upperBound) * 2).rounded() / 2
     }
 
-    /// Sets the filter at `index` (0 or 1). Clearing the first moves the second up;
-    /// the same filter twice counts once.
+    /// Sets the filter at `index` (0 or 1). Clearing the first moves the second up.
+    /// The same filter twice is allowed (rare, but possible with two lenses of one kind).
     mutating func setFilter(_ name: String, at index: Int) {
         var list = [filter, secondFilter]
         guard list.indices.contains(index) else { return }
@@ -63,11 +63,9 @@ struct SightSettings: Equatable {
         (filter, secondFilter) = Self.normalised(list[0], list[1])
     }
 
-    /// Drops blanks and duplicates and moves a lone second filter to the first place.
+    /// Drops blanks and moves a lone second filter to the first place.
     static func normalised(_ first: String, _ second: String) -> (String, String) {
-        var list: [String] = []
-        for name in [first, second] where !name.isEmpty && !list.contains(name) { list.append(name) }
-        return (list.first ?? "", list.dropFirst().first ?? "")
+        first.isEmpty ? (second, "") : (first, second)
     }
 
     var isEmpty: Bool { filters.isEmpty && diopter == nil && ringSize == nil && irisSize == nil && bipodLength == nil }

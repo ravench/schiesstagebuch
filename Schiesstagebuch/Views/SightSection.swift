@@ -49,11 +49,10 @@ struct SightSection: View {
         return parts.joined(separator: " · ")
     }
 
-    /// Picker for the first (index 0) or second (index 1) filter. The second one doesn't offer the first again.
+    /// Picker for the first (index 0) or second (index 1) filter. The same filter may be picked twice.
     private func filterPicker(_ title: String, index: Int) -> some View {
         let selected = index == 0 ? sight.filter : sight.secondFilter
-        let other = index == 0 ? sight.secondFilter : sight.filter
-        let visible = FilterCatalog(data: catalogData).visible.filter { $0.name != other }
+        let visible = FilterCatalog(data: catalogData).visible
         return Picker(title.loc, selection: Binding(get: { selected }, set: { sight.setFilter($0, at: index) })) {
             Label { Text("Kein Filter") } icon: { FilterSwatch(name: "") }.tag("")
             ForEach(visible, id: \.name) { f in

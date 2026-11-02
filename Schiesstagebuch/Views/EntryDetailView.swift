@@ -71,8 +71,10 @@ struct EntryDetailView: View {
                     let filterLabel = sight.filters.count > 1 ? "Filter (Mehrzahl)".loc : "Filter".loc
                     LabeledContent(filterLabel) {
                         HStack(spacing: 6) {
-                            ForEach(sight.filters.isEmpty ? [""] : sight.filters, id: \.self) { name in
-                                FilterSwatch(name: name, size: 14)
+                            let names = sight.filters.isEmpty ? [""] : sight.filters
+                            // By position: the same filter may be used twice.
+                            ForEach(names.indices, id: \.self) { i in
+                                FilterSwatch(name: names[i], size: 14)
                             }
                             Text(FilterColor.title(sight.filters))
                         }
