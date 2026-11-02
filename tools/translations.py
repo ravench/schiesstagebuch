@@ -123,6 +123,14 @@ T = {
     "Export fehlgeschlagen: %@": ("Export failed: %@", "Échec de l'export : %@", "Esportazione non riuscita: %@"),
     "Fertig": ("Done", "OK", "Fine"),
     "Filter": ("Filter", "Filtre", "Filtro"),
+    # Settings page and entries with two filters; German plural = singular, so the key carries a German value.
+    "Filter (Mehrzahl)": ("Filters", "Filtres", "Filtri", "Filter"),
+    "Zweiter Filter": ("Second filter", "Deuxième filtre", "Secondo filtro"),
+    "Neutrale Filter": ("Neutral filters", "Filtres neutres", "Filtri neutri"),
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einem neutralen ±0.25 dpt.": (
+        "Two filters can be combined per entry, usually a colour filter with a neutral ±0.25 dpt.",
+        "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un neutre ±0.25 dpt.",
+        "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con uno neutro ±0.25 dpt."),
     "Filter zurücksetzen": ("Reset filters", "Réinitialiser les filtres", "Reimposta filtri"),
     "Flinte": ("Shotgun", "Fusil à canon lisse", "Fucile a canna liscia"),
     "Fotos": ("Photos", "Photos", "Foto"),

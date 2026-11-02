@@ -14,7 +14,7 @@ CONTEXTS = [
     r'\bprompt:\s*' + LIT,
     r'\bString\(localized:\s*' + LIT,
     LIT + r'\.loc\b',
-    r'\b(?:pickerRow|tile|metric|row)\(\s*' + LIT,
+    r'\b(?:pickerRow|filterPicker|tile|metric|row)\(\s*' + LIT,
     r'\bBreakdownChart\(title:\s*' + LIT,
     r'\bcase \.\w+:\s*' + LIT,          # enum titles (titleKey) and error texts
     r'\bcase \w+ = ' + LIT,             # CaliberCatalog.Category raw values

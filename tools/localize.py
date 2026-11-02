@@ -24,10 +24,12 @@ if missing:
 
 strings = {}
 for key in sorted(T):
-    en, fr, it = T[key]
+    # (en, fr, it) or (en, fr, it, de) when the German text differs from the key,
+    # e.g. a plural that is spelled like the singular in German but not in English.
+    en, fr, it, *de = T[key]
+    langs = (("en", en), ("fr", fr), ("it", it)) + tuple(("de", v) for v in de)
     strings[key] = {"extractionState": "manual", "localizations": {
-        lang: {"stringUnit": {"state": "translated", "value": v}}
-        for lang, v in (("en", en), ("fr", fr), ("it", it))}}
+        lang: {"stringUnit": {"state": "translated", "value": v}} for lang, v in langs}}
 json.dump({"sourceLanguage": "de", "strings": strings, "version": "1.0"},
           open(OUT, "w"), ensure_ascii=False, indent=2, sort_keys=True)
 unused = sorted(k for k in T if k not in used)

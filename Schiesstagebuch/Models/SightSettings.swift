@@ -2,8 +2,17 @@ import Foundation
 
 /// Optional sport-shooter settings for an entry: sight, shooting glasses and bipod.
 struct SightSettings: Equatable {
-    /// Filter colour key from `FilterColor.all`; "" means no filter (the default).
+    /// Filter name from the catalogue; "" means no filter (the default).
     var filter: String = ""
+    /// A second filter stacked with the first, most often a colour-neutral ±0.25 dpt with a colour
+    /// filter, but two colour filters work too; "" means none. Only set when `filter` is set.
+    var secondFilter: String = ""
+
+    /// At most two filters fit on the glasses at once.
+    static let maxFilters = 2
+
+    /// The chosen filters in order, without blanks.
+    var filters: [String] { [filter, secondFilter].filter { !$0.isEmpty } }
     var diopter: Double?
     /// Ring on the rifle's sight; rifles only.
     var ringSize: Double?
@@ -45,11 +54,27 @@ struct SightSettings: Equatable {
         (min(max(v, bipodRange.lowerBound), bipodRange.upperBound) * 2).rounded() / 2
     }
 
-    var isEmpty: Bool { filter.isEmpty && diopter == nil && ringSize == nil && irisSize == nil && bipodLength == nil }
+    /// Sets the filter at `index` (0 or 1). Clearing the first moves the second up;
+    /// the same filter twice counts once.
+    mutating func setFilter(_ name: String, at index: Int) {
+        var list = [filter, secondFilter]
+        guard list.indices.contains(index) else { return }
+        list[index] = name
+        (filter, secondFilter) = Self.normalised(list[0], list[1])
+    }
 
-    init(filter: String = "", diopter: Double? = nil, ringSize: Double? = nil, irisSize: Double? = nil,
-         bipodLength: Double? = nil) {
-        self.filter = filter
+    /// Drops blanks and duplicates and moves a lone second filter to the first place.
+    static func normalised(_ first: String, _ second: String) -> (String, String) {
+        var list: [String] = []
+        for name in [first, second] where !name.isEmpty && !list.contains(name) { list.append(name) }
+        return (list.first ?? "", list.dropFirst().first ?? "")
+    }
+
+    var isEmpty: Bool { filters.isEmpty && diopter == nil && ringSize == nil && irisSize == nil && bipodLength == nil }
+
+    init(filter: String = "", secondFilter: String = "", diopter: Double? = nil, ringSize: Double? = nil,
+         irisSize: Double? = nil, bipodLength: Double? = nil) {
+        (self.filter, self.secondFilter) = Self.normalised(filter, secondFilter)
         self.diopter = diopter.map(Self.clamp)
         self.ringSize = ringSize.map(Self.clamp)
         self.irisSize = irisSize.map(Self.clamp)
@@ -57,8 +82,8 @@ struct SightSettings: Equatable {
     }
 
     init(entry: Entry) {
-        self.init(filter: entry.filterColor, diopter: entry.diopter, ringSize: entry.ringSize, irisSize: entry.irisSize,
-                  bipodLength: entry.bipodLength)
+        self.init(filter: entry.filterColor, secondFilter: entry.secondFilterColor, diopter: entry.diopter,
+                  ringSize: entry.ringSize, irisSize: entry.irisSize, bipodLength: entry.bipodLength)
     }
 
     /// Drops the aperture that doesn't exist for this kind of weapon.
@@ -70,7 +95,9 @@ struct SightSettings: Equatable {
     }
 
     func apply(to entry: Entry) {
-        entry.filterColor = filter
+        let (first, second) = Self.normalised(filter, secondFilter)
+        entry.filterColor = first
+        entry.secondFilterColor = second
         entry.diopter = diopter.map(Self.clamp)
         entry.ringSize = ringSize.map(Self.clamp)
         entry.irisSize = irisSize.map(Self.clamp)
@@ -104,12 +131,15 @@ enum FilterColor {
         var rgb: UInt32
         /// Polarised lenses get a line pattern on their swatch.
         var polarised: Bool
+        /// Correction of a colour-neutral filter in dioptres (e.g. +0.25); nil for colour filters.
+        var dioptre: Double?
 
         /// `polarised` defaults to whether the name says so ("polar", "polarisiert").
-        init(name: String, rgb: UInt32, polarised: Bool? = nil) {
+        init(name: String, rgb: UInt32, polarised: Bool? = nil, dioptre: Double? = nil) {
             self.name = name
             self.rgb = rgb & 0xFFFFFF
             self.polarised = polarised ?? name.localizedCaseInsensitiveContains("polar")
+            self.dioptre = dioptre
         }
 
         init(name: String, red: Double, green: Double, blue: Double, polarised: Bool) {
@@ -144,15 +174,29 @@ enum FilterColor {
         .init(name: "ACE", rgb: 0xC98AF0),
     ]
 
-    static var all: [String] { filters.map(\.name) }
+    /// Colour-neutral correction filters, usually stacked with a colour filter.
+    static let neutral: [Filter] = [
+        .init(name: "+0.25 dpt", rgb: 0xEEF1F3, polarised: false, dioptre: 0.25),
+        .init(name: "−0.25 dpt", rgb: 0xE6E9EC, polarised: false, dioptre: -0.25),
+    ]
+
+    /// Every built-in filter: colour filters, then the neutral ones.
+    static var builtIn: [Filter] { filters + neutral }
+
+    static var all: [String] { builtIn.map(\.name) }
 
     /// The built-in filter with this name; nil for "no filter" or an unknown name.
-    static func filter(named name: String) -> Filter? { filters.first { $0.name == name } }
+    static func filter(named name: String) -> Filter? { builtIn.first { $0.name == name } }
 
     static func title(_ key: String) -> String { key.isEmpty ? "Kein Filter".loc : key }
+
+    /// One or two filters for display, e.g. "Citron + +0.25 dpt"; "Kein Filter" when there are none.
+    static func title(_ names: [String]) -> String {
+        names.isEmpty ? title("") : names.map { title($0) }.joined(separator: " + ")
+    }
 }
 
-/// The user's filter list, set in Settings: the built-in AXIA filters they own (these can't be
+/// The user's filter list, set in Settings: the built-in AXIA and neutral filters they own (these can't be
 /// deleted, only ticked) plus their own filters. Stored as JSON in UserDefaults under `key`.
 struct FilterCatalog: Codable, Equatable {
     static let key = "filterCatalog"
@@ -174,7 +218,7 @@ struct FilterCatalog: Codable, Equatable {
     var data: Data { (try? JSONEncoder().encode(self)) ?? Data() }
 
     /// Filters offered in the entry picker: owned built-ins first, then the user's own.
-    var visible: [FilterColor.Filter] { FilterColor.filters.filter { owned.contains($0.name) } + custom }
+    var visible: [FilterColor.Filter] { FilterColor.builtIn.filter { owned.contains($0.name) } + custom }
 
     /// Looks up any known filter, hidden ones included, so older entries still show their swatch.
     func filter(named name: String) -> FilterColor.Filter? {

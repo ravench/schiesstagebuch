@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Settings → Filter: tick the AXIA filters you own (only those appear in entries) and manage your own.
+/// Settings → Filters: tick the AXIA and neutral filters you own (only those appear in entries) and manage your own.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
     @State private var editing: EditTarget?
@@ -50,8 +50,21 @@ struct FilterSettingsView: View {
             } footer: {
                 Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
             }
+
+            Section {
+                ForEach(FilterColor.neutral, id: \.name) { f in
+                    Toggle(isOn: Binding(get: { catalog.owns(f.name) },
+                                         set: { on in update { $0.setOwned(f.name, on) } })) {
+                        Label { Text(f.name) } icon: { FilterSwatch(filter: f) }
+                    }
+                }
+            } header: {
+                Text("Neutrale Filter")
+            } footer: {
+                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einem neutralen ±0.25 dpt.")
+            }
         }
-        .navigationTitle("Filter")
+        .navigationTitle("Filter (Mehrzahl)")
         .sheet(item: $editing) { target in
             FilterEditorView(original: target.original, catalog: catalog) { saved in
                 update { $0.save(saved, replacing: target.original?.name) }
