@@ -54,6 +54,7 @@ enum Backup {
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
         var dayCounting: String?
         var serialNumber: String?
+        var boltSerialNumber: String?
     }
     struct BarrelDTO: Codable {
         var id: UUID; var weaponID: UUID?; var caliberID: UUID?; var name: String; var serialNumber: String
@@ -103,7 +104,8 @@ enum Backup {
                       caliberIDs: ($0.calibers ?? []).map(\.id), defaultCaliberID: $0.defaultCaliber?.id,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
-                      dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber)
+                      dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber,
+                      boltSerialNumber: $0.boltSerialNumber)
             },
             ammunition: try all(Ammunition.self, context).map {
                 .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived, createdAt: $0.createdAt)
@@ -206,6 +208,7 @@ enum Backup {
             w.serviceIntervalShots = d.serviceIntervalShots; w.serviceIntervalDays = d.serviceIntervalDays
             w.dayCountingRaw = d.dayCounting ?? ""
             w.serialNumber = d.serialNumber ?? ""
+            w.boltSerialNumber = d.boltSerialNumber ?? ""
             if let created = d.createdAt { w.createdAt = created }
             context.insert(w); weapons[d.id] = w
         }

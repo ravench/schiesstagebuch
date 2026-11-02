@@ -243,6 +243,7 @@ final class BarrelTests: ModelTestCase {
         XCTAssertNil(e.barrel)
         XCTAssertNil(e.effectiveBarrel)
         XCTAssertEqual(e.weapon?.name, "P75")
+        XCTAssertEqual(e.weapon?.boltSerialNumber, "", "no bolt serial in old backups")
     }
 
     func testCSVHasTheBarrelColumn() throws {

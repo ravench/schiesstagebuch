@@ -208,6 +208,7 @@ struct WeaponEditorView: View {
 
     @State private var name = ""
     @State private var serialNumber = ""
+    @State private var boltSerialNumber = ""
     @State private var category: WeaponCategory = .other
     @State private var calibers: Set<Caliber> = []
     @State private var defaultCaliber: Caliber?
@@ -229,6 +230,9 @@ struct WeaponEditorView: View {
                 Section {
                     TextField("Name, z. B. SIG P210", text: $name)
                     TextField("Seriennummer (optional)", text: $serialNumber)
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+                    TextField("Seriennummer Verschluss (optional)", text: $boltSerialNumber)
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
                     Picker(selection: $category) {
@@ -339,6 +343,7 @@ struct WeaponEditorView: View {
         guard !didLoad, let weapon else { didLoad = true; return }
         name = weapon.name
         serialNumber = weapon.serialNumber
+        boltSerialNumber = weapon.boltSerialNumber
         category = weapon.category
         calibers = Set(weapon.calibers ?? [])
         defaultCaliber = weapon.defaultCaliber
@@ -353,6 +358,7 @@ struct WeaponEditorView: View {
         let target = weapon ?? Weapon(name: "")
         target.name = name.trimmingCharacters(in: .whitespaces)
         target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
+        target.boltSerialNumber = boltSerialNumber.trimmingCharacters(in: .whitespaces)
         target.category = category
         target.calibers = Array(calibers)
         target.defaultCaliber = defaultCaliber.flatMap { calibers.contains($0) ? $0 : nil }

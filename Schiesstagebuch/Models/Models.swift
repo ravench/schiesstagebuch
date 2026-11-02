@@ -92,8 +92,10 @@ final class Weapon: ArchivableItem {
     var serviceIntervalDays: Int = 0
     /// When the day interval starts: "" = app default, else a `DayCounting` raw value.
     var dayCountingRaw: String = ""
-    /// Optional serial number (Waffennummer).
+    /// Optional serial number (Waffennummer), as on the frame.
     var serialNumber: String = ""
+    /// Optional serial number of the bolt when it differs from the frame's.
+    var boltSerialNumber: String = ""
 
     init(name: String) { self.name = name }
 
