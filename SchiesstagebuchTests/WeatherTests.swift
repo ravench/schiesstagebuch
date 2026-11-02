@@ -127,17 +127,19 @@ final class WeatherTests: ModelTestCase {
 
     // MARK: Record, entry storage and relays
 
-    func testEntryStoresWeatherAsJSONAndNilMeansNone() {
+    func testEventStoresWeatherAsJSONAndNilMeansNone() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
+        let event = try XCTUnwrap(e.shootingEvent)
         XCTAssertNil(e.weather)
         var record = WeatherRecord(time: day(1))
         record.conditions.set("sky", .option("fog"))
         record.relays.append(WeatherRelay(time: day(1).addingTimeInterval(3600)))
-        e.weather = record
-        XCTAssertNotNil(e.weatherData)
-        XCTAssertEqual(e.weather, record)
-        e.weather = nil
-        XCTAssertNil(e.weatherData)
+        event.weather = record
+        XCTAssertNotNil(event.weatherData)
+        XCTAssertEqual(e.weather, record, "a Stich shows its event's weather")
+        event.weather = nil
+        XCTAssertNil(event.weatherData)
+        XCTAssertNil(e.weather)
     }
 
     func testRelaysAreSortedAndNextTimeFollowsTheLast() {
@@ -163,7 +165,7 @@ final class WeatherTests: ModelTestCase {
     func testWeatherSwitchCarriesOverFromLastEntryWithSameWeapon() throws {
         let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
         let lg = Weapon(name: "Luftgewehr"); context.insert(lg)
-        let outdoor = addEntry(stgw, on: day(1), shots: 10); outdoor.weather = WeatherRecord()
+        let outdoor = addEntry(stgw, on: day(1), shots: 10); outdoor.shootingEvent?.weather = WeatherRecord()
         addEntry(lg, on: day(2), shots: 40)                              // indoors, no weather
         try context.save()
         let entries = try context.fetch(FetchDescriptor<Entry>())
@@ -182,7 +184,7 @@ final class WeatherTests: ModelTestCase {
         var relay = WeatherRelay(time: day(1).addingTimeInterval(1800))
         relay.conditions.set("rain_during_relay", .flag(true))
         record.relays = [relay]
-        e.weather = record
+        e.shootingEvent?.weather = record
         try context.save()
 
         let data = try Backup.export(context)

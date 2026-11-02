@@ -42,6 +42,10 @@ final class LegacyImportTests: ModelTestCase {
         let entries = try context.fetch(FetchDescriptor<Entry>())
         XCTAssertTrue(entries.allSatisfy { $0.sighterCount == nil && $0.shotValuesText.isEmpty && $0.lot == nil },
                       "imported entries are plain totals")
+        XCTAssertTrue(entries.allSatisfy { $0.shootingEvent?.stichCount == 1 }, "each old entry is an event of its own")
+        XCTAssertEqual(Set(entries.map(\.eventName)), ["Training", "Obligatorisches"])
+        XCTAssertTrue(entries.allSatisfy { $0.range?.name == "Albisgüetli" })
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 2)
         let stgw = try XCTUnwrap(try context.fetch(FetchDescriptor<Weapon>()).first { $0.name == "Stgw-90 Skye" })
         XCTAssertEqual(stgw.category, .serviceRifle)
 

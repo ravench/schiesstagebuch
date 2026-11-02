@@ -7,7 +7,7 @@ struct SchiesstagebuchApp: App {
     @Environment(\.scenePhase) private var scenePhase
     let container: ModelContainer = Self.makeContainer()
 
-    static let schema = Schema([Entry.self, Weapon.self, Caliber.self, Ammunition.self,
+    static let schema = Schema([ShootingEvent.self, Entry.self, Weapon.self, Caliber.self, Ammunition.self,
                                 ShootingRange.self, MaintenanceRecord.self, EntryPhoto.self, AmmoLot.self,
                                 LicenceCard.self])
 

@@ -219,11 +219,15 @@ enum LegacyImport {
                 if let cal { usage[norm(row.weapon), default: [:]][cal, default: 0] += row.shots }
             }
 
-            let entry = Entry(date: row.date, range: range, event: row.event.trimmingCharacters(in: .whitespaces),
-                              weapon: weapon, caliber: cal, shotCount: row.shots, ammunition: ammo,
+            // The old app had no events: each of its entries becomes an event with one Stich.
+            let event = ShootingEvent(date: row.date, name: row.event.trimmingCharacters(in: .whitespaces))
+            context.insert(event)
+            event.range = range
+            let entry = Entry(date: row.date, weapon: weapon, caliber: cal, shotCount: row.shots, ammunition: ammo,
                               result: row.result, notes: row.notes)
             entry.importKey = row.key
             context.insert(entry)
+            event.add(entry)
 
             if canReadPhotos {
                 var datas: [Data] = []

@@ -376,7 +376,7 @@ struct WeatherRecord: Codable, Hashable {
     /// Whether a new entry with this weapon starts with weather on: as in the newest entry with it.
     static func recordsByDefault(for weapon: Weapon?, in entries: [Entry]) -> Bool {
         guard let weapon else { return false }
-        return entries.filter { $0.weapon == weapon }.max { $0.date < $1.date }?.weatherData != nil
+        return entries.filter { $0.weapon == weapon }.max { $0.date < $1.date }?.shootingEvent?.weatherData != nil
     }
 
     /// Nothing recorded yet apart from the time: the switch may follow the weapon's default.
@@ -408,10 +408,15 @@ extension WeatherConditions {
     }
 }
 
-extension Entry {
-    /// Decoded weather; nil when the entry records none.
+extension ShootingEvent {
+    /// Decoded weather; nil when the event records none.
     var weather: WeatherRecord? {
         get { weatherData.flatMap { try? JSONDecoder().decode(WeatherRecord.self, from: $0) } }
         set { weatherData = newValue.flatMap { try? JSONEncoder().encode($0) } }
     }
+}
+
+extension Entry {
+    /// The weather of the event this Stich belongs to.
+    var weather: WeatherRecord? { shootingEvent?.weather }
 }

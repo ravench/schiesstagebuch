@@ -385,6 +385,31 @@ T = {
     "SW": ("SW", "SO", "SO"),
     "W": ("W", "O", "O"),
     "NW": ("NW", "NO", "NO"),
+    # Events with several Stiche (programmes); Swiss French says "cible", Swiss Italian "bersaglio".
+    "Stich": ("Match", "Cible", "Bersaglio"),
+    "Stiche": ("Matches", "Cibles", "Bersagli"),
+    "%lld Stiche": ("%lld matches", "%lld cibles", "%lld bersagli"),
+    "%lld Schuss": ("%lld shots", "%lld coups", "%lld colpi"),
+    "Stich hinzufügen": ("Add match", "Ajouter une cible", "Aggiungi bersaglio"),
+    "Weiteren Stich hinzufügen": ("Add another match", "Ajouter une autre cible", "Aggiungi un altro bersaglio"),
+    "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
+    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": (
+        "For another programme at the same event, also with a different weapon.",
+        "Pour un autre programme au même événement, aussi avec une autre arme.",
+        "Per un altro programma allo stesso evento, anche con un'altra arma."),
+    "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": (
+        "Date, range, event and weather apply to all %lld matches.",
+        "La date, le stand, l'événement et la météo valent pour les %lld cibles.",
+        "Data, poligono, evento e meteo valgono per tutti i %lld bersagli."),
+    "Gilt für alle %lld Stiche dieses Anlasses.": (
+        "Applies to all %lld matches of this event.",
+        "Vaut pour les %lld cibles de cet événement.",
+        "Vale per tutti i %lld bersagli di questo evento."),
+    "Anlass bearbeiten": ("Edit event", "Modifier l'événement", "Modifica evento"),
+    "Anlass mit allen Stichen löschen?": (
+        "Delete the event with all its matches?",
+        "Supprimer l'événement avec toutes ses cibles ?",
+        "Eliminare l'evento con tutti i bersagli?"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
 }
 

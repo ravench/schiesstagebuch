@@ -10,7 +10,10 @@ import SwiftData
 //   Caliber  <-one-to-many-->  Ammunition  (ammo belongs to one calibre)
 //   ShootingRange
 // Journal data:
-//   Entry -> Weapon, Caliber, ShootingRange, Ammunition; Entry -> EntryPhoto (max 4)
+//   ShootingEvent -> ShootingRange; ShootingEvent -> Entry (one per Stich, at least one)
+//   Entry -> Weapon, Caliber, Ammunition, AmmoLot; Entry -> EntryPhoto (max 4)
+// The event holds what the Stiche share (date, range, Anlass, weather); each entry holds what
+// one Stich was shot with and how it went.
 // Shots per calibre are counted from Entry.caliber.
 // Maintenance: Weapon -> MaintenanceRecord (cleaning / service), with optional
 // intervals per weapon in shots and/or days (see MaintenanceStatus).
@@ -188,21 +191,83 @@ final class ShootingRange: ArchivableItem {
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 
-    @Relationship(deleteRule: .nullify, inverse: \Entry.range)
-    var entries: [Entry]? = []
+    @Relationship(deleteRule: .nullify, inverse: \ShootingEvent.range)
+    var events: [ShootingEvent]? = []
 
     init(name: String, place: String = "") {
         self.name = name
         self.place = place
     }
+
+    /// Every Stich shot here, through the events at this range.
+    var entries: [Entry]? { (events ?? []).flatMap { $0.entries ?? [] } }
 }
 
+/// One shooting occasion (Anlass) on one day at one range, e.g. a Feldschiessen or a training.
+/// It holds one entry per Stich (program) shot there; a plain training is an event with one entry,
+/// and the app then shows it exactly like a single entry.
+@Model
+final class ShootingEvent {
+    var id: UUID = UUID()
+    /// The day of the event. Its entries keep a copy for sorting, see `setDate`.
+    var date: Date = Date.now
+    /// Anlass, e.g. "Training", "Feldschiessen"; empty when none was entered.
+    var name: String = ""
+    /// Weather as JSON (`WeatherRecord`); nil when none was recorded, e.g. indoors.
+    var weatherData: Data?
+    var createdAt: Date = Date.now
+
+    var range: ShootingRange?
+
+    @Relationship(deleteRule: .cascade, inverse: \Entry.shootingEvent)
+    var entries: [Entry]? = []
+
+    init(date: Date = .now, name: String = "", range: ShootingRange? = nil) {
+        self.date = date
+        self.name = name
+        self.range = range
+    }
+
+    /// Stiche in the order they were added.
+    var sortedEntries: [Entry] {
+        (entries ?? []).sorted { ($0.createdAt, $0.id.uuidString) < ($1.createdAt, $1.id.uuidString) }
+    }
+
+    var stichCount: Int { entries?.count ?? 0 }
+    var totalShots: Int { (entries ?? []).totalShots }
+
+    /// Moves the event and all its Stiche to a new day.
+    func setDate(_ newDate: Date) {
+        date = newDate
+        for entry in entries ?? [] { entry.date = newDate }
+    }
+
+    /// Makes `entry` a Stich of this event; it takes over the event's date.
+    func add(_ entry: Entry) {
+        entry.shootingEvent = self
+        entry.date = date
+    }
+
+    /// The event of `entry`, created when the entry has none yet (e.g. after a sync left it alone).
+    @discardableResult
+    static func of(_ entry: Entry, in context: ModelContext) -> ShootingEvent {
+        if let event = entry.shootingEvent { return event }
+        let event = ShootingEvent(date: entry.date)
+        context.insert(event)
+        event.add(entry)
+        return event
+    }
+}
+
+/// One Stich (program) of a `ShootingEvent`: what it was shot with and how it went.
 @Model
 final class Entry {
     var id: UUID = UUID()
+    /// Copy of the event's date so lists and queries can sort entries; change it through
+    /// `ShootingEvent.setDate` so all Stiche of an event stay on the same day.
     var date: Date = Date.now
-    /// Anlass (e.g. Training, Feldschiessen)
-    var event: String = ""
+    /// Name of the Stich, e.g. "Sektionsstich"; empty when the event has only one.
+    var stich: String = ""
     /// All shots fired, sighters included.
     var shotCount: Int = 0
     /// Probeschüsse, when the user splits the count; nil = only a total was entered.
@@ -220,8 +285,6 @@ final class Entry {
     var irisSize: Double?
     /// Bipod length in cm, rifles only.
     var bipodLength: Double?
-    /// Weather as JSON (`WeatherRecord`); nil when none was recorded, e.g. indoors.
-    var weatherData: Data?
     /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
     var shotValuesText: String = ""
     var notes: String = ""
@@ -229,9 +292,9 @@ final class Entry {
     /// Set for entries imported from the old Schusszähler app, so re-importing skips them.
     var importKey: String = ""
 
+    var shootingEvent: ShootingEvent?
     var weapon: Weapon?
     var caliber: Caliber?
-    var range: ShootingRange?
     var ammunition: Ammunition?
     /// Optional lot of the chosen ammunition.
     var lot: AmmoLot?
@@ -239,18 +302,25 @@ final class Entry {
     @Relationship(deleteRule: .cascade, inverse: \EntryPhoto.entry)
     var photos: [EntryPhoto]? = []
 
-    init(date: Date = .now, range: ShootingRange? = nil, event: String = "",
-         weapon: Weapon? = nil, caliber: Caliber? = nil, shotCount: Int = 0, ammunition: Ammunition? = nil,
-         result: String = "", notes: String = "") {
+    init(date: Date = .now, weapon: Weapon? = nil, caliber: Caliber? = nil, shotCount: Int = 0,
+         ammunition: Ammunition? = nil, result: String = "", notes: String = "") {
         self.date = date
-        self.range = range
-        self.event = event
         self.weapon = weapon
         self.caliber = caliber
         self.shotCount = shotCount
         self.ammunition = ammunition
         self.result = result
         self.notes = notes
+    }
+
+    /// The range of the event this Stich belongs to.
+    var range: ShootingRange? { shootingEvent?.range }
+    /// The event's Anlass; empty when none was entered.
+    var eventName: String { shootingEvent?.name ?? "" }
+    /// What a list shows as the title: Anlass and Stich, whichever were entered.
+    var title: String {
+        let parts = [eventName, stich].map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        return parts.isEmpty ? "Schiessen".loc : parts.joined(separator: " · ")
     }
 
     /// Wertungsschüsse, when the count is split.
@@ -261,7 +331,7 @@ final class Entry {
 
     func matches(_ query: String) -> Bool {
         guard !query.isEmpty else { return true }
-        return [range?.name ?? "", range?.place ?? "", event, weapon?.name ?? "",
+        return [range?.name ?? "", range?.place ?? "", eventName, stich, weapon?.name ?? "",
                 ammunition?.name ?? "", lot?.number ?? "", caliber?.name ?? "", result, notes]
             .contains { $0.localizedCaseInsensitiveContains(query) }
     }
