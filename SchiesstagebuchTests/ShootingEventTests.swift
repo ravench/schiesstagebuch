@@ -52,6 +52,58 @@ final class ShootingEventTests: ModelTestCase {
         XCTAssertEqual(event.totalShots, 20)
     }
 
+    // MARK: Averages per Stich
+
+    @discardableResult
+    private func stich(_ event: ShootingEvent, _ name: String, result: String, max: Double?, shots: Int = 10) -> Entry {
+        let e = addStich(to: event, nil, shots: shots, stich: name)
+        e.result = result; e.maxPoints = max
+        return e
+    }
+
+    func testRepeatedStichAveragesOnlyTheSameStich() {
+        let event = ShootingEvent(date: day(1), name: "Schützenfest"); context.insert(event)
+        stich(event, "Sektion", result: "85", max: 100).createdAt = day(1)
+        stich(event, "Kunst", result: "430", max: 500).createdAt = day(2)
+        stich(event, " sektion ", result: "95", max: 100).createdAt = day(3)
+        let repeated = event.repeatedStiche
+        XCTAssertEqual(repeated.count, 1, "Kunst was shot once and gets no average")
+        let s = repeated[0]
+        XCTAssertEqual(s.name, "Sektion", "named like its first entry, case and spaces ignored for grouping")
+        XCTAssertEqual(s.count, 2)
+        XCTAssertEqual(s.averagePoints!, 90, accuracy: 1e-9)
+        XCTAssertEqual(s.averagePercentage!, 0.9, accuracy: 1e-9)
+        XCTAssertEqual(s.averagePerShot!, 9, accuracy: 1e-9)
+    }
+
+    func testRepeatedSticheKeepTheOrderTheyWereFirstShot() {
+        let event = ShootingEvent(date: day(1)); context.insert(event)
+        stich(event, "B", result: "50", max: nil).createdAt = day(1)
+        stich(event, "A", result: "40", max: nil).createdAt = day(2)
+        stich(event, "A", result: "44", max: nil).createdAt = day(3)
+        stich(event, "B", result: "52", max: nil).createdAt = day(4)
+        XCTAssertEqual(event.repeatedStiche.map(\.name), ["B", "A"])
+        XCTAssertNil(event.repeatedStiche[0].averagePercentage, "no maximum, no percentage")
+        XCTAssertEqual(event.repeatedStiche[1].averagePoints!, 42, accuracy: 1e-9)
+    }
+
+    func testUnnamedSticheAreNeverGrouped() {
+        let event = ShootingEvent(date: day(1)); context.insert(event)
+        stich(event, "", result: "90", max: 100)
+        stich(event, "  ", result: "80", max: 100)
+        XCTAssertEqual(event.repeatedStiche, [])
+    }
+
+    func testTextResultsAreLeftOutOfTheAverage() {
+        let event = ShootingEvent(date: day(1)); context.insert(event)
+        stich(event, "Feld", result: "Kranz", max: 72, shots: 18)
+        stich(event, "Feld", result: "66", max: 72, shots: 18)
+        let s = event.repeatedStiche[0]
+        XCTAssertEqual(s.count, 2)
+        XCTAssertEqual(s.averagePoints!, 66, accuracy: 1e-9)
+        XCTAssertEqual(s.averagePercentage!, 66.0 / 72, accuracy: 1e-9)
+    }
+
     func testOfCreatesAnEventOnlyForALoneEntry() throws {
         let lone = Entry(date: day(3), shotCount: 5); context.insert(lone)
         let event = ShootingEvent.of(lone, in: context)

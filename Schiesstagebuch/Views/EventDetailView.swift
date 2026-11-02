@@ -48,6 +48,17 @@ struct EventDetailView: View {
                 }
             }
 
+            let repeated = event.repeatedStiche
+            if !repeated.isEmpty {
+                Section {
+                    ForEach(repeated, id: \.name) { RepeatedStichRow(stich: $0) }
+                } header: {
+                    Text("Durchschnitt pro Stich")
+                } footer: {
+                    Text("Für Stiche, die an diesem Anlass mehrmals geschossen wurden.")
+                }
+            }
+
             if showSport, let weather = event.weather {
                 WeatherDetailSections(record: weather)
             }
@@ -120,6 +131,32 @@ struct StichRow: View {
                     .font(.headline.monospacedDigit())
                 Text(entry.result.isEmpty ? "Schuss".loc : String(localized: "\(entry.shotCount) Schuss"))
                     .font(.caption2).foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+}
+
+/// Averages of a Stich shot several times at one event: the only place an average per entry is shown.
+struct RepeatedStichRow: View {
+    let stich: RepeatedStich
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(stich.name).font(.headline).lineLimit(1)
+                Text(String(localized: "\(stich.count)× geschossen")).font(.subheadline).foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 4)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(stich.averagePoints.map { "Ø " + ScoreFormat.points($0) } ?? "–")
+                    .font(.headline.monospacedDigit())
+                let details = [stich.averagePercentage.map(ScoreFormat.percent),
+                               stich.averagePerShot.map { ScoreFormat.points($0) + " " + "pro Schuss".loc }]
+                    .compactMap { $0 }
+                if !details.isEmpty {
+                    Text(details.joined(separator: " · ")).font(.caption2).foregroundStyle(.secondary)
+                }
             }
         }
         .padding(.vertical, 2)
