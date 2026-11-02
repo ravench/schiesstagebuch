@@ -1818,29 +1818,6 @@
         }
       }
     },
-    "Ein Resultat kann höchstens 100 Prozent erreichen. Diese Einträge werden übernommen, zählen aber nicht in die Prozent-Statistik. Korrigiere das Resultat danach im Eintrag.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A result can be at most 100 percent. These entries are imported but left out of the percentage statistics. Correct the result in the entry afterwards."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un résultat ne peut pas dépasser 100 pour cent. Ces entrées sont importées mais ne comptent pas dans les statistiques en pourcentage. Corrige ensuite le résultat dans l'entrée."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un risultato può arrivare al massimo al 100 per cento. Queste voci vengono importate ma non contano nelle statistiche in percentuale. Correggi poi il risultato nella voce."
-          }
-        }
-      }
-    },
     "Ein langes Standblatt auf mehreren Fotos wird in der gewählten Reihenfolge zusammengesetzt. Die Texterkennung läuft auf dem Gerät.": {
       "extractionState": "manual",
       "localizations": {
@@ -6161,29 +6138,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato in percentuale"
-          }
-        }
-      }
-    },
-    "Resultate über dem Maximum": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Results above the maximum"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Résultats au-dessus du maximum"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Risultati sopra il massimo"
           }
         }
       }

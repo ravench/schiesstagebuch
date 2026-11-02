@@ -8,6 +8,11 @@ struct Score {
     var shotValuesText: String
     /// Wertungsschüsse when split, else all shots.
     var scoredShots: Int
+    /// False when `scoredShots` may include sighters (an imported total): no per-shot average then.
+    var scoredShotsKnown = true
+    /// Whether "96/100" means 96 of 100. The old app used "/" between the results of several
+    /// Stiche ("130 / 131"), so imported results never take their maximum from it.
+    var maxFromSlash = true
 
     /// Individual shots grouped into Passen, one Passe per line: "10 9 10 8,5" (spaces or semicolons
     /// between shots, comma or point for decimals). Empty lines are skipped.
@@ -25,7 +30,7 @@ struct Score {
     var effectiveMax: Double? {
         if let maxPoints, maxPoints > 0 { return maxPoints }
         let n = Score.numbers(in: result)
-        return result.contains("/") && n.count >= 2 && n[1] > 0 ? n[1] : nil
+        return maxFromSlash && result.contains("/") && n.count >= 2 && n[1] > 0 ? n[1] : nil
     }
 
     /// More points than the maximum: impossible, a result is at most 100 %. Such data is
@@ -45,7 +50,7 @@ struct Score {
         guard !exceedsMax else { return nil }
         let shots = shotValues
         if !shots.isEmpty { return (shots.reduce(0, +), shots.count) }
-        guard let points, scoredShots > 0 else { return nil }
+        guard let points, scoredShotsKnown, scoredShots > 0 else { return nil }
         return (points, scoredShots)
     }
 
@@ -83,8 +88,14 @@ struct Score {
 
 extension Entry {
     var score: Score {
-        Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount)
+        Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount,
+              scoredShotsKnown: !isLegacyImport || sighterCount != nil, maxFromSlash: !isLegacyImport)
     }
+
+    /// Imported from the old app, which only knew a shot total and a free-text result. Such entries
+    /// get a percentage only once a maximum is entered, and a per-shot average only once the
+    /// sighters are split off.
+    var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
 }
 
 extension Sequence where Element == Entry {
