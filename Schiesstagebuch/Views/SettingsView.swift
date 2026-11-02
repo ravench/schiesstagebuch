@@ -30,6 +30,10 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink { LicenceCardScreen() } label: { Label("SSV-Lizenz", systemImage: "person.text.rectangle") }
+                }
+
+                Section {
                     Picker(selection: $defaultMode) {
                         ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
                     } label: {

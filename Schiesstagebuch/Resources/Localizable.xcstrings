@@ -1151,6 +1151,29 @@
         }
       }
     },
+    "Barcode kann nicht dargestellt werden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barcode can't be displayed"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible d'afficher le code-barres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile visualizzare il codice a barre"
+          }
+        }
+      }
+    },
     "Bearbeiten": {
       "extractionState": "manual",
       "localizations": {
@@ -1170,6 +1193,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifica"
+          }
+        }
+      }
+    },
+    "Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Both barcodes are calculated from the licence number. The card's credit card details are not stored."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les deux codes-barres sont calculés à partir du numéro de licence. Les données de carte de crédit ne sont pas enregistrées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrambi i codici a barre vengono calcolati dal numero di licenza. I dati della carta di credito non vengono salvati."
           }
         }
       }
@@ -1584,6 +1630,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Impossibile leggere il file. Previsto: ShootCounter-Export.tsv o data.db."
+          }
+        }
+      }
+    },
+    "Die Lizenznummer hat höchstens 6 Ziffern.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The licence number has at most 6 digits."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le numéro de licence comporte au plus 6 chiffres."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il numero di licenza ha al massimo 6 cifre."
           }
         }
       }
@@ -2067,6 +2136,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi i tuoi tipi di munizioni, ognuno con il suo calibro."
+          }
+        }
+      }
+    },
+    "Erfasse deine SSV-Lizenz, um sie am Stand vorzuzeigen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your SSV licence to show it at the range."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistre ta licence FST pour la présenter au stand."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra la tua licenza FST per mostrarla al poligono."
           }
         }
       }
@@ -3566,6 +3658,29 @@
         }
       }
     },
+    "Keine Lizenz erfasst": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No licence added"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune licence enregistrée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna licenza registrata"
+          }
+        }
+      }
+    },
     "Keine Losnummer erkannt. Versuche ein schärferes Foto oder tippe sie ein.": {
       "extractionState": "manual",
       "localizations": {
@@ -3930,6 +4045,121 @@
           "stringUnit": {
             "state": "translated",
             "value": "Legge data, evento, singoli colpi e totale da un foglio di tiro."
+          }
+        }
+      }
+    },
+    "Lizenz erfassen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add licence"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrer la licence"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra licenza"
+          }
+        }
+      }
+    },
+    "Lizenz löschen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete licence"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la licence"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina licenza"
+          }
+        }
+      }
+    },
+    "Lizenz löschen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete licence?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la licence ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare la licenza?"
+          }
+        }
+      }
+    },
+    "Lizenz-Nr.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licence no."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N° de licence"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N. licenza"
+          }
+        }
+      }
+    },
+    "Lizenznummer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licence number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de licence"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di licenza"
           }
         }
       }
@@ -6234,6 +6464,29 @@
         }
       }
     },
+    "SIUS-Barcode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SIUS barcode"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code-barres SIUS"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Codice a barre SIUS"
+          }
+        }
+      }
+    },
     "SO": {
       "extractionState": "manual",
       "localizations": {
@@ -6253,6 +6506,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "SE"
+          }
+        }
+      }
+    },
+    "SSV-Lizenz": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SSV licence"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licence FST"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licenza FST"
           }
         }
       }
@@ -7338,6 +7614,29 @@
         }
       }
     },
+    "Tippe auf einen Barcode, um ihn gross und hell anzuzeigen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap a barcode to show it large and bright."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touche un code-barres pour l'afficher en grand et en clair."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca un codice a barre per mostrarlo grande e luminoso."
+          }
+        }
+      }
+    },
     "Total": {
       "extractionState": "manual",
       "localizations": {
@@ -7610,6 +7909,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fucile a pompa"
+          }
+        }
+      }
+    },
+    "Vorschau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aperçu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anteprima"
           }
         }
       }
