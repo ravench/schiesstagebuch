@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Settings → Filters: tick the AXIA and neutral filters you own (only those appear in entries) and manage your own.
+/// Settings → Filters: tick the AXIA and dioptre filters you own (only those appear in entries) and manage your own.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
     @State private var editing: EditTarget?
@@ -52,16 +52,16 @@ struct FilterSettingsView: View {
             }
 
             Section {
-                ForEach(FilterColor.neutral, id: \.name) { f in
+                ForEach(FilterColor.dioptre, id: \.name) { f in
                     Toggle(isOn: Binding(get: { catalog.owns(f.name) },
                                          set: { on in update { $0.setOwned(f.name, on) } })) {
                         Label { Text(f.name) } icon: { FilterSwatch(filter: f) }
                     }
                 }
             } header: {
-                Text("Neutrale Filter")
+                Text("Diopter-Filter")
             } footer: {
-                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einem neutralen ±0.25 dpt.")
+                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit +0.25 oder -0.25.")
             }
         }
         .navigationTitle("Filter (Mehrzahl)")

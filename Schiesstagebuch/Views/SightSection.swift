@@ -11,7 +11,7 @@ struct SightSection: View {
         Section {
             DisclosureGroup(isExpanded: $expanded) {
                 filterPicker("Filter", index: 0)
-                // A second filter can be stacked on the first, e.g. a neutral ±0.25 dpt.
+                // A second filter can be stacked on the first, e.g. +0.25 or -0.25.
                 if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
                 if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
                 sliderRow("Diopter", value: $sight.diopter)
@@ -97,7 +97,7 @@ struct SightSection: View {
 }
 
 /// Small round lens swatch for a filter; an empty ring for "no filter".
-/// Polarised lenses get thin diagonal lines, neutral correction filters a + or −.
+/// Polarised lenses get thin diagonal lines, dioptre lenses a + or −.
 struct FilterSwatch: View {
     var name: String = ""
     /// Shown directly when given (e.g. while editing a filter); otherwise looked up by `name`.
