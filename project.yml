@@ -63,6 +63,21 @@ targets:
         CODE_SIGN_STYLE: Automatic
         SWIFT_VERSION: "5.10"
         GENERATE_INFOPLIST_FILE: YES
+  # Screenshots of every main screen for the iPad layout check (.github/workflows/ipad-screens.yml).
+  SchiesstagebuchUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [SchiesstagebuchUITests]
+    dependencies:
+      - target: Schiesstagebuch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ch.giotta.schiesstagebuch.uitests
+        DEVELOPMENT_TEAM: PD9YC6KM5T
+        CODE_SIGN_STYLE: Automatic
+        SWIFT_VERSION: "5.10"
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Schiesstagebuch
 schemes:
   Schiesstagebuch:
     build:
@@ -78,3 +93,13 @@ schemes:
         - SchiesstagebuchTests
     archive:
       config: Release
+  # Own scheme so the screenshot run stays out of the normal unit test run.
+  SchiesstagebuchScreens:
+    build:
+      targets:
+        Schiesstagebuch: all
+        SchiesstagebuchUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - SchiesstagebuchUITests
