@@ -139,6 +139,29 @@
         }
       }
     },
+    "%@ von %@ Schuss (%@)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ of %2$@ shots (%3$@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ sur %2$@ coups (%3$@)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ di %2$@ colpi (%3$@)"
+          }
+        }
+      }
+    },
     "%lld Einträge": {
       "extractionState": "manual",
       "localizations": {
@@ -967,6 +990,29 @@
         }
       }
     },
+    "Ausgebaut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removed"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Démonté"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smontata"
+          }
+        }
+      }
+    },
     "Ausgewählt": {
       "extractionState": "manual",
       "localizations": {
@@ -1032,6 +1078,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Valutazione"
+          }
+        }
+      }
+    },
+    "Automatisch (%@)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatic (%@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatique (%@)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatica (%@)"
           }
         }
       }
@@ -1239,6 +1308,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Osservazioni"
+          }
+        }
+      }
+    },
+    "Bezeichnung (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Label (optional)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désignation (facultatif)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denominazione (facoltativo)"
           }
         }
       }
@@ -2002,6 +2094,29 @@
         }
       }
     },
+    "Einträge bleiben erhalten und zählen wieder nach Kaliber und Datum.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries are kept and are matched by calibre and date again."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les entrées sont conservées et sont de nouveau attribuées par calibre et date."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le voci restano e vengono di nuovo attribuite per calibro e data."
+          }
+        }
+      }
+    },
     "Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.": {
       "extractionState": "manual",
       "localizations": {
@@ -2021,6 +2136,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le voci restano ma perdono l'arma. L'archiviazione conserva tutto."
+          }
+        }
+      }
+    },
+    "Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries count for the barrel of their calibre that was fitted on that day. Maintenance reminders count all shots of the firearm."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les entrées comptent pour le canon de leur calibre monté ce jour-là. Les rappels d'entretien comptent tous les coups de l'arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le voci contano per la canna del loro calibro montata quel giorno. I promemoria di manutenzione contano tutti i colpi dell'arma."
           }
         }
       }
@@ -2251,6 +2389,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "I promemoria si impostano in Modifica."
+          }
+        }
+      }
+    },
+    "Erwartete Lebensdauer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expected life (shots)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durée de vie prévue (coups)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durata prevista (colpi)"
           }
         }
       }
@@ -3819,6 +3980,121 @@
         }
       }
     },
+    "Lauf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barrel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canon"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canna"
+          }
+        }
+      }
+    },
+    "Lauf bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit barrel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le canon"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica canna"
+          }
+        }
+      }
+    },
+    "Lauf hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add barrel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un canon"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi canna"
+          }
+        }
+      }
+    },
+    "Lauf löschen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete barrel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer le canon"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina canna"
+          }
+        }
+      }
+    },
+    "Lauf löschen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete barrel?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer le canon ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare la canna?"
+          }
+        }
+      }
+    },
     "Lege deine Waffen mit ihren Kalibern an.": {
       "extractionState": "manual",
       "localizations": {
@@ -4279,6 +4555,29 @@
         }
       }
     },
+    "Läufe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barrels"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canons"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canne"
+          }
+        }
+      }
+    },
     "Löschen": {
       "extractionState": "manual",
       "localizations": {
@@ -4348,6 +4647,29 @@
         }
       }
     },
+    "Mit einer Lebensdauer zeigt die App, wie weit der Lauf abgenutzt ist.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With an expected life, the app shows how worn the barrel is."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec une durée de vie, l'app indique l'usure du canon."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con una durata prevista, l'app mostra quanto è usurata la canna."
+          }
+        }
+      }
+    },
     "Monat": {
       "extractionState": "manual",
       "localizations": {
@@ -4367,6 +4689,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mese"
+          }
+        }
+      }
+    },
+    "Montiert ab": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fitted from"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monté depuis"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montata dal"
           }
         }
       }
@@ -4900,6 +5245,29 @@
         }
       }
     },
+    "Neuer Lauf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New barrel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau canon"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova canna"
+          }
+        }
+      }
+    },
     "Neues Kaliber": {
       "extractionState": "manual",
       "localizations": {
@@ -5107,6 +5475,29 @@
         }
       }
     },
+    "Nur ausfüllen, wenn der Lauf eine eigene Nummer hat.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only fill in if the barrel has its own number."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À remplir seulement si le canon a son propre numéro."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Da compilare solo se la canna ha un proprio numero."
+          }
+        }
+      }
+    },
     "O": {
       "extractionState": "manual",
       "localizations": {
@@ -5172,6 +5563,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diario aperto"
+          }
+        }
+      }
+    },
+    "Ohne Datum gilt der Lauf seit jeher. Ein ausgebauter Lauf zählt keine neuen Einträge mehr.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Without a date the barrel counts as always fitted. A removed barrel no longer counts new entries."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans date, le canon est considéré comme toujours monté. Un canon démonté ne compte plus les nouvelles entrées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza data la canna è considerata sempre montata. Una canna smontata non conta più nuove voci."
           }
         }
       }
@@ -5356,6 +5770,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativo: meteo per turno o serie, con l'ora, per annotare i cambiamenti."
+          }
+        }
+      }
+    },
+    "Optional: erfasse Läufe, um Schüsse pro Lauf zu zählen, z. B. bei Wechselläufen oder nach einem Laufwechsel.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional: add barrels to count shots per barrel, e.g. for swappable barrels or after a barrel replacement."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif : ajoute des canons pour compter les coups par canon, p. ex. canons interchangeables ou après un changement de canon."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo: aggiungi le canne per contare i colpi per canna, p. es. canne intercambiabili o dopo una sostituzione."
           }
         }
       }
@@ -5701,6 +6138,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per calibro"
+          }
+        }
+      }
+    },
+    "Pro Lauf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By barrel"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par canon"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per canna"
           }
         }
       }
@@ -6667,6 +7127,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra i colpi come"
+          }
+        }
+      }
+    },
+    "Schüsse vor der Erfassung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shots before logging"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coups avant l'enregistrement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi prima della registrazione"
           }
         }
       }
@@ -8373,6 +8856,29 @@
         }
       }
     },
+    "ausgebaut am %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "removed %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "démonté le %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "smontata il %@"
+          }
+        }
+      }
+    },
     "bedeckt": {
       "extractionState": "manual",
       "localizations": {
@@ -9197,6 +9703,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "m s.l.m."
+          }
+        }
+      }
+    },
+    "montiert seit %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fitted since %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "monté depuis le %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "montata dal %@"
           }
         }
       }

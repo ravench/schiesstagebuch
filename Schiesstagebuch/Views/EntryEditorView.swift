@@ -20,6 +20,8 @@ struct EntryEditorView: View {
     @State private var caliber: Caliber?
     @State private var ammunition: Ammunition?
     @State private var lot: AmmoLot?
+    /// Barrel picked explicitly; nil = automatic (by calibre and date).
+    @State private var barrel: Barrel?
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
     @State private var sight = SightSettings()
@@ -50,6 +52,9 @@ struct EntryEditorView: View {
         var seen = Set<String>()
         return allEntries.map(\.event).filter { !$0.isEmpty && seen.insert($0).inserted }.prefix(8).map { $0 }
     }
+
+    /// Barrels to choose from; the picker only shows when there is a real choice.
+    private var barrelChoices: [Barrel] { weapon?.barrelChoices(for: caliber, on: date) ?? [] }
 
     /// Only ammo of the selected calibre.
     private var fittingAmmunition: [Ammunition] { ammunitions.filter { $0.fits(caliber) } }
@@ -89,6 +94,13 @@ struct EntryEditorView: View {
                             if let caliber, !weapon.orderedCalibers.contains(caliber) {
                                 Text(caliber.name).tag(Optional(caliber))
                             }
+                        }
+                    }
+                    if barrelChoices.count > 1, let weapon {
+                        Picker("Lauf", selection: $barrel) {
+                            let autoName = weapon.barrel(for: caliber, on: date)?.displayName ?? "–"
+                            Text(String(localized: "Automatisch (\(autoName))")).tag(Barrel?.none)
+                            ForEach(barrelChoices) { Text($0.displayName).tag(Optional($0)) }
                         }
                     }
                     pickerRow("Munition", selection: $ammunition, items: fittingAmmunition,
@@ -192,6 +204,7 @@ struct EntryEditorView: View {
             .onAppear(perform: load)
             .onChange(of: weapon) { _, new in
                 guard didLoad else { return }
+                if barrel?.weapon != new { barrel = nil }
                 // New entries take the sight settings and weather switch of the last entry with this
                 // weapon, but never throw away values the user has typed already.
                 if entry == nil {
@@ -204,6 +217,7 @@ struct EntryEditorView: View {
             }
             .onChange(of: caliber) { _, new in
                 guard didLoad else { return }
+                if let barrel, !barrel.fits(new) { self.barrel = nil }
                 if let ammunition, ammunition.fits(new) { return }
                 ammunition = suggestedAmmunition(weapon: weapon, caliber: new)
             }
@@ -287,7 +301,7 @@ struct EntryEditorView: View {
         guard !didLoad else { return }
         if let entry {
             date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
-            caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; shotCount = entry.shotCount; result = entry.result
+            caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; barrel = entry.barrel; shotCount = entry.shotCount; result = entry.result
             maxPoints = entry.maxPoints
             sight = SightSettings(entry: entry)
             weather = entry.weather
@@ -363,6 +377,7 @@ struct EntryEditorView: View {
         target.date = date; target.range = range; target.event = event.trimmingCharacters(in: .whitespaces)
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
         target.lot = lot?.ammunition == ammunition ? lot : nil
+        target.barrel = weapon?.barrelToStore(picked: barrel, caliber: caliber, on: date)
         switch mode {
         case .total:
             target.shotCount = max(0, shotCount); target.sighterCount = nil
