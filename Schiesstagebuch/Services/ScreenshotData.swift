@@ -28,13 +28,13 @@ enum ScreenshotData {
         let ammo = Ammunition(name: "GP 11", caliber: gp11)
         [range, gp11, luger, rifle, pistol, ammo].forEach { context.insert($0) }
 
-        let samples: [(daysAgo: Int, event: String, weapon: Weapon, shots: Int, result: String)] = [
-            (2, "Obligatorisch", rifle, 20, "78"),
-            (9, "Feldschiessen", rifle, 18, "62"),
-            (16, "Training", pistol, 50, "441"),
-            (30, "Bundesprogramm", rifle, 20, "81"),
-            (44, "Training", pistol, 60, "512"),
-            (61, "Vereinsstich", rifle, 10, "92"),
+        let samples = [
+            Sample(daysAgo: 2, event: "Obligatorisch", weapon: rifle, shots: 20, result: "78"),
+            Sample(daysAgo: 9, event: "Feldschiessen", weapon: rifle, shots: 18, result: "62"),
+            Sample(daysAgo: 16, event: "Training", weapon: pistol, shots: 50, result: "441"),
+            Sample(daysAgo: 30, event: "Bundesprogramm", weapon: rifle, shots: 20, result: "81"),
+            Sample(daysAgo: 44, event: "Training", weapon: pistol, shots: 60, result: "512"),
+            Sample(daysAgo: 61, event: "Vereinsstich", weapon: rifle, shots: 10, result: "92"),
         ]
         for s in samples {
             let date = Calendar.current.date(byAdding: .day, value: -s.daysAgo, to: now) ?? now
@@ -44,5 +44,13 @@ enum ScreenshotData {
             context.insert(entry)
         }
         try? context.save()
+    }
+
+    private struct Sample {
+        let daysAgo: Int
+        let event: String
+        let weapon: Weapon
+        let shots: Int
+        let result: String
     }
 }
