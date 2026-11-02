@@ -37,6 +37,8 @@ jobs:
         run: |
           xcrun xcresulttool export attachments --path "$RUNNER_TEMP/Screens.xcresult" --output-path "$RUNNER_TEMP/raw"
           python3 tools/ipad_screens.py rename "$RUNNER_TEMP/raw" ipad-screens
+          # Screenshots come in the device's portrait buffer; turn landscape ones upright.
+          for f in ipad-screens/landscape-*.png; do [ -e "$f" ] && sips -q -r 270 "$f" >/dev/null; done
           ls ipad-screens
       - uses: actions/upload-artifact@v5
         if: always()
