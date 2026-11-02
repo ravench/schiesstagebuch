@@ -10,7 +10,7 @@ Outlines are side views in millimetres, base at the bottom, as SVG path data
 import json, math, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from cartridges import CATALOGUE, DISPLAY_ALIASES, RIMLESS, RIMMED, BELTED, RIMFIRE, SHOT, BALL, MINIE, PELLET, SPITZER, ROUND, FLAT
+from cartridges import CATALOGUE, DISPLAY_ALIASES, PRIMERS, RIMLESS, RIMMED, BELTED, RIMFIRE, SHOT, BALL, MINIE, PELLET, SPITZER, ROUND, FLAT
 from weapon_icons import ICONS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -119,6 +119,9 @@ def build():
     names = {c["name"] for c in calibers}
     unknown = set(DISPLAY_ALIASES) - names
     assert not unknown, f"DISPLAY_ALIASES for unknown calibres: {unknown}"
+    # Primer data is used by the Kaliberfinder app, which shares this file.
+    centrefire = {s["name"] for _, items in CATALOGUE for s in items if s["kind"] not in (RIMFIRE, BALL, MINIE, PELLET)}
+    assert set(PRIMERS) == centrefire, f"PRIMERS mismatch: {set(PRIMERS) ^ centrefire}"
     icons = [{"id": k, **v} for k, v in ICONS.items()]
     return calibers, icons
 
