@@ -1,37 +1,39 @@
 import SwiftUI
 import SwiftData
 
+/// The sheet the barrels block asks for; the detail screen shows it outside its List.
+enum BarrelSheet: Identifiable {
+    case edit(Barrel)
+    case add
+
+    var id: String {
+        switch self {
+        case .edit(let b): "edit-\(b.id.uuidString)"
+        case .add: "add"
+        }
+    }
+}
+
 /// Barrels block on the firearm detail screen: each barrel with its shots and wear.
+///
+/// Like `MaintenanceSection` it only reports taps through `present`: a `.sheet` on a Section
+/// inside a List is copied onto each row and closes again when the List rebuilds.
 struct BarrelSection: View {
     @Bindable var weapon: Weapon
-    @Environment(\.modelContext) private var context
-    @State private var editing: Barrel?
-    @State private var adding = false
-    /// Deleted once the editor sheet is gone, so no view still reads the deleted barrel.
-    @State private var pendingDelete: Barrel?
+    let present: (BarrelSheet) -> Void
 
     var body: some View {
         Section {
             ForEach(weapon.sortedBarrels) { b in
-                Button { editing = b } label: { BarrelRow(barrel: b, showsDefault: weapon.hasSeveralBarrels) }
+                Button { present(.edit(b)) } label: { BarrelRow(barrel: b, showsDefault: weapon.hasSeveralBarrels) }
                     .foregroundStyle(.primary)
             }
-            Button { adding = true } label: { Label("Lauf hinzufügen", systemImage: "plus") }
+            Button { present(.add) } label: { Label("Lauf hinzufügen", systemImage: "plus") }
         } header: {
             Text("Läufe")
         } footer: {
             Text("Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.")
         }
-        .sheet(item: $editing, onDismiss: deletePending) { b in
-            BarrelEditorView(weapon: weapon, barrel: b, onDelete: { pendingDelete = b })
-        }
-        .sheet(isPresented: $adding) { BarrelEditorView(weapon: weapon, barrel: nil) }
-    }
-
-    private func deletePending() {
-        guard let b = pendingDelete else { return }
-        pendingDelete = nil
-        try? Deletion.delete(b, in: context)
     }
 }
 
