@@ -25,6 +25,11 @@ final class LicenceCard {
         return (try? context.fetch(descriptor))?.first
     }
 
+    /// Whether any card has a usable licence number; then the card gets its own tab.
+    static func hasCard(_ cards: [LicenceCard]) -> Bool {
+        cards.contains { ShooterNumber.normalized($0.licenceNumber) != nil }
+    }
+
     func barcode(_ kind: LicenceBarcode) -> String? {
         kind == .old ? ShooterNumber.oldBarcode(licenceNumber) : ShooterNumber.newBarcode(licenceNumber)
     }

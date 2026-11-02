@@ -133,29 +133,40 @@ struct BarcodePanel: View {
         VStack(spacing: 8) {
             Text(kind.title).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 8)
+            // The image carries its own quiet zones, so it can span the whole panel.
             BarcodeImage(value: card.barcode(kind) ?? "")
-                .frame(height: 80)
+                .frame(height: 110)
             Text(verbatim: card.barcode(kind) ?? "").font(.callout.monospaced()).foregroundStyle(.black)
         }
-        .padding()
+        .padding(.vertical)
+        .padding(.horizontal, 4)
         .background(.white, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .environment(\.colorScheme, .light)
     }
 }
 
+/// Code 128 drawn as wide as the space allows, at a whole number of pixels per module.
 struct BarcodeImage: View {
     let value: String
+    @Environment(\.displayScale) private var displayScale
 
     var body: some View {
-        if let image = BarcodeRenderer.code128(value) {
-            Image(decorative: image, scale: 1)
-                .interpolation(.none)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .accessibilityLabel(Text(verbatim: value))
-        } else {
-            Label("Barcode kann nicht dargestellt werden", systemImage: "exclamationmark.triangle")
-                .font(.footnote).foregroundStyle(.secondary)
+        GeometryReader { geo in
+            if let modules = BarcodeRenderer.code128Modules(value),
+               let image = BarcodeRenderer.code128(value, scale: CGFloat(
+                   BarcodeRenderer.moduleScale(fitting: geo.size.width * displayScale, modules: modules))) {
+                Image(decorative: image, scale: displayScale)
+                    .interpolation(.none)
+                    .resizable()
+                    .frame(width: CGFloat(image.width) / displayScale, height: geo.size.height)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .accessibilityLabel(Text(verbatim: value))
+            } else {
+                Label("Barcode kann nicht dargestellt werden", systemImage: "exclamationmark.triangle")
+                    .font(.footnote).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
     }
 }
@@ -176,8 +187,7 @@ struct BarcodeZoomView: View {
             VStack(spacing: 24) {
                 Spacer()
                 BarcodeImage(value: card.barcode(kind) ?? "")
-                    .frame(maxHeight: 160)
-                    .padding(.horizontal)
+                    .frame(height: 180)
                 Text(verbatim: card.barcode(kind) ?? "").font(.title3.monospaced())
                 if !card.holderName.isEmpty { Text(verbatim: card.holderName).foregroundStyle(.secondary) }
                 Spacer()
