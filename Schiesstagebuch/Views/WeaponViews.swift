@@ -208,6 +208,8 @@ struct WeaponEditorView: View {
 
     @State private var name = ""
     @State private var serialNumber = ""
+    @State private var purchaseDate: Date?
+    @State private var saleDate: Date?
     @State private var category: WeaponCategory = .other
     @State private var calibers: Set<Caliber> = []
     @State private var defaultCaliber: Caliber?
@@ -248,6 +250,8 @@ struct WeaponEditorView: View {
                     }
                     .pickerStyle(.navigationLink)
                 }
+
+                ownershipSection
 
                 Section {
                     Button { choosingCalibers = true } label: {
@@ -299,7 +303,8 @@ struct WeaponEditorView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Sichern", action: save).bold()
-                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty
+                                  || !Weapon.ownershipDatesValid(purchase: purchaseDate, sale: saleDate))
                 }
             }
             .sheet(isPresented: $choosingCalibers) {
@@ -322,6 +327,19 @@ struct WeaponEditorView: View {
         }
     }
 
+    private var ownershipSection: some View {
+        Section {
+            OptionalDateRow(title: "Kaufdatum", date: $purchaseDate,
+                            range: Date.distantPast...(saleDate ?? .distantFuture))
+            OptionalDateRow(title: "Verkaufsdatum", date: $saleDate,
+                            range: (purchaseDate ?? .distantPast)...Date.distantFuture)
+        } header: {
+            Text("Kauf und Verkauf")
+        } footer: {
+            Text("Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen.")
+        }
+    }
+
     private func intervalSection(_ kind: MaintenanceKind, shots: Binding<Int>, days: Binding<Int>) -> some View {
         Section {
             NumberStepperRow(title: "Nach Schüssen", value: shots, range: 0...20_000,
@@ -339,6 +357,8 @@ struct WeaponEditorView: View {
         guard !didLoad, let weapon else { didLoad = true; return }
         name = weapon.name
         serialNumber = weapon.serialNumber
+        purchaseDate = weapon.purchaseDate
+        saleDate = weapon.saleDate
         category = weapon.category
         calibers = Set(weapon.calibers ?? [])
         defaultCaliber = weapon.defaultCaliber
@@ -353,6 +373,8 @@ struct WeaponEditorView: View {
         let target = weapon ?? Weapon(name: "")
         target.name = name.trimmingCharacters(in: .whitespaces)
         target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
+        target.purchaseDate = purchaseDate
+        target.saleDate = saleDate
         target.category = category
         target.calibers = Array(calibers)
         target.defaultCaliber = defaultCaliber.flatMap { calibers.contains($0) ? $0 : nil }
@@ -371,6 +393,31 @@ struct WeaponEditorView: View {
             MaintenanceNotifier.refresh(target)
         }
         dismiss()
+    }
+}
+
+/// A date that can be switched off. Switching it on starts at today, kept inside `range`.
+struct OptionalDateRow: View {
+    let title: LocalizedStringKey
+    @Binding var date: Date?
+    let range: ClosedRange<Date>
+
+    var body: some View {
+        Toggle(title, isOn: Binding(
+            get: { date != nil },
+            set: { date = $0 ? OptionalDateRow.startDate(today: .now, in: range) : nil }
+        ))
+        if let value = date {
+            DatePicker(title, selection: Binding(get: { value }, set: { date = Calendar.current.startOfDay(for: $0) }),
+                       in: range, displayedComponents: .date)
+                .labelsHidden()
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+
+    /// Today's date at midnight, moved into `range` when today lies outside it.
+    static func startDate(today: Date, in range: ClosedRange<Date>, calendar: Calendar = .current) -> Date {
+        calendar.startOfDay(for: min(max(today, range.lowerBound), range.upperBound))
     }
 }
 
