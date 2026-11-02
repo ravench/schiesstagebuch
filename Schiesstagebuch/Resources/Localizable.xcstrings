@@ -254,6 +254,52 @@
         }
       }
     },
+    "%lld Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld coups"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld colpi"
+          }
+        }
+      }
+    },
+    "%lld Stiche": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld matches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld bersagli"
+          }
+        }
+      }
+    },
     "%lld Uhr": {
       "extractionState": "manual",
       "localizations": {
@@ -664,6 +710,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Evento"
+          }
+        }
+      }
+    },
+    "Anlass bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit event"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier l'événement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica evento"
+          }
+        }
+      }
+    },
+    "Anlass mit allen Stichen löschen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete the event with all its matches?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer l'événement avec toutes ses cibles ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare l'evento con tutti i bersagli?"
           }
         }
       }
@@ -1492,6 +1584,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Data"
+          }
+        }
+      }
+    },
+    "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date, range, event and weather apply to all %lld matches."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La date, le stand, l'événement et la météo valent pour les %lld cibles."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data, poligono, evento e meteo valgono per tutti i %lld bersagli."
           }
         }
       }
@@ -2715,6 +2830,29 @@
         }
       }
     },
+    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For another programme at the same event, also with a different weapon."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour un autre programme au même événement, aussi avec une autre arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per un altro programma allo stesso evento, anche con un'altra arma."
+          }
+        }
+      }
+    },
     "Gebundenes Tagebuch": {
       "extractionState": "manual",
       "localizations": {
@@ -2826,6 +2964,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "vento temporalesco"
+          }
+        }
+      }
+    },
+    "Gilt für alle %lld Stiche dieses Anlasses.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applies to all %lld matches of this event."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaut pour les %lld cibles de cet événement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vale per tutti i %lld bersagli di questo evento."
           }
         }
       }
@@ -7131,6 +7292,75 @@
         }
       }
     },
+    "Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersaglio"
+          }
+        }
+      }
+    },
+    "Stich hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi bersaglio"
+          }
+        }
+      }
+    },
+    "Stiche": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli"
+          }
+        }
+      }
+    },
     "Stroh": {
       "extractionState": "manual",
       "localizations": {
@@ -7840,6 +8070,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra le impostazioni dell'arma per tiratori sportivi"
+          }
+        }
+      }
+    },
+    "Weiteren Stich hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add another match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une autre cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi un altro bersaglio"
+          }
+        }
+      }
+    },
+    "Weiterer Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Another match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autre cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro bersaglio"
           }
         }
       }

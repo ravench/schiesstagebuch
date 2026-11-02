@@ -2,9 +2,11 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
-/// Create (entry == nil) or edit an entry. Changes are only written on "Sichern".
+/// Create (entry == nil) or edit an entry, i.e. one Stich and the event it belongs to.
+/// With `addingTo`, the new entry becomes another Stich of that event. Changes are only written on "Sichern".
 struct EntryEditorView: View {
     let entry: Entry?
+    var addingTo: ShootingEvent?
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -16,6 +18,7 @@ struct EntryEditorView: View {
     @State private var date = Date.now
     @State private var range: ShootingRange?
     @State private var event = ""
+    @State private var stich = ""
     @State private var weapon: Weapon?
     @State private var caliber: Caliber?
     @State private var ammunition: Ammunition?
@@ -48,8 +51,20 @@ struct EntryEditorView: View {
 
     private var recentEvents: [String] {
         var seen = Set<String>()
-        return allEntries.map(\.event).filter { !$0.isEmpty && seen.insert($0).inserted }.prefix(8).map { $0 }
+        return allEntries.map(\.eventName).filter { !$0.isEmpty && seen.insert($0).inserted }.prefix(8).map { $0 }
     }
+
+    /// Stiche of the event once this one is saved.
+    private var stichCount: Int {
+        if let addingTo { return addingTo.stichCount + 1 }
+        return entry?.shootingEvent?.stichCount ?? 1
+    }
+
+    /// The Stich name only matters once an event has more than one.
+    private var showsStich: Bool { stichCount > 1 || !stich.isEmpty }
+
+    /// Weapon, sight and weather follow the user's habits only for a brand-new event.
+    private var startsNewEvent: Bool { entry == nil && addingTo == nil }
 
     /// Only ammo of the selected calibre.
     private var fittingAmmunition: [Ammunition] { ammunitions.filter { $0.fits(caliber) } }
@@ -75,6 +90,13 @@ struct EntryEditorView: View {
                                 ForEach(recentEvents, id: \.self) { e in Button(e) { event = e } }
                             } label: { Image(systemName: "clock.arrow.circlepath") }
                         }
+                    }
+                    if showsStich {
+                        TextField("Stich", text: $stich)
+                    }
+                } footer: {
+                    if stichCount > 1 {
+                        Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
                     }
                 }
 
@@ -183,7 +205,7 @@ struct EntryEditorView: View {
                     Text("Fotos (\(photos.count)/\(Limits.maxPhotos))")
                 }
             }
-            .navigationTitle(entry == nil ? "Neuer Eintrag".loc : "Eintrag bearbeiten".loc)
+            .navigationTitle(addingTo != nil ? "Weiterer Stich".loc : entry == nil ? "Neuer Eintrag".loc : "Eintrag bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
@@ -194,7 +216,7 @@ struct EntryEditorView: View {
                 guard didLoad else { return }
                 // New entries take the sight settings and weather switch of the last entry with this
                 // weapon, but never throw away values the user has typed already.
-                if entry == nil {
+                if startsNewEvent {
                     sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
                     weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
                 }
@@ -286,7 +308,7 @@ struct EntryEditorView: View {
     private func load() {
         guard !didLoad else { return }
         if let entry {
-            date = entry.date; range = entry.range; event = entry.event; weapon = entry.weapon
+            date = entry.date; range = entry.range; event = entry.eventName; stich = entry.stich; weapon = entry.weapon
             caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; shotCount = entry.shotCount; result = entry.result
             maxPoints = entry.maxPoints
             sight = SightSettings(entry: entry)
@@ -295,6 +317,18 @@ struct EntryEditorView: View {
             mode = ShotEntryMode(of: entry)
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
+        } else if let addingTo {
+            // Another Stich of the same event: the shared part as it is, the rest from its last Stich.
+            date = addingTo.date; range = addingTo.range; event = addingTo.name; weather = addingTo.weather
+            let last = addingTo.sortedEntries.last
+            weapon = last?.weapon?.isArchived == false ? last?.weapon : nil
+            caliber = weapon == nil ? nil : last?.caliber ?? weapon?.preferredCaliber
+            ammunition = last?.ammunition?.isArchived == false && last?.ammunition?.fits(caliber) == true
+                ? last?.ammunition : suggestedAmmunition(weapon: weapon, caliber: caliber)
+            lot = ammunition == last?.ammunition && last?.lot?.isArchived == false ? last?.lot : suggestedLot(for: ammunition)
+            sight = last.map { SightSettings(entry: $0) } ?? SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
+            mode = defaultMode
+            if mode == .shots { passes = [PassDraft(text: "")] }
         } else if let last = allEntries.first {
             // New entries start from the most recent range, weapon and ammo: usually what you shoot next.
             range = last.range?.isArchived == false ? last.range : nil
@@ -303,7 +337,7 @@ struct EntryEditorView: View {
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
             lot = suggestedLot(for: ammunition)
         }
-        if entry == nil {
+        if startsNewEvent {
             sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
             // Weather starts on when the last entry with this weapon had it (off for indoor shooting).
             weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: .now) : nil
@@ -338,7 +372,14 @@ struct EntryEditorView: View {
     /// Fills the form from a scanned Standblatt; nothing is saved until "Sichern".
     private func applyScan(_ scanned: StandblattImport, photos scannedPhotos: [Data]) {
         if let scannedDate = scanned.date { date = scannedDate }
-        if !scanned.event.isEmpty { event = scanned.event }
+        if !scanned.event.isEmpty {
+            // In an event with several Stiche the strip usually names the Stich, e.g. "Sektionsstich".
+            if stichCount > 1, !event.isEmpty, scanned.event.caseInsensitiveCompare(event) != .orderedSame {
+                stich = scanned.event
+            } else {
+                event = scanned.event
+            }
+        }
         passes = scanned.passes.map { PassDraft(text: $0) }
         mode = .shots
         result = scanned.result
@@ -360,7 +401,14 @@ struct EntryEditorView: View {
         let previouslyDue = Set(weapon?.dueMaintenance.map(\.kind) ?? [])
         let oldWeapon = entry?.weapon
         let target = entry ?? Entry()
-        target.date = date; target.range = range; target.event = event.trimmingCharacters(in: .whitespaces)
+        if entry == nil { context.insert(target) }
+        let shootingEvent = addingTo ?? ShootingEvent.of(target, in: context)
+        let moved = !Calendar.current.isDate(date, inSameDayAs: shootingEvent.date)
+        shootingEvent.add(target)
+        shootingEvent.setDate(date)
+        shootingEvent.range = range
+        shootingEvent.name = event.trimmingCharacters(in: .whitespaces)
+        target.stich = stich.trimmingCharacters(in: .whitespaces)
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
         target.lot = lot?.ammunition == ammunition ? lot : nil
         switch mode {
@@ -375,7 +423,7 @@ struct EntryEditorView: View {
         // While the sport-shooter fields are hidden, values already stored stay untouched.
         if showSport {
             sight.fitted(to: SightSettings.aperture(for: weapon?.category)).apply(to: target)
-            target.weather = weather?.normalized()
+            shootingEvent.weather = weather?.normalized()
         }
         target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
         target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
@@ -385,11 +433,15 @@ struct EntryEditorView: View {
             existing.forEach(context.delete)
             target.photos = photos.enumerated().map { EntryPhoto(imageData: $1, position: $0) }
         }
-        if entry == nil { context.insert(target) }
         try? context.save()
         // Shot-based maintenance reminders fire when this entry crosses a limit.
         if let weapon { MaintenanceNotifier.refresh(weapon, previouslyDue: previouslyDue) }
         if let oldWeapon, oldWeapon != weapon { MaintenanceNotifier.refresh(oldWeapon) }
+        // Moving the event moves its other Stiche too, which changes their weapons' day counts.
+        if moved {
+            Set((shootingEvent.entries ?? []).compactMap(\.weapon)).subtracting([weapon, oldWeapon].compactMap { $0 })
+                .forEach { MaintenanceNotifier.refresh($0) }
+        }
         dismiss()
     }
 }
