@@ -201,6 +201,9 @@ struct MaintenanceHistoryView: View {
 struct WeaponEditorView: View {
     let weapon: Weapon?
     var onCreate: ((Weapon) -> Void)?
+    /// Called instead of deleting here: the screen that shows the weapon must leave first,
+    /// because SwiftData crashes when a view still reads a model that was deleted and saved.
+    var onDelete: (() -> Void)?
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -312,8 +315,8 @@ struct WeaponEditorView: View {
             }
             .confirmationDialog("Waffe löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
-                    if let weapon { context.delete(weapon); try? context.save() }
                     dismiss()
+                    onDelete?()
                 }
             } message: {
                 Text("Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.")
