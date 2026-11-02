@@ -192,10 +192,11 @@ struct EntryEditorView: View {
             .onAppear(perform: load)
             .onChange(of: weapon) { _, new in
                 guard didLoad else { return }
-                // New entries take the sight settings last used with this weapon.
+                // New entries take the sight settings and weather switch of the last entry with this
+                // weapon, but never throw away values the user has typed already.
                 if entry == nil {
-                    sight = SightSettings.lastUsed(for: new, in: allEntries) ?? SightSettings()
-                    weather = WeatherRecord.recordsByDefault(for: new, in: allEntries) ? (weather ?? WeatherRecord(time: .now)) : nil
+                    sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
+                    weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
                 }
                 // Only the weapon's own calibres are valid; fall back to its default.
                 if let caliber, new?.calibers?.contains(caliber) == true { return }
@@ -264,10 +265,19 @@ struct EntryEditorView: View {
     private var currentScore: Score {
         Score(result: result, maxPoints: maxPoints,
               shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
-              scoredShots: mode == .split ? scored : shotCount)
+              scoredShots: scoredShotsForScore)
     }
 
     private var passShotCount: Int { passes.map { Score.parseShots($0.text).count }.reduce(0, +) }
+
+    /// Shots the per-shot average divides by, as the current mode defines them.
+    private var scoredShotsForScore: Int {
+        switch mode {
+        case .total: shotCount
+        case .split: scored
+        case .shots: passShotCount
+        }
+    }
 
     private func countRow(_ title: String, value: Binding<Int>, step: Int) -> some View {
         NumberStepperRow(title: title, value: value, step: step)
@@ -365,7 +375,7 @@ struct EntryEditorView: View {
         // While the sport-shooter fields are hidden, values already stored stay untouched.
         if showSport {
             sight.fitted(to: SightSettings.aperture(for: weapon?.category)).apply(to: target)
-            target.weather = weather
+            target.weather = weather?.normalized()
         }
         target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
         target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
