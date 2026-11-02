@@ -4,7 +4,8 @@ swissTLM3D maps outdoor ranges as a shooting house (building footprint with the 
 "Schiessstand") and one target row per distance (TLM_SPORTBAUTE_LIN "Scheibenstand").
 Where swisstopo also has a shooting trajectory line, that line gives the firing point
 and the target end directly. Otherwise each target row is paired with the shooting
-house in front of it. OpenStreetMap adds names, websites and the nearest place.
+house in front of it. Names and places come from swisstopo first; OpenStreetMap only
+fills gaps (names, websites) and adds ranges swisstopo doesn't map (indoor, 10 m).
 
     python3 tools/range_catalogue.py latest-gpkg stac-items.json   # prints "<release> <url>"
     python3 tools/range_catalogue.py overpass-query > query.overpassql
@@ -322,8 +323,43 @@ def read_tlm(path):
                 bucket = targets if "scheiben" in value.lower() else trajectories
                 for line in lines_of(geometry):
                     bucket.append({"id": uuid, "line": line, "name": name})
+    places = read_tlm_places(conn, tables)
     conn.close()
-    return houses, targets, trajectories
+    return houses, targets, trajectories, places
+
+
+def representative_point(geometry):
+    kind, coords = geometry
+    if kind == "Point":
+        return coords[:2]
+    if kind == "MultiPoint" and coords:
+        return coords[0][:2]
+    rings = outer_rings_of(geometry)
+    if rings:
+        return centroid(rings[0])
+    return None
+
+
+def read_tlm_places(conn, tables):
+    """Settlement names (swissTLM3D TLM_SIEDLUNGSNAME), shaped like OSM place items."""
+    table = find_table(tables, "siedlungsname")
+    if not table:
+        return []
+    geometry_column, columns = tables[table]
+    name = find_column(columns, "name")
+    if not name:
+        return []
+    kind = find_column(columns, "objektart")
+    kind_sql = f'"{kind}"' if kind else "NULL"
+    places = []
+    sql = f'SELECT "{name}", {kind_sql}, "{geometry_column}" FROM "{table}" WHERE "{name}" IS NOT NULL'
+    for value, objektart, blob in conn.execute(sql):
+        geometry = parse_gpkg_geometry(blob)
+        position = representative_point(geometry) if geometry else None
+        # Districts ("Ortsteil") are too fine-grained for a place name.
+        if position and "teil" not in str(objektart or "").lower():
+            places.append({"pos": position, "tags": {"name": str(value)}})
+    return places
 
 
 def inspect_tlm(path, out=sys.stdout):
@@ -542,8 +578,11 @@ def osm_score(item):
             + (tags.get("leisure") in ("sports_centre", "shooting_ground")))
 
 
-def match_osm(ranges, shooting, places):
-    """Give each range a name, place and website; return OSM objects no range claimed."""
+def match_osm(ranges, shooting, places, tlm_places=()):
+    """Give each range a name, place and website; return OSM objects no range claimed.
+
+    swisstopo comes first: its range name and its settlement names win, OSM only fills gaps.
+    """
     claimed = set()
     for rng in ranges:
         candidates = []
@@ -554,21 +593,26 @@ def match_osm(ranges, shooting, places):
                 claimed.add(item["osm"])
         named = [(item, d) for item, d in candidates if "name" in item["tags"]]
         best = max(named, key=lambda c: (osm_score(c[0]), -c[1]))[0] if named else None
-        rng["place"] = nearest_place(rng["firing"], places)
-        if best:
-            tags = best["tags"]
-            rng["name"] = tags["name"]
-            rng["osm"] = best["osm"]
-            rng["website"] = tags.get("website") or tags.get("contact:website") or ""
-            rng["place"] = tags.get("addr:city") or rng["place"]
+        tags = best["tags"] if best else {}
+
+        rng["place"], rng["place_source"] = nearest_place(rng["firing"], tlm_places), "swisstopo"
+        if not rng["place"]:
+            rng["place"] = tags.get("addr:city") or nearest_place(rng["firing"], places)
+            rng["place_source"] = "osm" if rng["place"] else ""
+
+        if rng.get("tlm_name"):
+            rng["name"], rng["name_source"] = rng["tlm_name"], "swisstopo"
+        elif best:
+            rng["name"], rng["name_source"] = tags["name"], "osm"
         else:
-            rng["name"] = rng.get("tlm_name") or f"Schiessanlage {rng['place']}".strip()
-            rng["osm"] = ""
-            rng["website"] = ""
+            rng["name"] = f"Schiessanlage {rng['place']}".strip()
+            rng["name_source"] = "generated"
+        rng["osm"] = best["osm"] if best else ""
+        rng["website"] = tags.get("website") or tags.get("contact:website") or ""
     return [item for item in shooting if item["osm"] not in claimed]
 
 
-def osm_only_ranges(items, places):
+def osm_only_ranges(items, places, tlm_places=()):
     """Named OSM ranges without swisstopo geometry (indoor ranges, 10 m, missing target rows)."""
     ranges = []
     for item in sorted(items, key=lambda i: (-osm_score(i), i["osm"])):
@@ -581,7 +625,11 @@ def osm_only_ranges(items, places):
         ranges.append({
             "id": "osm:" + item["osm"],
             "name": tags["name"],
-            "place": tags.get("addr:city") or nearest_place(item["pos"], places),
+            "place": (nearest_place(item["pos"], tlm_places) or tags.get("addr:city")
+                      or nearest_place(item["pos"], places)),
+            "name_source": "osm",
+            "indoor": tags.get("shooting") == "indoor_range" or tags.get("indoor") == "yes"
+            or "building" in tags,
             "firing": item["pos"],
             "bearing": None,
             "altitude": None,
@@ -625,13 +673,13 @@ def range_record(rng):
 
 
 def build(tlm_path, overpass_path, out_dir, release=""):
-    houses, targets, trajectories = read_tlm(tlm_path)
+    houses, targets, trajectories, tlm_places = read_tlm(tlm_path)
     lanes = build_lanes(houses, targets, trajectories)
     ranges = group_lanes(lanes)
     with open(overpass_path, encoding="utf-8") as f:
         shooting, places = parse_overpass(json.load(f))
-    leftovers = match_osm(ranges, shooting, places)
-    ranges += osm_only_ranges(leftovers, places)
+    leftovers = match_osm(ranges, shooting, places, tlm_places)
+    ranges += osm_only_ranges(leftovers, places, tlm_places)
     ranges.sort(key=lambda r: (r["place"].lower(), r["name"].lower(), r["id"]))
     records = [range_record(r) for r in ranges]
 
@@ -655,11 +703,17 @@ def build(tlm_path, overpass_path, out_dir, release=""):
         "lanes": len(lanes),
         "lanes from trajectories": sum(lane["source"] == "trajectory" for lane in lanes),
         "lanes with nominal distance": sum(lane["distance"] is not None for lane in lanes),
+        "swisstopo place names": len(tlm_places),
         "ranges from swisstopo": sum(r["id"].startswith("tlm:") for r in ranges),
-        "  named from OSM": sum(r["id"].startswith("tlm:") and bool(r["osm"]) for r in ranges),
-        "  named by swisstopo": sum(bool(r.get("tlm_name")) for r in ranges),
-        "  named by swisstopo, no OSM name": sum(bool(r.get("tlm_name")) and not r["osm"] for r in ranges),
+        "  name from swisstopo": sum(r.get("name_source") == "swisstopo" for r in ranges),
+        "  name from OSM (no swisstopo name)": sum(r["id"].startswith("tlm:") and r.get("name_source") == "osm"
+                                                   for r in ranges),
+        "  name generated (Schiessanlage <place>)": sum(r.get("name_source") == "generated" for r in ranges),
+        "  place from swisstopo": sum(r.get("place_source") == "swisstopo" for r in ranges),
+        "  place from OSM": sum(r.get("place_source") == "osm" for r in ranges),
+        "  website from OSM": sum(r["id"].startswith("tlm:") and bool(r["website"]) for r in ranges),
         "ranges from OSM only": sum(r["id"].startswith("osm:") for r in ranges),
+        "  of which indoor": sum(r["id"].startswith("osm:") and r.get("indoor", False) for r in ranges),
     }
     for name in (300, 100, 50, 25, 10):
         stats[f"ranges with {name} m"] = sum(name in r["distances"] for r in ranges)

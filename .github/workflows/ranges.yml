@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Tests
         run: python3 -m unittest discover -s tools -p 'test_range_catalogue.py'
       - name: Work directory
@@ -65,7 +65,7 @@ jobs:
             cat out/stats.txt
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: range-catalogue
           path: out/

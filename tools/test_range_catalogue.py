@@ -258,13 +258,28 @@ class OsmTests(unittest.TestCase):
         self.assertEqual(named["osm"], "way/1")
         self.assertEqual(named["website"], "https://example.ch")
         self.assertEqual(named["place"], "Riedbach")
+        self.assertEqual(named["name_source"], "osm")
         unnamed = next(r for r in ranges if not r["osm"])
         self.assertEqual(unnamed["name"], "Schiessanlage")  # no place within 10 km
+        self.assertEqual(unnamed["name_source"], "generated")
 
         extra = rc.osm_only_ranges(leftovers, places)
         self.assertEqual([r["name"] for r in extra], ["Luftgewehr Halle"])  # merged, unnamed dropped
         self.assertIsNone(extra[0]["bearing"])
         self.assertEqual(extra[0]["place"], "Riedbach")
+        self.assertTrue(extra[0]["indoor"])
+
+    def test_swisstopo_place_beats_osm(self):
+        shooting, places = rc.parse_overpass(overpass_fixture())
+        houses = [{"id": "h1", "ring": box(E0, N0)}]
+        targets = [{"id": "t300", "line": target_row(E0, N0 + 304), "name": ""}]
+        ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
+        tlm_places = [{"pos": (E0 + 3000, N0), "tags": {"name": "Musterdorf"}}]
+        rc.match_osm(ranges, shooting, places, tlm_places)
+        self.assertEqual(ranges[0]["place"], "Musterdorf")
+        self.assertEqual(ranges[0]["place_source"], "swisstopo")
+        self.assertEqual(ranges[0]["name"], "Schiessanlage Riedbach")  # OSM fills the missing name
+        self.assertEqual(ranges[0]["name_source"], "osm")
 
 
 class GeoPackageTests(unittest.TestCase):
@@ -288,6 +303,13 @@ class GeoPackageTests(unittest.TestCase):
              gpkg_blob("LineString", [(E0, N0 + 4, 550), (E0, N0 + 54, 549)])),
             ("{L1}", "Laufbahn", None, gpkg_blob("LineString", [(E0, N0, 0), (E0 + 100, N0, 0)])),
         ])
+        conn.execute('CREATE TABLE tlm_names_siedlungsname (fid INTEGER PRIMARY KEY, NAME TEXT,'
+                     ' OBJEKTART TEXT, geom BLOB)')
+        conn.execute("INSERT INTO gpkg_geometry_columns VALUES ('tlm_names_siedlungsname', 'geom')")
+        conn.executemany("INSERT INTO tlm_names_siedlungsname (NAME, OBJEKTART, geom) VALUES (?,?,?)", [
+            ("Fänglen", "Ort", gpkg_blob("Point", (E0 + 800, N0 + 300, 600))),
+            ("Oberfänglen", "Ortsteil", gpkg_blob("Point", (E0 + 10, N0 + 10, 600))),
+        ])
         conn.commit()
         conn.close()
 
@@ -295,13 +317,14 @@ class GeoPackageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "tlm.gpkg")
             self.make_gpkg(path)
-            houses, targets, trajectories = rc.read_tlm(path)
+            houses, targets, trajectories, places = rc.read_tlm(path)
         self.assertEqual([h["id"] for h in houses], ["H1"])
         self.assertEqual([t["id"] for t in targets], ["T1"])
         self.assertEqual([t["id"] for t in trajectories], ["S1"])
         self.assertEqual(targets[0]["name"], "Schiessanlage Fänglen")
         self.assertEqual(trajectories[0]["name"], "")  # generic label dropped
         self.assertEqual(houses[0]["name"], "")
+        self.assertEqual([p["tags"]["name"] for p in places], ["Fänglen"])  # Ortsteil skipped
 
     def test_inspect_lists_values(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -310,7 +333,7 @@ class GeoPackageTests(unittest.TestCase):
             out = io.StringIO()
             rc.inspect_tlm(path, out)
         text = out.getvalue()
-        self.assertIn("2 feature tables", text)
+        self.assertIn("3 feature tables", text)
         self.assertIn("'Scheibenstand': 1", text)
         self.assertIn("nutzung = 'Schiessstand': 1", text)
 
@@ -329,15 +352,22 @@ class GeoPackageTests(unittest.TestCase):
                 rows = list(csv.DictReader(f))
 
         self.assertEqual(stats["shooting houses"], 1)
-        self.assertEqual(stats["  named by swisstopo"], 1)
-        self.assertEqual(stats["  named by swisstopo, no OSM name"], 0)
+        self.assertEqual(stats["  name from swisstopo"], 1)
+        self.assertEqual(stats["  name from OSM (no swisstopo name)"], 0)
+        self.assertEqual(stats["  place from swisstopo"], 1)
+        self.assertEqual(stats["  website from OSM"], 1)
+        self.assertEqual(stats["ranges from OSM only"], 1)
+        self.assertEqual(stats["  of which indoor"], 1)
         self.assertEqual(stats["lanes from trajectories"], 1)
         self.assertEqual(catalogue["version"], 1)
         self.assertEqual(catalogue["swissTLM3D"], "2026-02")
         self.assertIn("OpenStreetMap", catalogue["attribution"]["osm"])
         self.assertIn("swisstopo", catalogue["attribution"]["swisstopo"])
         tlm = next(r for r in catalogue["ranges"] if r["id"].startswith("tlm:"))
-        self.assertEqual(tlm["name"], "Schiessanlage Riedbach")
+        self.assertEqual(tlm["name"], "Schiessanlage Fänglen")  # swisstopo name beats OSM
+        self.assertEqual(tlm["place"], "Fänglen")
+        self.assertEqual(tlm["website"], "https://example.ch")
+        self.assertEqual(tlm["osm"], "way/1")
         self.assertEqual(tlm["distances"], [300, 50])
         self.assertAlmostEqual(tlm["shootingBearing"], 0, delta=0.5)
         self.assertEqual(tlm["altitude"], 550)
