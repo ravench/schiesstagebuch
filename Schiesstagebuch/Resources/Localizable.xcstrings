@@ -4578,6 +4578,29 @@
         }
       }
     },
+    "Nach Standort gewählt · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picked by location · %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisi selon la position · %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scelto in base alla posizione · %@"
+          }
+        }
+      }
+    },
     "Nach Tagen": {
       "extractionState": "manual",
       "localizations": {
@@ -4758,6 +4781,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "velo di nebbia davanti ai bersagli"
+          }
+        }
+      }
+    },
+    "Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New entries for today pick the range you are at and list nearby ranges first. Your location is only read for this and is never stored or sent."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les nouvelles entrées du jour choisissent le stand où tu te trouves et listent d'abord les stands proches. La position n'est lue que pour cela, sans être enregistrée ni envoyée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le nuove voci di oggi scelgono il poligono in cui ti trovi ed elencano prima quelli vicini. La posizione viene letta solo a questo scopo e non viene né salvata né inviata."
           }
         }
       }
@@ -6460,6 +6506,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifica poligono"
+          }
+        }
+      }
+    },
+    "Schiessanlage nach Standort wählen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick range by location"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir le stand selon la position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegliere il poligono in base alla posizione"
           }
         }
       }

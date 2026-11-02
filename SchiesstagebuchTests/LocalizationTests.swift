@@ -20,6 +20,23 @@ final class LocalizationTests: XCTestCase {
         }
     }
 
+    func testLocationUsageDescriptionInAllLanguages() throws {
+        for lang in ["de", "en", "fr", "it"] {
+            let text = try localized("NSLocationWhenInUseUsageDescription", lang, table: "InfoPlist")
+            XCTAssertNotEqual(text, "<missing>", lang)
+            XCTAssertNotEqual(text, "NSLocationWhenInUseUsageDescription", lang)
+        }
+        let en = try localized("NSLocationWhenInUseUsageDescription", "en", table: "InfoPlist")
+        XCTAssertTrue(en.contains("not stored"))
+        XCTAssertNotNil(Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription"))
+    }
+
+    func testRangeByLocationHintKeepsDistancePlaceholder() throws {
+        for lang in ["en", "fr", "it"] {
+            XCTAssertTrue(try localized("Nach Standort gewählt · %@", lang).contains("%@"), lang)
+        }
+    }
+
     func testLegacyImportNamesOldAppAndDeveloper() throws {
         XCTAssertEqual(LegacyImport.sourceAppName, "Schusszähler-Schiesstagebuch")
         XCTAssertEqual(LegacyImport.sourceDeveloper, "carusoNET")
