@@ -7177,6 +7177,29 @@
         }
       }
     },
+    "Seriennummer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serial number"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de série"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di serie"
+          }
+        }
+      }
+    },
     "Seriennummer (optional)": {
       "extractionState": "manual",
       "localizations": {
@@ -7196,6 +7219,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Numero di serie (facoltativo)"
+          }
+        }
+      }
+    },
+    "Seriennummer Verschluss (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bolt serial number (optional)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de série de la culasse (facultatif)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di serie dell'otturatore (facoltativo)"
           }
         }
       }
@@ -8024,6 +8070,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostra storico"
+          }
+        }
+      }
+    },
+    "Verschluss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bolt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Culasse"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otturatore"
           }
         }
       }

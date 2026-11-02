@@ -123,6 +123,8 @@ struct WeaponDetailView: View {
                     .listRowBackground(Color.clear)
                 LabeledContent("Kategorie", value: weapon.category.title)
                 if !weapon.caliberSummary.isEmpty { LabeledContent("Kaliber", value: weapon.caliberSummary) }
+                if !weapon.serialNumber.isEmpty { LabeledContent("Seriennummer", value: weapon.serialNumber) }
+                if !weapon.boltSerialNumber.isEmpty { LabeledContent("Verschluss", value: weapon.boltSerialNumber) }
             }
             BarrelSection(weapon: weapon)
             MaintenanceSection(weapon: weapon)
