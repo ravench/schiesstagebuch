@@ -14,6 +14,7 @@ struct EntryEditorView: View {
     @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @Query(filter: #Predicate<Ammunition> { !$0.isArchived }, sort: \Ammunition.name) private var ammunitions: [Ammunition]
     @Query(sort: \Entry.date, order: .reverse) private var allEntries: [Entry]
+    @Query private var allEvents: [ShootingEvent]
 
     @State private var date = Date.now
     @State private var range: ShootingRange?
@@ -48,6 +49,7 @@ struct EntryEditorView: View {
     @State private var quickAdd: QuickAdd?
     @State private var showingScanner = false
     @State private var didLoad = false
+    @FocusState private var eventFocused: Bool
 
     enum QuickAdd: Identifiable { case weapon, range, ammunition; var id: Self { self } }
 
@@ -68,6 +70,11 @@ struct EntryEditorView: View {
     /// Weapon, sight and weather follow the user's habits only for a brand-new event.
     private var startsNewEvent: Bool { entry == nil && addingTo == nil }
 
+    /// Earlier event names matching what is typed, shown below the field while it has focus.
+    private var eventSuggestions: [String] {
+        eventFocused ? EventSuggestions.suggestions(for: event, in: allEvents) : []
+    }
+
     /// Only ammo of the selected calibre.
     private var fittingAmmunition: [Ammunition] { ammunitions.filter { $0.fits(caliber) } }
 
@@ -87,10 +94,16 @@ struct EntryEditorView: View {
                     pickerRow("Schiessanlage", selection: $range, items: ranges, label: \.name, add: .range)
                     HStack {
                         TextField("Anlass", text: $event)
+                            .focused($eventFocused)
                         if !recentEvents.isEmpty {
                             Menu {
                                 ForEach(recentEvents, id: \.self) { e in Button(e) { event = e } }
                             } label: { Image(systemName: "clock.arrow.circlepath") }
+                        }
+                    }
+                    ForEach(eventSuggestions, id: \.self) { s in
+                        Button { event = s } label: {
+                            Label { Text(verbatim: s) } icon: { Image(systemName: "arrow.up.left") }
                         }
                     }
                     if showsStich {
