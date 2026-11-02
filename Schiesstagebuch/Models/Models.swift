@@ -56,11 +56,9 @@ final class Caliber: ArchivableItem {
         query.isEmpty || name.localizedCaseInsensitiveContains(query) || aliasSummary.localizedCaseInsensitiveContains(query)
     }
 
-    static func normalized(_ s: String) -> String {
-        s.lowercased().replacingOccurrences(of: " ", with: "")
-            .replacingOccurrences(of: "×", with: "x")
-            .replacingOccurrences(of: "mm", with: "")
-    }
+    /// Name comparison key for seeding, restoring and importing: the same rules the catalogue
+    /// uses for its aliases, so ".45 ACP", "45 ACP" and "45 acp" are one calibre everywhere.
+    static func normalized(_ s: String) -> String { CaliberCatalog.normalizedAlias(s) }
 }
 
 @Model
