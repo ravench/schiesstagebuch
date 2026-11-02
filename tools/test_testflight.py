@@ -115,11 +115,13 @@ class WorkflowTests(unittest.TestCase):
         family = re.search(r"TARGETED_DEVICE_FAMILY:\s*\"?([\d,]+)", self.project).group(1)
         if "2" not in family.split(","):
             self.skipTest("iPhone only")
-        ipad = re.search(r"INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:\s*\"?([^\"\n]+)", self.project)
-        self.assertIsNotNone(ipad)
-        self.assertEqual(set(ipad.group(1).split()), {
-            "UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown",
-            "UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationLandscapeRight"})
+        # App Store Connect checks the plain key, not only the ~ipad one.
+        for key in ("INFOPLIST_KEY_UISupportedInterfaceOrientations", "INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad"):
+            value = re.search(rf"{key}:\s*\"?([^\"\n]+)", self.project)
+            self.assertIsNotNone(value, key)
+            self.assertEqual(set(value.group(1).split()), {
+                "UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown",
+                "UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationLandscapeRight"}, key)
 
     def test_no_export_compliance_prompt(self):
         # Otherwise every build waits in App Store Connect for the encryption question.

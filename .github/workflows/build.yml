@@ -33,6 +33,11 @@ jobs:
             -scheme Schiesstagebuch \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO | xcpretty
+      - name: Check orientations in the built app
+        # The same rule App Store Connect applies on upload (iPad multitasking).
+        run: |
+          PLIST=$(find ~/Library/Developer/Xcode/DerivedData -path '*/Debug-iphonesimulator/Schiesstagebuch.app/Info.plist' | head -1)
+          python3 tools/check_orientations.py "$PLIST"
       - name: Unit tests
         run: |
           UDID=$(xcrun simctl list devices available -j | python3 -c "
