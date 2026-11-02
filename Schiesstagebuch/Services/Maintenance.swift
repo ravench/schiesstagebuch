@@ -75,10 +75,6 @@ struct MaintenanceStatus {
 }
 
 extension Weapon {
-    func lastMaintenance(_ kind: MaintenanceKind) -> MaintenanceRecord? {
-        (maintenance ?? []).filter { $0.kind == kind }.max { $0.date < $1.date }
-    }
-
     var dayCounting: DayCounting { DayCounting(rawValue: dayCountingRaw) ?? .appDefault }
 
     func status(_ kind: MaintenanceKind) -> MaintenanceStatus {
