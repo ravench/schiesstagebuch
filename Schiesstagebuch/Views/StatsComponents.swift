@@ -50,7 +50,7 @@ struct KPIGrid: View {
             }
             GridRow {
                 tile("Ø pro Eintrag",
-                     entries.isEmpty ? "–" : entries.averageShotsPerEntry.formatted(.number.precision(.fractionLength(0)).rounded(rule: .toNearestOrAwayFromZero)), "divide")
+                     entries.isEmpty ? "–" : entries.averageShotsPerEntry.formatted(.number.precision(.fractionLength(1))), "divide")
                 tile("Zuletzt",
                      entries.map(\.date).max()?.formatted(.dateTime.day().month().year(.twoDigits)) ?? "–",
                      "calendar")

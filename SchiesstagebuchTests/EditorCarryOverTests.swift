@@ -66,11 +66,12 @@ final class EditorCarryOverTests: ModelTestCase {
         XCTAssertEqual(clean.relays[0].id, relay.id)
     }
 
-    func testAverageShotsPerEntryIsNotTruncated() {
+    func testAverageShotsPerEntryKeepsOneDecimal() {
         let a = addEntry(nil, on: day(3), shots: 100)
         let b = addEntry(nil, on: day(4), shots: 49)
         XCTAssertEqual([a, b].averageShotsPerEntry, 74.5, accuracy: 1e-9)
-        XCTAssertEqual([a, b].averageShotsPerEntry.formatted(.number.precision(.fractionLength(0)).rounded(rule: .toNearestOrAwayFromZero)), "75")
+        let shown = [a, b].averageShotsPerEntry.formatted(.number.precision(.fractionLength(1)).locale(Locale(identifier: "de_CH")))
+        XCTAssertEqual(shown, "74.5")
         XCTAssertEqual([Entry]().averageShotsPerEntry, 0)
     }
 }
