@@ -40,6 +40,8 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES: AppIconHardcover
         INFOPLIST_KEY_CFBundleDisplayName: Schiesstagebuch
+        # No own encryption, only what iOS provides: skips the export compliance question per build.
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Fotos von Scheiben und Resultaten zu einem Eintrag hinzufügen."
