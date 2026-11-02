@@ -70,7 +70,7 @@ final class EditorCarryOverTests: ModelTestCase {
         let a = addEntry(nil, on: day(3), shots: 100)
         let b = addEntry(nil, on: day(4), shots: 49)
         XCTAssertEqual([a, b].averageShotsPerEntry, 74.5, accuracy: 1e-9)
-        XCTAssertEqual([a, b].averageShotsPerEntry.formatted(.number.precision(.fractionLength(0))), "75")
+        XCTAssertEqual([a, b].averageShotsPerEntry.formatted(.number.precision(.fractionLength(0)).rounded(rule: .toNearestOrAwayFromZero)), "75")
         XCTAssertEqual([Entry]().averageShotsPerEntry, 0)
     }
 }
