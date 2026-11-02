@@ -76,11 +76,12 @@ final class BackupTests: ModelTestCase {
     func testCalibresWithTheSameNameRestoreAsOne() throws {
         let json = """
         {"version":1,"exportedAt":"2026-01-01T00:00:00Z","weapons":[],"ammunition":[],"ranges":[],"maintenance":[],"entries":[],
-         "calibers":[{"id":"6A1C5E3E-0000-4000-8000-000000000001","name":".45 ACP","category":"Kurzwaffe","isArchived":false},
-                     {"id":"6A1C5E3E-0000-4000-8000-000000000002","name":"45 ACP","category":"Kurzwaffe","isArchived":false}]}
+         "calibers":[{"id":"6A1C5E3E-0000-4000-8000-000000000001","name":"9mm Luger","category":"Kurzwaffe","isArchived":false},
+                     {"id":"6A1C5E3E-0000-4000-8000-000000000002","name":"9 mm luger","category":"Kurzwaffe","isArchived":false}]}
         """
         try Backup.restore(from: Data(json.utf8), into: context)
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 1)
+        let calibers = try context.fetch(FetchDescriptor<Caliber>())
+        XCTAssertEqual(calibers.map(\.name), ["9mm Luger"], "the first spelling wins")
     }
 
     func testRestoringTwiceDoesNotDuplicate() throws {

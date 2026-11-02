@@ -129,8 +129,6 @@ enum Backup {
         return try encoder.encode(file)
     }
 
-    /// Returns a short German summary for the user.
-    @discardableResult
     private static func restoreLicenceCards(_ cards: [LicenceCardDTO], into context: ModelContext) throws {
         let existing = Set(try all(LicenceCard.self, context).map(\.id))
         for d in cards where !existing.contains(d.id) {
@@ -140,6 +138,24 @@ enum Backup {
         }
     }
 
+    /// Calibres also match by name so the seeded catalogue isn't duplicated. Returns backup id → record.
+    private static func restoreCalibers(_ dtos: [CaliberDTO], into context: ModelContext) throws -> [UUID: Caliber] {
+        var calibers = Dictionary(uniqueKeysWithValues: try all(Caliber.self, context).map { ($0.id, $0) })
+        var calibersByName = Dictionary(calibers.values.map { (Caliber.normalized($0.name), $0) }, uniquingKeysWith: { a, _ in a })
+        var caliberMap: [UUID: Caliber] = [:]
+        for d in dtos {
+            let key = Caliber.normalized(d.name)
+            if let c = calibers[d.id] ?? calibersByName[key] { caliberMap[d.id] = c; continue }
+            let c = Caliber(name: d.name, category: d.category); c.id = d.id; c.isArchived = d.isArchived
+            c.catalogID = d.catalogID ?? ""
+            if let created = d.createdAt { c.createdAt = created }
+            context.insert(c); calibers[d.id] = c; calibersByName[key] = c; caliberMap[d.id] = c
+        }
+        return caliberMap
+    }
+
+    /// Returns a short German summary for the user.
+    @discardableResult
     static func restore(from data: Data, into context: ModelContext) throws -> String {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -148,18 +164,7 @@ enum Backup {
             throw CocoaError(.fileReadUnsupportedScheme, userInfo: [NSLocalizedDescriptionKey: "Backup stammt aus einer neueren App-Version.".loc])
         }
 
-        // Calibres also match by name so the seeded catalogue isn't duplicated.
-        var calibers = Dictionary(uniqueKeysWithValues: try all(Caliber.self, context).map { ($0.id, $0) })
-        var calibersByName = Dictionary(calibers.values.map { (Caliber.normalized($0.name), $0) }, uniquingKeysWith: { a, _ in a })
-        var caliberMap: [UUID: Caliber] = [:]
-        for d in file.calibers {
-            let key = Caliber.normalized(d.name)
-            if let c = calibers[d.id] ?? calibersByName[key] { caliberMap[d.id] = c; continue }
-            let c = Caliber(name: d.name, category: d.category); c.id = d.id; c.isArchived = d.isArchived
-            c.catalogID = d.catalogID ?? ""
-            if let created = d.createdAt { c.createdAt = created }
-            context.insert(c); calibers[d.id] = c; calibersByName[key] = c; caliberMap[d.id] = c
-        }
+        let caliberMap = try restoreCalibers(file.calibers, into: context)
 
         var weapons = Dictionary(uniqueKeysWithValues: try all(Weapon.self, context).map { ($0.id, $0) })
         for d in file.weapons where weapons[d.id] == nil {
@@ -240,7 +245,9 @@ enum Backup {
     static func csv(_ context: ModelContext) -> Data {
         let entries = ((try? all(Entry.self, context)) ?? []).sorted { $0.date < $1.date }
         func field(_ s: String) -> String {
-            s.contains(where: { ";\"\n\r".contains($0) }) ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
+            // Scalars, not Characters: "\r\n" is one Character and would slip past a Character check.
+            s.unicodeScalars.contains(where: { ";\"\n\r".unicodeScalars.contains($0) })
+                ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
