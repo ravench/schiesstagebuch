@@ -277,29 +277,6 @@
         }
       }
     },
-    "AXIA-Filter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "AXIA filters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtres AXIA"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtri AXIA"
-          }
-        }
-      }
-    },
     "Ab Reinigung / Service": {
       "extractionState": "manual",
       "localizations": {
@@ -2320,6 +2297,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colore"
+          }
+        }
+      }
+    },
+    "Farbfilter (AXIA)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colour filters (AXIA)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres de couleur (AXIA)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri colorati (AXIA)"
           }
         }
       }
