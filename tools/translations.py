@@ -341,6 +341,12 @@ T = {
     "Standblatt fotografieren": ("Photograph score strip", "Photographier la feuille de stand", "Fotografa il foglio di tiro"),
     "Standblatt scannen": ("Scan score strip", "Scanner la feuille de stand", "Scansiona foglio di tiro"),
     "Standblatt wird gelesen …": ("Reading score strip …", "Lecture de la feuille de stand …", "Lettura del foglio di tiro …"),
+    "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighters", "%1$lld coups comptés + %2$lld coups d'essai", "%1$lld colpi di gara + %2$lld colpi di prova"),
+    "Probeschüsse abziehen": ("Split off sighters", "Déduire les coups d'essai", "Scorporare i colpi di prova"),
+    "Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
+        "The old app only knew the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",
+        "L'ancienne app ne connaissait que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste.",
+        "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."),
     "Total %@ liegt über dem Maximum von %@": (
         "Total %1$@ is above the maximum of %2$@",
         "Le total %1$@ dépasse le maximum de %2$@",
