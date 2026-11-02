@@ -33,8 +33,12 @@ final class IPadScreensTests: XCTestCase {
     }
 
     private func openFirstEntry(_ name: String) {
-        let row = app.cells.firstMatch
-        guard row.waitForExistence(timeout: 5) else { return }
+        // SwiftUI list rows are not always cells; the newest sample entry's title is unique.
+        let row = app.staticTexts["Obligatorisch"].firstMatch
+        guard row.waitForExistence(timeout: 5) else {
+            XCTFail("No diary entry to open")
+            return
+        }
         row.tap()
         snap("\(name)-1b-Eintrag")
     }
