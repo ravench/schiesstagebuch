@@ -50,11 +50,11 @@ final class CombinedFilterTests: ModelTestCase {
         XCTAssertEqual(s.filters, ["Citron", "Saphire"])
     }
 
-    func testSecondFilterAloneMovesUpAndDuplicatesCountOnce() {
+    func testSecondFilterAloneMovesUpAndTheSameFilterTwiceIsAllowed() {
         XCTAssertEqual(SightSettings(secondFilter: "CALM").filters, ["CALM"])
         XCTAssertEqual(SightSettings(secondFilter: "CALM").filter, "CALM")
-        XCTAssertEqual(SightSettings(filter: "CALM", secondFilter: "CALM").filters, ["CALM"])
-        XCTAssertEqual(SightSettings(filter: "CALM", secondFilter: "CALM").secondFilter, "")
+        XCTAssertEqual(SightSettings(filter: "+0.25", secondFilter: "+0.25").filters, ["+0.25", "+0.25"], "rare, but possible")
+        XCTAssertEqual(FilterColor.title(["+0.25", "+0.25"]), "+0.25 + +0.25")
         XCTAssertEqual(FilterColor.title([]), "Kein Filter".loc)
     }
 
@@ -66,7 +66,7 @@ final class CombinedFilterTests: ModelTestCase {
         s.setFilter("Supergreen", at: 0)
         XCTAssertEqual(s.filters, ["Supergreen", "-0.25"], "replacing the first keeps the second")
         s.setFilter("Supergreen", at: 1)
-        XCTAssertEqual(s.filters, ["Supergreen"], "the same filter twice counts once")
+        XCTAssertEqual(s.filters, ["Supergreen", "Supergreen"], "the same filter twice is allowed")
         s.setFilter("+0.25", at: 1)
         s.setFilter("", at: 0)
         XCTAssertEqual(s.filter, "+0.25", "clearing the first moves the second up")
