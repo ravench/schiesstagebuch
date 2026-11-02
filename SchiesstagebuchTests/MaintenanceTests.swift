@@ -79,7 +79,7 @@ final class MaintenanceTests: ModelTestCase {
         var s = weapon.status(.cleaning)
         XCTAssertNil(s.countingStart)
         XCTAssertNil(s.dueDate)
-        XCTAssertTrue(s.dueText?.contains("Tage zählen ab der nächsten Nutzung".loc) == true)
+        XCTAssertTrue(s.dueText?.contains("Tage zählen ab dem nächsten Schuss".loc) == true)
         XCTAssertFalse(s.isDue)
 
         addEntry(weapon, on: day(10), shots: 5)
@@ -95,7 +95,7 @@ final class MaintenanceTests: ModelTestCase {
         weapon.cleaningIntervalShots = 0
         log(.cleaning, on: day(2))
         try context.save()
-        XCTAssertEqual(weapon.status(.cleaning).dueText, "Tage zählen ab der nächsten Nutzung".loc)
+        XCTAssertEqual(weapon.status(.cleaning).dueText, "Tage zählen ab dem nächsten Schuss".loc)
     }
 
     func testWeaponFollowsAppDefaultUnlessOverridden() {
@@ -120,5 +120,17 @@ final class MaintenanceTests: ModelTestCase {
         XCTAssertNil(s.lastDate)
         XCTAssertNil(s.dueDate)
         XCTAssertEqual(s.shotsSince, 30)
+    }
+
+    func testDayCountingTitles() throws {
+        XCTAssertEqual(DayCounting.fromFirstUse.title, "Ab erstem Schuss danach".loc)
+        XCTAssertEqual(DayCounting.fromMaintenance.title, "Ab Reinigung / Service".loc)
+        for lang in ["en", "fr", "it"] {
+            let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
+            let bundle = try XCTUnwrap(Bundle(path: path))
+            for key in ["Ab erstem Schuss danach", "Tage zählen ab dem nächsten Schuss"] {
+                XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
+            }
+        }
     }
 }

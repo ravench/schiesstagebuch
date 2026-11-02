@@ -323,25 +323,25 @@
         }
       }
     },
-    "Ab erster Nutzung danach": {
+    "Ab erstem Schuss danach": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "From first use afterwards"
+            "value": "From the first shot afterwards"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dès la première utilisation suivante"
+            "value": "Dès le premier tir suivant"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dal primo utilizzo successivo"
+            "value": "Dal primo colpo successivo"
           }
         }
       }
@@ -6924,25 +6924,25 @@
         }
       }
     },
-    "Tage zählen ab der nächsten Nutzung": {
+    "Tage zählen ab dem nächsten Schuss": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Days count from the next use"
+            "value": "Days count from the next shot"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les jours comptent dès la prochaine utilisation"
+            "value": "Les jours comptent dès le prochain tir"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "I giorni contano dal prossimo utilizzo"
+            "value": "I giorni contano dal prossimo colpo"
           }
         }
       }
