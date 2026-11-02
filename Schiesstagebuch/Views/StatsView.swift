@@ -124,8 +124,12 @@ struct WeaponDetailView: View {
                 LabeledContent("Kategorie", value: weapon.category.title)
                 if !weapon.caliberSummary.isEmpty { LabeledContent("Kaliber", value: weapon.caliberSummary) }
             }
+            BarrelSection(weapon: weapon)
             MaintenanceSection(weapon: weapon)
         } breakdowns: { entries in
+            if weapon.hasSeveralBarrels {
+                Section { BreakdownChart(title: "Pro Lauf", entries: entries, key: \.effectiveBarrel, label: \.displayName) }
+            }
             Section { BreakdownChart(title: "Pro Kaliber", entries: entries, key: \.caliber, label: \.name) }
             Section { BreakdownChart(title: "Pro Schiessanlage", entries: entries, key: \.range, label: \.name) }
             Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.displayName) }

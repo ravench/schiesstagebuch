@@ -37,6 +37,8 @@ enum Backup {
         var lots: [LotDTO]?
         /// Optional so backups from before the licence card still load.
         var licenceCards: [LicenceCardDTO]?
+        /// Optional so backups from before barrels still load.
+        var barrels: [BarrelDTO]?
     }
 
     // `createdAt` fields are optional so backups from before they were exported still load.
@@ -53,6 +55,11 @@ enum Backup {
         var dayCounting: String?
         var serialNumber: String?
     }
+    struct BarrelDTO: Codable {
+        var id: UUID; var weaponID: UUID?; var caliberID: UUID?; var name: String; var serialNumber: String
+        var installedOn: Date?; var removedOn: Date?; var previousShots: Int; var expectedLifeShots: Int
+        var notes: String; var createdAt: Date
+    }
     struct AmmunitionDTO: Codable { var id: UUID; var name: String; var caliberID: UUID?; var isArchived: Bool; var createdAt: Date? }
     struct LotDTO: Codable { var id: UUID; var ammunitionID: UUID?; var number: String; var notes: String; var isArchived: Bool; var createdAt: Date }
     struct RangeDTO: Codable {
@@ -67,6 +74,7 @@ enum Backup {
         var id: UUID; var date: Date; var event: String; var shotCount: Int; var result: String; var notes: String
         var weaponID: UUID?; var caliberID: UUID?; var rangeID: UUID?; var ammunitionID: UUID?
         var lotID: UUID?
+        var barrelID: UUID?
         var sighterCount: Int?
         var maxPoints: Double?
         var shotValuesText: String?
@@ -109,7 +117,7 @@ enum Backup {
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, event: $0.event, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, rangeID: $0.range?.id, ammunitionID: $0.ammunition?.id,
-                      lotID: $0.lot?.id, sighterCount: $0.sighterCount,
+                      lotID: $0.lot?.id, barrelID: $0.barrel?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
                       filterColor: $0.filterColor, diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
                       weather: $0.weather,
@@ -122,6 +130,11 @@ enum Backup {
             },
             licenceCards: try all(LicenceCard.self, context).map {
                 .init(id: $0.id, holderName: $0.holderName, licenceNumber: $0.licenceNumber, updatedAt: $0.updatedAt)
+            },
+            barrels: try all(Barrel.self, context).map {
+                .init(id: $0.id, weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, name: $0.name, serialNumber: $0.serialNumber,
+                      installedOn: $0.installedOn, removedOn: $0.removedOn, previousShots: $0.previousShots,
+                      expectedLifeShots: $0.expectedLifeShots, notes: $0.notes, createdAt: $0.createdAt)
             })
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -152,6 +165,23 @@ enum Backup {
             context.insert(c); calibers[d.id] = c; calibersByName[key] = c; caliberMap[d.id] = c
         }
         return caliberMap
+    }
+
+    private static func restoreBarrels(_ dtos: [BarrelDTO], weapons: [UUID: Weapon], calibers: [UUID: Caliber],
+                                       into context: ModelContext) throws -> [UUID: Barrel] {
+        var barrels = Dictionary(uniqueKeysWithValues: try all(Barrel.self, context).map { ($0.id, $0) })
+        for d in dtos where barrels[d.id] == nil {
+            let b = Barrel(name: d.name); b.id = d.id
+            b.serialNumber = d.serialNumber
+            b.installedOn = d.installedOn; b.removedOn = d.removedOn
+            b.previousShots = d.previousShots; b.expectedLifeShots = d.expectedLifeShots
+            b.notes = d.notes; b.createdAt = d.createdAt
+            context.insert(b)
+            b.caliber = d.caliberID.flatMap { calibers[$0] }
+            b.weapon = d.weaponID.flatMap { weapons[$0] }
+            barrels[d.id] = b
+        }
+        return barrels
     }
 
     /// Returns a short German summary for the user.
@@ -213,6 +243,7 @@ enum Backup {
         }
 
         try restoreLicenceCards(file.licenceCards ?? [], into: context)
+        let barrels = try restoreBarrels(file.barrels ?? [], weapons: weapons, calibers: caliberMap, into: context)
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
@@ -226,6 +257,7 @@ enum Backup {
             if let created = d.createdAt { e.createdAt = created }
             context.insert(e)
             e.lot = d.lotID.flatMap { lots[$0] }
+            e.barrel = d.barrelID.flatMap { barrels[$0] }
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
@@ -251,7 +283,7 @@ enum Backup {
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los",
+        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
                                 "Prozent", "Einzelschüsse", "Filter", "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein (cm)", "Wetter", "Bemerkungen"]
         var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
@@ -264,6 +296,7 @@ enum Backup {
             cols.append(e.event)
             cols.append(e.weapon?.name ?? "")
             cols.append(e.caliber?.name ?? "")
+            cols.append(e.effectiveBarrel?.displayName ?? "")
             cols.append(e.ammunition?.name ?? "")
             cols.append(e.lot?.number ?? "")
             cols.append(String(e.shotCount))

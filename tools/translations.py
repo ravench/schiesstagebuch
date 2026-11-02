@@ -386,6 +386,48 @@ T = {
     "W": ("W", "O", "O"),
     "NW": ("NW", "NO", "NO"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
+    # Barrels (Läufe)
+    "%@ von %@ Schuss (%@)": ("%1$@ of %2$@ shots (%3$@)", "%1$@ sur %2$@ coups (%3$@)", "%1$@ di %2$@ colpi (%3$@)"),
+    "Ausgebaut": ("Removed", "Démonté", "Smontata"),
+    "Automatisch (%@)": ("Automatic (%@)", "Automatique (%@)", "Automatica (%@)"),
+    "Bezeichnung (optional)": ("Label (optional)", "Désignation (facultatif)", "Denominazione (facoltativo)"),
+    "Einträge bleiben erhalten und zählen wieder nach Kaliber und Datum.": (
+        "Entries are kept and are matched by calibre and date again.",
+        "Les entrées sont conservées et sont de nouveau attribuées par calibre et date.",
+        "Le voci restano e vengono di nuovo attribuite per calibro e data."),
+    "Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.": (
+        "Entries count for the barrel of their calibre that was fitted on that day. Maintenance reminders count all shots of the firearm.",
+        "Les entrées comptent pour le canon de leur calibre monté ce jour-là. Les rappels d'entretien comptent tous les coups de l'arme.",
+        "Le voci contano per la canna del loro calibro montata quel giorno. I promemoria di manutenzione contano tutti i colpi dell'arma."),
+    "Erwartete Lebensdauer": ("Expected life (shots)", "Durée de vie prévue (coups)", "Durata prevista (colpi)"),
+    "Lauf": ("Barrel", "Canon", "Canna"),
+    "Lauf bearbeiten": ("Edit barrel", "Modifier le canon", "Modifica canna"),
+    "Lauf hinzufügen": ("Add barrel", "Ajouter un canon", "Aggiungi canna"),
+    "Lauf löschen": ("Delete barrel", "Supprimer le canon", "Elimina canna"),
+    "Lauf löschen?": ("Delete barrel?", "Supprimer le canon ?", "Eliminare la canna?"),
+    "Läufe": ("Barrels", "Canons", "Canne"),
+    "Mit einer Lebensdauer zeigt die App, wie weit der Lauf abgenutzt ist.": (
+        "With an expected life, the app shows how worn the barrel is.",
+        "Avec une durée de vie, l'app indique l'usure du canon.",
+        "Con una durata prevista, l'app mostra quanto è usurata la canna."),
+    "Montiert ab": ("Fitted from", "Monté depuis", "Montata dal"),
+    "Neuer Lauf": ("New barrel", "Nouveau canon", "Nuova canna"),
+    "Nur ausfüllen, wenn der Lauf eine eigene Nummer hat.": (
+        "Only fill in if the barrel has its own number.",
+        "À remplir seulement si le canon a son propre numéro.",
+        "Da compilare solo se la canna ha un proprio numero."),
+    "Ohne Datum gilt der Lauf seit jeher. Ein ausgebauter Lauf zählt keine neuen Einträge mehr.": (
+        "Without a date the barrel counts as always fitted. A removed barrel no longer counts new entries.",
+        "Sans date, le canon est considéré comme toujours monté. Un canon démonté ne compte plus les nouvelles entrées.",
+        "Senza data la canna è considerata sempre montata. Una canna smontata non conta più nuove voci."),
+    "Optional: erfasse Läufe, um Schüsse pro Lauf zu zählen, z. B. bei Wechselläufen oder nach einem Laufwechsel.": (
+        "Optional: add barrels to count shots per barrel, e.g. for swappable barrels or after a barrel replacement.",
+        "Facultatif : ajoute des canons pour compter les coups par canon, p. ex. canons interchangeables ou après un changement de canon.",
+        "Facoltativo: aggiungi le canne per contare i colpi per canna, p. es. canne intercambiabili o dopo una sostituzione."),
+    "Pro Lauf": ("By barrel", "Par canon", "Per canna"),
+    "Schüsse vor der Erfassung": ("Shots before logging", "Coups avant l'enregistrement", "Colpi prima della registrazione"),
+    "ausgebaut am %@": ("removed %@", "démonté le %@", "smontata il %@"),
+    "montiert seit %@": ("fitted since %@", "monté depuis le %@", "montata dal %@"),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.

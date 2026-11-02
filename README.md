@@ -14,6 +14,10 @@ replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French a
   shotgun, air). A weapon has one or more calibres (e.g. SIG P210 with 9x19 and .22 LR
   barrels) and one default. Entries only offer the weapon's calibres; ammunition is
   linked to a calibre and filtered accordingly.
+- **Läufe** (optional): a weapon can track barrels, each with calibre, own serial number,
+  fitted/removed dates, shots before logging and an expected life. Entries count for the
+  barrel of their calibre fitted on that day (or one picked in the entry); totals per
+  barrel and per weapon. Maintenance reminders stay per weapon.
 - **Statistik**: totals, shots over time (monthly or cumulative), shots per weapon,
   calibre and range, with a period filter. Every weapon, calibre, range and ammo has
   its own statistics page.

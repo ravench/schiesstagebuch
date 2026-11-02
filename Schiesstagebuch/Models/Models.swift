@@ -12,6 +12,7 @@ import SwiftData
 // Journal data:
 //   Entry -> Weapon, Caliber, ShootingRange, Ammunition; Entry -> EntryPhoto (max 4)
 // Shots per calibre are counted from Entry.caliber.
+// Optional barrels: Weapon -> Barrel (calibre, serial, dates, shots); Entry -> Barrel (see Barrel.swift).
 // Maintenance: Weapon -> MaintenanceRecord (cleaning / service), with optional
 // intervals per weapon in shots and/or days (see MaintenanceStatus).
 
@@ -41,6 +42,8 @@ final class Caliber: ArchivableItem {
     var defaultFor: [Weapon]? = []
     @Relationship(deleteRule: .nullify, inverse: \Entry.caliber)
     var entries: [Entry]? = []
+    @Relationship(deleteRule: .nullify, inverse: \Barrel.caliber)
+    var barrels: [Barrel]? = []
 
     init(name: String, category: String = "") {
         self.name = name
@@ -78,6 +81,9 @@ final class Weapon: ArchivableItem {
     var entries: [Entry]? = []
     @Relationship(deleteRule: .cascade, inverse: \MaintenanceRecord.weapon)
     var maintenance: [MaintenanceRecord]? = []
+    /// Optional barrels (Läufe), see Barrel.swift. Empty for a firearm tracked as one piece.
+    @Relationship(deleteRule: .cascade, inverse: \Barrel.weapon)
+    var barrels: [Barrel]? = []
 
     /// Reminder intervals; 0 means "no reminder".
     var cleaningIntervalShots: Int = 0
@@ -235,6 +241,8 @@ final class Entry {
     var ammunition: Ammunition?
     /// Optional lot of the chosen ammunition.
     var lot: AmmoLot?
+    /// Barrel picked explicitly; nil = matched by calibre and date (see `effectiveBarrel`).
+    var barrel: Barrel?
 
     @Relationship(deleteRule: .cascade, inverse: \EntryPhoto.entry)
     var photos: [EntryPhoto]? = []
