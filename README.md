@@ -24,7 +24,7 @@ replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French a
   Old ammo names are mapped to calibres (editable before importing), weapons get their
   calibres and a guessed category, and photos are pulled from the Photos library when the
   referenced pictures still exist there.
-- **iCloud sync** via SwiftData + CloudKit (container `iCloud.net.forestraven.schiesstagebuch`).
+- **iCloud sync** via SwiftData + CloudKit (container `iCloud.ch.giotta.schiesstagebuch`).
   Works offline and without iCloud; calibres seeded on several devices are merged.
 - **Icons**: a silhouette per weapon category and a true-to-scale cartridge outline for
   every catalogue calibre.
@@ -42,7 +42,7 @@ open Schiesstagebuch.xcodeproj
 If you build your own copy, replace `DEVELOPMENT_TEAM` in `project.yml` with your team ID (or pick your team under Signing & Capabilities), then run on a device or simulator.
 For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates the
 container on first run. Change the bundle id / container in `project.yml` if
-`net.forestraven` isn't yours.
+`ch.giotta` isn't yours.
 
 Calibres and icons are generated assets. After editing `tools/cartridges.py` or
 `tools/weapon_icons.py`, run:
