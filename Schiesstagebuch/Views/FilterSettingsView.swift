@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Settings → Filters: tick the AXIA filters and dioptre lenses you own (only those appear in entries) and manage your own.
+/// Settings → Filters: tick the colour filters and adjustment lenses you own (only those appear in entries) and manage your own.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
     @State private var editing: EditTarget?
@@ -46,7 +46,7 @@ struct FilterSettingsView: View {
                     }
                 }
             } header: {
-                Text("Farbfilter (AXIA)")
+                Text("Farbfilter")
             } footer: {
                 Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
             }
