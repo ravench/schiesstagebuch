@@ -141,7 +141,7 @@ final class CombinedFilterTests: ModelTestCase {
         }
         for lang in ["en", "fr", "it"] {
             let bundle = try XCTUnwrap(Bundle(path: try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))))
-            for key in ["Zweiter Filter", "Diopter-Filter"] {
+            for key in ["Zweiter Filter", "Diopter-Linsen"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
