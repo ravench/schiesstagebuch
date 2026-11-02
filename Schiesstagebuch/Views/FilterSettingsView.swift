@@ -59,9 +59,9 @@ struct FilterSettingsView: View {
                     }
                 }
             } header: {
-                Text("Diopter-Linsen")
+                Text("Korrekturlinsen")
             } footer: {
-                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Linse +0.25 oder -0.25.")
+                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.")
             }
         }
         .navigationTitle("Filter (Mehrzahl)")
