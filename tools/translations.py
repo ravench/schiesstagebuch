@@ -250,7 +250,6 @@ T = {
     "oder": ("or", "ou", "o"),
     "seit %@ fällig": ("due since %@", "à faire depuis le %@", "da fare dal %@"),
     "zuletzt %@": ("last %@", "dernier %@", "ultimo %@"),
-    "Ø pro Eintrag": ("Avg. per entry", "Moy. par entrée", "Media per voce"),
     "Auf der Karte gewählt": ("Picked on the map", "Choisi sur la carte", "Scelto sulla mappa"),
     "In Karten öffnen": ("Open in Maps", "Ouvrir dans Plans", "Apri in Mappe"),
     "Kartenposition entfernen": ("Remove map location", "Retirer la position", "Rimuovi posizione"),
@@ -410,6 +409,14 @@ T = {
         "Delete the event with all its matches?",
         "Supprimer l'événement avec toutes ses cibles ?",
         "Eliminare l'evento con tutti i bersagli?"),
+    # Averages per entry only for a Stich shot several times at one event.
+    "Durchschnitt pro Stich": ("Average per match", "Moyenne par cible", "Media per bersaglio"),
+    "Für Stiche, die an diesem Anlass mehrmals geschossen wurden.": (
+        "For matches shot more than once at this event.",
+        "Pour les cibles tirées plusieurs fois à cet événement.",
+        "Per i bersagli tirati più volte a questo evento."),
+    "%lld× geschossen": ("Shot %lld×", "Tirée %lld×", "Tirato %lld×"),
+    "pro Schuss": ("per shot", "par coup", "per colpo"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
 }
 

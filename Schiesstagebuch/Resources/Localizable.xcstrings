@@ -323,6 +323,29 @@
         }
       }
     },
+    "%lld× geschossen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shot %lld×"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tirée %lld×"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tirato %lld×"
+          }
+        }
+      }
+    },
     "AXIA-Filter": {
       "extractionState": "manual",
       "localizations": {
@@ -1841,6 +1864,29 @@
         }
       }
     },
+    "Durchschnitt pro Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Average per match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moyenne par cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media per bersaglio"
+          }
+        }
+      }
+    },
     "Dämmerung": {
       "extractionState": "manual",
       "localizations": {
@@ -2826,6 +2872,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi i poligoni dove spari."
+          }
+        }
+      }
+    },
+    "Für Stiche, die an diesem Anlass mehrmals geschossen wurden.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For matches shot more than once at this event."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour les cibles tirées plusieurs fois à cet événement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per i bersagli tirati più volte a questo evento."
           }
         }
       }
@@ -9569,6 +9638,29 @@
         }
       }
     },
+    "pro Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "per shot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "per colpo"
+          }
+        }
+      }
+    },
     "schwierig": {
       "extractionState": "manual",
       "localizations": {
@@ -10048,29 +10140,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media percentuale"
-          }
-        }
-      }
-    },
-    "Ø pro Eintrag": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avg. per entry"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moy. par entrée"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media per voce"
           }
         }
       }

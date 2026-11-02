@@ -92,6 +92,44 @@ extension Sequence where Element == Entry {
         let shots = b.map(\.shots).reduce(0, +)
         return shots == 0 ? nil : b.map(\.points).reduce(0, +) / Double(shots)
     }
+
+    /// Mean points per entry over the entries with a numeric result.
+    var averagePoints: Double? {
+        let p = compactMap(\.score.points)
+        return p.isEmpty ? nil : p.reduce(0, +) / Double(p.count)
+    }
+}
+
+/// A Stich shot more than once at the same event, e.g. bought twice ("nachgedoppelt").
+/// Only within such a group is an average per entry meaningful: different Stiche have different
+/// shot counts and maxima, so other overviews compare percentages instead.
+struct RepeatedStich: Equatable {
+    var name: String
+    var count: Int
+    var averagePoints: Double?
+    var averagePercentage: Double?
+    var averagePerShot: Double?
+}
+
+extension ShootingEvent {
+    /// Stiche with the same name (ignoring case and spaces) shot two or more times, in the order
+    /// they were first shot. Entries without a Stich name are never grouped.
+    var repeatedStiche: [RepeatedStich] {
+        var order: [String] = []
+        var groups: [String: [Entry]] = [:]
+        for entry in sortedEntries {
+            let key = entry.stich.trimmingCharacters(in: .whitespaces).lowercased()
+            guard !key.isEmpty else { continue }
+            if groups[key] == nil { order.append(key) }
+            groups[key, default: []].append(entry)
+        }
+        return order.compactMap { key in
+            guard let entries = groups[key], entries.count >= 2 else { return nil }
+            return RepeatedStich(name: entries[0].stich.trimmingCharacters(in: .whitespaces), count: entries.count,
+                                 averagePoints: entries.averagePoints, averagePercentage: entries.averagePercentage,
+                                 averagePerShot: entries.averagePerShot)
+        }
+    }
 }
 
 /// How the shots of an entry are recorded. The default is chosen in Settings.

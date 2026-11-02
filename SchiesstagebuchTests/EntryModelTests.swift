@@ -36,6 +36,7 @@ final class EntryModelTests: ModelTestCase {
         XCTAssertEqual(entries.averagePercentage!, 0.85, accuracy: 1e-9)
         // (90 + 240) / 40 shots, weighted by shots.
         XCTAssertEqual(entries.averagePerShot!, 8.25, accuracy: 1e-9)
+        XCTAssertEqual(entries.averagePoints!, 165, accuracy: 1e-9, "per entry, text results left out")
     }
 
     func testLotsSortedAndArchivedHidden() throws {
