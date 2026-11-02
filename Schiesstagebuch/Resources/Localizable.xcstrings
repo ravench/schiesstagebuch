@@ -1680,25 +1680,25 @@
         }
       }
     },
-    "Diopter-Filter": {
+    "Diopter-Linsen": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Diopter filters"
+            "value": "Diopter lenses"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtres dioptriques"
+            "value": "Verres dioptriques"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtri diottrici"
+            "value": "Lenti diottriche"
           }
         }
       }
@@ -5734,25 +5734,25 @@
         }
       }
     },
-    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit +0.25 oder -0.25.": {
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Linse +0.25 oder -0.25.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Two filters can be combined per entry, usually a colour filter with +0.25 or -0.25."
+            "value": "Two filters can be combined per entry, usually a colour filter with a +0.25 or -0.25 lens."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec +0.25 ou -0.25."
+            "value": "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre +0.25 ou -0.25."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con +0.25 o -0.25."
+            "value": "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente +0.25 o -0.25."
           }
         }
       }

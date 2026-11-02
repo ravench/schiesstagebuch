@@ -194,7 +194,7 @@ enum FilterColor {
     }
 }
 
-/// The user's filter list, set in Settings: the built-in AXIA and dioptre filters they own (these can't be
+/// The user's filter list, set in Settings: the built-in AXIA filters and dioptre lenses they own (these can't be
 /// deleted, only ticked) plus their own filters. Stored as JSON in UserDefaults under `key`.
 struct FilterCatalog: Codable, Equatable {
     static let key = "filterCatalog"

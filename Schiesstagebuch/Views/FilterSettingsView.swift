@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Settings → Filters: tick the AXIA and dioptre filters you own (only those appear in entries) and manage your own.
+/// Settings → Filters: tick the AXIA filters and dioptre lenses you own (only those appear in entries) and manage your own.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
     @State private var editing: EditTarget?
@@ -59,9 +59,9 @@ struct FilterSettingsView: View {
                     }
                 }
             } header: {
-                Text("Diopter-Filter")
+                Text("Diopter-Linsen")
             } footer: {
-                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit +0.25 oder -0.25.")
+                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Linse +0.25 oder -0.25.")
             }
         }
         .navigationTitle("Filter (Mehrzahl)")

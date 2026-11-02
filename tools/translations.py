@@ -126,11 +126,11 @@ T = {
     # Settings page and entries with two filters; German plural = singular, so the key carries a German value.
     "Filter (Mehrzahl)": ("Filters", "Filtres", "Filtri", "Filter"),
     "Zweiter Filter": ("Second filter", "Deuxième filtre", "Secondo filtro"),
-    "Diopter-Filter": ("Diopter filters", "Filtres dioptriques", "Filtri diottrici"),
-    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit +0.25 oder -0.25.": (
-        "Two filters can be combined per entry, usually a colour filter with +0.25 or -0.25.",
-        "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec +0.25 ou -0.25.",
-        "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con +0.25 o -0.25."),
+    "Diopter-Linsen": ("Diopter lenses", "Verres dioptriques", "Lenti diottriche"),
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Linse +0.25 oder -0.25.": (
+        "Two filters can be combined per entry, usually a colour filter with a +0.25 or -0.25 lens.",
+        "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre +0.25 ou -0.25.",
+        "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente +0.25 o -0.25."),
     "Filter zurücksetzen": ("Reset filters", "Réinitialiser les filtres", "Reimposta filtri"),
     "Flinte": ("Shotgun", "Fusil à canon lisse", "Fucile a canna liscia"),
     "Fotos": ("Photos", "Photos", "Foto"),
