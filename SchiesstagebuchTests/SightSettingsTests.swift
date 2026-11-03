@@ -62,16 +62,35 @@ final class SightSettingsTests: ModelTestCase {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Waffen-Einstellungen für Sportschützen erfassen",
-                                             "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein", "Zweibein (cm)"] {
+            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Für Sportschützen", "Farbfilter",
+                                             "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibeinstütze", "Zweibeinstütze (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
     }
 
+    func testDiopterFilterWheels() {
+        XCTAssertEqual(FilterColor.wyss.map(\.name), ["Wyss hellgrau", "Wyss dunkelgrau", "Wyss gelb", "Wyss orange", "Wyss grün", "Wyss blau"])
+        XCTAssertEqual(FilterColor.gruenigElmiger.count, 12, "two wheels with six colours each")
+        XCTAssertEqual(FilterColor.gruenigElmiger.first?.name, "G+E hellblau")
+        XCTAssertEqual(FilterColor.gruenigElmiger.last?.name, "G+E rot")
+        for f in FilterColor.wyss + FilterColor.gruenigElmiger {
+            XCTAssertFalse(f.polarised, f.name)
+            XCTAssertNil(f.dioptre, f.name)
+            XCTAssertNotNil(FilterColor.filter(named: f.name))
+        }
+        // Like the glasses filters, wheel colours show in the picker only once ticked as owned.
+        var catalog = FilterCatalog()
+        XCTAssertFalse(catalog.visible.contains { $0.name == "Wyss gelb" })
+        catalog.setOwned("Wyss gelb", true)
+        catalog.setOwned("G+E rot", true)
+        XCTAssertEqual(catalog.visible.map(\.name), ["Wyss gelb", "G+E rot"])
+        XCTAssertEqual(catalog.problem(with: "wyss GELB"), .duplicate, "own filters can't take a built-in name")
+    }
+
     func testFilterListMatchesTheShop() {
         XCTAssertEqual(FilterColor.filters.count, 17)
-        XCTAssertEqual(FilterColor.all.count, 19, "17 colour filters plus +0.25 and -0.25")
+        XCTAssertEqual(FilterColor.all.count, 37, "17 glasses filters, 6 Wyss, 12 G+E, plus +0.25 and -0.25")
         XCTAssertEqual(Set(FilterColor.all).count, FilterColor.all.count, "names are unique")
         XCTAssertEqual(Set(FilterColor.builtIn.map(\.rgb)).count, FilterColor.builtIn.count, "swatches are distinct")
         XCTAssertTrue(FilterColor.all.contains("Eidgenoss polarisiert"))
@@ -121,13 +140,6 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertTrue(row.contains(SightSettings.format(3.6)))
         XCTAssertTrue(row.contains(SightSettings.format(1.8)))
         XCTAssertTrue(row.contains(SightSettings.format(32.5)))
-    }
-
-    func testSportShooterFieldsAreHiddenByDefault() {
-        let defaults = UserDefaults(suiteName: "SightSettingsTests")!
-        defaults.removePersistentDomain(forName: "SightSettingsTests")
-        XCTAssertFalse(defaults.bool(forKey: SightSettings.showKey))
-        XCTAssertEqual(SightSettings.showKey, "showSportShooterSettings")
     }
 
     func testBipodClampsToHalfCentimetres() {

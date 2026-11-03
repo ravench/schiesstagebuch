@@ -1,24 +1,30 @@
 import SwiftUI
 
 /// Optional sport-shooter settings in the entry editor: filter, diopter, ring or iris, bipod.
+/// Only the fields switched on in Settings show (see SportFeatures).
 struct SightSection: View {
     @Environment(\.term) private var term
     @Binding var sight: SightSettings
     var aperture: SightSettings.Aperture = .both
+    var fields: SportFeatures = SportFeatures.sightFields
     @State private var expanded = false
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
 
     var body: some View {
         Section {
             DisclosureGroup(isExpanded: $expanded) {
-                filterPicker("Filter", index: 0)
-                // A second filter can be stacked on the first, e.g. +0.25 or -0.25.
-                if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
-                if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
-                sliderRow("Diopter", value: $sight.diopter)
-                if aperture != .iris {
-                    sliderRow("Ringgrösse", value: $sight.ringSize)
-                    sliderRow("Zweibein", value: $sight.bipodLength, unit: " cm",
+                if fields.contains(.filter) {
+                    filterPicker("Filter", index: 0)
+                    // A second filter can be stacked on the first, e.g. +0.25 or -0.25.
+                    if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
+                }
+                if fields.contains(.sight) {
+                    if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
+                    sliderRow("Diopter", value: $sight.diopter)
+                    if aperture != .iris { sliderRow("Ringgrösse", value: $sight.ringSize) }
+                }
+                if fields.contains(.bipod), aperture != .iris {
+                    sliderRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm",
                               range: SightSettings.bipodRange, step: SightSettings.bipodStep,
                               start: 20, clamp: SightSettings.clampBipod)
                 }
@@ -26,13 +32,13 @@ struct SightSection: View {
                 HStack {
                     Text("Einstellungen für Sportschützen")
                     Spacer()
-                    if !expanded, !sight.isEmpty {
+                    if !expanded, !shown.isEmpty {
                         Text(summary).font(.callout).foregroundStyle(.secondary).lineLimit(1)
                     }
                 }
             }
         } footer: {
-            if FilterCatalog(data: catalogData).visible.isEmpty {
+            if fields.contains(.filter), FilterCatalog(data: catalogData).visible.isEmpty {
                 Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.").loc)
             } else {
                 Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.").loc)
@@ -40,7 +46,11 @@ struct SightSection: View {
         }
     }
 
+    /// The values of the fields on show; hidden ones stay out of the summary.
+    private var shown: SightSettings { sight.only(fields) }
+
     private var summary: String {
+        let sight = shown
         var parts: [String] = []
         if !sight.filters.isEmpty { parts.append(FilterColor.title(sight.filters)) }
         if let i = sight.irisSize, aperture != .ring { parts.append("I \(SightSettings.format(i))") }
