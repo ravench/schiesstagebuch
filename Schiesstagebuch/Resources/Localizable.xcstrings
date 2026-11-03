@@ -1956,6 +1956,29 @@
         }
       }
     },
+    "Brillenfilter und Filterräder, die du besitzt. Nur diese erscheinen in Einträgen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glasses filters and filter wheels you own. Only these appear in entries."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres de lunettes et roues à filtres que tu possèdes. Seuls ceux-ci apparaissent dans les entrées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri per occhiali e ruote filtri che possiedi. Solo questi compaiono nelle voci."
+          }
+        }
+      }
+    },
     "C-Treffer": {
       "extractionState": "manual",
       "localizations": {
@@ -12124,6 +12147,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indietro"
+          }
+        }
+      }
+    },
+    "Zusätzliche Felder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extra fields"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Champs supplémentaires"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Campi aggiuntivi"
           }
         }
       }
