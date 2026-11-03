@@ -195,15 +195,7 @@ struct EventEditorView: View {
             Form {
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    HStack {
-                        Picker("Schiessanlage", selection: $range) {
-                            Text("–").tag(ShootingRange?.none)
-                            ForEach(ranges) { Text($0.name).tag(Optional($0)) }
-                            if let range, !ranges.contains(range) { Text(range.name).tag(Optional(range)) }
-                        }
-                        Button { addingRange = true } label: { Image(systemName: "plus.circle") }
-                            .buttonStyle(.borderless)
-                    }
+                    RangePickerRow(selection: $range, ranges: ranges) { addingRange = true }
                     TextField("Anlass", text: $name)
                     ScoringSystemPicker(system: $scoring)
                     if scoring == .ipsc {

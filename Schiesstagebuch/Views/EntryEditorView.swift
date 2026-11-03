@@ -118,9 +118,7 @@ struct EntryEditorView: View {
 
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    pickerRow("Schiessanlage", selection: $range, items: NearbyRanges.pickerOrder(ranges, from: here.location),
-                              label: \.name, add: .range,
-                              subtitle: { NearbyRanges.subtitle(for: $0, from: here.location) })
+                    RangePickerRow(selection: $range, ranges: ranges, location: here.location) { quickAdd = .range }
                     if let autoRange, autoRange.range == range {
                         Label { Text("Nach Standort gewählt · \(formattedAutoDistance)") } icon: {
                             Image(systemName: "location.fill")

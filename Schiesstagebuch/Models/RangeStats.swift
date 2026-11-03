@@ -9,7 +9,7 @@ struct RangeShots: Identifiable {
 
 enum RangeStats {
     /// The ranges that have shots among `entries`, sorted by name, narrowed to those whose
-    /// name or place contains `query`. Ranges from the catalogue that were never used are left out.
+    /// name, place, address or distance matches `query` (see `RangeSearch`). Ranges from the catalogue that were never used are left out.
     static func used(in entries: [Entry], matching query: String = "") -> [RangeShots] {
         var shots: [ShootingRange: Int] = [:]
         for e in entries {
@@ -24,6 +24,6 @@ enum RangeStats {
     }
 
     static func matches(_ range: ShootingRange, _ query: String) -> Bool {
-        query.isEmpty || range.name.localizedStandardContains(query) || range.place.localizedStandardContains(query)
+        RangeSearch.matches(range, query)
     }
 }
