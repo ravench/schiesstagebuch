@@ -19,8 +19,8 @@ final class BackupTests: ModelTestCase {
         weapon.serialNumber = "A 123456"
         let range = ShootingRange(name: "Albisgüetli", place: "Zürich"); context.insert(range)
         range.address = "Uetlibergstrasse 341, 8045 Zürich"; range.latitude = 47.357; range.longitude = 8.505
-        let e = Entry(date: day(5), range: range, weapon: weapon, caliber: cal, shotCount: 25, ammunition: ammo, result: "")
-        context.insert(e)
+        let e = addEntry(weapon, on: day(5), shots: 25)
+        e.shootingEvent?.range = range; e.caliber = cal; e.ammunition = ammo
         e.lot = lot; e.sighterCount = 5; e.maxPoints = 200; e.shotValuesText = "10 9 10 8 9\n10 10 9 9 8"
         try context.save()
 
@@ -54,10 +54,10 @@ final class BackupTests: ModelTestCase {
         let weapon = Weapon(name: "1911"); weapon.createdAt = day(2); context.insert(weapon)
         let ammo = Ammunition(name: "45 Auto", caliber: cal); ammo.createdAt = day(3); context.insert(ammo)
         let range = ShootingRange(name: "Rehalp"); range.createdAt = day(4); context.insert(range)
-        let e = Entry(date: day(5), range: range, weapon: weapon, caliber: cal, shotCount: 50, ammunition: ammo)
+        let e = addEntry(weapon, on: day(5), shots: 50)
+        e.shootingEvent?.range = range; e.shootingEvent?.createdAt = day(7); e.caliber = cal; e.ammunition = ammo
         e.importKey = "legacy|2026-3-5|1911|Training|Rehalp|50|"
         e.createdAt = day(6)
-        context.insert(e)
         try context.save()
 
         let (keep, target) = try freshContext()
@@ -71,6 +71,7 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(restored.weapon?.createdAt, day(2))
         XCTAssertEqual(restored.ammunition?.createdAt, day(3))
         XCTAssertEqual(restored.range?.createdAt, day(4))
+        XCTAssertEqual(restored.shootingEvent?.createdAt, day(7))
     }
 
     func testCalibresWithTheSameNameRestoreAsOne() throws {
@@ -87,14 +88,16 @@ final class BackupTests: ModelTestCase {
     func testRestoringTwiceDoesNotDuplicate() throws {
         let ammo = Ammunition(name: "GP 11"); context.insert(ammo)
         let lot = AmmoLot(number: "X1"); context.insert(lot); lot.ammunition = ammo
-        context.insert(Entry(date: day(1), shotCount: 10))
+        let event = addEntry(nil, on: day(1), shots: 10).shootingEvent!
+        addStich(to: event, nil, shots: 20)
         try context.save()
         let data = try Backup.export(context)
         let (keep, target) = try freshContext()
         _ = keep
         try Backup.restore(from: data, into: target)
         try Backup.restore(from: data, into: target)
-        XCTAssertEqual(try target.fetchCount(FetchDescriptor<Entry>()), 1)
+        XCTAssertEqual(try target.fetchCount(FetchDescriptor<Entry>()), 2)
+        XCTAssertEqual(try target.fetchCount(FetchDescriptor<ShootingEvent>()), 1)
         XCTAssertEqual(try target.fetchCount(FetchDescriptor<AmmoLot>()), 1)
     }
 
@@ -116,12 +119,15 @@ final class BackupTests: ModelTestCase {
         XCTAssertNil(e.lot)
         XCTAssertNil(e.range?.latitude)
         XCTAssertEqual(e.range?.address, "")
+        XCTAssertEqual(e.range?.name, "Albisgüetli", "version 1 kept the range on the entry")
+        XCTAssertEqual(e.eventName, "Training")
+        XCTAssertEqual(e.shootingEvent?.stichCount, 1)
     }
 
     func testCSVContainsNewColumns() throws {
         let ammo = Ammunition(name: "GP 90"); context.insert(ammo)
         let lot = AmmoLot(number: "LOT-77"); context.insert(lot); lot.ammunition = ammo
-        let e = Entry(date: day(1), shotCount: 12, ammunition: ammo, result: "95"); context.insert(e)
+        let e = addEntry(nil, on: day(1), shots: 12); e.ammunition = ammo; e.result = "95"
         e.lot = lot; e.sighterCount = 2; e.maxPoints = 100; e.shotValuesText = "10 9\n8 7"
         try context.save()
         let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
@@ -136,7 +142,7 @@ final class BackupTests: ModelTestCase {
     }
 
     func testCSVQuotesCarriageReturns() throws {
-        let e = Entry(date: day(1), shotCount: 1, notes: "Zeile 1\r\nZeile 2"); context.insert(e)
+        let e = addEntry(nil, on: day(1), shots: 1); e.notes = "Zeile 1\r\nZeile 2"
         try context.save()
         let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         XCTAssertTrue(csv.contains("\"Zeile 1\r\nZeile 2\""), "a note with a Windows line break stays one quoted field")

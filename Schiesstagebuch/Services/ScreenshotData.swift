@@ -44,9 +44,12 @@ enum ScreenshotData {
         for s in samples {
             let date = Calendar.current.date(byAdding: .day, value: -s.daysAgo, to: now) ?? now
             let caliber = s.weapon.calibers?.first
-            let entry = Entry(date: date, range: range, event: s.event, weapon: s.weapon, caliber: caliber,
+            let event = ShootingEvent(date: date, name: s.event, range: range)
+            context.insert(event)
+            let entry = Entry(date: date, weapon: s.weapon, caliber: caliber,
                               shotCount: s.shots, ammunition: caliber === gp11 ? ammo : nil, result: s.result)
             context.insert(entry)
+            event.add(entry)
         }
         try? context.save()
     }

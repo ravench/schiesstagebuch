@@ -173,7 +173,7 @@ struct RangeDetailView: View {
         } breakdowns: { entries in
             Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Anlass", entries: entries,
-                                     key: { $0.event.isEmpty ? nil : $0.event }, label: { $0 }) }
+                                     key: { $0.eventName.isEmpty ? nil : $0.eventName }, label: { $0 }) }
         }
         .navigationTitle(range.name)
         .toolbar { Button("Bearbeiten") { editing = true } }

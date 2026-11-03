@@ -49,23 +49,19 @@ struct KPIGrid: View {
                 tile("Einträge", entries.count.formatted(), "list.bullet")
             }
             GridRow {
-                tile("Ø pro Eintrag",
-                     entries.isEmpty ? "–" : entries.averageShotsPerEntry.formatted(.number.precision(.fractionLength(1))), "divide")
                 tile("Zuletzt",
                      entries.map(\.date).max()?.formatted(.dateTime.day().month().year(.twoDigits)) ?? "–",
                      "calendar")
+                // Only the percentage: an average per entry or per shot mixes different Stiche
+                // (shot counts, A10 vs A100), see `RepeatedStich` for where it is shown.
+                if let percent = entries.averagePercentage {
+                    tile("Ø Prozent", ScoreFormat.percent(percent), "percent")
+                }
             }
             if entries.contains(where: { $0.sighterCount != nil }) {
                 GridRow {
                     tile("Probeschüsse", entries.sighterShots.formatted(), "scope")
                     tile("Wertungsschüsse", entries.scoredShots.formatted(), "target")
-                }
-            }
-            let percent = entries.averagePercentage, perShot = entries.averagePerShot
-            if percent != nil || perShot != nil {
-                GridRow {
-                    tile("Ø Prozent", percent.map(ScoreFormat.percent) ?? "–", "percent")
-                    tile("Ø pro Schuss", perShot.map(ScoreFormat.points) ?? "–", "scope")
                 }
             }
         }

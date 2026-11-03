@@ -12,6 +12,10 @@ S = {
         "Cambia solo le parole nell'app, i tuoi dati restano invariati."),
     # Sportgerät variants of the Waffe keys
     "Sportgerät": ("Equipment", "Équipement", "Attrezzo"),
+    "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": (
+        "For another program at the same event, also with different equipment.",
+        "Pour un autre programme au même événement, aussi avec un autre équipement.",
+        "Per un altro programma allo stesso evento, anche con un altro attrezzo."),
     "Sportgeräte": ("Equipment", "Équipements", "Attrezzi"),
     "Alle Sportgeräte": ("All equipment", "Tous les équipements", "Tutti gli attrezzi"),
     "Deine Sportgeräte": ("Your equipment", "Tes équipements", "I tuoi attrezzi"),

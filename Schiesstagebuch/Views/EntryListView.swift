@@ -28,10 +28,11 @@ struct EntryListView: View {
         }
     }
 
-    /// Entries grouped by month, newest first.
-    private var sections: [(month: Date, entries: [Entry])] {
+    /// Events grouped by month, newest first.
+    private var sections: [(month: Date, items: [JournalItem])] {
         let cal = Calendar.current
-        let grouped = Dictionary(grouping: filtered) {
+        let items = JournalItem.group(filtered)
+        let grouped = Dictionary(grouping: items) {
             cal.date(from: cal.dateComponents([.year, .month], from: $0.date))!
         }
         return grouped.keys.sorted(by: >).map { ($0, grouped[$0]!) }
@@ -69,6 +70,7 @@ struct EntryListView: View {
                 EntryEditorView(entry: nil)
             }
             .navigationDestination(for: Entry.self) { EntryDetailView(entry: $0) }
+            .navigationDestination(for: ShootingEvent.self) { EventDetailView(event: $0) }
         }
     }
 
@@ -82,17 +84,27 @@ struct EntryListView: View {
             }
             ForEach(sections, id: \.month) { section in
                 Section {
-                    ForEach(section.entries) { entry in
-                        NavigationLink(value: entry) { EntryRow(entry: entry) }
+                    ForEach(section.items) { item in
+                        if item.isSingle, let entry = item.entries.first {
+                            NavigationLink(value: entry) { EntryRow(entry: entry) }
+                        } else if let event = item.event {
+                            NavigationLink(value: event) { EventRow(event: event, entries: item.entries) }
+                        }
                     }
                     .onDelete { offsets in
-                        try? Deletion.delete(offsets.map { section.entries[$0] }, in: context)
+                        for item in offsets.map({ section.items[$0] }) {
+                            if !item.isSingle, let event = item.event {
+                                try? Deletion.delete(event, in: context)
+                            } else {
+                                try? Deletion.delete(item.entries, in: context)
+                            }
+                        }
                     }
                 } header: {
                     HStack {
                         Text(section.month, format: .dateTime.month(.wide).year())
                         Spacer()
-                        Text("\(section.entries.reduce(0) { $0 + $1.shotCount }.formatted()) Schuss")
+                        Text("\(section.items.reduce(0) { $0 + $1.totalShots }.formatted()) Schuss")
                     }
                 }
             }
@@ -143,7 +155,7 @@ struct EntryRow: View {
             .frame(width: 40)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(entry.event.isEmpty ? "Schiessen".loc : entry.event)
+                Text(entry.title)
                     .font(.headline)
                     .lineLimit(1)
                 HStack(spacing: 6) {
@@ -168,6 +180,62 @@ struct EntryRow: View {
 
             VStack(alignment: .trailing, spacing: 2) {
                 Text(entry.shotCount.formatted())
+                    .font(.headline.monospacedDigit())
+                Text("Schuss").font(.caption2).foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+}
+
+/// A list row for an event with several Stiche.
+struct EventRow: View {
+    let event: ShootingEvent
+    /// The Stiche to count, e.g. those matching a search.
+    let entries: [Entry]
+
+    private var weapons: [Weapon] {
+        var seen = Set<PersistentIdentifier>()
+        return entries.compactMap(\.weapon).filter { seen.insert($0.persistentModelID).inserted }
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(spacing: 0) {
+                Text(event.date, format: .dateTime.day())
+                    .font(.title3.bold().monospacedDigit())
+                Text(event.date, format: .dateTime.weekday(.abbreviated))
+                    .font(.caption2).foregroundStyle(.secondary)
+            }
+            .frame(width: 40)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(event.name.isEmpty ? "Schiessen".loc : event.name)
+                    .font(.headline)
+                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Label(String(localized: "\(entries.count) Stiche"), systemImage: "list.number")
+                    if let range = event.range {
+                        Label(range.name, systemImage: "mappin.and.ellipse")
+                    }
+                    if weapons.count == 1, let weapon = weapons.first {
+                        Label {
+                            Text(weapon.name)
+                        } icon: {
+                            WeaponIcon(category: weapon.category).frame(width: 26, height: 10)
+                        }
+                    }
+                }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .labelStyle(CompactLabelStyle())
+                .lineLimit(1)
+            }
+
+            Spacer(minLength: 4)
+
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(entries.totalShots.formatted())
                     .font(.headline.monospacedDigit())
                 Text("Schuss").font(.caption2).foregroundStyle(.secondary)
             }

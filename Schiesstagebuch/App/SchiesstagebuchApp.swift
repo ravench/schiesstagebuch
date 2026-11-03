@@ -8,7 +8,7 @@ struct SchiesstagebuchApp: App {
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
     let container: ModelContainer = Self.makeContainer()
 
-    static let schema = Schema([Entry.self, Weapon.self, Caliber.self, Ammunition.self,
+    static let schema = Schema([ShootingEvent.self, Entry.self, Weapon.self, Caliber.self, Ammunition.self,
                                 ShootingRange.self, MaintenanceRecord.self, EntryPhoto.self, AmmoLot.self,
                                 LicenceCard.self])
 
