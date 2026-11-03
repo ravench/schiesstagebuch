@@ -2531,6 +2531,29 @@
         }
       }
     },
+    "Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A few questions about your preferences, so the app only shows what you need. You can change everything later in Settings."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quelques questions sur tes préférences, pour que l'app n'affiche que ce dont tu as besoin. Tu peux tout modifier plus tard dans Réglages."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qualche domanda sulle tue preferenze, così l'app mostra solo ciò che ti serve. Puoi cambiare tutto più tardi in Impostazioni."
+          }
+        }
+      }
+    },
     "Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.": {
       "extractionState": "manual",
       "localizations": {
@@ -8264,6 +8287,29 @@
         }
       }
     },
+    "Richten wir die App für dich ein": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let's set up the app for you"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configurons l'app pour toi"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configuriamo l'app per te"
+          }
+        }
+      }
+    },
     "Richtung von der Schützenlinie zu den Scheiben. 0° = Nord, 90° = Ost.": {
       "extractionState": "manual",
       "localizations": {
@@ -11001,25 +11047,25 @@
         }
       }
     },
-    "Wähle, welche Felder deine Einträge zusätzlich zeigen. Du kannst das jederzeit unter Einstellungen ändern.": {
+    "Wähle, welche Felder deine Einträge zusätzlich zeigen.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose which extra fields your entries show. You can change this any time in Settings."
+            "value": "Choose which extra fields your entries show."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choisis les champs supplémentaires de tes entrées. Tu peux le modifier à tout moment dans Réglages."
+            "value": "Choisis les champs supplémentaires de tes entrées."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scegli quali campi aggiuntivi mostrano le tue voci. Puoi cambiarlo in qualsiasi momento in Impostazioni."
+            "value": "Scegli quali campi aggiuntivi mostrano le tue voci."
           }
         }
       }

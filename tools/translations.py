@@ -432,12 +432,17 @@ T = {
         "Switch each field on separately. Hidden values stay saved.",
         "Chaque champ s'active séparément. Les valeurs masquées restent enregistrées.",
         "Ogni campo si attiva separatamente. I valori nascosti restano salvati."),
+    "Richten wir die App für dich ein": ("Let's set up the app for you", "Configurons l'app pour toi", "Configuriamo l'app per te"),
+    "Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.": (
+        "A few questions about your preferences, so the app only shows what you need. You can change everything later in Settings.",
+        "Quelques questions sur tes préférences, pour que l'app n'affiche que ce dont tu as besoin. Tu peux tout modifier plus tard dans Réglages.",
+        "Qualche domanda sulle tue preferenze, così l'app mostra solo ciò che ti serve. Puoi cambiare tutto più tardi in Impostazioni."),
     "Willkommen": ("Welcome", "Bienvenue", "Benvenuto"),
     "Los geht's": ("Let's go", "C'est parti", "Iniziamo"),
-    "Wähle, welche Felder deine Einträge zusätzlich zeigen. Du kannst das jederzeit unter Einstellungen ändern.": (
-        "Choose which extra fields your entries show. You can change this any time in Settings.",
-        "Choisis les champs supplémentaires de tes entrées. Tu peux le modifier à tout moment dans Réglages.",
-        "Scegli quali campi aggiuntivi mostrano le tue voci. Puoi cambiarlo in qualsiasi momento in Impostazioni."),
+    "Wähle, welche Felder deine Einträge zusätzlich zeigen.": (
+        "Choose which extra fields your entries show.",
+        "Choisis les champs supplémentaires de tes entrées.",
+        "Scegli quali campi aggiuntivi mostrano le tue voci."),
     "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später unter Einstellungen › Schiessanlagen.": (
         "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges.",
         "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard sous Réglages › Stands de tir.",
