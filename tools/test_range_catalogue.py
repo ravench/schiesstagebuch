@@ -446,6 +446,14 @@ class GeoPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             rc.latest_gpkg({"features": []})
 
+    def test_round_bearing_stays_below_360(self):
+        self.assertEqual(rc.round_bearing(359.96), 0.0)
+        self.assertEqual(rc.round_bearing(359.94), 359.9)
+        self.assertEqual(rc.round_bearing(12.345), 12.3)
+        app = rc.app_catalogue({"ranges": [{"id": "tlm:1", "name": "A", "place": "B", "latitude": 47.0,
+                                            "longitude": 8.0, "distances": [50], "shootingBearing": 360.0}]})
+        self.assertEqual(app["ranges"][0]["bearing"], 0.0)
+
     def test_app_catalogue(self):
         def rng(ident, name, place, distances, bearing=10.0):
             return {"id": ident, "name": name, "place": place, "latitude": 46.9, "longitude": 7.4,
