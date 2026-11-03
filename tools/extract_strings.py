@@ -17,6 +17,7 @@ CONTEXTS = [
     r'\b(?:pickerRow|filterPicker|tile|metric|row)\(\s*' + LIT,
     r'\bBreakdownChart\(title:\s*' + LIT,
     r'\bterm\(\s*' + LIT,               # Terms (Waffen/Sportgeräte wording)
+    r'\bNumberStepperRow\(title:\s*' + LIT,
     r'\bcase \.\w+:\s*' + LIT,          # enum titles (titleKey) and error texts
     r'\bcase \w+ = ' + LIT,             # CaliberCatalog.Category raw values
     r'\[' + LIT + r'(?:,\s*' + LIT + r')+\]\s*\n?\s*\.map\(\\\.loc\)',

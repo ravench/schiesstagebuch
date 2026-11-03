@@ -415,6 +415,29 @@
         }
       }
     },
+    "A-Treffer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A hits"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impacts A"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi A"
+          }
+        }
+      }
+    },
     "Ab Reinigung / Service": {
       "extractionState": "manual",
       "localizations": {
@@ -986,6 +1009,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Evento, poligono, arma …"
+          }
+        }
+      }
+    },
+    "Anteil A": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A share"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Part de A"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quota A"
           }
         }
       }
@@ -1910,6 +1956,52 @@
         }
       }
     },
+    "C-Treffer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C hits"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impacts C"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi C"
+          }
+        }
+      }
+    },
+    "D-Treffer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "D hits"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impacts D"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi D"
+          }
+        }
+      }
+    },
     "Darstellung": {
       "extractionState": "manual",
       "localizations": {
@@ -2481,6 +2573,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diottra, anello e iride"
+          }
+        }
+      }
+    },
+    "Division": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Division"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Division"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Divisione"
           }
         }
       }
@@ -3336,6 +3451,29 @@
         }
       }
     },
+    "Fehlschüsse (Miss)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Misses"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manqués (miss)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mancati (miss)"
+          }
+        }
+      }
+    },
     "Fertig": {
       "extractionState": "manual",
       "localizations": {
@@ -3917,6 +4055,29 @@
         }
       }
     },
+    "Gefallene Stahlziele zählen als A. Fehlschüsse, No-Shoots und Verfahrensfehler kosten je 10 Punkte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steel targets that fell count as A. Misses, no-shoots and procedurals cost 10 points each."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les cibles métalliques tombées comptent comme A. Manqués, no-shoots et pénalités de procédure coûtent 10 points chacun."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I bersagli metallici abbattuti contano come A. Mancati, no-shoot e penalità procedurali costano 10 punti ciascuno."
+          }
+        }
+      }
+    },
     "Gefunden": {
       "extractionState": "manual",
       "localizations": {
@@ -4354,6 +4515,29 @@
         }
       }
     },
+    "Hitfaktor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit factor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit factor"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit factor"
+          }
+        }
+      }
+    },
     "Hunderterwertung": {
       "extractionState": "manual",
       "localizations": {
@@ -4396,6 +4580,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Altitudine"
+          }
+        }
+      }
+    },
+    "IPSC": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IPSC"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IPSC"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IPSC"
           }
         }
       }
@@ -5987,6 +6194,29 @@
         }
       }
     },
+    "Major": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Major"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Major"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Major"
+          }
+        }
+      }
+    },
     "Maschinengewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -6102,6 +6332,29 @@
         }
       }
     },
+    "Minor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minor"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minor"
+          }
+        }
+      }
+    },
     "Mit einer Lebensdauer zeigt die App, wie weit der Lauf abgenutzt ist.": {
       "extractionState": "manual",
       "localizations": {
@@ -6121,6 +6374,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Con una durata prevista, l'app mostra quanto è usurata la canna."
+          }
+        }
+      }
+    },
+    "Mit mehr als einer wählst du sie pro Anlass. Neue Anlässe beginnen mit der obersten.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With more than one on, you pick one per event. New events start with the top one."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S'il y en a plusieurs, tu choisis pour chaque événement. Les nouveaux événements commencent avec le premier."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se ne attivi più di uno, lo scegli per ogni evento. I nuovi eventi iniziano con il primo."
           }
         }
       }
@@ -6949,6 +7225,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "pioggerella"
+          }
+        }
+      }
+    },
+    "No-Shoots": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No-shoots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No-shoots"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No-shoot"
           }
         }
       }
@@ -7827,6 +8126,29 @@
         }
       }
     },
+    "Power-Faktor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Power factor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facteur de puissance"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Power factor"
+          }
+        }
+      }
+    },
     "Pro Anlass": {
       "extractionState": "manual",
       "localizations": {
@@ -8241,6 +8563,52 @@
         }
       }
     },
+    "Punkte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punti"
+          }
+        }
+      }
+    },
+    "Punkte (Ringwertung)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points (ring scoring)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points (anneaux)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punti (anelli)"
+          }
+        }
+      }
+    },
     "Randfeuer": {
       "extractionState": "manual",
       "localizations": {
@@ -8444,6 +8812,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato per lotto"
+          }
+        }
+      }
+    },
+    "Resultat, Einzelschüsse und Max. Punkte pro Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result, single shots and max. points per match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat, coups individuels et points max. par cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato, colpi singoli e punti max. per bersaglio"
           }
         }
       }
@@ -9069,6 +9460,29 @@
         }
       }
     },
+    "Schusszahl: alle abgegebenen Schüsse, auch Nachschüsse. Zeit vom Startsignal bis zum letzten Schuss.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shots: every round fired, make-up shots included. Time from the start signal to the last shot."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre de coups : tous les coups tirés, rattrapages compris. Temps du signal de départ au dernier coup."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di colpi: tutti i colpi sparati, compresi quelli di recupero. Tempo dal segnale di partenza all'ultimo colpo."
+          }
+        }
+      }
+    },
     "Schwarzpulver": {
       "extractionState": "manual",
       "localizations": {
@@ -9203,6 +9617,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colpi nel tempo"
+          }
+        }
+      }
+    },
+    "Sekunden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seconds"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secondes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secondi"
           }
         }
       }
@@ -9594,6 +10031,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pistola sportiva"
+          }
+        }
+      }
+    },
+    "Stage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage"
+          }
+        }
+      }
+    },
+    "Stage hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add stage"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un stage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi stage"
+          }
+        }
+      }
+    },
+    "Stages": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stages"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stages"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stage"
           }
         }
       }
@@ -10311,6 +10817,29 @@
         }
       }
     },
+    "Treffer und Fehler": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hits and penalties"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impacts et pénalités"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi e penalità"
+          }
+        }
+      }
+    },
     "Trommel": {
       "extractionState": "manual",
       "localizations": {
@@ -10445,6 +10974,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terreno / appoggio"
+          }
+        }
+      }
+    },
+    "Verfahrensfehler": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Procedurals"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pénalités de procédure"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Penalità procedurali"
           }
         }
       }
@@ -10932,6 +11484,52 @@
         }
       }
     },
+    "Wertungsart": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scoring"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode de comptage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tipo di punteggio"
+          }
+        }
+      }
+    },
+    "Wertungsarten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scoring"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modes de comptage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tipi di punteggio"
+          }
+        }
+      }
+    },
     "Wertungsschüsse": {
       "extractionState": "manual",
       "localizations": {
@@ -11020,6 +11618,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra il meteo"
+          }
+        }
+      }
+    },
+    "Wie wertest du deine Schüsse? Mehrere sind möglich.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How do you score your shooting? You can pick several."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comment comptes-tu tes tirs ? Plusieurs choix possibles."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come conti i tuoi tiri? Puoi sceglierne più di uno."
           }
         }
       }
@@ -11342,6 +11963,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Punteggio su 10 (A10)"
+          }
+        }
+      }
+    },
+    "Zeit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo"
+          }
+        }
+      }
+    },
+    "Zeit (s)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time (s)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps (s)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo (s)"
+          }
+        }
+      }
+    },
+    "Zeit und Treffer A, C, D pro Stage, mit Hitfaktor": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time and A, C, D hits per stage, with hit factor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps et impacts A, C, D par stage, avec hit factor"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo e colpi A, C, D per stage, con hit factor"
           }
         }
       }

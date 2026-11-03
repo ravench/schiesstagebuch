@@ -42,16 +42,24 @@ struct EntryDetailView: View {
                         metric("Wertung", scored.formatted())
                     }
                     Divider()
-                    metric("Resultat", entry.result.isEmpty ? "–" : entry.result)
+                    if entry.scoringSystem == .ipsc {
+                        metric("Hitfaktor", entry.hitFactor.map { IPSCFormat.hitFactor($0) } ?? "–")
+                    } else {
+                        metric("Resultat", entry.result.isEmpty ? "–" : entry.result)
+                    }
                 }
                 .frame(height: 64)
             }
 
+            if entry.scoringSystem == .ipsc {
+                IPSCStageDetail(entry: entry)
+            }
+
             let score = entry.score
-            if score.percentage != nil || score.meanPerShot != nil {
+            if entry.scoringSystem == .rings, score.percentage != nil || score.meanPerShot != nil {
                 Section("Auswertung") { ScoreSummary(score: score) }
             }
-            if !score.passes.isEmpty {
+            if entry.scoringSystem == .rings, !score.passes.isEmpty {
                 Section("Einzelschüsse") {
                     ForEach(Array(score.passes.enumerated()), id: \.offset) { i, pass in
                         HStack {
