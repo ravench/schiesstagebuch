@@ -38,11 +38,10 @@ enum NearbyRanges {
         return nearest
     }
 
-    /// Like `preselection`, but only while the range is still the one carried over from the last entry:
+    /// Like `preselection`, but only while the range field is still empty:
     /// a range the user picked before the position arrived is never replaced.
-    static func preselection(_ ranges: [ShootingRange], from location: CLLocation,
-                             current: ShootingRange?, carriedOver: ShootingRange?) -> Match? {
-        guard current == carriedOver else { return nil }
+    static func preselection(_ ranges: [ShootingRange], from location: CLLocation, current: ShootingRange?) -> Match? {
+        guard current == nil else { return nil }
         return preselection(ranges, from: location)
     }
 
