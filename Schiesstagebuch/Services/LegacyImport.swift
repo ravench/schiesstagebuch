@@ -28,6 +28,13 @@ enum LegacyImport {
             let d = Calendar.current.dateComponents([.year, .month, .day], from: date)
             return "legacy|\(d.year!)-\(d.month!)-\(d.day!)|\(weapon)|\(event)|\(range)|\(shots)|\(result)"
         }
+
+        /// Rows of one day with the same Anlass and range are Stiche of one event (case and spaces ignored).
+        var eventKey: String {
+            let d = Calendar.current.dateComponents([.year, .month, .day], from: date)
+            func norm(_ s: String) -> String { s.trimmingCharacters(in: .whitespaces).lowercased() }
+            return "\(d.year!)-\(d.month!)-\(d.day!)|\(norm(event))|\(norm(range))"
+        }
     }
 
     enum ImportError: LocalizedError {
@@ -210,8 +217,10 @@ enum LegacyImport {
         var usage: [String: [Caliber: Int]] = [:]
 
         let canReadPhotos = loadPhotos ? await requestPhotoAccess() : false
+        var events: [String: ShootingEvent] = [:]
+        let start = Date.now
 
-        for row in plan.newRows {
+        for (index, row) in plan.newRows.enumerated() {
             var range: ShootingRange?
             if !row.range.isEmpty {
                 range = ranges[norm(row.range)] ?? {
@@ -240,13 +249,13 @@ enum LegacyImport {
                 if let cal { usage[norm(row.weapon), default: [:]][cal, default: 0] += row.shots }
             }
 
-            // The old app had no events: each of its entries becomes an event with one Stich.
-            let event = ShootingEvent(date: row.date, name: row.event.trimmingCharacters(in: .whitespaces))
-            context.insert(event)
-            event.range = range
+            // The old app had no events: its entries of one day with the same Anlass and range become one event.
+            let event = events[row.eventKey] ?? ShootingEvent(date: row.date, name: row.event.trimmingCharacters(in: .whitespaces))
+            if events[row.eventKey] == nil { context.insert(event); event.range = range; events[row.eventKey] = event }
             let entry = Entry(date: row.date, weapon: weapon, caliber: cal, shotCount: row.shots, ammunition: ammo,
                               result: row.result, notes: row.notes)
             entry.importKey = row.key
+            entry.createdAt = start.addingTimeInterval(Double(index) / 1000)   // keeps the file's order of Stiche
             if plan.splitSighters.contains(row.key), let sighters = plan.sighterSuggestions[row.key] {
                 entry.sighterCount = sighters
             }
