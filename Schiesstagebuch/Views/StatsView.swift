@@ -215,6 +215,7 @@ struct AmmunitionDetailView: View {
         } breakdowns: { entries in
             Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Los", entries: entries, key: \.lot, label: \.number) }
+            if entries.percentageByLot.count >= 2 { Section { LotResultsChart(entries: entries) } }
         }
         .navigationTitle(ammunition.name)
         .toolbar { Button("Bearbeiten") { editing = true } }
