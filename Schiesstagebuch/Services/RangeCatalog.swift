@@ -49,7 +49,7 @@ enum RangeCatalog {
 
     @MainActor
     static func hasCatalogueRanges(_ context: ModelContext) -> Bool {
-        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { $0.catalogID != "" })
+        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { !$0.catalogID.isEmpty })
         return ((try? context.fetchCount(descriptor)) ?? 0) > 0
     }
 
@@ -117,7 +117,7 @@ enum RangeCatalog {
     @MainActor
     @discardableResult
     static func deduplicate(_ context: ModelContext) -> Int {
-        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { $0.catalogID != "" },
+        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { !$0.catalogID.isEmpty },
                                                         sortBy: [SortDescriptor(\.createdAt)])
         guard let all = try? context.fetch(descriptor) else { return 0 }
         var keeper: [String: ShootingRange] = [:]
