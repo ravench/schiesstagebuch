@@ -358,7 +358,7 @@ struct EntryEditorView: View {
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
                                                label: KeyPath<T, String>, add: QuickAdd,
                                                subtitle: @escaping (T) -> String? = { _ in nil }) -> some View {
-        HStack {
+        PickerValueRow(title: title.loc, value: selection.wrappedValue?[keyPath: label]) {
             Picker(title.loc, selection: selection) {
                 Text("–").tag(T?.none)
                 ForEach(items) { item in
@@ -369,6 +369,7 @@ struct EntryEditorView: View {
                     Text(current[keyPath: label]).tag(Optional(current))
                 }
             }
+        } trailing: {
             Button { quickAdd = add } label: { Image(systemName: "plus.circle") }
                 .buttonStyle(.borderless)
                 .accessibilityLabel(String(localized: "\(title.loc) hinzufügen"))
