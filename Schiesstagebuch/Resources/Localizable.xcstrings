@@ -8425,6 +8425,29 @@
         }
       }
     },
+    "Punkte (Ringwertung)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points (ring scoring)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points (anneaux)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punti (anelli)"
+          }
+        }
+      }
+    },
     "Randfeuer": {
       "extractionState": "manual",
       "localizations": {

@@ -13,7 +13,7 @@ enum ScoringSystem: String, CaseIterable, Identifiable, Codable {
 
     var title: String {
         switch self {
-        case .rings: "Punkte"
+        case .rings: "Punkte (Ringwertung)"
         case .ipsc: "IPSC"
         }
     }
