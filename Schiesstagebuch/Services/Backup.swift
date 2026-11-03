@@ -219,6 +219,17 @@ enum Backup {
         }
     }
 
+    private static func restoreMaintenance(_ dtos: [MaintenanceDTO], weapons: [UUID: Weapon],
+                                           into context: ModelContext) throws {
+        let existing = Set(try all(MaintenanceRecord.self, context).map(\.id))
+        for d in dtos where !existing.contains(d.id) {
+            let r = MaintenanceRecord(kind: MaintenanceKind(rawValue: d.kind) ?? .cleaning, date: d.date, notes: d.notes,
+                                      weapon: d.weaponID.flatMap { weapons[$0] })
+            r.id = d.id
+            context.insert(r)
+        }
+    }
+
     private static func restoreEvents(_ dtos: [EventDTO], ranges: [UUID: ShootingRange],
                                       into context: ModelContext) throws -> [UUID: ShootingEvent] {
         var events = Dictionary(uniqueKeysWithValues: try all(ShootingEvent.self, context).map { ($0.id, $0) })
@@ -289,14 +300,7 @@ enum Backup {
             context.insert(r); ranges[d.id] = r
         }
 
-        let existingRecords = Set(try all(MaintenanceRecord.self, context).map(\.id))
-        for d in file.maintenance where !existingRecords.contains(d.id) {
-            let r = MaintenanceRecord(kind: MaintenanceKind(rawValue: d.kind) ?? .cleaning, date: d.date, notes: d.notes,
-                                      weapon: d.weaponID.flatMap { weapons[$0] })
-            r.id = d.id
-            context.insert(r)
-        }
-
+        try restoreMaintenance(file.maintenance, weapons: weapons, into: context)
         try restoreLicenceCards(file.licenceCards ?? [], into: context)
         let barrels = try restoreBarrels(file.barrels ?? [], weapons: weapons, calibers: caliberMap, into: context)
         restoreOldWeaponCalibers(file.weapons, weapons: weapons, calibers: caliberMap, into: context)
