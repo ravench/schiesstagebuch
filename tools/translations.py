@@ -295,6 +295,10 @@ T = {
     "Tage zählen ab dem nächsten Schuss": ("Days count from the next shot", "Les jours comptent dès le prochain tir", "I giorni contano dal prossimo colpo"),
     "Nr.": ("No.", "N°", "N."),
     "Seriennummer (optional)": ("Serial number (optional)", "Numéro de série (facultatif)", "Numero di serie (facoltativo)"),
+    "Kauf und Verkauf": ("Purchase and sale", "Achat et vente", "Acquisto e vendita"),
+    "Kaufdatum": ("Date of purchase", "Date d'achat", "Data di acquisto"),
+    "Verkaufsdatum": ("Date of sale", "Date de vente", "Data di vendita"),
+    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen.": ("The date of sale can't be before the date of purchase.", "La date de vente ne peut pas précéder la date d'achat.", "La data di vendita non può precedere la data di acquisto."),
     "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
 
     # Standblatt scanner

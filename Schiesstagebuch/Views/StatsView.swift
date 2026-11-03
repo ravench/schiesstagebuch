@@ -125,6 +125,12 @@ struct WeaponDetailView: View {
                     .listRowBackground(Color.clear)
                 LabeledContent("Kategorie", value: weapon.category.title)
                 if !weapon.caliberSummary.isEmpty { LabeledContent("Kaliber", value: weapon.caliberSummary) }
+                if let bought = weapon.purchaseDate {
+                    LabeledContent("Kaufdatum", value: bought.formatted(date: .long, time: .omitted))
+                }
+                if let sold = weapon.saleDate {
+                    LabeledContent("Verkaufsdatum", value: sold.formatted(date: .long, time: .omitted))
+                }
             }
             MaintenanceSection(weapon: weapon) { maintenanceSheet = $0 }
         } breakdowns: { entries in
