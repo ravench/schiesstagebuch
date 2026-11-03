@@ -224,6 +224,8 @@ final class Entry {
     var maxPoints: Double?
     /// Optional sight / glasses settings: filter colour key ("" = none), diopter and ring size (0.1–9.9).
     var filterColor: String = ""
+    /// Second filter stacked with `filterColor` ("" = none), e.g. +0.25.
+    var secondFilterColor: String = ""
     var diopter: Double?
     /// Ring (aperture) on a rifle's sight.
     var ringSize: Double?

@@ -300,29 +300,6 @@
         }
       }
     },
-    "AXIA-Filter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "AXIA filters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtres AXIA"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtri AXIA"
-          }
-        }
-      }
-    },
     "Ab Reinigung / Service": {
       "extractionState": "manual",
       "localizations": {
@@ -2439,6 +2416,29 @@
         }
       }
     },
+    "Farbfilter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colour filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres de couleur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri colorati"
+          }
+        }
+      }
+    },
     "Fehlende Schüsse: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -2504,6 +2504,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtro"
+          }
+        }
+      }
+    },
+    "Filter (Mehrzahl)": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri"
           }
         }
       }
@@ -3884,6 +3913,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Controllo"
+          }
+        }
+      }
+    },
+    "Korrekturlinsen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adjustment lenses"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verres correcteurs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lenti correttive"
           }
         }
       }
@@ -5862,6 +5914,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per evento"
+          }
+        }
+      }
+    },
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two filters can be combined per entry, usually a colour filter with a +0.25 or -0.25 adjustment lens."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre correcteur +0.25 ou -0.25."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente correttiva +0.25 o -0.25."
           }
         }
       }
@@ -8737,6 +8812,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bipiede (cm)"
+          }
+        }
+      }
+    },
+    "Zweiter Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Second filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deuxième filtre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secondo filtro"
           }
         }
       }
