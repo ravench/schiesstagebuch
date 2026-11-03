@@ -293,9 +293,8 @@ enum LegacyImport {
             return calibers.first { $0.catalogID == id }
         }
 
-        let allRanges = (try? context.fetch(FetchDescriptor<ShootingRange>())) ?? []
-        var ranges = Dictionary(allRanges.map { (norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
-        let matched = MatchedRanges(plan: plan, ranges: allRanges, catalogue: catalogue, context: context)
+        let matched = MatchedRanges(plan: plan, ranges: (try? context.fetch(FetchDescriptor<ShootingRange>())) ?? [],
+                                    catalogue: catalogue, context: context)
         var weapons = Dictionary(((try? context.fetch(FetchDescriptor<Weapon>())) ?? []).map { (norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
         var ammos = Dictionary(((try? context.fetch(FetchDescriptor<Ammunition>())) ?? []).map { (norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
 
@@ -331,16 +330,7 @@ enum LegacyImport {
             let event = events[row.eventKey] ?? ShootingEvent(date: row.date, name: row.event.trimmingCharacters(in: .whitespaces))
             if events[row.eventKey] == nil {
                 // The event's range comes from its first row; later Stiche share it.
-                var range: ShootingRange?
-                if !row.range.isEmpty { range = matched.range(for: row, added: &summary.ranges) }
-                if !row.range.isEmpty, range == nil {
-                    range = ranges[norm(row.range)] ?? {
-                        let r = ShootingRange(name: row.range.trimmingCharacters(in: .whitespaces))
-                        context.insert(r); ranges[norm(row.range)] = r; summary.ranges += 1
-                        return r
-                    }()
-                }
-                context.insert(event); event.range = range; events[row.eventKey] = event
+                context.insert(event); event.range = matched.range(for: row, added: &summary.ranges); events[row.eventKey] = event
             }
             let entry = Entry(date: row.date, weapon: weapon, caliber: cal, shotCount: row.shots, ammunition: ammo,
                               result: row.result, notes: row.notes)
@@ -378,12 +368,14 @@ enum LegacyImport {
         return summary
     }
 
-    /// The ranges switched-on matches point to; a catalogue range is added on first use.
+    /// The range of a row: the one a switched-on match points to (a catalogue range is added on
+    /// first use), else the range with the same name, else a new one.
     @MainActor
     private final class MatchedRanges {
         let plan: Plan
         let context: ModelContext
         let byID: [UUID: ShootingRange]
+        var byName: [String: ShootingRange]
         var byCatalogID: [String: ShootingRange]
         let items: [String: RangeCatalog.Item]
 
@@ -391,11 +383,22 @@ enum LegacyImport {
             self.plan = plan
             self.context = context
             byID = Dictionary(ranges.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+            byName = Dictionary(ranges.map { (LegacyImport.norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
             byCatalogID = Dictionary(ranges.filter { !$0.catalogID.isEmpty }.map { ($0.catalogID, $0) }, uniquingKeysWith: { a, _ in a })
             items = Dictionary(catalogue.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         }
 
         func range(for row: Row, added: inout Int) -> ShootingRange? {
+            guard !row.range.isEmpty else { return nil }
+            if let range = matchedRange(for: row, added: &added) { return range }
+            let name = LegacyImport.norm(row.range)
+            if let range = byName[name] { return range }
+            let range = ShootingRange(name: row.range.trimmingCharacters(in: .whitespaces))
+            context.insert(range); byName[name] = range; added += 1
+            return range
+        }
+
+        private func matchedRange(for row: Row, added: inout Int) -> ShootingRange? {
             guard let key = plan.rowRangeKeys[row.key], plan.useRangeMatch.contains(key),
                   let match = plan.rangeMatches[key] else { return nil }
             var range: ShootingRange?
