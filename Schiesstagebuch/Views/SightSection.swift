@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Optional sport-shooter settings in the entry editor: filter, diopter, ring or iris, bipod.
 struct SightSection: View {
+    @Environment(\.term) private var term
     @Binding var sight: SightSettings
     var aperture: SightSettings.Aperture = .both
     @State private var expanded = false
@@ -32,9 +33,9 @@ struct SightSection: View {
             }
         } footer: {
             if FilterCatalog(data: catalogData).visible.isEmpty {
-                Text("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.")
+                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.").loc)
             } else {
-                Text("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.")
+                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.").loc)
             }
         }
     }

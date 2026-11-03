@@ -16,6 +16,7 @@ CONTEXTS = [
     LIT + r'\.loc\b',
     r'\b(?:pickerRow|filterPicker|tile|metric|row)\(\s*' + LIT,
     r'\bBreakdownChart\(title:\s*' + LIT,
+    r'\bterm\(\s*' + LIT,               # Terms (Waffen/Sportgeräte wording)
     r'\bcase \.\w+:\s*' + LIT,          # enum titles (titleKey) and error texts
     r'\bcase \w+ = ' + LIT,             # CaliberCatalog.Category raw values
     r'\[' + LIT + r'(?:,\s*' + LIT + r')+\]\s*\n?\s*\.map\(\\\.loc\)',
@@ -42,6 +43,11 @@ def keys():
                     for g in m.groups():
                         if g and re.search(r'[A-Za-zÄÖÜäöü]{2}', g):
                             found.setdefault(key_for(g), f)
+            # Wording.sportsEquipment: both the Waffe key and its Sportgerät variant
+            if f == "Wording.swift":
+                for m in re.finditer(LIT + r'\s*:\s*' + LIT, src):
+                    for g in m.groups():
+                        found.setdefault(g, f)
             # CSV header list
             for m in re.finditer(r'\[("Datum".*?)\]', src, re.S):
                 for g in re.findall(LIT, m.group(1)):

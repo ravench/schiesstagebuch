@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 /// Preview and run the import from the old Schusszähler app.
 struct LegacyImportView: View {
+    @Environment(\.term) private var term
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var calibers: [Caliber]
@@ -28,7 +29,7 @@ struct LegacyImportView: View {
                 if let summary {
                     Section {
                         Label("\(summary.entries) Einträge importiert", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
-                        LabeledContent("Neue Waffen", value: "\(summary.weapons)")
+                        LabeledContent(term("Neue Waffen").loc, value: "\(summary.weapons)")
                         LabeledContent("Neue Schiessanlagen", value: "\(summary.ranges)")
                         LabeledContent("Neue Munition", value: "\(summary.ammo)")
                         LabeledContent("Fotos übernommen", value: "\(summary.photos)")
@@ -36,7 +37,7 @@ struct LegacyImportView: View {
                             LabeledContent("Fotos nicht gefunden", value: "\(summary.missingPhotos)")
                         }
                     } footer: {
-                        Text("Prüfe unter Waffen die Kategorie und die Kaliber der importierten Waffen.")
+                        Text(term("Prüfe unter Waffen die Kategorie und die Kaliber der importierten Waffen.").loc)
                     }
                 } else if let plan {
                     Section("Gefunden") {
@@ -45,7 +46,7 @@ struct LegacyImportView: View {
                             LabeledContent("Davon schon importiert", value: "\(plan.rows.count - plan.newRows.count)")
                         }
                         LabeledContent("Schüsse", value: plan.newRows.reduce(0) { $0 + $1.shots }.formatted())
-                        LabeledContent("Waffen", value: plan.weapons.joined(separator: ", "))
+                        LabeledContent(term("Waffen").loc, value: plan.weapons.joined(separator: ", "))
                         LabeledContent("Schiessanlagen", value: "\(plan.ranges.count)")
                     }
                     if !plan.sighterSuggestions.isEmpty {
@@ -71,7 +72,7 @@ struct LegacyImportView: View {
                     } header: {
                         Text("Munition → Kaliber")
                     } footer: {
-                        Text("Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.")
+                        Text(term("Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.").loc)
                     }
                     if plan.photoCount > 0 {
                         Section {

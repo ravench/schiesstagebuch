@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct StatsView: View {
+    @Environment(\.term) private var term
     @Query(sort: \Entry.date) private var entries: [Entry]
     @Query(sort: \Weapon.name) private var weapons: [Weapon]
     @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
@@ -18,10 +19,10 @@ struct StatsView: View {
                 Section { ShotsOverTimeChart(entries: filtered) }
                 if filtered.compactMap(\.score.percentage).count >= 2 { Section { ResultTrendChart(entries: filtered) } }
                 Section {
-                    BreakdownChart(title: "Pro Waffe", entries: filtered, key: \.weapon, label: \.name)
+                    BreakdownChart(title: term("Pro Waffe"), entries: filtered, key: \.weapon, label: \.name)
                 }
                 if !weapons.isEmpty {
-                Section("Waffen") {
+                Section(term("Waffen").loc) {
                     ForEach(weapons) { w in
                         NavigationLink {
                             WeaponDetailView(weapon: w)
@@ -162,6 +163,7 @@ struct WeaponDetailView: View {
 }
 
 struct RangeDetailView: View {
+    @Environment(\.term) private var term
     @Bindable var range: ShootingRange
     @State private var editing = false
 
@@ -169,7 +171,7 @@ struct RangeDetailView: View {
         ItemStatsList(entries: range.entries ?? []) {
             if !range.place.isEmpty || range.coordinate != nil { RangeMapSection(range: range) }
         } breakdowns: { entries in
-            Section { BreakdownChart(title: "Pro Waffe", entries: entries, key: \.weapon, label: \.name) }
+            Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Anlass", entries: entries,
                                      key: { $0.event.isEmpty ? nil : $0.event }, label: { $0 }) }
         }
@@ -180,6 +182,7 @@ struct RangeDetailView: View {
 }
 
 struct AmmunitionDetailView: View {
+    @Environment(\.term) private var term
     @Bindable var ammunition: Ammunition
     @State private var editing = false
 
@@ -187,7 +190,7 @@ struct AmmunitionDetailView: View {
         ItemStatsList(entries: ammunition.entries ?? []) {
             if let c = ammunition.caliber { Section { LabeledContent("Kaliber", value: c.name) } }
         } breakdowns: { entries in
-            Section { BreakdownChart(title: "Pro Waffe", entries: entries, key: \.weapon, label: \.name) }
+            Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Los", entries: entries, key: \.lot, label: \.number) }
         }
         .navigationTitle(ammunition.name)
@@ -197,6 +200,7 @@ struct AmmunitionDetailView: View {
 }
 
 struct CaliberDetailView: View {
+    @Environment(\.term) private var term
     @Bindable var caliber: Caliber
     @State private var editing = false
 
@@ -211,7 +215,7 @@ struct CaliberDetailView: View {
                 }
             }
         } breakdowns: { entries in
-            Section { BreakdownChart(title: "Pro Waffe", entries: entries, key: \.weapon, label: \.name) }
+            Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.name) }
         }
         .navigationTitle(caliber.name)

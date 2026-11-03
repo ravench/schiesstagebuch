@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct EntryListView: View {
+    @Environment(\.term) private var term
     @Environment(\.modelContext) private var context
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
     @Query(sort: \Weapon.name) private var weapons: [Weapon]
@@ -57,7 +58,7 @@ struct EntryListView: View {
                 }
             }
             .navigationTitle("Schiesstagebuch")
-            .searchable(text: $searchText, prompt: "Anlass, Anlage, Waffe …")
+            .searchable(text: $searchText, prompt: term("Anlass, Anlage, Waffe …").loc)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) { filterMenu }
                 ToolbarItem(placement: .primaryAction) {
@@ -101,8 +102,8 @@ struct EntryListView: View {
 
     private var filterMenu: some View {
         Menu {
-            Picker("Waffe", selection: $weaponFilter) {
-                Text("Alle Waffen").tag(Weapon?.none)
+            Picker(term("Waffe").loc, selection: $weaponFilter) {
+                Text(term("Alle Waffen").loc).tag(Weapon?.none)
                 ForEach(weapons) { w in
                     PickerOption(title: w.name, subtitle: w.pickerSerial(show: showSerial)).tag(Optional(w))
                 }
