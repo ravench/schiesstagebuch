@@ -12,6 +12,7 @@ enum Wording {
     /// variant needs an entry in tools/translations_wording.py.
     static let sportsEquipment: [String: String] = [
         "Waffe": "Sportgerät",
+        "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.",
         "Waffen": "Sportgeräte",
         "Alle Waffen": "Alle Sportgeräte",
         "Deine Waffen": "Deine Sportgeräte",

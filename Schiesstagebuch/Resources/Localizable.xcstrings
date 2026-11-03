@@ -254,6 +254,52 @@
         }
       }
     },
+    "%lld Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld coups"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld colpi"
+          }
+        }
+      }
+    },
+    "%lld Stiche": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld matches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld bersagli"
+          }
+        }
+      }
+    },
     "%lld Uhr": {
       "extractionState": "manual",
       "localizations": {
@@ -296,6 +342,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld colpi di gara + %2$lld colpi di prova"
+          }
+        }
+      }
+    },
+    "%lld× geschossen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shot %lld×"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tirée %lld×"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tirato %lld×"
           }
         }
       }
@@ -710,6 +779,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Evento"
+          }
+        }
+      }
+    },
+    "Anlass bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit event"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier l'événement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica evento"
+          }
+        }
+      }
+    },
+    "Anlass mit allen Stichen löschen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete the event with all its matches?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer l'événement avec toutes ses cibles ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare l'evento con tutti i bersagli?"
           }
         }
       }
@@ -1703,6 +1818,29 @@
         }
       }
     },
+    "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date, range, event and weather apply to all %lld matches."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La date, le stand, l'événement et la météo valent pour les %lld cibles."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data, poligono, evento e meteo valgono per tutti i %lld bersagli."
+          }
+        }
+      }
+    },
     "Davon schon importiert": {
       "extractionState": "manual",
       "localizations": {
@@ -1998,6 +2136,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Foschia / umidità che sale"
+          }
+        }
+      }
+    },
+    "Durchschnitt pro Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Average per match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moyenne par cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media per bersaglio"
           }
         }
       }
@@ -3066,6 +3227,75 @@
         }
       }
     },
+    "Für Stiche, die an diesem Anlass mehrmals geschossen wurden.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For matches shot more than once at this event."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour les cibles tirées plusieurs fois à cet événement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per i bersagli tirati più volte a questo evento."
+          }
+        }
+      }
+    },
+    "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For another program at the same event, also with different equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour un autre programme au même événement, aussi avec un autre équipement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per un altro programma allo stesso evento, anche con un altro attrezzo."
+          }
+        }
+      }
+    },
+    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For another programme at the same event, also with a different weapon."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour un autre programme au même événement, aussi avec une autre arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per un altro programma allo stesso evento, anche con un'altra arma."
+          }
+        }
+      }
+    },
     "Gebundenes Tagebuch": {
       "extractionState": "manual",
       "localizations": {
@@ -3177,6 +3407,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "vento temporalesco"
+          }
+        }
+      }
+    },
+    "Gilt für alle %lld Stiche dieses Anlasses.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applies to all %lld matches of this event."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaut pour les %lld cibles de cet événement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vale per tutti i %lld bersagli di questo evento."
           }
         }
       }
@@ -8126,6 +8379,75 @@
         }
       }
     },
+    "Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersaglio"
+          }
+        }
+      }
+    },
+    "Stich hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi bersaglio"
+          }
+        }
+      }
+    },
+    "Stiche": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli"
+          }
+        }
+      }
+    },
     "Stroh": {
       "extractionState": "manual",
       "localizations": {
@@ -9019,6 +9341,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Omesso perché la serie corrisponda alla somma stampata: colpo %@"
+          }
+        }
+      }
+    },
+    "Weiteren Stich hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add another match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une autre cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi un altro bersaglio"
+          }
+        }
+      }
+    },
+    "Weiterer Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Another match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autre cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro bersaglio"
           }
         }
       }
@@ -10518,6 +10886,29 @@
         }
       }
     },
+    "pro Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "per shot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "per colpo"
+          }
+        }
+      }
+    },
     "schwierig": {
       "extractionState": "manual",
       "localizations": {
@@ -11020,29 +11411,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media percentuale"
-          }
-        }
-      }
-    },
-    "Ø pro Eintrag": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avg. per entry"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moy. par entrée"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media per voce"
           }
         }
       }

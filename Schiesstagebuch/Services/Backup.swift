@@ -22,7 +22,8 @@ struct BackupDocument: FileDocument {
 /// JSON backup of everything, including photos (base64). Restore merges by id, so
 /// importing the same file twice does not create duplicates.
 enum Backup {
-    static let currentVersion = 1
+    /// 2: events (Anlass, range, weather) hold the entries, one per Stich.
+    static let currentVersion = 2
 
     struct File: Codable {
         var version: Int
@@ -37,6 +38,8 @@ enum Backup {
         var lots: [LotDTO]?
         /// Optional so backups from before the licence card still load.
         var licenceCards: [LicenceCardDTO]?
+        /// Version 2 and later; in version 1 every entry carried its own date, Anlass, range and weather.
+        var events: [EventDTO]?
     }
 
     // `createdAt` fields are optional so backups from before they were exported still load.
@@ -64,16 +67,23 @@ enum Backup {
     }
     struct LicenceCardDTO: Codable { var id: UUID; var holderName: String; var licenceNumber: String; var updatedAt: Date }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
+    struct EventDTO: Codable {
+        var id: UUID; var date: Date; var name: String; var rangeID: UUID?
+        var weather: WeatherRecord?
+        var createdAt: Date
+    }
     struct EntryDTO: Codable {
-        var id: UUID; var date: Date; var event: String; var shotCount: Int; var result: String; var notes: String
-        var weaponID: UUID?; var caliberID: UUID?; var rangeID: UUID?; var ammunitionID: UUID?
+        var id: UUID; var date: Date; var shotCount: Int; var result: String; var notes: String
+        var eventID: UUID?; var stich: String?
+        /// Version 1 only: what the event holds now.
+        var event: String?; var rangeID: UUID?; var weather: WeatherRecord?
+        var weaponID: UUID?; var caliberID: UUID?; var ammunitionID: UUID?
         var lotID: UUID?
         var sighterCount: Int?
         var maxPoints: Double?
         var shotValuesText: String?
         var filterColor: String?; var secondFilterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
         var bipodLength: Double?
-        var weather: WeatherRecord?
         var photos: [Data]
         /// Marker of entries imported from the old app, so a re-import after a restore skips them.
         var importKey: String?
@@ -109,13 +119,13 @@ enum Backup {
             },
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
-                .init(id: $0.id, date: $0.date, event: $0.event, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
-                      weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, rangeID: $0.range?.id, ammunitionID: $0.ammunition?.id,
+                .init(id: $0.id, date: $0.date, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
+                      eventID: $0.shootingEvent?.id, stich: $0.stich,
+                      weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
                       filterColor: $0.filterColor, secondFilterColor: $0.secondFilterColor,
                       diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
-                      weather: $0.weather,
                       photos: $0.sortedPhotos.compactMap(\.imageData),
                       importKey: $0.importKey, createdAt: $0.createdAt)
             },
@@ -125,6 +135,9 @@ enum Backup {
             },
             licenceCards: try all(LicenceCard.self, context).map {
                 .init(id: $0.id, holderName: $0.holderName, licenceNumber: $0.licenceNumber, updatedAt: $0.updatedAt)
+            },
+            events: try all(ShootingEvent.self, context).map {
+                .init(id: $0.id, date: $0.date, name: $0.name, rangeID: $0.range?.id, weather: $0.weather, createdAt: $0.createdAt)
             })
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -155,6 +168,26 @@ enum Backup {
             context.insert(c); calibers[d.id] = c; calibersByName[key] = c; caliberMap[d.id] = c
         }
         return caliberMap
+    }
+
+    private static func restoreEvents(_ dtos: [EventDTO], ranges: [UUID: ShootingRange],
+                                      into context: ModelContext) throws -> [UUID: ShootingEvent] {
+        var events = Dictionary(uniqueKeysWithValues: try all(ShootingEvent.self, context).map { ($0.id, $0) })
+        for d in dtos where events[d.id] == nil {
+            let event = ShootingEvent(date: d.date, name: d.name); event.id = d.id
+            event.weather = d.weather; event.createdAt = d.createdAt
+            context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
+            events[d.id] = event
+        }
+        return events
+    }
+
+    /// Version 1 backups had no events: each entry becomes an event of its own.
+    private static func versionOneEvent(of d: EntryDTO, ranges: [UUID: ShootingRange], into context: ModelContext) -> ShootingEvent {
+        let event = ShootingEvent(date: d.date, name: d.event ?? "")
+        event.weather = d.weather
+        context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
+        return event
     }
 
     /// Returns a short German summary for the user.
@@ -218,24 +251,27 @@ enum Backup {
 
         try restoreLicenceCards(file.licenceCards ?? [], into: context)
 
+        let events = try restoreEvents(file.events ?? [], ranges: ranges, into: context)
+
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
         for d in file.entries where !existingEntries.contains(d.id) {
-            let e = Entry(date: d.date, range: d.rangeID.flatMap { ranges[$0] }, event: d.event,
+            let e = Entry(date: d.date,
                           weapon: d.weaponID.flatMap { weapons[$0] }, caliber: d.caliberID.flatMap { caliberMap[$0] },
                           shotCount: d.shotCount, ammunition: d.ammunitionID.flatMap { ammo[$0] },
                           result: d.result, notes: d.notes)
             e.id = d.id
+            e.stich = d.stich ?? ""
             e.importKey = d.importKey ?? ""
             if let created = d.createdAt { e.createdAt = created }
             context.insert(e)
+            (d.eventID.flatMap { events[$0] } ?? versionOneEvent(of: d, ranges: ranges, into: context)).add(e)
             e.lot = d.lotID.flatMap { lots[$0] }
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
             SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "", diopter: d.diopter,
                           ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
-            e.weather = d.weather
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
         }
@@ -256,7 +292,7 @@ enum Backup {
         }
         let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Waffe", "Kaliber", "Munition", "Los",
+        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Waffe", "Kaliber", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
                                 "Prozent", "Einzelschüsse", "Filter", "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein (cm)", "Wetter", "Bemerkungen"]
         var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
@@ -266,7 +302,8 @@ enum Backup {
             cols.append(df.string(from: e.date))
             cols.append(e.range?.name ?? "")
             cols.append(e.range?.place ?? "")
-            cols.append(e.event)
+            cols.append(e.eventName)
+            cols.append(e.stich)
             cols.append(e.weapon?.name ?? "")
             cols.append(e.caliber?.name ?? "")
             cols.append(e.ammunition?.name ?? "")

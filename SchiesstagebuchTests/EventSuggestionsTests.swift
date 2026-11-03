@@ -64,14 +64,31 @@ final class EventSuggestionsTests: XCTestCase {
     }
 }
 
-/// The Entry-based overload reads event and date from saved entries.
-final class EventSuggestionsEntryTests: ModelTestCase {
-    func testSuggestsFromEntries() throws {
-        context.insert(Entry(date: Date(timeIntervalSince1970: 0), event: "Feldschiessen"))
-        context.insert(Entry(date: Date(timeIntervalSince1970: 86_400), event: "feldschiessen"))
-        context.insert(Entry(date: Date(timeIntervalSince1970: 0), event: "Training"))
+/// The event-based overload reads name and date from saved events.
+final class EventSuggestionsEventTests: ModelTestCase {
+    func testSuggestsFromEvents() throws {
+        context.insert(ShootingEvent(date: Date(timeIntervalSince1970: 0), name: "Feldschiessen"))
+        context.insert(ShootingEvent(date: Date(timeIntervalSince1970: 86_400), name: "feldschiessen"))
+        context.insert(ShootingEvent(date: Date(timeIntervalSince1970: 0), name: "Training"))
         try context.save()
-        let entries = try context.fetch(FetchDescriptor<Entry>())
-        XCTAssertEqual(EventSuggestions.suggestions(for: "FELD", in: entries), ["feldschiessen"])
+        let events = try context.fetch(FetchDescriptor<ShootingEvent>())
+        XCTAssertEqual(EventSuggestions.suggestions(for: "FELD", in: events), ["feldschiessen"])
+    }
+
+    func testAnEventWithSeveralSticheCountsOnce() throws {
+        // Three Stiche at one Schützenfest must not outrank two separate Feldschiessen.
+        let fest = ShootingEvent(date: Date(timeIntervalSince1970: 172_800), name: "Schützenfest")
+        context.insert(fest)
+        for _ in 0..<3 {
+            let stich = Entry()
+            context.insert(stich)
+            fest.add(stich)
+        }
+        for day in 0..<2 {
+            context.insert(ShootingEvent(date: Date(timeIntervalSince1970: Double(day) * 86_400), name: "Schützenhaus Cup"))
+        }
+        try context.save()
+        let events = try context.fetch(FetchDescriptor<ShootingEvent>())
+        XCTAssertEqual(EventSuggestions.suggestions(for: "schütz", in: events), ["Schützenhaus Cup", "Schützenfest"])
     }
 }

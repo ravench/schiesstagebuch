@@ -1,6 +1,6 @@
 import Foundation
 
-/// Autocomplete for the event ("Anlass") field: names from earlier entries that match what is being typed.
+/// Autocomplete for the event ("Anlass") field: names from earlier events that match what is being typed.
 ///
 /// Matching ignores case and accents ("feld" finds "Feldschiessen", "Ehrengaben" finds "Éhrengaben").
 /// Names that start with the typed text come first, then names with a word that starts with it,
@@ -43,8 +43,9 @@ enum EventSuggestions {
         .prefix(limit).map(\.candidate.name)
     }
 
-    static func suggestions(for query: String, in entries: [Entry], limit: Int = defaultLimit) -> [String] {
-        suggestions(for: query, in: entries.map { (event: $0.event, date: $0.date) }, limit: limit)
+    /// Each event counts once, however many Stiche it holds.
+    static func suggestions(for query: String, in events: [ShootingEvent], limit: Int = defaultLimit) -> [String] {
+        suggestions(for: query, in: events.map { (event: $0.name, date: $0.date) }, limit: limit)
     }
 
     /// 0 = name starts with the query, 1 = a word starts with it, 2 = contains it, nil = no match.
