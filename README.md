@@ -120,15 +120,19 @@ automatically; strings built at runtime go through `"…".loc` or `String(locali
 altitude, distances (300/50/25/10 m) and shooting direction. Outdoor ranges come
 from swisstopo's swissTLM3D: each target row ("Scheibenstand") is paired with the
 shooting house in front of it, or taken from a shooting trajectory line where
-swisstopo has one. OpenStreetMap adds names, websites, the nearest place and indoor
-ranges. The "Range catalogue" workflow downloads both sources, builds
-`ranges.json` (for the app) and `ranges.csv` (with LV95 coordinates, for checking)
-and uploads them as a build artifact. Run it from the Actions tab.
+swisstopo has one. Names ("Thun Guntelsey 300/50/25m") and places come from
+swisstopo too. Indoor ranges, which swisstopo doesn't map, come from
+`data/indoor-ranges.json`, a short list kept by hand: each entry was checked on the
+operator's website and placed at its street address. Add a range there with an id
+starting `manual:`, the address, `lat`/`lon` and a website; the tests check the file.
+The "Range catalogue" workflow downloads swissTLM3D, builds `ranges.json` (for the
+app) and `ranges.csv` (with LV95 coordinates, for checking) and uploads them as a
+build artifact. Run it from the Actions tab.
 
-The generated data is not covered by the app licence: it is © swisstopo and
-© OpenStreetMap contributors, available under the
-[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The app must show both
-credits wherever it uses the catalogue.
+The generated data is not covered by the app licence: swissTLM3D is © swisstopo
+(open government data, free for commercial use with attribution). The app must show
+"© swisstopo" wherever it uses the catalogue. No OpenStreetMap data is used, so
+don't copy positions from OSM into the indoor list.
 
 ## License
 
