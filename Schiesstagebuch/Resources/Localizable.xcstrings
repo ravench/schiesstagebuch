@@ -1065,7 +1065,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "App Icon"
+            "value": "App icon"
           }
         },
         "fr": {
@@ -1663,7 +1663,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only these calibers are offered when logging. The default caliber is preselected."
+            "value": "Only these calibres are offered when logging. The default calibre is preselected."
           }
         },
         "fr": {
@@ -2422,7 +2422,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The old app had no calibers. Each ammunition is assigned a caliber, which also sets the calibers of your equipment."
+            "value": "The old app had no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your equipment."
           }
         },
         "fr": {
@@ -2445,7 +2445,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The old app had no calibers. Each ammunition is assigned a caliber, which also sets the calibers of your firearms."
+            "value": "The old app had no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms."
           }
         },
         "fr": {
@@ -2721,7 +2721,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Custom caliber"
+            "value": "Custom calibre"
           }
         },
         "fr": {
@@ -3112,7 +3112,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add your types of ammunition, each with its caliber."
+            "value": "Add your types of ammunition, each with its calibre."
           }
         },
         "fr": {
@@ -3992,7 +3992,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For another program at the same event, also with different equipment."
+            "value": "For another programme at the same event, also with different equipment."
           }
         },
         "fr": {
@@ -4015,7 +4015,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For another programme at the same event, also with a different weapon."
+            "value": "For another programme at the same event, also with a different firearm."
           }
         },
         "fr": {
@@ -4935,7 +4935,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Caliber"
+            "value": "Calibre"
           }
         },
         "fr": {
@@ -4958,7 +4958,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Edit caliber"
+            "value": "Edit calibre"
           }
         },
         "fr": {
@@ -4981,7 +4981,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Search calibers"
+            "value": "Search calibres"
           }
         },
         "fr": {
@@ -5004,7 +5004,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose calibers"
+            "value": "Choose calibres"
           }
         },
         "fr": {
@@ -5142,7 +5142,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No caliber"
+            "value": "No calibre"
           }
         },
         "fr": {
@@ -5625,7 +5625,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add your equipment with its calibers."
+            "value": "Add your equipment with its calibres."
           }
         },
         "fr": {
@@ -5648,7 +5648,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add your firearms with their calibers."
+            "value": "Add your firearms with their calibres."
           }
         },
         "fr": {
@@ -6568,7 +6568,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ammunition → caliber"
+            "value": "Ammunition → calibre"
           }
         },
         "fr": {
@@ -7120,7 +7120,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "New caliber"
+            "value": "New calibre"
           }
         },
         "fr": {
@@ -7580,7 +7580,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No caliber"
+            "value": "No calibre"
           }
         },
         "fr": {
@@ -7718,19 +7718,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings → Filter."
+            "value": "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages → Filtre."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni → Filtro."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
@@ -7764,19 +7764,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this weapon. Choose your filters under Settings → Filter."
+            "value": "Optional. New entries take the values of the last entry with this firearm. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages → Filtre."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni → Filtro."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
@@ -7925,7 +7925,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "PCC (pistol-caliber carbine)"
+            "value": "PCC (pistol-calibre carbine)"
           }
         },
         "fr": {
@@ -8224,7 +8224,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "By caliber"
+            "value": "By calibre"
           }
         },
         "fr": {
@@ -8546,7 +8546,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Check the category and calibers of the imported equipment under Equipment."
+            "value": "Check the category and calibres of the imported equipment under Equipment."
           }
         },
         "fr": {
@@ -8569,7 +8569,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Check the category and calibers of the imported firearms under Firearms."
+            "value": "Check the category and calibres of the imported firearms under Firearms."
           }
         },
         "fr": {
@@ -13721,19 +13721,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "“Equipment” instead of “firearms”"
+            "value": "“Equipment” instead of “Firearms”"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "«Équipements» au lieu d'«armes»"
+            "value": "« Équipements » au lieu d’« Armes »"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "«Attrezzi» invece di «armi»"
+            "value": "«Attrezzi» invece di «Armi»"
           }
         }
       }

@@ -5,7 +5,7 @@ Merged into T by translations.py. en: equipment, fr: équipement, it: attrezzo.
 S = {
     # Settings switch
     "Bezeichnung": ("Wording", "Désignation", "Denominazione"),
-    "«Sportgeräte» statt «Waffen»": ("“Equipment” instead of “firearms”", "«Équipements» au lieu d'«armes»", "«Attrezzi» invece di «armi»"),
+    "«Sportgeräte» statt «Waffen»": ("“Equipment” instead of “Firearms”", "« Équipements » au lieu d’« Armes »", "«Attrezzi» invece di «Armi»"),
     "Ändert nur die Wörter in der App, deine Daten bleiben gleich.": (
         "Only changes the words in the app, your data stays the same.",
         "Ne change que les mots dans l'app, tes données restent les mêmes.",
@@ -17,7 +17,7 @@ S = {
         "Les entrées comptent pour le canon de leur calibre monté ce jour-là. Les rappels d'entretien comptent tous les coups de l'équipement.",
         "Le voci contano per la canna del loro calibro montata quel giorno. I promemoria di manutenzione contano tutti i colpi dell'attrezzo."),
     "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": (
-        "For another program at the same event, also with different equipment.",
+        "For another programme at the same event, also with different equipment.",
         "Pour un autre programme au même événement, aussi avec un autre équipement.",
         "Per un altro programma allo stesso evento, anche con un altro attrezzo."),
     "Sportgeräte": ("Equipment", "Équipements", "Attrezzi"),
@@ -33,7 +33,7 @@ S = {
     "Sportgerät löschen?": ("Delete equipment?", "Supprimer l'équipement ?", "Eliminare l'attrezzo?"),
     "Anlass, Anlage, Sportgerät …": ("Event, range, equipment …", "Événement, stand, équipement …", "Evento, poligono, attrezzo …"),
     "Lege deine Sportgeräte mit ihren Kalibern an.": (
-        "Add your equipment with its calibers.",
+        "Add your equipment with its calibres.",
         "Ajoute tes équipements avec leurs calibres.",
         "Aggiungi i tuoi attrezzi con i loro calibri."),
     "Seriennummer in der Sportgeräteauswahl": ("Serial number in equipment picker", "Numéro de série dans le choix d'équipement", "Numero di serie nella scelta dell'attrezzo"),
@@ -58,15 +58,15 @@ S = {
         "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement.",
         "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo."),
     "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen → Filter.": (
-        "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings → Filter.",
-        "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages → Filtre.",
-        "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni → Filtro."),
+        "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings › Filters.",
+        "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres.",
+        "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."),
     "Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.": (
-        "The old app had no calibers. Each ammunition is assigned a caliber, which also sets the calibers of your equipment.",
+        "The old app had no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your equipment.",
         "L'ancienne app ne connaissait pas les calibres. Chaque munition est attribuée à un calibre ; on en déduit les calibres de tes équipements.",
         "La vecchia app non conosceva i calibri. Ogni munizione viene assegnata a un calibro; da qui risultano i calibri dei tuoi attrezzi."),
     "Prüfe unter Sportgeräte die Kategorie und die Kaliber der importierten Sportgeräte.": (
-        "Check the category and calibers of the imported equipment under Equipment.",
+        "Check the category and calibres of the imported equipment under Equipment.",
         "Vérifie la catégorie et les calibres des équipements importés sous Équipements.",
         "Controlla categoria e calibri degli attrezzi importati in Attrezzi."),
 }
