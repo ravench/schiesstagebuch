@@ -30,6 +30,7 @@ jobs:
             -project Schiesstagebuch.xcodeproj \
             -scheme SchiesstagebuchScreens \
             -destination "id=$UDID" \
+            -only-testing:SchiesstagebuchUITests/IPadScreensTests \
             -resultBundlePath "$RUNNER_TEMP/Screens.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: Export screenshots
