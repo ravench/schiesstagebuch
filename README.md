@@ -114,6 +114,22 @@ python3 tools/localize.py   # fails if any UI string lacks a translation
 Write UI text in German. Literals in `Text`, `Button`, `Label` etc. are localized
 automatically; strings built at runtime go through `"…".loc` or `String(localized:)`.
 
+## Shooting range catalogue
+
+`tools/range_catalogue.py` builds a list of Swiss shooting ranges with position,
+altitude, distances (300/50/25/10 m) and shooting direction. Outdoor ranges come
+from swisstopo's swissTLM3D: each target row ("Scheibenstand") is paired with the
+shooting house in front of it, or taken from a shooting trajectory line where
+swisstopo has one. OpenStreetMap adds names, websites, the nearest place and indoor
+ranges. The "Range catalogue" workflow downloads both sources, builds
+`ranges.json` (for the app) and `ranges.csv` (with LV95 coordinates, for checking)
+and uploads them as a build artifact. Run it from the Actions tab.
+
+The generated data is not covered by the app licence: it is © swisstopo and
+© OpenStreetMap contributors, available under the
+[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The app must show both
+credits wherever it uses the catalogue.
+
 ## License
 
 Source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md):
