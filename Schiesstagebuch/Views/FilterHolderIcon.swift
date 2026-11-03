@@ -55,15 +55,31 @@ struct FilterHolderGeometry {
         return p
     }
 
+    private static var tiltTransform: CGAffineTransform { CGAffineTransform(rotationAngle: CGFloat(tilt.radians)) }
+
+    /// Points along the wire's centre line in model units: up the left leg, round the bend, down the right leg.
+    static var modelWirePoints: [CGPoint] {
+        let x = legOffset, foot = -(1 - x * x).squareRoot(), bend = -bendHeight
+        let bendPoints = (0...12).map { i -> CGPoint in
+            let a = CGFloat.pi * CGFloat(i) / 12
+            return CGPoint(x: -x * cos(a), y: bend - x * sin(a))
+        }
+        return [CGPoint(x: -x, y: foot)] + bendPoints + [CGPoint(x: x, y: foot)]
+    }
+
     /// Tilts the model and scales it so everything, strokes included, fits the square with a margin.
+    /// The extent is worked out from the geometry itself, not from path bounds (which can include curve control points).
     private var transform: CGAffineTransform {
-        let tilt = CGAffineTransform(rotationAngle: CGFloat(Self.tilt.radians))
-        let outline = Self.modelRing.strokedPath(StrokeStyle(lineWidth: Self.ringWidth))
-            .applying(tilt).boundingRect
-            .union(Self.modelWire.strokedPath(StrokeStyle(lineWidth: Self.wireWidth, lineCap: .round)).applying(tilt).boundingRect)
-        let scale = size * (1 - 2 * Self.margin) / max(outline.width, outline.height)
+        let tilt = Self.tiltTransform
+        let ringReach = 1 + Self.ringWidth / 2, wireReach = Self.wireWidth / 2
+        var minX = -ringReach, maxX = ringReach, minY = -ringReach, maxY = ringReach
+        for p in Self.modelWirePoints.map({ $0.applying(tilt) }) {
+            minX = min(minX, p.x - wireReach); maxX = max(maxX, p.x + wireReach)
+            minY = min(minY, p.y - wireReach); maxY = max(maxY, p.y + wireReach)
+        }
+        let scale = size * (1 - 2 * Self.margin) / max(maxX - minX, maxY - minY)
         return tilt
-            .concatenating(CGAffineTransform(translationX: -outline.midX, y: -outline.midY))
+            .concatenating(CGAffineTransform(translationX: -(minX + maxX) / 2, y: -(minY + maxY) / 2))
             .concatenating(CGAffineTransform(scaleX: scale, y: scale))
             .concatenating(CGAffineTransform(translationX: size / 2, y: size / 2))
     }
@@ -71,13 +87,15 @@ struct FilterHolderGeometry {
     /// Points per model unit.
     private var scale: CGFloat { (transform.a * transform.a + transform.b * transform.b).squareRoot() }
 
+    /// Ring centre and radius (to the middle of its stroke) in points.
+    var ringCentre: CGPoint { CGPoint.zero.applying(transform) }
+    var ringRadius: CGFloat { scale }
+    /// The wire's centre line in points.
+    var wirePoints: [CGPoint] { Self.modelWirePoints.map { $0.applying(transform) } }
+
     var ring: Path { Self.modelRing.applying(transform) }
     var lens: Path { Self.modelLens.applying(transform) }
     var wire: Path { Self.modelWire.applying(transform) }
     var ringLine: CGFloat { Self.ringWidth * scale }
     var wireLine: CGFloat { Self.wireWidth * scale }
-
-    /// Everything drawn with the room it takes beyond its path (half the stroke), for checking that
-    /// the icon stays inside its square.
-    var all: [(path: Path, outset: CGFloat)] { [(lens, 0), (ring, ringLine / 2), (wire, wireLine / 2)] }
 }
