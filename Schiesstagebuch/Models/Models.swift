@@ -69,6 +69,30 @@ final class Caliber: ArchivableItem {
         return all.filter { $0 != self && $0.dimensionGroup == group }
     }
 
+    /// "Gleiche Masse wie .308 Winchester" for a calibre whose twins are in `all`; nil otherwise.
+    /// The calibres stay separate entries, the note only shows that they belong together.
+    func sameDimensionsNote(in all: [Caliber]) -> String? {
+        let names = sameDimensions(in: all).map(\.name).sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+        guard !names.isEmpty else { return nil }
+        return String(format: "Gleiche Masse wie %@".loc, names.joined(separator: ", "))
+    }
+
+    /// Keeps `list` in its order but moves calibres with identical measurements (e.g. .308 Win and
+    /// 7.62 NATO) right behind the first of their group, so they are listed together.
+    static func keepingGroupsTogether(_ list: [Caliber]) -> [Caliber] {
+        var result: [Caliber] = []
+        var placed = Set<PersistentIdentifier>()
+        for c in list where !placed.contains(c.persistentModelID) {
+            result.append(c)
+            placed.insert(c.persistentModelID)
+            guard let group = c.dimensionGroup else { continue }
+            for twin in list where twin.dimensionGroup == group && placed.insert(twin.persistentModelID).inserted {
+                result.append(twin)
+            }
+        }
+        return result
+    }
+
     func matches(_ query: String) -> Bool {
         query.isEmpty || name.localizedCaseInsensitiveContains(query) || aliasSummary.localizedCaseInsensitiveContains(query)
     }

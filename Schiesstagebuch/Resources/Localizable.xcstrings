@@ -4262,6 +4262,29 @@
         }
       }
     },
+    "Gleiche Masse wie %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same dimensions as %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mêmes dimensions que %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stesse dimensioni di %@"
+          }
+        }
+      }
+    },
     "Griffstück": {
       "extractionState": "manual",
       "localizations": {

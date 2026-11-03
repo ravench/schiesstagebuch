@@ -192,12 +192,12 @@ struct CaliberListView: View {
     @State private var adding = false
 
     private var visible: [Caliber] {
-        calibers.filter { (showArchived || !$0.isArchived) && $0.matches(search) }
+        // Calibres in use first, then alphabetical; identical measurements stay together.
+        Caliber.keepingGroupsTogether(calibers.filter { (showArchived || !$0.isArchived) && $0.matches(search) }
             .sorted { a, b in
-                // Calibres in use first, then alphabetical.
                 let ua = !a.weapons.isEmpty, ub = !b.weapons.isEmpty
                 return ua != ub ? ua : a.name.localizedStandardCompare(b.name) == .orderedAscending
-            }
+            })
     }
 
     var body: some View {
@@ -209,6 +209,9 @@ struct CaliberListView: View {
                         Text(c.name).foregroundStyle(c.isArchived ? .secondary : .primary)
                         if !c.aliasSummary.isEmpty {
                             Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
+                        }
+                        if let note = c.sameDimensionsNote(in: calibers) {
+                            Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
                         }
                         let weapons = c.weapons.map(\.name).sorted()
                         if !weapons.isEmpty { Text(weapons.joined(separator: ", ")).font(.caption).foregroundStyle(.secondary) }
@@ -337,8 +340,8 @@ struct AmmunitionEditorView: View {
     @State private var lots: [LotDraft] = []
 
     /// Calibres used by a weapon first, the rest of the catalogue below.
-    private var inUse: [Caliber] { calibers.filter { !$0.weapons.isEmpty } }
-    private var others: [Caliber] { calibers.filter { $0.weapons.isEmpty } }
+    private var inUse: [Caliber] { Caliber.keepingGroupsTogether(calibers.filter { !$0.weapons.isEmpty }) }
+    private var others: [Caliber] { Caliber.keepingGroupsTogether(calibers.filter { $0.weapons.isEmpty }) }
 
     /// Lots in use (editable, with ✓ to mark one used up) and the used-up ones, which can be used again.
     @ViewBuilder private var lotSections: some View {
