@@ -277,6 +277,52 @@
         }
       }
     },
+    "%lld Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld coups"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld colpi"
+          }
+        }
+      }
+    },
+    "%lld Stiche": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld matches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld bersagli"
+          }
+        }
+      }
+    },
     "%lld Uhr": {
       "extractionState": "manual",
       "localizations": {
@@ -323,6 +369,29 @@
         }
       }
     },
+    "%lld× geschossen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shot %lld×"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tirée %lld×"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tirato %lld×"
+          }
+        }
+      }
+    },
     "Ab Reinigung / Service": {
       "extractionState": "manual",
       "localizations": {
@@ -365,6 +434,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dal primo colpo successivo"
+          }
+        }
+      }
+    },
+    "Ab wann Erinnerungen nach Tagen zählen. Pro Sportgerät kannst du das ändern.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When day-based reminders start counting. You can change this per item of equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À partir de quand les rappels en jours comptent. Modifiable pour chaque équipement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni attrezzo."
           }
         }
       }
@@ -599,6 +691,29 @@
         }
       }
     },
+    "Alle Sportgeräte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tous les équipements"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti gli attrezzi"
+          }
+        }
+      }
+    },
     "Alle Summen stimmen mit dem Standblatt überein.": {
       "extractionState": "manual",
       "localizations": {
@@ -710,6 +825,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Evento"
+          }
+        }
+      }
+    },
+    "Anlass bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit event"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier l'événement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica evento"
+          }
+        }
+      }
+    },
+    "Anlass mit allen Stichen löschen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete the event with all its matches?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer l'événement avec toutes ses cibles ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare l'evento con tutti i bersagli?"
+          }
+        }
+      }
+    },
+    "Anlass, Anlage, Sportgerät …": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Event, range, equipment …"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Événement, stand, équipement …"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evento, poligono, attrezzo …"
           }
         }
       }
@@ -848,6 +1032,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Archiviati"
+          }
+        }
+      }
+    },
+    "Archivierte Sportgeräte erscheinen nicht mehr bei neuen Einträgen, bleiben aber in Tagebuch und Statistik.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archived equipment no longer appears for new entries but stays in the log and statistics."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les équipements archivés n'apparaissent plus pour les nouvelles entrées, mais restent dans le journal et les statistiques."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gli attrezzi archiviati non compaiono più nelle nuove voci, ma restano nel diario e nelle statistiche."
           }
         }
       }
@@ -1335,6 +1542,29 @@
         }
       }
     },
+    "Bezeichnung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wording"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désignation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denominazione"
+          }
+        }
+      }
+    },
     "Bezeichnung (optional)": {
       "extractionState": "manual",
       "localizations": {
@@ -1565,6 +1795,29 @@
         }
       }
     },
+    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Sportgeräte werden archiviert.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The date of sale can't be before the date of purchase. Sold equipment is archived."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La date de vente ne peut pas précéder la date d'achat. Les équipements vendus sont archivés."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La data di vendita non può precedere la data di acquisto. Gli attrezzi venduti vengono archiviati."
+          }
+        }
+      }
+    },
     "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.": {
       "extractionState": "manual",
       "localizations": {
@@ -1680,6 +1933,29 @@
         }
       }
     },
+    "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date, range, event and weather apply to all %lld matches."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La date, le stand, l'événement et la météo valent pour les %lld cibles."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data, poligono, evento e meteo valgono per tutti i %lld bersagli."
+          }
+        }
+      }
+    },
     "Davon schon importiert": {
       "extractionState": "manual",
       "localizations": {
@@ -1699,6 +1975,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Già importate"
+          }
+        }
+      }
+    },
+    "Deine Sportgeräte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tes équipements"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tuoi attrezzi"
           }
         }
       }
@@ -1837,6 +2136,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "La vecchia app ha salvato solo riferimenti a %lld foto della tua libreria. Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."
+          }
+        }
+      }
+    },
+    "Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The old app had no calibers. Each ammunition is assigned a caliber, which also sets the calibers of your equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'ancienne app ne connaissait pas les calibres. Chaque munition est attribuée à un calibre ; on en déduit les calibres de tes équipements."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La vecchia app non conosceva i calibri. Ogni munizione viene assegnata a un calibro; da qui risultano i calibri dei tuoi attrezzi."
           }
         }
       }
@@ -1998,6 +2320,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Foschia / umidità che sale"
+          }
+        }
+      }
+    },
+    "Durchschnitt pro Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Average per match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moyenne par cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media per bersaglio"
           }
         }
       }
@@ -2301,6 +2646,29 @@
         }
       }
     },
+    "Einträge bleiben erhalten, verlieren aber das Sportgerät. Archivieren behält alles.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries are kept but lose their equipment. Archiving keeps everything."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les entrées sont conservées mais perdent leur équipement. L'archivage conserve tout."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le voci restano, ma perdono l'attrezzo. Archiviare conserva tutto."
+          }
+        }
+      }
+    },
     "Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.": {
       "extractionState": "manual",
       "localizations": {
@@ -2343,6 +2711,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le voci contano per la canna del loro calibro montata quel giorno. I promemoria di manutenzione contano tutti i colpi dell'arma."
+          }
+        }
+      }
+    },
+    "Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse des Sportgeräts.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries count for the barrel of their calibre that was fitted on that day. Maintenance reminders count all shots of the equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les entrées comptent pour le canon de leur calibre monté ce jour-là. Les rappels d'entretien comptent tous les coups de l'équipement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le voci contano per la canna del loro calibro montata quel giorno. I promemoria di manutenzione contano tutti i colpi dell'attrezzo."
           }
         }
       }
@@ -3112,6 +3503,75 @@
         }
       }
     },
+    "Für Stiche, die an diesem Anlass mehrmals geschossen wurden.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For matches shot more than once at this event."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour les cibles tirées plusieurs fois à cet événement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per i bersagli tirati più volte a questo evento."
+          }
+        }
+      }
+    },
+    "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For another program at the same event, also with different equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour un autre programme au même événement, aussi avec un autre équipement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per un altro programma allo stesso evento, anche con un altro attrezzo."
+          }
+        }
+      }
+    },
+    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For another programme at the same event, also with a different weapon."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour un autre programme au même événement, aussi avec une autre arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per un altro programma allo stesso evento, anche con un'altra arma."
+          }
+        }
+      }
+    },
     "Gebundenes Tagebuch": {
       "extractionState": "manual",
       "localizations": {
@@ -3246,6 +3706,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "vento temporalesco"
+          }
+        }
+      }
+    },
+    "Gilt für alle %lld Stiche dieses Anlasses.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applies to all %lld matches of this event."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaut pour les %lld cibles de cet événement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vale per tutti i %lld bersagli di questo evento."
           }
         }
       }
@@ -4239,6 +4722,29 @@
         }
       }
     },
+    "Keine Sportgeräte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun attrezzo"
+          }
+        }
+      }
+    },
     "Keine Waffen": {
       "extractionState": "manual",
       "localizations": {
@@ -4534,6 +5040,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eliminare la canna?"
+          }
+        }
+      }
+    },
+    "Lege deine Sportgeräte mit ihren Kalibern an.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add your equipment with its calibers."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoute tes équipements avec leurs calibres."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi i tuoi attrezzi con i loro calibri."
           }
         }
       }
@@ -5040,6 +5569,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Elimina"
+          }
+        }
+      }
+    },
+    "Maschinengewehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Machine gun"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitrailleuse"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitragliatrice"
           }
         }
       }
@@ -5688,6 +6240,29 @@
         }
       }
     },
+    "Neue Sportgeräte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveaux équipements"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovi attrezzi"
+          }
+        }
+      }
+    },
     "Neue Waffe": {
       "extractionState": "manual",
       "localizations": {
@@ -5822,6 +6397,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nuovo calibro"
+          }
+        }
+      }
+    },
+    "Neues Sportgerät": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouvel équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo attrezzo"
           }
         }
       }
@@ -6305,6 +6903,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativo. Con il luogo e la direzione di tiro, l'app propone da dove viene il sole."
+          }
+        }
+      }
+    },
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. New entries take the values of the last entry with this equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo."
+          }
+        }
+      }
+    },
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen → Filter.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings → Filter."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages → Filtre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni → Filtro."
           }
         }
       }
@@ -6884,6 +7528,29 @@
         }
       }
     },
+    "Pro Sportgerät": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per attrezzo"
+          }
+        }
+      }
+    },
     "Pro Waffe": {
       "extractionState": "manual",
       "localizations": {
@@ -7064,6 +7731,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Controlla i colpi nella voce prima di salvarla. È stata aggiunta una nota."
+          }
+        }
+      }
+    },
+    "Prüfe unter Sportgeräte die Kategorie und die Kaliber der importierten Sportgeräte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the category and calibers of the imported equipment under Equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifie la catégorie et les calibres des équipements importés sous Équipements."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla categoria e calibri degli attrezzi importati in Attrezzi."
           }
         }
       }
@@ -7965,6 +8655,29 @@
         }
       }
     },
+    "Seriennummer in der Sportgeräteauswahl": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serial number in equipment picker"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de série dans le choix d'équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di serie nella scelta dell'attrezzo"
+          }
+        }
+      }
+    },
     "Seriennummer in der Waffenauswahl": {
       "extractionState": "manual",
       "localizations": {
@@ -8122,6 +8835,167 @@
           "stringUnit": {
             "state": "translated",
             "value": "parasole"
+          }
+        }
+      }
+    },
+    "Sportgerät": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attrezzo"
+          }
+        }
+      }
+    },
+    "Sportgerät bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier l'équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica attrezzo"
+          }
+        }
+      }
+    },
+    "Sportgerät hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi attrezzo"
+          }
+        }
+      }
+    },
+    "Sportgerät löschen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer l'équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina attrezzo"
+          }
+        }
+      }
+    },
+    "Sportgerät löschen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete equipment?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer l'équipement ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare l'attrezzo?"
+          }
+        }
+      }
+    },
+    "Sportgeräte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Équipements"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attrezzi"
+          }
+        }
+      }
+    },
+    "Sportgeräte-Einstellungen für Sportschützen erfassen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record equipment settings for sport shooters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir les réglages d'équipement pour tireurs sportifs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra le impostazioni dell'attrezzo per tiratori sportivi"
           }
         }
       }
@@ -8398,6 +9272,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statistiche"
+          }
+        }
+      }
+    },
+    "Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersaglio"
+          }
+        }
+      }
+    },
+    "Stich hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi bersaglio"
+          }
+        }
+      }
+    },
+    "Stiche": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli"
           }
         }
       }
@@ -9387,6 +10330,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi numero"
+          }
+        }
+      }
+    },
+    "Weiteren Stich hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add another match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter une autre cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi un altro bersaglio"
+          }
+        }
+      }
+    },
+    "Weiterer Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Another match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autre cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro bersaglio"
           }
         }
       }
@@ -10955,6 +11944,29 @@
         }
       }
     },
+    "pro Schuss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "per shot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "per colpo"
+          }
+        }
+      }
+    },
     "schwierig": {
       "extractionState": "manual",
       "localizations": {
@@ -11392,6 +12404,52 @@
         }
       }
     },
+    "«Sportgeräte» statt «Waffen»": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Equipment” instead of “firearms”"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Équipements» au lieu d'«armes»"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Attrezzi» invece di «armi»"
+          }
+        }
+      }
+    },
+    "Ändert nur die Wörter in der App, deine Daten bleiben gleich.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only changes the words in the app, your data stays the same."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne change que les mots dans l'app, tes données restent les mêmes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia solo le parole nell'app, i tuoi dati restano invariati."
+          }
+        }
+      }
+    },
     "Ø Prozent": {
       "extractionState": "manual",
       "localizations": {
@@ -11411,29 +12469,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media percentuale"
-          }
-        }
-      }
-    },
-    "Ø pro Eintrag": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avg. per entry"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moy. par entrée"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media per voce"
           }
         }
       }

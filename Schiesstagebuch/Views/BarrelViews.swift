@@ -19,6 +19,7 @@ enum BarrelSheet: Identifiable {
 /// Like `MaintenanceSection` it only reports taps through `present`: a `.sheet` on a Section
 /// inside a List is copied onto each row and closes again when the List rebuilds.
 struct BarrelSection: View {
+    @Environment(\.term) private var term
     @Bindable var weapon: Weapon
     let present: (BarrelSheet) -> Void
 
@@ -32,7 +33,7 @@ struct BarrelSection: View {
         } header: {
             Text("Läufe")
         } footer: {
-            Text("Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.")
+            Text(term("Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.").loc)
         }
     }
 }

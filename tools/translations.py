@@ -156,6 +156,7 @@ T = {
     "In der Datei wurden keine Einträge gefunden.": (
         "No entries were found in the file.", "Aucune entrée n'a été trouvée dans le fichier.", "Nel file non sono state trovate voci."),
     "Jagdgewehr": ("Hunting rifle", "Carabine de chasse", "Carabina da caccia"),
+    "Maschinengewehr": ("Machine gun", "Mitrailleuse", "Mitragliatrice"),
     "Jahr": ("Year", "Année", "Anno"),
     "Kaliber": ("Caliber", "Calibre", "Calibro"),
     "Kaliber bearbeiten": ("Edit caliber", "Modifier le calibre", "Modifica calibro"),
@@ -264,7 +265,6 @@ T = {
     "oder": ("or", "ou", "o"),
     "seit %@ fällig": ("due since %@", "à faire depuis le %@", "da fare dal %@"),
     "zuletzt %@": ("last %@", "dernier %@", "ultimo %@"),
-    "Ø pro Eintrag": ("Avg. per entry", "Moy. par entrée", "Media per voce"),
     "Auf der Karte gewählt": ("Picked on the map", "Choisi sur la carte", "Scelto sulla mappa"),
     "In Karten öffnen": ("Open in Maps", "Ouvrir dans Plans", "Apri in Mappe"),
     "Kartenposition entfernen": ("Remove map location", "Retirer la position", "Rimuovi posizione"),
@@ -434,6 +434,39 @@ T = {
     "SW": ("SW", "SO", "SO"),
     "W": ("W", "O", "O"),
     "NW": ("NW", "NO", "NO"),
+    # Events with several Stiche (programmes); Swiss French says "cible", Swiss Italian "bersaglio".
+    "Stich": ("Match", "Cible", "Bersaglio"),
+    "Stiche": ("Matches", "Cibles", "Bersagli"),
+    "%lld Stiche": ("%lld matches", "%lld cibles", "%lld bersagli"),
+    "%lld Schuss": ("%lld shots", "%lld coups", "%lld colpi"),
+    "Stich hinzufügen": ("Add match", "Ajouter une cible", "Aggiungi bersaglio"),
+    "Weiteren Stich hinzufügen": ("Add another match", "Ajouter une autre cible", "Aggiungi un altro bersaglio"),
+    "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
+    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": (
+        "For another programme at the same event, also with a different weapon.",
+        "Pour un autre programme au même événement, aussi avec une autre arme.",
+        "Per un altro programma allo stesso evento, anche con un'altra arma."),
+    "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": (
+        "Date, range, event and weather apply to all %lld matches.",
+        "La date, le stand, l'événement et la météo valent pour les %lld cibles.",
+        "Data, poligono, evento e meteo valgono per tutti i %lld bersagli."),
+    "Gilt für alle %lld Stiche dieses Anlasses.": (
+        "Applies to all %lld matches of this event.",
+        "Vaut pour les %lld cibles de cet événement.",
+        "Vale per tutti i %lld bersagli di questo evento."),
+    "Anlass bearbeiten": ("Edit event", "Modifier l'événement", "Modifica evento"),
+    "Anlass mit allen Stichen löschen?": (
+        "Delete the event with all its matches?",
+        "Supprimer l'événement avec toutes ses cibles ?",
+        "Eliminare l'evento con tutti i bersagli?"),
+    # Averages per entry only for a Stich shot several times at one event.
+    "Durchschnitt pro Stich": ("Average per match", "Moyenne par cible", "Media per bersaglio"),
+    "Für Stiche, die an diesem Anlass mehrmals geschossen wurden.": (
+        "For matches shot more than once at this event.",
+        "Pour les cibles tirées plusieurs fois à cet événement.",
+        "Per i bersagli tirati più volte a questo evento."),
+    "%lld× geschossen": ("Shot %lld×", "Tirée %lld×", "Tirato %lld×"),
+    "pro Schuss": ("per shot", "par coup", "per colpo"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
     # Barrels (Läufe)
     "%@ von %@ Schuss (%@)": ("%1$@ of %2$@ shots (%3$@)", "%1$@ sur %2$@ coups (%3$@)", "%1$@ di %2$@ colpi (%3$@)"),
@@ -531,5 +564,11 @@ T = {
 from translations_weather import W  # noqa: E402
 
 for _k, _v in W.items():
+    assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
+    T[_k] = _v
+
+from translations_wording import S  # noqa: E402
+
+for _k, _v in S.items():
     assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
     T[_k] = _v

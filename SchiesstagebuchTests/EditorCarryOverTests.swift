@@ -13,7 +13,7 @@ final class EditorCarryOverTests: ModelTestCase {
         rifle = Weapon(name: "Stgw 90"); context.insert(rifle)
         pistol = Weapon(name: "P210"); context.insert(pistol)
         let outdoors = addEntry(rifle, on: day(1), shots: 20)
-        outdoors.weather = WeatherRecord(time: day(1))
+        outdoors.shootingEvent?.weather = WeatherRecord(time: day(1))
         SightSettings(filter: "Citron", diopter: 1.5, ringSize: 4.2).apply(to: outdoors)
         addEntry(pistol, on: day(2), shots: 30)      // indoors, no weather, no sight settings
         try context.save()
@@ -64,14 +64,5 @@ final class EditorCarryOverTests: ModelTestCase {
         XCTAssertEqual(clean.conditions.option("sky"), "sunny")
         XCTAssertNil(clean.relays[0].conditions["weather_note"], "a blank note is not stored")
         XCTAssertEqual(clean.relays[0].id, relay.id)
-    }
-
-    func testAverageShotsPerEntryKeepsOneDecimal() {
-        let a = addEntry(nil, on: day(3), shots: 100)
-        let b = addEntry(nil, on: day(4), shots: 49)
-        XCTAssertEqual([a, b].averageShotsPerEntry, 74.5, accuracy: 1e-9)
-        let shown = [a, b].averageShotsPerEntry.formatted(.number.precision(.fractionLength(1)).locale(Locale(identifier: "de_CH")))
-        XCTAssertEqual(shown, "74.5")
-        XCTAssertEqual([Entry]().averageShotsPerEntry, 0)
     }
 }

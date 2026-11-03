@@ -5,9 +5,10 @@ import CoreData
 @main
 struct SchiesstagebuchApp: App {
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
     let container: ModelContainer = Self.makeContainer()
 
-    static let schema = Schema([Entry.self, Weapon.self, Caliber.self, Ammunition.self,
+    static let schema = Schema([ShootingEvent.self, Entry.self, Weapon.self, Caliber.self, Ammunition.self,
                                 ShootingRange.self, MaintenanceRecord.self, EntryPhoto.self, AmmoLot.self,
                                 LicenceCard.self, Barrel.self])
 
@@ -37,6 +38,7 @@ struct SchiesstagebuchApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environment(\.term, Terms(sportsEquipment: sportsEquipment))
                 .task {
                     CaliberCatalog.seedIfNeeded(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
@@ -55,6 +57,7 @@ struct SchiesstagebuchApp: App {
 }
 
 struct RootView: View {
+    @Environment(\.term) private var term
     @Query(filter: #Predicate<Weapon> { !$0.isArchived }) private var weapons: [Weapon]
     @Query private var licenceCards: [LicenceCard]
 
@@ -67,7 +70,7 @@ struct RootView: View {
             StatsView()
                 .tabItem { Label("Statistik", systemImage: "chart.bar.xaxis") }
             WeaponsTab()
-                .tabItem { Label("Waffen", systemImage: "scope") }
+                .tabItem { Label(term("Waffen").loc, systemImage: "scope") }
                 .badge(dueCount)
             // The licence card gets its own tab once one has been entered (Einstellungen › SSV-Lizenz).
             if LicenceCard.hasCard(licenceCards) {
