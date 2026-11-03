@@ -87,6 +87,14 @@ class EntitlementTests(unittest.TestCase):
             self.assertEqual(ok.returncode, 0, ok.stderr)
 
 
+class ExportDestinationTests(unittest.TestCase):
+    def test_local_export(self):
+        self.assertEqual(testflight.export_options("AB12CD34EF", "export")["destination"], "export")
+        self.assertEqual(testflight.export_options("AB12CD34EF")["destination"], "upload")
+        with self.assertRaises(ValueError):
+            testflight.export_options("AB12CD34EF", "somewhere")
+
+
 class ExportOptionsTests(unittest.TestCase):
     def test_uploads_to_app_store_connect(self):
         options = testflight.export_options("AB12CD34EF")
@@ -152,11 +160,16 @@ class WorkflowTests(unittest.TestCase):
     def test_archive_creates_no_certificates(self):
         # Automatic signing in the archive made each fresh runner create an Apple Development
         # certificate until Apple's per-team limit (2026-11-03). Only the export signs, in the cloud.
+        # Ad hoc signing ("-") is refused for the iOS SDK, so the archive is unsigned.
         archive = self.workflow.split("xcodebuild archive")[1].split("- name:")[0]
-        self.assertIn("CODE_SIGN_IDENTITY=-", archive)
-        self.assertIn("CODE_SIGN_STYLE=Manual", archive)
+        self.assertIn("CODE_SIGNING_ALLOWED=NO", archive)
         self.assertNotIn("allowProvisioningUpdates", archive)
-        self.assertIn("check-entitlements", self.workflow)
+
+    def test_entitlements_checked_before_upload(self):
+        check = self.workflow.index("check-entitlements")
+        upload = self.workflow.index("ExportOptions.plist\"", self.workflow.index("- name: Upload to TestFlight"))
+        self.assertLess(check, upload)
+        self.assertIn('export-options "$RUNNER_TEMP/ExportLocal.plist" export', self.workflow)
 
     def test_archive_errors_shown(self):
         # xcpretty hides signing errors; the raw log is kept and printed when the archive fails.
