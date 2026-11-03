@@ -11,6 +11,8 @@ on:
 defaults:
   run:
     shell: bash -eo pipefail {0}
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,13 +32,15 @@ jobs:
           python3 tools/range_catalogue.py overpass-query > "$WORK/query.overpassql"
           for url in https://overpass-api.de/api/interpreter https://overpass.kumi.systems/api/interpreter \
                      https://overpass-api.de/api/interpreter; do
+            # overpass-api.de answers 406 to requests without a descriptive User-Agent.
             if curl -fsS --retry 3 --retry-delay 20 --max-time 900 \
+                 -H "User-Agent: schiesstagebuch-range-catalogue (https://github.com/ravench/schiesstagebuch)" \
                  --data-urlencode "data@$WORK/query.overpassql" "$url" -o "$WORK/overpass.json"; then
               break
             fi
             sleep 30
           done
-          python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))['elements']), 'OSM elements')" "$WORK/overpass.json"
+          python3 -c "import json,sys; n=len(json.load(open(sys.argv[1]))['elements']); print(n, 'OSM elements'); sys.exit(n == 0)" "$WORK/overpass.json"
       - name: swissTLM3D
         run: |
           curl -fsS --retry 3 "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swisstlm3d/items" \
@@ -64,8 +68,24 @@ jobs:
             echo '```'
             cat out/stats.txt
             echo '```'
+            echo "#### First 25 ranges"
+            echo '```'
+            head -26 out/ranges.csv
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v5
         with:
           name: range-catalogue
           path: out/
+      - name: Publish to the range-data branch
+        # Keeps the latest output readable without downloading artifacts (and without
+        # adding commits to the PR). Not for pull requests from forks.
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          cd out
+          git init -q -b range-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ranges.json ranges.csv stats.txt inspect.txt
+          git commit -q -m "Range catalogue from swissTLM3D $RELEASE (${GITHUB_SHA::7})"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" range-data

@@ -243,4 +243,25 @@ icon("pump_shotgun", "Vorderschaftrepetierflinte", [
     "M38 21.5 L47 21.5 Q47 27 42 27 L38 25.5 Z",
 ], ["M39.8 21.5 L45.2 21.5 Q45.2 25.3 42.2 25.3 L39.8 24.6 Z"] + [rect(67 + i * 5, 16.6, 2, 4.6) for i in range(5)])
 
+# Belt-fed machine gun (e.g. MG 51): stock, feed cover, ventilated barrel jacket,
+# carrying handle, belt box and bipod. Length-to-height ratio about 3.9.
+g_solid, g_hole = guard(48, 22, 12, 8)
+icon("machine_gun", "Maschinengewehr", [
+    poly((2, 12), (30, 13), (30, 23), (8, 29), (2, 30)),
+    rect(30, 12, 38, 10),
+    poly((38, 8.5), (64, 8.5), (67, 12), (38, 12)),  # feed cover
+    rect(68, 12.5, 32, 8),  # barrel jacket
+    rect(68, 15, 50, 3),  # barrel
+    rect(116, 13.5, 8, 6),  # flash hider
+    rect(110, 10.5, 2.5, 4.5),
+    "M72 12.5 L74 5 L88 5 L90 12.5 L87 12.5 L85.5 8 L76.5 8 L75 12.5 Z",  # carrying handle
+    poly((40, 22), (48, 22), (45, 36), (37, 36)),
+    g_solid,
+    rect(61, 22, 9, 10),  # belt box
+    poly((100, 20), (102.5, 20), (109, 40), (106.5, 40)),
+    poly((102, 20), (104.5, 20), (97, 40), (94.5, 40)),
+], [g_hole, poly((6, 15), (26, 15.8), (26, 20.5), (8, 25.5), (6, 25.5))]
+   + [rect(71 + i * 6, 13.3, 3.5, 1.4) for i in range(5)]
+   + [rect(71 + i * 6, 18.3, 3.5, 1.4) for i in range(5)])
+
 icon("other", "Andere", [ring(64, 24, 21, 17), ring(64, 24, 13, 9), circle(64, 24, 5)])
