@@ -19,6 +19,7 @@ struct SettingsView: View {
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
+    @AppStorage(ScoringSystem.enabledKey) private var scoringSystems = ""
 
     var body: some View {
         NavigationStack {
@@ -67,6 +68,16 @@ struct SettingsView: View {
                     }
                 } footer: {
                     Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
+                }
+
+                Section {
+                    ForEach(ScoringSystem.allCases) { system in
+                        ScoringSystemToggle(system: system, raw: $scoringSystems)
+                    }
+                } header: {
+                    Text("Wertungsarten")
+                } footer: {
+                    Text("Mit mehr als einer wählst du sie pro Anlass. Neue Anlässe beginnen mit der obersten.")
                 }
 
                 Section {

@@ -44,6 +44,12 @@ struct EntryEditorView: View {
     @State private var result = ""
     @State private var maxPoints: Double?
     @State private var passes: [PassDraft] = []
+    @AppStorage(ScoringSystem.enabledKey) private var enabledScoring = ""
+    /// The event's scoring system; changing it here changes it for all its Stiche.
+    @State private var scoring: ScoringSystem = .rings
+    @State private var division = ""
+    @State private var powerFactor: IPSCPowerFactor = .minor
+    @State private var ipsc = IPSCStage()
 
     private struct PassDraft: Identifiable {
         let id = UUID()
@@ -137,7 +143,11 @@ struct EntryEditorView: View {
                         }
                     }
                     if showsStich {
-                        TextField("Stich", text: $stich)
+                        TextField(scoring == .ipsc ? "Stage".loc : "Stich".loc, text: $stich)
+                    }
+                    ScoringSystemPicker(system: $scoring)
+                    if scoring == .ipsc {
+                        IPSCMatchFields(division: $division, powerFactor: $powerFactor)
                     }
                 } footer: {
                     if stichCount > 1 {
@@ -172,58 +182,10 @@ struct EntryEditorView: View {
                     }
                 }
 
-                Section("Schüsse") {
-                    Picker("Erfassung", selection: $mode) {
-                        ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    switch mode {
-                    case .total:
-                        countRow("Schusszahl", value: $shotCount, step: 5)
-                    case .split:
-                        countRow("Probeschüsse", value: $sighters, step: 1)
-                        countRow("Wertungsschüsse", value: $scored, step: 5)
-                        LabeledContent("Total", value: (sighters + scored).formatted())
-                    case .shots:
-                        countRow("Probeschüsse", value: $sighters, step: 1)
-                        ForEach($passes) { $pass in
-                            ShotBoxesRow(number: (passes.firstIndex { $0.id == pass.id } ?? 0) + 1, boxes: $pass.boxes)
-                        }
-                        .onDelete { passes.remove(atOffsets: $0) }
-                        Button {
-                            passes.append(PassDraft(text: ""))
-                        } label: {
-                            Label("Passe hinzufügen", systemImage: "plus.circle")
-                        }
-                        LabeledContent("Wertungsschüsse", value: passShotCount.formatted())
-                        LabeledContent("Total", value: (sighters + passShotCount).formatted())
-                    }
-                }
-
-                Section {
-                    TextField("Resultat", text: $result)
-                    HStack {
-                        Text("Max. Punkte")
-                        Spacer()
-                        TextField("optional", value: $maxPoints, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(maxWidth: 100)
-                    }
-                    ScoreSummary(score: currentScore)
-                    if currentScore.exceedsMax {
-                        Label("Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.",
-                              systemImage: "exclamationmark.triangle")
-                            .foregroundStyle(.red)
-                    }
-                } header: {
-                    Text("Resultat")
-                } footer: {
-                    if mode == .shots {
-                        Text("Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.")
-                    } else {
-                        Text("Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
-                    }
+                if scoring == .ipsc {
+                    IPSCStageSection(stage: $ipsc, shotCount: $shotCount, powerFactor: powerFactor)
+                } else {
+                    ringSections
                 }
 
                 let aperture = SightSettings.aperture(for: weapon?.category)
@@ -256,7 +218,7 @@ struct EntryEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(currentScore.exceedsMax) }
+                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(scoring == .rings && currentScore.exceedsMax) }
             }
             .onAppear(perform: load)
             .onChange(of: here.location) { _, new in applyNearestRange(new) }
@@ -300,14 +262,19 @@ struct EntryEditorView: View {
                 if let lot, lot.ammunition == new { return }
                 lot = suggestedLot(for: new)
             }
+            .onChange(of: scoring) { _, new in
+                guard didLoad else { return }
+                // IPSC only counts all shots: carry the total over in both directions.
+                if new == .ipsc {
+                    shotCount = shotTotal(in: mode)
+                } else if mode == .split {
+                    scored = max(0, shotCount - sighters)
+                }
+            }
             .onChange(of: mode) { old, new in
                 guard didLoad else { return }
                 // Carry the count over so switching modes never loses what was typed.
-                let total = switch old {
-                case .total: shotCount
-                case .split: sighters + scored
-                case .shots: sighters + passShotCount
-                }
+                let total = shotTotal(in: old)
                 switch new {
                 case .total: shotCount = total
                 case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
@@ -326,6 +293,64 @@ struct EntryEditorView: View {
                 case .range: RangeEditorView(range: nil) { range = $0 }
                 case .ammunition: AmmunitionEditorView(ammunition: nil, suggestedCaliber: caliber) { ammunition = $0 }
                 }
+            }
+        }
+    }
+
+    /// Shots and result of a Stich scored in points.
+    @ViewBuilder
+    private var ringSections: some View {
+        Section("Schüsse") {
+            Picker("Erfassung", selection: $mode) {
+                ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
+            }
+            .pickerStyle(.segmented)
+            switch mode {
+            case .total:
+                countRow("Schusszahl", value: $shotCount, step: 5)
+            case .split:
+                countRow("Probeschüsse", value: $sighters, step: 1)
+                countRow("Wertungsschüsse", value: $scored, step: 5)
+                LabeledContent("Total", value: (sighters + scored).formatted())
+            case .shots:
+                countRow("Probeschüsse", value: $sighters, step: 1)
+                ForEach($passes) { $pass in
+                    ShotBoxesRow(number: (passes.firstIndex { $0.id == pass.id } ?? 0) + 1, boxes: $pass.boxes)
+                }
+                .onDelete { passes.remove(atOffsets: $0) }
+                Button {
+                    passes.append(PassDraft(text: ""))
+                } label: {
+                    Label("Passe hinzufügen", systemImage: "plus.circle")
+                }
+                LabeledContent("Wertungsschüsse", value: passShotCount.formatted())
+                LabeledContent("Total", value: (sighters + passShotCount).formatted())
+            }
+        }
+
+        Section {
+            TextField("Resultat", text: $result)
+            HStack {
+                Text("Max. Punkte")
+                Spacer()
+                TextField("optional", value: $maxPoints, format: .number)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: 100)
+            }
+            ScoreSummary(score: currentScore)
+            if currentScore.exceedsMax {
+                Label("Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.",
+                      systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.red)
+            }
+        } header: {
+            Text("Resultat")
+        } footer: {
+            if mode == .shots {
+                Text("Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.")
+            } else {
+                Text("Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
             }
         }
     }
@@ -356,6 +381,15 @@ struct EntryEditorView: View {
               scoredShots: scoredShotsForScore)
     }
 
+    /// All shots as the point form in `mode` counts them.
+    private func shotTotal(in mode: ShotEntryMode) -> Int {
+        switch mode {
+        case .total: shotCount
+        case .split: sighters + scored
+        case .shots: sighters + passShotCount
+        }
+    }
+
     private var passShotCount: Int { passes.map { Score.parseShots($0.text).count }.reduce(0, +) }
 
     /// Shots the per-shot average divides by, as the current mode defines them.
@@ -383,9 +417,12 @@ struct EntryEditorView: View {
             mode = ShotEntryMode(of: entry)
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
+            if let shootingEvent = entry.shootingEvent { loadScoring(of: shootingEvent) }
+            ipsc = entry.ipscStage ?? IPSCStage()
         } else if let addingTo {
             // Another Stich of the same event: the shared part as it is, the rest from its last Stich.
             date = addingTo.date; range = addingTo.range; event = addingTo.name; weather = addingTo.weather
+            loadScoring(of: addingTo)
             let last = addingTo.sortedEntries.last
             weapon = last?.weapon?.isArchived == false ? last?.weapon : nil
             barrel = weapon == nil ? nil : last?.effectiveBarrel ?? weapon?.preferredBarrel(on: date)
@@ -406,6 +443,9 @@ struct EntryEditorView: View {
             lot = suggestedLot(for: ammunition)
         }
         if startsNewEvent {
+            // A new match starts with the division and power factor of the last one.
+            if let last = ShootingEvent.lastIPSC(in: allEvents) { loadScoring(of: last) }
+            scoring = ScoringSystem.forNewEvent(enabled: ScoringSystem.enabled(from: enabledScoring))
             sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
             // Weather starts on when the last entry with this weapon had it (off for indoor shooting).
             weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: .now) : nil
@@ -416,6 +456,10 @@ struct EntryEditorView: View {
             }
         }
         didLoad = true
+    }
+
+    private func loadScoring(of event: ShootingEvent) {
+        scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
     }
 
     private var formattedAutoDistance: String { autoRange.map { NearbyRanges.format($0.distance) } ?? "" }
@@ -494,7 +538,14 @@ struct EntryEditorView: View {
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
         target.lot = lot?.ammunition == ammunition ? lot : nil
         target.barrel = weapon?.barrelToStore(picked: barrel, caliber: caliber, on: date)
-        switch mode {
+        shootingEvent.scoringSystem = scoring
+        if scoring == .ipsc {
+            shootingEvent.setIPSC(division: division, powerFactor: powerFactor)
+            target.ipscStage = ipsc
+        }
+        // IPSC has no sighters; the point fields stay as stored, like fields switched off in Settings.
+        let shotMode: ShotEntryMode = scoring == .ipsc ? .total : mode
+        switch shotMode {
         case .total:
             target.shotCount = max(0, shotCount); target.sighterCount = nil
         case .split:
@@ -502,14 +553,17 @@ struct EntryEditorView: View {
         case .shots:
             target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
         }
-        target.result = result; target.notes = notes
+        target.notes = notes
+        if scoring == .rings { target.result = result }
         // Fields switched off in Settings keep the values already stored.
         sight.fitted(to: SightSettings.aperture(for: weapon?.category))
             .keeping(SightSettings(entry: target), outside: features)
             .apply(to: target)
         if features.contains(.weather) { shootingEvent.weather = weather?.normalized() }
-        target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
-        target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
+        if scoring == .rings {
+            target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
+            target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
+        }
 
         let existing = target.sortedPhotos
         if existing.compactMap(\.imageData) != photos {

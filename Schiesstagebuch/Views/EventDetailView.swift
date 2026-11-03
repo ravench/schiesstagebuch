@@ -31,20 +31,24 @@ struct EventDetailView: View {
 
             Section {
                 HStack(spacing: 0) {
-                    metric("Stiche", event.stichCount.formatted())
+                    metric(event.scoringSystem == .ipsc ? "Stages" : "Stiche", event.stichCount.formatted())
                     Divider()
                     metric("Schüsse", event.totalShots.formatted())
+                    if let points = event.ipscPoints {
+                        Divider()
+                        metric("Punkte", points.formatted())
+                    }
                 }
                 .frame(height: 64)
             }
 
-            Section("Stiche") {
+            Section(event.scoringSystem == .ipsc ? "Stages".loc : "Stiche".loc) {
                 ForEach(event.sortedEntries) { entry in
                     NavigationLink(value: entry) { StichRow(entry: entry) }
                 }
                 .onDelete(perform: deleteStiche)
                 Button { addingStich = true } label: {
-                    Label("Stich hinzufügen", systemImage: "plus.circle")
+                    Label(event.scoringSystem == .ipsc ? "Stage hinzufügen".loc : "Stich hinzufügen".loc, systemImage: "plus.circle")
                 }
             }
 
@@ -127,10 +131,15 @@ struct StichRow: View {
             }
             Spacer(minLength: 4)
             VStack(alignment: .trailing, spacing: 2) {
-                Text(entry.result.isEmpty ? entry.shotCount.formatted() : entry.result)
-                    .font(.headline.monospacedDigit())
-                Text(entry.result.isEmpty ? "Schuss".loc : String(localized: "\(entry.shotCount) Schuss"))
-                    .font(.caption2).foregroundStyle(.secondary)
+                if let hitFactor = entry.hitFactor {
+                    Text(IPSCFormat.hitFactor(hitFactor)).font(.headline.monospacedDigit())
+                    Text("Hitfaktor").font(.caption2).foregroundStyle(.secondary)
+                } else {
+                    Text(entry.result.isEmpty || entry.scoringSystem == .ipsc ? entry.shotCount.formatted() : entry.result)
+                        .font(.headline.monospacedDigit())
+                    Text(entry.result.isEmpty || entry.scoringSystem == .ipsc ? "Schuss".loc : String(localized: "\(entry.shotCount) Schuss"))
+                        .font(.caption2).foregroundStyle(.secondary)
+                }
             }
         }
         .padding(.vertical, 2)
@@ -163,7 +172,7 @@ struct RepeatedStichRow: View {
     }
 }
 
-/// Edits what all Stiche of an event share: date, range, Anlass and weather.
+/// Edits what all Stiche of an event share: date, range, Anlass, scoring and weather.
 struct EventEditorView: View {
     let event: ShootingEvent
 
@@ -177,6 +186,9 @@ struct EventEditorView: View {
     @State private var name = ""
     @State private var weather: WeatherRecord?
     @State private var addingRange = false
+    @State private var scoring: ScoringSystem = .rings
+    @State private var division = ""
+    @State private var powerFactor: IPSCPowerFactor = .minor
 
     var body: some View {
         NavigationStack {
@@ -193,6 +205,10 @@ struct EventEditorView: View {
                             .buttonStyle(.borderless)
                     }
                     TextField("Anlass", text: $name)
+                    ScoringSystemPicker(system: $scoring)
+                    if scoring == .ipsc {
+                        IPSCMatchFields(division: $division, powerFactor: $powerFactor)
+                    }
                 } footer: {
                     Text("Gilt für alle \(event.stichCount) Stiche dieses Anlasses.")
                 }
@@ -208,6 +224,7 @@ struct EventEditorView: View {
             }
             .onAppear {
                 date = event.date; range = event.range; name = event.name; weather = event.weather
+                scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
             }
             .sheet(isPresented: $addingRange) { RangeEditorView(range: nil) { range = $0 } }
         }
@@ -218,6 +235,8 @@ struct EventEditorView: View {
         event.name = name.trimmingCharacters(in: .whitespaces)
         event.range = range
         event.setDate(date)
+        event.scoringSystem = scoring
+        if scoring == .ipsc { event.setIPSC(division: division, powerFactor: powerFactor) }
         if features.contains(.weather) { event.weather = weather?.normalized() }
         try? context.save()
         // Day-based reminders count from entry dates.
