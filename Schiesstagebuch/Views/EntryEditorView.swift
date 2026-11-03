@@ -163,6 +163,11 @@ struct EntryEditorView: View {
                             .frame(maxWidth: 100)
                     }
                     ScoreSummary(score: currentScore)
+                    if currentScore.exceedsMax {
+                        Label("Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.",
+                              systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(.red)
+                    }
                 } header: {
                     Text("Resultat")
                 } footer: {
@@ -199,7 +204,7 @@ struct EntryEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold() }
+                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(currentScore.exceedsMax) }
             }
             .onAppear(perform: load)
             .onChange(of: weapon) { _, new in
