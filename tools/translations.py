@@ -201,10 +201,10 @@ T = {
     "Notizen (optional)": ("Notes (optional)", "Notes (facultatif)", "Note (facoltativo)"),
     "OK": ("OK", "OK", "OK"),
     "%lld Anlagen hinzugefügt.": ("%lld ranges added.", "%lld stands ajoutés.", "%lld poligoni aggiunti."),
-    "Die App kann die Schweizer Schiessanlagen mit Ort, Höhe, Distanzen und Schussrichtung in deine Liste übernehmen (Daten: swisstopo). Du kannst das später unter Einstellungen › Schiessanlagen nachholen.": (
-        "The app can add the Swiss shooting ranges to your list, with location, altitude, distances and shooting direction (data: swisstopo). You can do this later under Settings › Ranges.",
-        "L'app peut ajouter les stands de tir suisses à ta liste, avec lieu, altitude, distances et direction de tir (données : swisstopo). Tu peux le faire plus tard sous Réglages › Stands de tir.",
-        "L'app può aggiungere alla tua lista i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Puoi farlo più tardi in Impostazioni › Poligoni."),
+    "Mit «Ja» füllt die App deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Du kannst das auch später unter Einstellungen › Schiessanlagen tun.": (
+        "Tapping “Yes” prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges.",
+        "Avec «Oui», l'app pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Tu peux aussi le faire plus tard sous Réglages › Stands de tir.",
+        "Con «Sì» l'app precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Puoi farlo anche più tardi in Impostazioni › Poligoni."),
     "Ja, Anlagen übernehmen": ("Yes, add ranges", "Oui, ajouter les stands", "Sì, aggiungi i poligoni"),
     "Nein": ("No", "Non", "No"),
     "Schiessanlagen übernommen": ("Ranges added", "Stands ajoutés", "Poligoni aggiunti"),
