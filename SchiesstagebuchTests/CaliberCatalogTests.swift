@@ -51,6 +51,29 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertNotEqual(Caliber.normalized("9x19"), Caliber.normalized("9x21"))
     }
 
+    // MARK: Swiss service rounds
+
+    func testGP1890IsItsOwnRifleCalibre() throws {
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
+        XCTAssertEqual(gp1890.name, "7.5x53.5 mm Swiss (GP 1890)")
+        XCTAssertEqual(gp1890.category, CaliberCatalog.Category.rifle.rawValue)
+        XCTAssertEqual(gp1890.displayAliases, ["GP 1890", "GP 90/23"])
+        for text in ["GP1890", "GP 90/23", "7,5 mm GP 90", "7.5mm GP90", "Patrone 1890", "gp 90/03", "7,5x53,5", "7.5×53.5 mm"] {
+            XCTAssertEqual(CaliberCatalog.match(text)?.id, gp1890.id, text)
+        }
+        XCTAssertNotNil(gp1890.outline.case)
+        XCTAssertNotNil(gp1890.outline.bullet)
+    }
+
+    func testGP1890DoesNotTakeOverGP90OrGP11() throws {
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
+        let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11"))
+        XCTAssertEqual(CaliberCatalog.match("GP90")?.name, "5.6 mm GP 90 (Swiss)", "GP90 is the Stgw 90 round")
+        XCTAssertEqual(CaliberCatalog.match("7.5")?.id, gp11.id)
+        XCTAssertNotEqual(gp1890.id, gp11.id)
+        XCTAssertLessThan(gp1890.outline.height, gp11.outline.height, "shorter case and cartridge than GP 11")
+    }
+
     // MARK: De-duplication after iCloud sync
 
     func testDuplicatesMergeIntoTheOldestRecord() throws {

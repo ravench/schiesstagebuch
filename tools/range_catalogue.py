@@ -289,12 +289,16 @@ GENERIC_NAMES = {
 }
 
 
+# swissTLM3D writes "k_W" (kein Wert) where an attribute has no value.
+NO_VALUE = {"", "k_w", "k.w.", "kw", "-", "unbekannt", "none", "null"}
+
+
 def clean_name(name):
     """A swisstopo name worth showing, or "" for empty and generic labels."""
     if name is None:
         return ""
     text = " ".join(str(name).split())
-    return "" if text.lower() in GENERIC_NAMES else text
+    return "" if text.lower() in NO_VALUE or text.lower() in GENERIC_NAMES else text
 
 
 def read_tlm(path):
@@ -386,6 +390,27 @@ def inspect_tlm(path, out=sys.stdout):
             print(f"{sport}.{kind} values:", file=out)
             for value, count in conn.execute(f'SELECT "{kind}", COUNT(*) FROM "{sport}" GROUP BY 1'):
                 print(f"  {value!r}: {count}", file=out)
+    # Which names swisstopo gives the range objects themselves, and which settlement kinds exist.
+    for needles, attribute, patterns in ((("gebaeude", "footprint"), "nutzung", ("%schiess%",)),
+                                         (("sportbaute", "lin"), "objektart", ("%scheiben%",))):
+        table = find_table(tables, *needles)
+        if not table:
+            continue
+        column, name = find_column(tables[table][1], attribute), find_column(tables[table][1], "name")
+        if not (column and name):
+            continue
+        rows = conn.execute(f'SELECT "{name}", COUNT(*) FROM "{table}" WHERE "{column}" LIKE ?'
+                            ' GROUP BY 1 ORDER BY 2 DESC', patterns).fetchall()
+        named = [(value, count) for value, count in rows if clean_name(value)]
+        print(f"{table} names: {sum(c for _, c in named)} of {sum(c for _, c in rows)} named", file=out)
+        for value, count in rows[:25]:
+            print(f"  {value!r}: {count}", file=out)
+    places = find_table(tables, "siedlungsname")
+    if places and find_column(tables[places][1], "objektart"):
+        kind = find_column(tables[places][1], "objektart")
+        print(f"{places}.{kind} values:", file=out)
+        for value, count in conn.execute(f'SELECT "{kind}", COUNT(*) FROM "{places}" GROUP BY 1'):
+            print(f"  {value!r}: {count}", file=out)
     conn.close()
 
 

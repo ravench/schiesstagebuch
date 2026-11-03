@@ -14,6 +14,10 @@ import os, sys
 
 S = 1024
 RED = "#D52B1E"
+# Backgrounds: beige in light mode, navy in dark mode, black for tinted (grayscale).
+BEIGE = ("#F1E6D2", "#DCC9A8")
+NAVY = ("#2B3A55", "#18233A")
+BLACK = ("#000000", "#000000")
 
 
 def target(cx, cy, r, face, ink, hole, holes=((0.07, -0.05), (-0.12, 0.10), (0.20, 0.16)), rings=5):
@@ -68,14 +72,14 @@ def hardcover(p):
 
 
 PALETTES = {
-    "": dict(bg_open=("#2B3A55", "#18233A"), bg_hard=("#F1E6D2", "#DCC9A8"), cover="#7A2E2A",
+    "": dict(bg_open=BEIGE, bg_hard=BEIGE, cover="#7A2E2A",
              spine="#5E2220", band="#3E1614", pages="#E9E4D6", face="#F4F1E8", ink="#141414",
              hole=RED, ribbon="#E3A230", lines="#9AA6B2"),
-    "-Dark": dict(bg_open=("#1E1B1A", "#0B0A0A"), bg_hard=("#1E1B1A", "#0B0A0A"), cover="#6E2A26",
+    "-Dark": dict(bg_open=NAVY, bg_hard=NAVY, cover="#6E2A26",
                   spine="#521F1C", band="#2E100F", pages="#5C584E", face="#D9D5CA", ink="#0D0D0D",
                   hole="#FF5A45", ribbon="#E3A230", lines="#7E8790"),
     # Tinted: grayscale on black; iOS maps luminance onto the user's tint colour.
-    "-Tinted": dict(bg_open=("#000000", "#000000"), bg_hard=("#000000", "#000000"), cover="#4A4A4A",
+    "-Tinted": dict(bg_open=BLACK, bg_hard=BLACK, cover="#4A4A4A",
                     spine="#383838", band="#222222", pages="#8A8A8A", face="#D0D0D0", ink="#000000",
                     hole="#FFFFFF", ribbon="#FFFFFF", lines="#A0A0A0"),
 }
