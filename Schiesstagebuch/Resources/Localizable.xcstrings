@@ -162,6 +162,29 @@
         }
       }
     },
+    "%lld Anlagen hinzugefügt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ranges added."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld stands ajoutés."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld poligoni aggiunti."
+          }
+        }
+      }
+    },
     "%lld Einträge": {
       "extractionState": "manual",
       "localizations": {
@@ -4285,6 +4308,29 @@
         }
       }
     },
+    "Ja, Anlagen übernehmen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes, add ranges"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oui, ajouter les stands"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sì, aggiungi i poligoni"
+          }
+        }
+      }
+    },
     "Jagdgewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -5711,6 +5757,29 @@
         }
       }
     },
+    "Mit «Ja» füllt die App deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Du kannst das auch später unter Einstellungen › Schiessanlagen tun.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tapping “Yes” prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec «Oui», l'app pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Tu peux aussi le faire plus tard sous Réglages › Stands de tir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con «Sì» l'app precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Puoi farlo anche più tardi in Impostazioni › Poligoni."
+          }
+        }
+      }
+    },
     "Monat": {
       "extractionState": "manual",
       "localizations": {
@@ -6144,6 +6213,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "velo di nebbia davanti ai bersagli"
+          }
+        }
+      }
+    },
+    "Nein": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
           }
         }
       }
@@ -8287,6 +8379,29 @@
         }
       }
     },
+    "Schiessanlagen übernommen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranges added"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stands ajoutés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poligoni aggiunti"
+          }
+        }
+      }
+    },
     "Schiessen": {
       "extractionState": "manual",
       "localizations": {
@@ -8329,6 +8444,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "berretto da tiro"
+          }
+        }
+      }
+    },
+    "Schiesst du in der Schweiz?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do you shoot in Switzerland?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tires-tu en Suisse ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spari in Svizzera?"
           }
         }
       }
@@ -8536,6 +8674,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Polvere nera"
+          }
+        }
+      }
+    },
+    "Schweizer Schiessanlagen übernehmen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Swiss shooting ranges"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter les stands de tir suisses"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi i poligoni svizzeri"
           }
         }
       }

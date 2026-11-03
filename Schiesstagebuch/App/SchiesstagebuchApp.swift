@@ -42,24 +42,31 @@ struct SchiesstagebuchApp: App {
                 .task {
                     CaliberCatalog.seedIfNeeded(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
+                    RangeCatalog.deduplicate(container.mainContext)
                     if ScreenshotData.isActive { ScreenshotData.seed(container.mainContext) }
                 }
                 // Core Data posts this from a background queue; mainContext must only be used on the main thread.
                 .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: RunLoop.main)) { _ in
                     CaliberCatalog.deduplicate(container.mainContext)
+                    RangeCatalog.deduplicate(container.mainContext)
                 }
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { CaliberCatalog.deduplicate(container.mainContext) }
+            if phase == .active {
+                CaliberCatalog.deduplicate(container.mainContext)
+                RangeCatalog.deduplicate(container.mainContext)
+            }
         }
     }
 }
 
 struct RootView: View {
     @Environment(\.term) private var term
+    @Environment(\.modelContext) private var context
     @Query(filter: #Predicate<Weapon> { !$0.isArchived }) private var weapons: [Weapon]
     @Query private var licenceCards: [LicenceCard]
+    @State private var askRangeCatalog = false
 
     private var dueCount: Int { weapons.reduce(0) { $0 + $1.dueMaintenance.count } }
 
@@ -80,5 +87,17 @@ struct RootView: View {
             SettingsView()
                 .tabItem { Label("Einstellungen", systemImage: "gearshape") }
         }
+        .task { askRangeCatalog = !ScreenshotData.isActive && RangeCatalog.shouldAsk(context) }
+        .alert("Schiesst du in der Schweiz?", isPresented: $askRangeCatalog) {
+            Button("Ja, Anlagen übernehmen") { answerRangeCatalog(importing: true) }
+            Button("Nein", role: .cancel) { answerRangeCatalog(importing: false) }
+        } message: {
+            Text("Mit «Ja» füllt die App deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Du kannst das auch später unter Einstellungen › Schiessanlagen tun.")
+        }
+    }
+
+    private func answerRangeCatalog(importing: Bool) {
+        UserDefaults.standard.set(true, forKey: RangeCatalog.askedKey)
+        if importing { RangeCatalog.importAll(into: context) }
     }
 }

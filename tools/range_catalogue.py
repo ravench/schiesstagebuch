@@ -11,6 +11,7 @@ kept by hand in this repository.
     python3 tools/range_catalogue.py latest-gpkg stac-items.json   # prints "<release> <url>"
     python3 tools/range_catalogue.py inspect swisstlm3d.gpkg
     python3 tools/range_catalogue.py build swisstlm3d.gpkg data/indoor-ranges.json out/
+    python3 tools/range_catalogue.py app-json out/ranges.json Schiesstagebuch/Resources/SwissRanges.json
 
 The build writes out/ranges.json (for the app) and out/ranges.csv (for checking against
 other lists). Licence: swissTLM3D © swisstopo (open data, attribution required). The
@@ -669,6 +670,11 @@ def manual_ranges(data):
 # ---------------------------------------------------------------------------
 # Output
 
+def round_bearing(bearing):
+    """Bearing to 0.1°, in [0, 360): 359.96 rounds to 0.0, not 360.0."""
+    return round(bearing, 1) % 360.0
+
+
 def range_record(rng):
     lat, lon = lv95_to_wgs84(*rng["firing"])
     record = {
@@ -680,7 +686,7 @@ def range_record(rng):
         "distances": rng["distances"],
     }
     if rng["bearing"] is not None:
-        record["shootingBearing"] = round(rng["bearing"], 1)
+        record["shootingBearing"] = round_bearing(rng["bearing"])
     if rng["altitude"] is not None:
         record["altitude"] = round(rng["altitude"])
     if rng.get("website"):
@@ -691,7 +697,7 @@ def range_record(rng):
         record["lanes"] = [{
             "distance": lane["distance"],
             "measured": round(lane["measured"], 1),
-            "shootingBearing": round(lane["bearing"], 1),
+            "shootingBearing": round_bearing(lane["bearing"]),
             "source": lane["source"],
         } for lane in sorted(rng["lanes"], key=lambda lane: -lane["measured"])]
     return record
@@ -764,6 +770,50 @@ def write_csv(ranges, path):
             ])
 
 
+def app_catalogue(catalogue):
+    """The compact file the app bundles (Resources/SwissRanges.json) from a full ranges.json.
+
+    Names that occur twice in one place get their distances appended, then a number, so the
+    user can tell them apart in a list.
+    """
+    ranges = catalogue["ranges"]
+
+    def key(r, name):
+        return (name.lower(), r["place"].lower())
+
+    def counts(names):
+        out = {}
+        for r, name in zip(ranges, names):
+            out[key(r, name)] = out.get(key(r, name), 0) + 1
+        return out
+
+    names = [r["name"] for r in ranges]
+    clashes = counts(names)
+    names = [f"{name} ({'/'.join(str(d) for d in r['distances'])} m)"
+             if clashes[key(r, name)] > 1 and r["distances"] else name
+             for r, name in zip(ranges, names)]
+    clashes, seen, final = counts(names), {}, []
+    for r, name in zip(ranges, names):
+        if clashes[key(r, name)] > 1:
+            seen[key(r, name)] = seen.get(key(r, name), 0) + 1
+            name = f"{name} {seen[key(r, name)]}"
+        final.append(name)
+
+    items = []
+    for r, name in zip(ranges, final):
+        item = {"id": r["id"], "name": name, "place": r["place"],
+                "lat": r["latitude"], "lon": r["longitude"], "distances": r["distances"]}
+        if r.get("shootingBearing") is not None:
+            item["bearing"] = round_bearing(r["shootingBearing"])
+        if r.get("altitude") is not None:
+            item["alt"] = r["altitude"]
+        if r.get("indoor"):
+            item["indoor"] = True
+        items.append(item)
+    return {"source": "Schiessanlagen: swissTLM3D © swisstopo",
+            "swissTLM3D": catalogue.get("swissTLM3D", ""), "ranges": items}
+
+
 STAC_ITEMS = "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swisstlm3d/items"
 
 
@@ -792,6 +842,14 @@ def main(argv):
         with open(argv[1], encoding="utf-8") as f:
             release, url = latest_gpkg(json.load(f))
         print(f"{release} {url}")
+        return 0
+    if len(argv) >= 3 and argv[0] == "app-json":
+        with open(argv[1], encoding="utf-8") as f:
+            app = app_catalogue(json.load(f))
+        with open(argv[2], "w", encoding="utf-8") as f:
+            json.dump(app, f, ensure_ascii=False, separators=(",", ":"))
+            f.write("\n")
+        print(f"{len(app['ranges'])} ranges written to {argv[2]}")
         return 0
     print(__doc__)
     return 2
