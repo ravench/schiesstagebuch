@@ -21,9 +21,6 @@ struct SightSettings: Equatable {
     /// Bipod length in cm; rifles only.
     var bipodLength: Double?
 
-    /// Settings key for showing the sport-shooter fields; off by default.
-    static let showKey = "showSportShooterSettings"
-
     /// Which aperture a weapon category uses.
     enum Aperture { case ring, iris, both }
 

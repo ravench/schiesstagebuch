@@ -5,7 +5,7 @@ struct EntryDetailView: View {
     let entry: Entry
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(SightSettings.showKey) private var showSport = false
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var editing = false
     /// Set by "Weiteren Stich hinzufügen": the event the new Stich joins.
     @State private var addingTo: ShootingEvent?
@@ -72,18 +72,20 @@ struct EntryDetailView: View {
                 if let lot = entry.lot { row("Los", lot.number) }
             }
 
-            let sight = SightSettings(entry: entry)
-            if showSport, !sight.isEmpty {
+            let sight = SightSettings(entry: entry).only(features)
+            if !sight.isEmpty {
                 Section("Einstellungen für Sportschützen") {
-                    let filterLabel = sight.filters.count > 1 ? "Filter (Mehrzahl)".loc : "Filter".loc
-                    LabeledContent(filterLabel) {
-                        HStack(spacing: 6) {
-                            let names = sight.filters.isEmpty ? [""] : sight.filters
-                            // By position: the same filter may be used twice.
-                            ForEach(names.indices, id: \.self) { i in
-                                FilterSwatch(name: names[i], size: 14)
+                    if features.contains(.filter) {
+                        let filterLabel = sight.filters.count > 1 ? "Filter (Mehrzahl)".loc : "Filter".loc
+                        LabeledContent(filterLabel) {
+                            HStack(spacing: 6) {
+                                let names = sight.filters.isEmpty ? [""] : sight.filters
+                                // By position: the same filter may be used twice.
+                                ForEach(names.indices, id: \.self) { i in
+                                    FilterSwatch(name: names[i], size: 14)
+                                }
+                                Text(FilterColor.title(sight.filters))
                             }
-                            Text(FilterColor.title(sight.filters))
                         }
                     }
                     row("Iris (Brille)", sight.irisSize.map(SightSettings.format))
@@ -93,7 +95,7 @@ struct EntryDetailView: View {
                 }
             }
 
-            if showSport, let weather = entry.weather {
+            if features.contains(.weather), let weather = entry.weather {
                 WeatherDetailSections(record: weather)
             }
 
