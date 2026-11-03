@@ -110,6 +110,8 @@ struct ScannedStandblatt: Equatable {
         case missingShots([Int])
         /// Shot numbers whose ring did not match the hundredths.
         case uncertainShots([Int])
+        /// The total is more than the strip's shots can reach: something was misread.
+        case exceedsMax(total: Int, max: Int)
         /// Passe number (1-based) and its shot count, when that is not a usual Passe length.
         case unusualPasseLength(Int, shots: Int)
         /// Shots left out so that a Passe matches its printed sum.
@@ -135,6 +137,10 @@ struct ScannedStandblatt: Equatable {
         let uncertain = shots.filter(\.uncertain).map(\.number)
         if scoring == .rings, !uncertain.isEmpty { result.append(.uncertainShots(uncertain)) }
         result += passeLengthIssues
+        let limit = maxPoints(scoring)
+        if !shots.isEmpty, Double(total(scoring)) > limit {
+            result.append(.exceedsMax(total: total(scoring), max: Int(limit)))
+        }
         return result
     }
 

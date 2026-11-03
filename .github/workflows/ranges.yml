@@ -1,0 +1,71 @@
+name: Range catalogue
+# Builds the shooting range catalogue from swisstopo swissTLM3D and OpenStreetMap and
+# uploads ranges.json / ranges.csv as a build artifact. Runs on demand, and on pull
+# requests that change the builder. Licences: swissTLM3D © swisstopo; OSM data ODbL.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - tools/range_catalogue.py
+      - .github/workflows/ranges.yml
+defaults:
+  run:
+    shell: bash -eo pipefail {0}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - name: Tests
+        run: python3 -m unittest discover -s tools -p 'test_range_catalogue.py'
+      - name: Work directory
+        # The swissTLM3D GeoPackage is several GB; /mnt has more room than the workspace.
+        run: |
+          sudo mkdir -p /mnt/ranges && sudo chown "$USER" /mnt/ranges
+          echo "WORK=/mnt/ranges" >> "$GITHUB_ENV"
+          df -h / /mnt
+      - name: OpenStreetMap
+        run: |
+          python3 tools/range_catalogue.py overpass-query > "$WORK/query.overpassql"
+          for url in https://overpass-api.de/api/interpreter https://overpass.kumi.systems/api/interpreter \
+                     https://overpass-api.de/api/interpreter; do
+            if curl -fsS --retry 3 --retry-delay 20 --max-time 900 \
+                 --data-urlencode "data@$WORK/query.overpassql" "$url" -o "$WORK/overpass.json"; then
+              break
+            fi
+            sleep 30
+          done
+          python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))['elements']), 'OSM elements')" "$WORK/overpass.json"
+      - name: swissTLM3D
+        run: |
+          curl -fsS --retry 3 "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swisstlm3d/items" \
+            -o "$WORK/stac.json"
+          read -r RELEASE URL < <(python3 tools/range_catalogue.py latest-gpkg "$WORK/stac.json")
+          echo "RELEASE=$RELEASE" >> "$GITHUB_ENV"
+          echo "Downloading swissTLM3D $RELEASE: $URL"
+          curl -fL --retry 3 -sS "$URL" -o "$WORK/tlm.zip"
+          ls -l "$WORK/tlm.zip"
+          unzip -l "$WORK/tlm.zip"
+          unzip -o -j "$WORK/tlm.zip" '*.gpkg' -d "$WORK"
+          rm "$WORK/tlm.zip"
+          GPKG=$(ls "$WORK"/*.gpkg | head -1)
+          echo "GPKG=$GPKG" >> "$GITHUB_ENV"
+          ls -l "$GPKG"
+      - name: Inspect
+        run: python3 tools/range_catalogue.py inspect "$GPKG" | tee "$WORK/inspect.txt"
+      - name: Build
+        run: |
+          mkdir -p out
+          python3 tools/range_catalogue.py build "$GPKG" "$WORK/overpass.json" out "$RELEASE" | tee out/stats.txt
+          cp "$WORK/inspect.txt" out/
+          {
+            echo "### Range catalogue (swissTLM3D $RELEASE)"
+            echo '```'
+            cat out/stats.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v5
+        with:
+          name: range-catalogue
+          path: out/

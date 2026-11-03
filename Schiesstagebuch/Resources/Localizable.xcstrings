@@ -300,25 +300,25 @@
         }
       }
     },
-    "AXIA-Filter": {
+    "%lld Wertung + %lld Probe": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "AXIA filters"
+            "value": "%1$lld scored + %2$lld sighters"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtres AXIA"
+            "value": "%1$lld coups comptés + %2$lld coups d'essai"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtri AXIA"
+            "value": "%1$lld colpi di gara + %2$lld colpi di prova"
           }
         }
       }
@@ -1542,6 +1542,52 @@
         }
       }
     },
+    "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The result is above the maximum. Correct the result or the max. points."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le résultat dépasse le maximum. Corrige le résultat ou les points max."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il risultato supera il massimo. Correggi il risultato o i punti max."
+          }
+        }
+      }
+    },
+    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The date of sale can't be before the date of purchase. Sold firearms are archived."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La date de vente ne peut pas précéder la date d'achat. Les armes vendues sont archivées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La data di vendita non può precedere la data di acquisto. Le armi vendute vengono archiviate."
+          }
+        }
+      }
+    },
     "Datei wählen …": {
       "extractionState": "manual",
       "localizations": {
@@ -1814,6 +1860,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "La vecchia app non conosceva i calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."
+          }
+        }
+      }
+    },
+    "Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The old app only knew the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'ancienne app ne connaissait que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."
           }
         }
       }
@@ -2600,6 +2669,29 @@
         }
       }
     },
+    "Farbfilter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colour filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres de couleur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri colorati"
+          }
+        }
+      }
+    },
     "Fehlende Schüsse: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -2665,6 +2757,35 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtro"
+          }
+        }
+      }
+    },
+    "Filter (Mehrzahl)": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri"
           }
         }
       }
@@ -3888,6 +4009,52 @@
         }
       }
     },
+    "Kauf und Verkauf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchase and sale"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Achat et vente"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acquisto e vendita"
+          }
+        }
+      }
+    },
+    "Kaufdatum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date of purchase"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date d'achat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data di acquisto"
+          }
+        }
+      }
+    },
     "Kein Filter": {
       "extractionState": "manual",
       "localizations": {
@@ -4137,6 +4304,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Controllo"
+          }
+        }
+      }
+    },
+    "Korrekturlinsen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adjustment lenses"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verres correcteurs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lenti correttive"
           }
         }
       }
@@ -4923,25 +5113,25 @@
         }
       }
     },
-    "Mindestens ein Kaliber. Weitere Läufe, z. B. Wechselläufe, fügst du nach dem Sichern hinzu.": {
+    "Mindestens ein Kaliber. Wechselläufe fügst du nach dem Sichern hinzu.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "At least one calibre. Add more barrels, e.g. swappable ones, after saving."
+            "value": "At least one calibre. Add swappable barrels after saving."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Au moins un calibre. Ajoute d'autres canons, p. ex. interchangeables, après l'enregistrement."
+            "value": "Au moins un calibre. Ajoute les canons interchangeables après l'enregistrement."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Almeno un calibro. Aggiungi altre canne, p. es. intercambiabili, dopo il salvataggio."
+            "value": "Almeno un calibro. Aggiungi le canne intercambiabili dopo il salvataggio."
           }
         }
       }
@@ -5199,6 +5389,29 @@
         }
       }
     },
+    "Nach Standort gewählt · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picked by location · %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisi selon la position · %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scelto in base alla posizione · %@"
+          }
+        }
+      }
+    },
     "Nach Tagen": {
       "extractionState": "manual",
       "localizations": {
@@ -5379,6 +5592,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "velo di nebbia davanti ai bersagli"
+          }
+        }
+      }
+    },
+    "Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New entries for today pick the range you are at and list nearby ranges first. Your location is only read for this and is never stored or sent."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les nouvelles entrées du jour choisissent le stand où tu te trouves et listent d'abord les stands proches. La position n'est lue que pour cela, sans être enregistrée ni envoyée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le nuove voci di oggi scelgono il poligono in cui ti trovi ed elencano prima quelli vicini. La posizione viene letta solo a questo scopo e non viene né salvata né inviata."
           }
         }
       }
@@ -6510,6 +6746,29 @@
         }
       }
     },
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two filters can be combined per entry, usually a colour filter with a +0.25 or -0.25 adjustment lens."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre correcteur +0.25 ou -0.25."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente correttiva +0.25 o -0.25."
+          }
+        }
+      }
+    },
     "Pro Kaliber": {
       "extractionState": "manual",
       "localizations": {
@@ -6713,6 +6972,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colpi di prova"
+          }
+        }
+      }
+    },
+    "Probeschüsse abziehen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split off sighters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déduire les coups d'essai"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scorporare i colpi di prova"
           }
         }
       }
@@ -7269,6 +7551,29 @@
         }
       }
     },
+    "Schiessanlage nach Standort wählen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick range by location"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir le stand selon la position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegliere il poligono in base alla posizione"
+          }
+        }
+      }
+    },
     "Schiessanlagen": {
       "extractionState": "manual",
       "localizations": {
@@ -7449,6 +7754,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "colpi"
+          }
+        }
+      }
+    },
+    "Schuss %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shot %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coup %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpo %lld"
           }
         }
       }
@@ -8419,6 +8747,29 @@
         }
       }
     },
+    "Total %@ liegt über dem Maximum von %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total %1$@ is above the maximum of %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le total %1$@ dépasse le maximum de %2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il totale %1$@ supera il massimo di %2$@"
+          }
+        }
+      }
+    },
     "Total: gedruckt %@, gelesen %@": {
       "extractionState": "manual",
       "localizations": {
@@ -8599,6 +8950,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terreno / appoggio"
+          }
+        }
+      }
+    },
+    "Verkaufsdatum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date of sale"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date de vente"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data di vendita"
           }
         }
       }
@@ -8967,6 +9341,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Omesso perché la serie corrisponda alla somma stampata: colpo %@"
+          }
+        }
+      }
+    },
+    "Weitere Läufe nur für Wechselläufe oder nach einem Laufwechsel. Dann zählt die App die Schüsse auch pro Lauf.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add barrels only for swappable barrels or after a barrel replacement. The app then also counts shots per barrel."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N'ajoute des canons que pour des canons interchangeables ou après un changement de canon. L'app compte alors aussi les coups par canon."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi canne solo se intercambiabili o dopo una sostituzione. L'app conta allora anche i colpi per canna."
           }
         }
       }
@@ -9496,6 +9893,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bipiede (cm)"
+          }
+        }
+      }
+    },
+    "Zweiter Filter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Second filter"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deuxième filtre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secondo filtro"
           }
         }
       }
@@ -10945,29 +11365,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "calma"
-          }
-        }
-      }
-    },
-    "z. B. 10 9 10 8 9": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "e.g. 10 9 10 8 9"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "p. ex. 10 9 10 8 9"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "p. es. 10 9 10 8 9"
           }
         }
       }
