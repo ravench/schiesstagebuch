@@ -164,6 +164,8 @@ class WorkflowTests(unittest.TestCase):
         archive = self.workflow.split("xcodebuild archive")[1].split("- name:")[0]
         self.assertIn("CODE_SIGNING_ALLOWED=NO", archive)
         self.assertNotIn("allowProvisioningUpdates", archive)
+        # ...but the export only keeps entitlements the archived app is signed with.
+        self.assertIn('codesign --force --sign - --entitlements "$ENTITLEMENTS"', archive)
 
     def test_entitlements_checked_before_upload(self):
         check = self.workflow.index("check-entitlements")
