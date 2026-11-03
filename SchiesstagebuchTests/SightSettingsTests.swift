@@ -69,9 +69,28 @@ final class SightSettingsTests: ModelTestCase {
         }
     }
 
+    func testDiopterFilterWheels() {
+        XCTAssertEqual(FilterColor.wyss.map(\.name), ["Wyss hellgrau", "Wyss dunkelgrau", "Wyss gelb", "Wyss orange", "Wyss grün", "Wyss blau"])
+        XCTAssertEqual(FilterColor.gruenigElmiger.count, 12, "two wheels with six colours each")
+        XCTAssertEqual(FilterColor.gruenigElmiger.first?.name, "G+E hellblau")
+        XCTAssertEqual(FilterColor.gruenigElmiger.last?.name, "G+E rot")
+        for f in FilterColor.wyss + FilterColor.gruenigElmiger {
+            XCTAssertFalse(f.polarised, f.name)
+            XCTAssertNil(f.dioptre, f.name)
+            XCTAssertNotNil(FilterColor.filter(named: f.name))
+        }
+        // Like the glasses filters, wheel colours show in the picker only once ticked as owned.
+        var catalog = FilterCatalog()
+        XCTAssertFalse(catalog.visible.contains { $0.name == "Wyss gelb" })
+        catalog.setOwned("Wyss gelb", true)
+        catalog.setOwned("G+E rot", true)
+        XCTAssertEqual(catalog.visible.map(\.name), ["Wyss gelb", "G+E rot"])
+        XCTAssertEqual(catalog.problem(with: "wyss GELB"), .duplicate, "own filters can't take a built-in name")
+    }
+
     func testFilterListMatchesTheShop() {
         XCTAssertEqual(FilterColor.filters.count, 17)
-        XCTAssertEqual(FilterColor.all.count, 19, "17 colour filters plus +0.25 and -0.25")
+        XCTAssertEqual(FilterColor.all.count, 37, "17 glasses filters, 6 Wyss, 12 G+E, plus +0.25 and -0.25")
         XCTAssertEqual(Set(FilterColor.all).count, FilterColor.all.count, "names are unique")
         XCTAssertEqual(Set(FilterColor.builtIn.map(\.rgb)).count, FilterColor.builtIn.count, "swatches are distinct")
         XCTAssertTrue(FilterColor.all.contains("Eidgenoss polarisiert"))

@@ -19,6 +19,16 @@ struct FilterSettingsView: View {
         catalogData = c.data
     }
 
+    /// One switch per built-in filter: on means the user owns it and it shows in the entry picker.
+    private func ownToggles(_ filters: [FilterColor.Filter]) -> some View {
+        ForEach(filters, id: \.name) { f in
+            Toggle(isOn: Binding(get: { catalog.owns(f.name) },
+                                 set: { on in update { $0.setOwned(f.name, on) } })) {
+                Label { Text(f.name) } icon: { FilterSwatch(filter: f) }
+            }
+        }
+    }
+
     var body: some View {
         List {
             Section {
@@ -39,25 +49,29 @@ struct FilterSettingsView: View {
             }
 
             Section {
-                ForEach(FilterColor.filters, id: \.name) { f in
-                    Toggle(isOn: Binding(get: { catalog.owns(f.name) },
-                                         set: { on in update { $0.setOwned(f.name, on) } })) {
-                        Label { Text(f.name) } icon: { FilterSwatch(filter: f) }
-                    }
-                }
+                ownToggles(FilterColor.filters)
             } header: {
-                Text("Farbfilter")
+                Text("Brillenfilter (AXIA)")
             } footer: {
                 Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
             }
 
             Section {
-                ForEach(FilterColor.dioptre, id: \.name) { f in
-                    Toggle(isOn: Binding(get: { catalog.owns(f.name) },
-                                         set: { on in update { $0.setOwned(f.name, on) } })) {
-                        Label { Text(f.name) } icon: { FilterSwatch(filter: f) }
-                    }
-                }
+                ownToggles(FilterColor.wyss)
+            } header: {
+                Text("Filterrad Wyss (Stgw 90)")
+            }
+
+            Section {
+                ownToggles(FilterColor.gruenigElmiger)
+            } header: {
+                Text("Filterräder Grünig + Elmiger (Stgw 90)")
+            } footer: {
+                Text("Zwei Räder im Diopter mit je sechs Farben.")
+            }
+
+            Section {
+                ownToggles(FilterColor.dioptre)
             } header: {
                 Text("Korrekturlinsen")
             } footer: {
