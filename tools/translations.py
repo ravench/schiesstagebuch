@@ -597,6 +597,54 @@ T = {
         "Left out so the series matches the printed sum: shot %@",
         "Omis pour que la passe corresponde à la somme imprimée : coup %@",
         "Omesso perché la serie corrisponda alla somma stampata: colpo %@"),
+    # Scoring systems and IPSC
+    "A-Treffer": ("A hits", "Impacts A", "Colpi A"),
+    "C-Treffer": ("C hits", "Impacts C", "Colpi C"),
+    "D-Treffer": ("D hits", "Impacts D", "Colpi D"),
+    "Anteil A": ("A share", "Part de A", "Quota A"),
+    "Division": ("Division", "Division", "Divisione"),
+    "Fehlschüsse (Miss)": ("Misses", "Manqués (miss)", "Mancati (miss)"),
+    "Gefallene Stahlziele zählen als A. Fehlschüsse, No-Shoots und Verfahrensfehler kosten je 10 Punkte.": (
+        "Steel targets that fell count as A. Misses, no-shoots and procedurals cost 10 points each.",
+        "Les cibles métalliques tombées comptent comme A. Manqués, no-shoots et pénalités de procédure coûtent 10 points chacun.",
+        "I bersagli metallici abbattuti contano come A. Mancati, no-shoot e penalità procedurali costano 10 punti ciascuno."),
+    "Hitfaktor": ("Hit factor", "Hit factor", "Hit factor"),
+    "IPSC": ("IPSC", "IPSC", "IPSC"),
+    "Major": ("Major", "Major", "Major"),
+    "Minor": ("Minor", "Minor", "Minor"),
+    "No-Shoots": ("No-shoots", "No-shoots", "No-shoot"),
+    "Power-Faktor": ("Power factor", "Facteur de puissance", "Power factor"),
+    "Punkte": ("Points", "Points", "Punti"),
+    "Resultat, Einzelschüsse und Max. Punkte pro Stich": (
+        "Result, single shots and max. points per match",
+        "Résultat, coups individuels et points max. par cible",
+        "Risultato, colpi singoli e punti max. per bersaglio"),
+    "Schusszahl: alle abgegebenen Schüsse, auch Nachschüsse. Zeit vom Startsignal bis zum letzten Schuss.": (
+        "Shots: every round fired, make-up shots included. Time from the start signal to the last shot.",
+        "Nombre de coups : tous les coups tirés, rattrapages compris. Temps du signal de départ au dernier coup.",
+        "Numero di colpi: tutti i colpi sparati, compresi quelli di recupero. Tempo dal segnale di partenza all'ultimo colpo."),
+    "Sekunden": ("Seconds", "Secondes", "Secondi"),
+    "Stage": ("Stage", "Stage", "Stage"),
+    "Stage hinzufügen": ("Add stage", "Ajouter un stage", "Aggiungi stage"),
+    "Stages": ("Stages", "Stages", "Stage"),
+    "Treffer und Fehler": ("Hits and penalties", "Impacts et pénalités", "Colpi e penalità"),
+    "Verfahrensfehler": ("Procedurals", "Pénalités de procédure", "Penalità procedurali"),
+    "Wertungsart": ("Scoring", "Mode de comptage", "Tipo di punteggio"),
+    "Wertungsarten": ("Scoring", "Modes de comptage", "Tipi di punteggio"),
+    "Wie wertest du deine Schüsse? Mehrere sind möglich.": (
+        "How do you score your shooting? You can pick several.",
+        "Comment comptes-tu tes tirs ? Plusieurs choix possibles.",
+        "Come conti i tuoi tiri? Puoi sceglierne più di uno."),
+    "Mit mehr als einer wählst du sie pro Anlass. Neue Anlässe beginnen mit der obersten.": (
+        "With more than one on, you pick one per event. New events start with the top one.",
+        "S'il y en a plusieurs, tu choisis pour chaque événement. Les nouveaux événements commencent avec le premier.",
+        "Se ne attivi più di uno, lo scegli per ogni evento. I nuovi eventi iniziano con il primo."),
+    "Zeit": ("Time", "Temps", "Tempo"),
+    "Zeit (s)": ("Time (s)", "Temps (s)", "Tempo (s)"),
+    "Zeit und Treffer A, C, D pro Stage, mit Hitfaktor": (
+        "Time and A, C, D hits per stage, with hit factor",
+        "Temps et impacts A, C, D par stage, avec hit factor",
+        "Tempo e colpi A, C, D per stage, con hit factor"),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.

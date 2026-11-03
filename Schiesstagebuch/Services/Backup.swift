@@ -81,6 +81,8 @@ enum Backup {
         var id: UUID; var date: Date; var name: String; var rangeID: UUID?
         var weather: WeatherRecord?
         var createdAt: Date
+        /// Optional so backups from before scoring systems still load (point scoring).
+        var scoringSystem: String?; var ipscDivision: String?; var ipscPowerFactor: String?
     }
     struct EntryDTO: Codable {
         var id: UUID; var date: Date; var shotCount: Int; var result: String; var notes: String
@@ -95,6 +97,8 @@ enum Backup {
         var shotValuesText: String?
         var filterColor: String?; var secondFilterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
         var bipodLength: Double?
+        /// IPSC stage: time and hits.
+        var ipsc: IPSCStage?
         var photos: [Data]
         /// Marker of entries imported from the old app, so a re-import after a restore skips them.
         var importKey: String?
@@ -139,6 +143,7 @@ enum Backup {
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
                       filterColor: $0.filterColor, secondFilterColor: $0.secondFilterColor,
                       diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
+                      ipsc: $0.ipscStage,
                       photos: $0.sortedPhotos.compactMap(\.imageData),
                       importKey: $0.importKey, createdAt: $0.createdAt)
             },
@@ -156,7 +161,8 @@ enum Backup {
                       expectedLifeShots: $0.expectedLifeShots, notes: $0.notes, createdAt: $0.createdAt)
             },
             events: try all(ShootingEvent.self, context).map {
-                .init(id: $0.id, date: $0.date, name: $0.name, rangeID: $0.range?.id, weather: $0.weather, createdAt: $0.createdAt)
+                .init(id: $0.id, date: $0.date, name: $0.name, rangeID: $0.range?.id, weather: $0.weather, createdAt: $0.createdAt,
+                      scoringSystem: $0.scoringSystemRaw, ipscDivision: $0.ipscDivision, ipscPowerFactor: $0.ipscPowerFactorRaw)
             })
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -238,6 +244,9 @@ enum Backup {
         for d in dtos where events[d.id] == nil {
             let event = ShootingEvent(date: d.date, name: d.name); event.id = d.id
             event.weather = d.weather; event.createdAt = d.createdAt
+            event.scoringSystem = d.scoringSystem.flatMap(ScoringSystem.init(rawValue:)) ?? .rings
+            event.setIPSC(division: d.ipscDivision ?? "",
+                          powerFactor: d.ipscPowerFactor.flatMap(IPSCPowerFactor.init(rawValue:)) ?? .minor)
             context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
             events[d.id] = event
         }
@@ -328,6 +337,7 @@ enum Backup {
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
+            e.ipscStage = d.ipsc
             SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "", diopter: d.diopter,
                           ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
@@ -352,7 +362,8 @@ enum Backup {
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
         let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
-                                "Prozent", "Einzelschüsse", "Filter", "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibeinstütze (cm)", "Wetter", "Bemerkungen"]
+                                "Prozent", "Einzelschüsse", "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
+                                "Filter", "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibeinstütze (cm)", "Wetter", "Bemerkungen"]
         var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
         for e in entries {
             let score = e.score
@@ -374,6 +385,12 @@ enum Backup {
             cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
             cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
             cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
+            let stage = e.scoringSystem == .ipsc ? e.ipscStage : nil
+            cols.append(e.scoringSystem.title.loc)
+            cols.append(e.scoringSystem == .ipsc ? e.shootingEvent?.ipscDivision ?? "" : "")
+            cols.append(stage?.time.map { IPSCFormat.time($0) } ?? "")
+            cols.append(stage?.hitSummary ?? "")
+            cols.append(e.hitFactor.map { IPSCFormat.hitFactor($0) } ?? "")
             cols.append(SightSettings(entry: e).filters.joined(separator: " + "))
             cols.append(e.diopter.map { SightSettings.format($0) } ?? "")
             cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")

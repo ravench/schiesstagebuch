@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 /// First launch: an animated intro says the app is asking a few preferences to set itself up, then the
-/// shooter picks which sport-shooter fields to record, the wording and, in Switzerland, whether to
+/// shooter picks the scoring systems, which sport-shooter fields to record, the wording and, in Switzerland, whether to
 /// prefill the shooting ranges. Everything can be changed later in Settings.
 struct WelcomeView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -10,6 +10,7 @@ struct WelcomeView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
+    @AppStorage(ScoringSystem.enabledKey) private var scoringSystems = ""
     /// Decided once when the screen opens, so the row doesn't vanish while it is shown.
     @State private var offerRanges = false
     @State private var importRanges = false
@@ -25,6 +26,17 @@ struct WelcomeView: View {
                 .listRowBackground(Color.clear)
 
                 Section {
+                    ForEach(ScoringSystem.allCases) { system in
+                        ScoringSystemToggle(system: system, raw: $scoringSystems)
+                    }
+                } header: {
+                    Text("Wertungsarten")
+                } footer: {
+                    Text("Wie wertest du deine Schüsse? Mehrere sind möglich.")
+                }
+                .welcomeReveal(step: 1, shown: shown, reduceMotion: reduceMotion)
+
+                Section {
                     ForEach(SportFeatures.each, id: \.rawValue) { feature in
                         SportFeatureToggle(feature: feature, features: $features)
                     }
@@ -33,7 +45,7 @@ struct WelcomeView: View {
                 } footer: {
                     Text("Wähle, welche Felder deine Einträge zusätzlich zeigen.")
                 }
-                .welcomeReveal(step: 1, shown: shown, reduceMotion: reduceMotion)
+                .welcomeReveal(step: 2, shown: shown, reduceMotion: reduceMotion)
 
                 if offerRanges {
                     Section {
@@ -45,7 +57,7 @@ struct WelcomeView: View {
                     } footer: {
                         Text("Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später unter Einstellungen › Schiessanlagen.")
                     }
-                    .welcomeReveal(step: 2, shown: shown, reduceMotion: reduceMotion)
+                    .welcomeReveal(step: 3, shown: shown, reduceMotion: reduceMotion)
                 }
 
                 Section {
@@ -57,7 +69,7 @@ struct WelcomeView: View {
                 } footer: {
                     Text("Ändert nur die Wörter in der App, deine Daten bleiben gleich.")
                 }
-                .welcomeReveal(step: 3, shown: shown, reduceMotion: reduceMotion)
+                .welcomeReveal(step: 4, shown: shown, reduceMotion: reduceMotion)
             }
             .navigationTitle("Willkommen")
             .toolbar {
