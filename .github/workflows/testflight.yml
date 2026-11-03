@@ -53,6 +53,9 @@ jobs:
           echo "BUILD_NUMBER=$BUILD" >> "$GITHUB_ENV"
           echo "Build number $BUILD"
       - name: Archive
+        # Signed ad hoc (keeps the entitlements, needs no certificate). Automatic signing here made
+        # every fresh runner create a new Apple Development certificate until the team hit Apple's
+        # limit. The upload step re-signs with the cloud-managed distribution certificate.
         if: steps.secrets.outputs.ready == 'true'
         run: |
           xcodebuild archive \
@@ -61,10 +64,7 @@ jobs:
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/Schiesstagebuch.xcarchive" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
-            -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- PROVISIONING_PROFILE_SPECIFIER= \
             CURRENT_PROJECT_VERSION="$BUILD_NUMBER" | tee "$RUNNER_TEMP/archive.log" | xcpretty
       - name: Show the archive errors
         # xcpretty drops signing and account errors; show what xcodebuild actually said.
@@ -85,3 +85,10 @@ jobs:
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID"
           echo "### Build $BUILD_NUMBER uploaded to TestFlight" >> "$GITHUB_STEP_SUMMARY"
+      - name: Check the uploaded app's entitlements
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/ipa" && unzip -q -o "$RUNNER_TEMP"/export/*.ipa -d "$RUNNER_TEMP/ipa"
+          codesign -d --entitlements :- "$RUNNER_TEMP"/ipa/Payload/*.app > "$RUNNER_TEMP/entitlements.plist"
+          cat "$RUNNER_TEMP/entitlements.plist"
+          python3 tools/testflight.py check-entitlements "$RUNNER_TEMP/entitlements.plist" Schiesstagebuch/Schiesstagebuch.entitlements
