@@ -220,3 +220,58 @@ struct BreakdownChart<Key: Hashable>: View {
         }
     }
 }
+
+/// Box plot of result percentages per ammunition lot, so lots can be compared however each entry
+/// was scored (points of a maximum or a result in percent): box = Q1–Q3, bar = median, whiskers to
+/// 1.5 × IQR, every single result as a dot (outliers filled). Shown once two lots have a percentage.
+struct LotResultsChart: View {
+    let entries: [Entry]
+
+    private struct Dot: Identifiable { let id: Int; let lot: String; let value: Double; let outlier: Bool }
+
+    var body: some View {
+        let rows = entries.percentageByLot
+        if rows.count >= 2 {
+            let dots = rows.flatMap { r in r.values.map { v in (r.lot.number, v, r.stats.outliers.contains(v)) } }
+                .enumerated().map { Dot(id: $0.offset, lot: $0.element.0, value: $0.element.1, outlier: $0.element.2) }
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Resultat pro Los").font(.headline)
+                Chart {
+                    ForEach(rows, id: \.lot.persistentModelID) { row in
+                        let s = row.stats
+                        RuleMark(xStart: .value("Prozent", s.lowerWhisker), xEnd: .value("Prozent", s.upperWhisker),
+                                 y: .value("Los", row.lot.number))
+                            .foregroundStyle(.secondary)
+                        BarMark(xStart: .value("Q1", s.q1), xEnd: .value("Q3", s.q3), y: .value("Los", row.lot.number), height: 18)
+                            .foregroundStyle(.tint.opacity(0.3))
+                        RectangleMark(x: .value("Median", s.median), y: .value("Los", row.lot.number), width: 3, height: 22)
+                            .foregroundStyle(.tint)
+                            .annotation(position: .top, alignment: .leading, spacing: 2) {
+                                Text(verbatim: "\(ScoreFormat.percent(s.median)) · n = \(s.count)")
+                                    .font(.caption2.monospacedDigit()).foregroundStyle(.secondary)
+                            }
+                    }
+                    ForEach(dots) { d in
+                        PointMark(x: .value("Prozent", d.value), y: .value("Los", d.lot))
+                            .symbolSize(d.outlier ? 30 : 14)
+                            .foregroundStyle(d.outlier ? AnyShapeStyle(.red) : AnyShapeStyle(.primary.opacity(0.45)))
+                    }
+                }
+                .chartXScale(domain: .automatic(includesZero: false))
+                .chartXAxis {
+                    AxisMarks { value in
+                        AxisGridLine()
+                        AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
+                    }
+                }
+                .frame(height: CGFloat(rows.count) * 52 + 30)
+                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
+                    .font(.caption).foregroundStyle(.secondary)
+                if rows.contains(where: { $0.count < BoxStats.reliableCount }) {
+                    Text("Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+}
