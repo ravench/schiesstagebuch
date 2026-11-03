@@ -6,7 +6,7 @@ import Foundation
 struct SportFeatures: OptionSet, Hashable {
     let rawValue: Int
 
-    /// Shooting-glasses filters (up to two per entry) and the filter list in Settings.
+    /// Colour filters (up to two per entry), on the glasses or built into a rifle's diopter, and the filter list in Settings.
     static let filter = SportFeatures(rawValue: 1 << 0)
     /// Diopter, plus the ring on a rifle's sight or the iris on the glasses for pistols.
     static let sight = SportFeatures(rawValue: 1 << 1)
@@ -31,7 +31,7 @@ struct SportFeatures: OptionSet, Hashable {
 
     var title: String {
         switch self {
-        case .filter: "Brillenfilter"
+        case .filter: "Farbfilter"
         case .sight: "Diopter, Ring und Iris"
         case .bipod: "Zweibeinstütze"
         case .weather: "Wetter"
@@ -41,7 +41,7 @@ struct SportFeatures: OptionSet, Hashable {
 
     var detail: String {
         switch self {
-        case .filter: "Farbfilter und Korrekturgläser der Schiessbrille"
+        case .filter: "An der Schiessbrille oder im Diopter, auch Korrekturgläser"
         case .sight: "Ring am Gewehr, Iris an der Brille für Pistolen"
         case .bipod: "Länge in cm, nur bei Gewehren"
         case .weather: "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen"

@@ -806,6 +806,29 @@
         }
       }
     },
+    "An der Schiessbrille oder im Diopter, auch Korrekturgläser": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the shooting glasses or in the diopter, also correction lenses"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugli occhiali da tiro o nella diottra, anche lenti correttive"
+          }
+        }
+      }
+    },
     "Andere": {
       "extractionState": "manual",
       "localizations": {
@@ -1745,29 +1768,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abbagliamento"
-          }
-        }
-      }
-    },
-    "Brillenfilter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Glasses filters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtres de lunettes"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtri per occhiali"
           }
         }
       }
@@ -3148,29 +3148,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filtri colorati"
-          }
-        }
-      }
-    },
-    "Farbfilter und Korrekturgläser der Schiessbrille": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Colour filters and correction lenses of your shooting glasses"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtres de couleur et verres correcteurs des lunettes de tir"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtri colorati e lenti correttive degli occhiali da tiro"
           }
         }
       }

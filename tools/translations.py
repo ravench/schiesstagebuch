@@ -410,11 +410,10 @@ T = {
     "Einstellungen für Sportschützen": ("Sport shooter settings", "Réglages pour tireurs sportifs", "Impostazioni per tiratori sportivi"),
     "Zweibeinstütze": ("Bipod", "Bipied", "Bipiede"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
-    "Brillenfilter": ("Glasses filters", "Filtres de lunettes", "Filtri per occhiali"),
-    "Farbfilter und Korrekturgläser der Schiessbrille": (
-        "Colour filters and correction lenses of your shooting glasses",
-        "Filtres de couleur et verres correcteurs des lunettes de tir",
-        "Filtri colorati e lenti correttive degli occhiali da tiro"),
+    "An der Schiessbrille oder im Diopter, auch Korrekturgläser": (
+        "On the shooting glasses or in the diopter, also correction lenses",
+        "Sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs",
+        "Sugli occhiali da tiro o nella diottra, anche lenti correttive"),
     "Diopter, Ring und Iris": ("Diopter, ring and iris", "Dioptre, anneau et iris", "Diottra, anello e iride"),
     "Ring am Gewehr, Iris an der Brille für Pistolen": (
         "Ring on the rifle, iris on the glasses for pistols",
