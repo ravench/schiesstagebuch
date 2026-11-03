@@ -451,3 +451,9 @@ from translations_weather import W  # noqa: E402
 for _k, _v in W.items():
     assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
     T[_k] = _v
+
+from translations_wording import S  # noqa: E402
+
+for _k, _v in S.items():
+    assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
+    T[_k] = _v

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct EntryDetailView: View {
+    @Environment(\.term) private var term
     let entry: Entry
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -59,7 +60,7 @@ struct EntryDetailView: View {
             }
 
             Section("Ausrüstung") {
-                row("Waffe", entry.weapon?.name)
+                row(term("Waffe"), entry.weapon?.name)
                 row("Kaliber", entry.caliber?.name)
                 row("Munition", entry.ammunition?.name)
                 if let lot = entry.lot { row("Los", lot.number) }
