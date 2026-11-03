@@ -93,12 +93,29 @@ struct MaintenanceBadge: View {
     }
 }
 
+/// The sheet the maintenance block asks for. One item for both, so the detail screen
+/// needs a single `.sheet(item:)` outside its List.
+enum MaintenanceSheet: Identifiable, Hashable {
+    case log(MaintenanceKind)
+    case history
+
+    var id: String {
+        switch self {
+        case .log(let kind): "log-\(kind.rawValue)"
+        case .history: "history"
+        }
+    }
+}
+
 /// Maintenance block shown on the weapon detail screen.
+///
+/// It only reports taps through `present`; the screen that owns the List shows the sheet.
+/// A `.sheet` on a Section inside a List is copied onto each row, and rows are rebuilt when
+/// the List updates (more often with many entries), which closed the sheet again right
+/// after it opened.
 struct MaintenanceSection: View {
     @Bindable var weapon: Weapon
-    @Environment(\.modelContext) private var context
-    @State private var logging: MaintenanceKind?
-    @State private var showHistory = false
+    var present: (MaintenanceSheet) -> Void
 
     var body: some View {
         Section {
@@ -117,19 +134,17 @@ struct MaintenanceSection: View {
                         }
                     }
                     Spacer()
-                    Button("Erfassen") { logging = kind }.buttonStyle(.bordered).controlSize(.small)
+                    Button("Erfassen") { present(.log(kind)) }.buttonStyle(.bordered).controlSize(.small)
                 }
             }
             if !(weapon.maintenance ?? []).isEmpty {
-                Button("Verlauf anzeigen") { showHistory = true }
+                Button("Verlauf anzeigen") { present(.history) }
             }
         } header: {
             Text("Pflege")
         } footer: {
             Text("Erinnerungen stellst du unter Bearbeiten ein.")
         }
-        .sheet(item: $logging) { kind in MaintenanceEditorView(weapon: weapon, kind: kind) }
-        .sheet(isPresented: $showHistory) { MaintenanceHistoryView(weapon: weapon) }
     }
 }
 

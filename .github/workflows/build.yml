@@ -1,6 +1,9 @@
 name: Build
 on:
+  # Branches are built through their pull request; building their pushes too
+  # would take a second Mac runner for every commit.
   push:
+    branches: [main]
   pull_request:
 defaults:
   run:
@@ -12,14 +15,14 @@ jobs:
     # Official SwiftLint image with a pinned version, so results don't change under us.
     container: ghcr.io/realm/swiftlint:0.59.1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: SwiftLint
         # --strict turns every warning into a failure; the reporter adds annotations to the PR.
         run: swiftlint lint --strict --reporter github-actions-logging
   build:
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: brew install xcodegen
       - run: xcodegen generate
       - name: Check translations
@@ -33,6 +36,11 @@ jobs:
             -scheme Schiesstagebuch \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO | xcpretty
+      - name: Check orientations in the built app
+        # The same rule App Store Connect applies on upload (iPad multitasking).
+        run: |
+          PLIST=$(find ~/Library/Developer/Xcode/DerivedData -path '*/Debug-iphonesimulator/Schiesstagebuch.app/Info.plist' | head -1)
+          python3 tools/check_orientations.py "$PLIST"
       - name: Unit tests
         run: |
           UDID=$(xcrun simctl list devices available -j | python3 -c "

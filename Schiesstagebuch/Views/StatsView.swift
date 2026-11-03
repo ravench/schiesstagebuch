@@ -111,6 +111,8 @@ struct WeaponDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var editing = false
+    /// Maintenance sheet, attached outside the List (see `MaintenanceSection`).
+    @State private var maintenanceSheet: MaintenanceSheet?
     /// Set when the user chose to delete: the screen pops first and deletes in `onDisappear`,
     /// so no view still shows the weapon when its record disappears from the store.
     @State private var deleting = false
@@ -130,7 +132,7 @@ struct WeaponDetailView: View {
                     LabeledContent("Verkaufsdatum", value: sold.formatted(date: .long, time: .omitted))
                 }
             }
-            MaintenanceSection(weapon: weapon)
+            MaintenanceSection(weapon: weapon) { maintenanceSheet = $0 }
         } breakdowns: { entries in
             Section { BreakdownChart(title: "Pro Kaliber", entries: entries, key: \.caliber, label: \.name) }
             Section { BreakdownChart(title: "Pro Schiessanlage", entries: entries, key: \.range, label: \.name) }
@@ -140,6 +142,12 @@ struct WeaponDetailView: View {
         .toolbar { Button("Bearbeiten") { editing = true } }
         .sheet(isPresented: $editing) {
             WeaponEditorView(weapon: weapon, onDelete: { deleting = true })
+        }
+        .sheet(item: $maintenanceSheet) { sheet in
+            switch sheet {
+            case .log(let kind): MaintenanceEditorView(weapon: weapon, kind: kind)
+            case .history: MaintenanceHistoryView(weapon: weapon)
+            }
         }
         .onChange(of: editing) { _, shown in
             // Pop once the editor sheet is gone, not while it is still animating away.

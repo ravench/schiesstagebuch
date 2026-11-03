@@ -345,12 +345,43 @@ T = {
     "Standblatt fotografieren": ("Photograph score strip", "Photographier la feuille de stand", "Fotografa il foglio di tiro"),
     "Standblatt scannen": ("Scan score strip", "Scanner la feuille de stand", "Scansiona foglio di tiro"),
     "Standblatt wird gelesen …": ("Reading score strip …", "Lecture de la feuille de stand …", "Lettura del foglio di tiro …"),
+    "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighters", "%1$lld coups comptés + %2$lld coups d'essai", "%1$lld colpi di gara + %2$lld colpi di prova"),
+    "Probeschüsse abziehen": ("Split off sighters", "Déduire les coups d'essai", "Scorporare i colpi di prova"),
+    "Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
+        "The old app only knew the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",
+        "L'ancienne app ne connaissait que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste.",
+        "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."),
+    "Total %@ liegt über dem Maximum von %@": (
+        "Total %1$@ is above the maximum of %2$@",
+        "Le total %1$@ dépasse le maximum de %2$@",
+        "Il totale %1$@ supera il massimo di %2$@"),
+    "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": (
+        "The result is above the maximum. Correct the result or the max. points.",
+        "Le résultat dépasse le maximum. Corrige le résultat ou les points max.",
+        "Il risultato supera il massimo. Correggi il risultato o i punti max."),
     "Total: gedruckt %@, gelesen %@": ("Total: printed %1$@, read %2$@", "Total : imprimé %1$@, lu %2$@", "Totale: stampato %1$@, letto %2$@"),
     "Unsicher gelesen, Schuss %@": ("Uncertain reading, shot %@", "Lecture incertaine, coup %@", "Lettura incerta, colpo %@"),
     "Wiederholte Anzeigen (nicht gezählt)": (
         "Repeated displays (not counted)", "Affichages répétés (non comptés)", "Visualizzazioni ripetute (non contate)"),
     "Zehnerwertung": ("Tens scoring (A10)", "Valeur sur 10 (A10)", "Punteggio su 10 (A10)"),
     "Übernehmen": ("Apply", "Reprendre", "Applica"),
+    "Trotzdem übernehmen": ("Apply anyway", "Reprendre quand même", "Applica comunque"),
+    "Zurück": ("Back", "Retour", "Indietro"),
+    "Summe stimmt nicht": ("Sum doesn't match", "La somme ne correspond pas", "La somma non corrisponde"),
+    "Summe nicht geprüft": ("Sum not checked", "Somme non vérifiée", "Somma non verificata"),
+    "Summe prüfen: %@": ("Check the sum: %@", "Vérifier la somme : %@", "Controllare la somma: %@"),
+    "Summe nicht geprüft, kein gedrucktes Total gelesen (Schüsse ergeben %@)": (
+        "Sum not checked, no printed total read (shots add up to %@)",
+        "Somme non vérifiée, aucun total imprimé lu (les coups font %@)",
+        "Somma non verificata, nessun totale stampato letto (i colpi danno %@)"),
+    "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben %@.": (
+        "No total was read on the score strip. The shots add up to %@.",
+        "Aucun total n'a été lu sur la feuille de stand. Les coups font %@.",
+        "Sul foglio di tiro non è stato letto nessun totale. I colpi danno %@."),
+    "Prüfe die Schüsse im Eintrag, bevor du ihn sicherst. Ein Hinweis steht in den Notizen.": (
+        "Check the shots in the entry before saving it. A note has been added.",
+        "Vérifiez les coups dans l'entrée avant de l'enregistrer. Une remarque a été ajoutée aux notes.",
+        "Controlla i colpi nella voce prima di salvarla. È stata aggiunta una nota."),
     "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.": ("The backup contains all entries, photos and master data. Restoring never duplicates existing entries. The last 10 backups are also kept in the Files app under On My iPhone › Schiesstagebuch › Backups.", "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique pas les entrées existantes. Les 10 dernières sauvegardes sont aussi conservées dans l'app Fichiers sous Sur mon iPhone › Schiesstagebuch › Backups.", "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica le voci esistenti. Gli ultimi 10 backup restano anche nell'app File in Sul mio iPhone › Schiesstagebuch › Backups."),
     "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
     "App von %@": ("App by %@", "App de %@", "App di %@"),
@@ -390,6 +421,14 @@ T = {
     "W": ("W", "O", "O"),
     "NW": ("NW", "NO", "NO"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
+    "Passe %@ hat %@ Schüsse, üblich sind 3, 4, 5, 6 oder 10.": (
+        "Series %1$@ has %2$@ shots; usual are 3, 4, 5, 6 or 10.",
+        "La passe %1$@ compte %2$@ coups ; l'usage est 3, 4, 5, 6 ou 10.",
+        "La serie %1$@ ha %2$@ colpi; di solito sono 3, 4, 5, 6 o 10."),
+    "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": (
+        "Left out so the series matches the printed sum: shot %@",
+        "Omis pour que la passe corresponde à la somme imprimée : coup %@",
+        "Omesso perché la serie corrisponda alla somma stampata: colpo %@"),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.
