@@ -16,8 +16,6 @@ struct EntryEditorView: View {
 
     @State private var date = Date.now
     @State private var range: ShootingRange?
-    /// The range carried over from the last entry; a position fix only ever replaces this one.
-    @State private var carriedRange: ShootingRange?
     /// The range picked by position, shown with its distance until the user picks another.
     @State private var autoRange: NearbyRanges.Match?
     @State private var here = OneShotLocation()
@@ -222,7 +220,7 @@ struct EntryEditorView: View {
             .onChange(of: date) { _, new in
                 // A back-dated entry was shot elsewhere: undo the pick by position.
                 guard let autoRange, autoRange.range == range, !Calendar.current.isDateInToday(new) else { return }
-                range = carriedRange; self.autoRange = nil
+                range = nil; self.autoRange = nil
             }
             .onChange(of: weapon) { _, new in
                 guard didLoad else { return }
@@ -330,8 +328,8 @@ struct EntryEditorView: View {
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
         } else if let last = allEntries.first {
-            // New entries start from the most recent range, weapon and ammo: usually what you shoot next.
-            range = last.range?.isArchived == false ? last.range : nil
+            // New entries start from the most recent weapon and ammo: usually what you shoot next.
+            // The range stays empty unless the position picks one (NearbyRanges).
             weapon = last.weapon?.isArchived == false ? last.weapon : nil
             caliber = weapon?.preferredCaliber
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
@@ -343,7 +341,6 @@ struct EntryEditorView: View {
             weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: .now) : nil
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
-            carriedRange = range
             if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges) {
                 here.request()
             }
@@ -357,7 +354,7 @@ struct EntryEditorView: View {
     private func applyNearestRange(_ location: CLLocation?) {
         guard entry == nil, let location,
               NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges),
-              let match = NearbyRanges.preselection(ranges, from: location, current: range, carriedOver: carriedRange)
+              let match = NearbyRanges.preselection(ranges, from: location, current: range)
         else { return }
         range = match.range; autoRange = match
     }

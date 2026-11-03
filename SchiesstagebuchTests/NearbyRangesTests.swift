@@ -64,10 +64,8 @@ final class NearbyRangesTests: ModelTestCase {
     func testNeverReplacesARangeTheUserPicked() {
         let a = range("A", albis.lat, albis.lon)
         let other = range("Anderswo", nil, nil)
-        let last = range("Vom letzten Eintrag", nil, nil)
-        XCTAssertNil(NearbyRanges.preselection([a, other, last], from: here(), current: other, carriedOver: last))
-        XCTAssertEqual(NearbyRanges.preselection([a, other, last], from: here(), current: last, carriedOver: last)?.range, a)
-        XCTAssertEqual(NearbyRanges.preselection([a, other], from: here(), current: nil, carriedOver: nil)?.range, a)
+        XCTAssertNil(NearbyRanges.preselection([a, other], from: here(), current: other))
+        XCTAssertEqual(NearbyRanges.preselection([a, other], from: here(), current: nil)?.range, a)
     }
 
     func testPickerListsNearbyRangesFirstByDistance() {
