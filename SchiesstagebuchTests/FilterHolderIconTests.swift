@@ -14,13 +14,27 @@ final class FilterHolderIconTests: XCTestCase {
         }
     }
 
-    func testHolderHangsFromTheRailAboveTheFilter() {
+    func testIconFillsMostOfTheSquare() {
         let g = FilterHolderGeometry(size: 100)
-        XCTAssertLessThan(g.rail.boundingRect.maxY, g.frontRing.boundingRect.minY, "rail above the filter")
-        XCTAssertTrue(g.arm.boundingRect.intersects(g.rail.boundingRect), "arm joins the rail")
-        XCTAssertGreaterThan(g.arm.boundingRect.maxY + g.frontLine / 2, g.frontRing.boundingRect.minY, "arm reaches the ring")
-        XCTAssertEqual(g.arm.boundingRect.midX, g.frontRing.boundingRect.midX, accuracy: 0.5, "arm is centred over the filter")
-        XCTAssertTrue(g.frontRing.boundingRect.contains(g.lens.boundingRect), "tinted lens sits in the ring")
+        let used = g.ring.boundingRect.union(g.wire.boundingRect)
+        XCTAssertGreaterThan(max(used.width, used.height), 80)
+    }
+
+    func testWireLoopLeansFortyFiveDegreesToTheRight() {
+        let g = FilterHolderGeometry(size: 100)
+        let ring = g.ring.boundingRect, wire = g.wire.boundingRect
+        XCTAssertEqual(ring.width, ring.height, accuracy: 0.01, "the ring stays round when tilted")
+        XCTAssertGreaterThan(wire.midX, ring.midX, "loop leans right")
+        XCTAssertLessThan(wire.midY, ring.midY, "loop is above the ring")
+        let dx = wire.midX - ring.midX, dy = ring.midY - wire.midY
+        XCTAssertEqual(atan2(dx, dy) * 180 / .pi, 45, accuracy: 1)
+        XCTAssertTrue(wire.intersects(ring), "the wire is fixed to the ring")
+    }
+
+    func testRingIsThickerThanTheWire() {
+        let g = FilterHolderGeometry(size: 22)
+        XCTAssertGreaterThan(g.ringLine, g.wireLine * 2)
+        XCTAssertTrue(g.ring.boundingRect.contains(g.lens.boundingRect), "tinted filter sits in the ring")
     }
 
     func testFilterSectionTextsAreTranslated() throws {
