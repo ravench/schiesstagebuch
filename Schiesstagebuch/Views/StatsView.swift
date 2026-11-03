@@ -129,6 +129,7 @@ struct WeaponDetailView: View {
                     .frame(maxWidth: .infinity).frame(height: 70)
                     .listRowBackground(Color.clear)
                 LabeledContent("Kategorie", value: weapon.category.title)
+                if !weapon.manufacturer.isEmpty { LabeledContent("Hersteller", value: weapon.manufacturer) }
                 if !weapon.caliberSummary.isEmpty { LabeledContent("Kaliber", value: weapon.caliberSummary) }
                 if !weapon.serialNumber.isEmpty { LabeledContent("Hauptnummer", value: weapon.serialNumber) }
                 ForEach(weapon.extraSerials) { LabeledContent($0.label, value: $0.number) }
