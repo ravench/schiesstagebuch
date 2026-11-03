@@ -2807,6 +2807,29 @@
         }
       }
     },
+    "Einträge mit Prozent: Punkte mit Maximum oder Resultat in %. In Klammern die Anzahl.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entries with a percentage: points with a maximum, or a result in %. Number of entries in brackets."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrées avec pourcentage : points avec maximum ou résultat en %. Nombre d'entrées entre parenthèses."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voci con percentuale: punti con massimo o risultato in %. Tra parentesi il numero di voci."
+          }
+        }
+      }
+    },
     "Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse der Waffe.": {
       "extractionState": "manual",
       "localizations": {
@@ -12860,6 +12883,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media percentuale"
+          }
+        }
+      }
+    },
+    "Ø Prozent pro Los": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avg. percent by lot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moy. pourcentage par lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media percentuale per lotto"
           }
         }
       }
