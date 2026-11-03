@@ -43,6 +43,12 @@ final class RangeCatalogTests: ModelTestCase {
         }
         XCTAssertGreaterThan(items.filter { $0.distances.contains(300) }.count, 1000)
         XCTAssertGreaterThanOrEqual(items.filter { $0.id.hasPrefix("manual:") }.count, 10, "indoor ranges from data/indoor-ranges.json")
+        let addresses = items.compactMap(\.address)
+        XCTAssertGreaterThan(addresses.count, items.count * 9 / 10, "nearly every range has a street address")
+        for address in addresses {
+            XCTAssertNotNil(address.range(of: #", \d{4} "#, options: .regularExpression), "postcode in \(address)")
+        }
+        XCTAssertTrue(RangeCatalog.attribution.contains("Gebäudeadressverzeichnis"))
     }
 
     func testDecodesTheFileFormat() throws {
