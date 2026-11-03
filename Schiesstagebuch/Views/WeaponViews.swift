@@ -346,12 +346,15 @@ struct WeaponEditorView: View {
         Section {
             OptionalDateRow(title: "Kaufdatum", date: $purchaseDate,
                             range: Date.distantPast...(saleDate ?? .distantFuture))
-            OptionalDateRow(title: "Verkaufsdatum", date: $saleDate,
-                            range: (purchaseDate ?? .distantPast)...Date.distantFuture)
+            // Entering a sale date archives the weapon; the user can still switch archiving off.
+            OptionalDateRow(title: "Verkaufsdatum", date: Binding(get: { saleDate }, set: { new in
+                isArchived = Weapon.archivedAfterSaleChange(isArchived: isArchived, from: saleDate, to: new)
+                saleDate = new
+            }), range: (purchaseDate ?? .distantPast)...Date.distantFuture)
         } header: {
             Text("Kauf und Verkauf")
         } footer: {
-            Text("Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen.")
+            Text("Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.")
         }
     }
 
