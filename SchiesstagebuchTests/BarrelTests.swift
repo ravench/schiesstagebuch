@@ -102,6 +102,48 @@ final class BarrelTests: ModelTestCase {
         XCTAssertTrue(para.sameDimensions(in: all).isEmpty)
     }
 
+    func testCalibresWithIdenticalMeasurementsAreListedTogetherButStaySeparate() throws {
+        func catalogued(_ id: String) throws -> Caliber {
+            let item = try XCTUnwrap(CaliberCatalog.item(id: id))
+            let c = Caliber(name: item.name, category: item.category); c.catalogID = item.id
+            context.insert(c)
+            return c
+        }
+        let win = try catalogued(".308 Winchester")
+        let nato = try catalogued("7.62x51 mm NATO")
+        let rem = try catalogued(".223 Remington")
+        let nato556 = try catalogued("5.56x45 mm NATO")
+        let gp90 = try catalogued("5.6 mm GP 90 (Swiss)")
+        let gp11 = try catalogued("7.5x55 mm Swiss (GP 11)")
+        let custom = Caliber(name: "6.5x55 Wildcat"); context.insert(custom)
+        // Alphabetical, as the lists sort them: the twins are spread apart.
+        let sorted = [win, rem, nato556, gp90, custom, gp11, nato]
+        let grouped = Caliber.keepingGroupsTogether(sorted)
+        XCTAssertEqual(grouped.map(\.name), [".308 Winchester", "7.62x51 mm NATO", ".223 Remington", "5.56x45 mm NATO",
+                                             "5.6 mm GP 90 (Swiss)", "6.5x55 Wildcat", "7.5x55 mm Swiss (GP 11)"])
+        XCTAssertEqual(grouped.count, sorted.count, "every calibre stays its own entry")
+        XCTAssertEqual(Set(grouped.map(\.id)).count, sorted.count)
+        XCTAssertEqual(Caliber.keepingGroupsTogether([]), [])
+
+        XCTAssertEqual(win.sameDimensionsNote(in: sorted), String(format: "Gleiche Masse wie %@".loc, "7.62x51 mm NATO"))
+        XCTAssertEqual(gp90.sameDimensionsNote(in: sorted), String(format: "Gleiche Masse wie %@".loc, ".223 Remington, 5.56x45 mm NATO"))
+        XCTAssertNil(gp11.sameDimensionsNote(in: sorted))
+        XCTAssertNil(custom.sameDimensionsNote(in: sorted))
+        XCTAssertNil(win.sameDimensionsNote(in: [win, gp11]), "no note when the twin is not in the list")
+    }
+
+    func testBarrelListsIdenticalCalibresNextToEachOther() throws {
+        func catalogued(_ id: String) throws -> Caliber {
+            let item = try XCTUnwrap(CaliberCatalog.item(id: id))
+            let c = Caliber(name: item.name, category: item.category); c.catalogID = item.id
+            context.insert(c)
+            return c
+        }
+        let b = Barrel(); context.insert(b)
+        b.calibers = [try catalogued("7.62x51 mm NATO"), try catalogued("6.5 mm Creedmoor"), try catalogued(".308 Winchester")]
+        XCTAssertEqual(b.sortedCalibers.map(\.name), [".308 Winchester", "7.62x51 mm NATO", "6.5 mm Creedmoor"])
+    }
+
     func testWeaponsOfACalibreComeFromItsBarrels() throws {
         barrel("", nine)
         let other = Weapon(name: "P75"); context.insert(other)
