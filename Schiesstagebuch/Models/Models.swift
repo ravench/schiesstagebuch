@@ -126,6 +126,8 @@ final class Weapon: ArchivableItem {
     var serviceIntervalDays: Int = 0
     /// When the day interval starts: "" = app default, else a `DayCounting` raw value.
     var dayCountingRaw: String = ""
+    /// Manufacturer (Hersteller), optional, e.g. "SIG Sauer".
+    var manufacturer: String = ""
     /// Main serial number (Hauptnummer), optional. Each barrel has its own number.
     var serialNumber: String = ""
     /// Further numbered parts as JSON `[PartSerial]`, e.g. bolt or cylinder; see `extraSerials`.
