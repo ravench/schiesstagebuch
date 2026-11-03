@@ -63,7 +63,7 @@ final class SightSettingsTests: ModelTestCase {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
             for key in ["Kein Filter", "Einstellungen für Sportschützen", "Für Sportschützen", "Brillenfilter",
-                                             "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein", "Zweibein (cm)"] {
+                                             "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibeinstütze", "Zweibeinstütze (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }

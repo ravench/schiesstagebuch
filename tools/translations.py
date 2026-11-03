@@ -408,7 +408,7 @@ T = {
     "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.": ("Optional. New entries take the values of the last entry with this firearm.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma."),
     "Ringgrösse": ("Ring size", "Taille de l'anneau", "Dimensione dell'anello"),
     "Einstellungen für Sportschützen": ("Sport shooter settings", "Réglages pour tireurs sportifs", "Impostazioni per tiratori sportivi"),
-    "Zweibein": ("Bipod", "Bipied", "Bipiede"),
+    "Zweibeinstütze": ("Bipod", "Bipied", "Bipiede"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
     "Brillenfilter": ("Glasses filters", "Filtres de lunettes", "Filtri per occhiali"),
     "Farbfilter und Korrekturgläser der Schiessbrille": (
@@ -450,7 +450,7 @@ T = {
     "Diesen Namen gibt es schon.": ("This name already exists.", "Ce nom existe déjà.", "Questo nome esiste già."),
     "Neuer Filter": ("New filter", "Nouveau filtre", "Nuovo filtro"),
     "Filter bearbeiten": ("Edit filter", "Modifier le filtre", "Modifica filtro"),
-    "Zweibein (cm)": ("Bipod (cm)", "Bipied (cm)", "Bipiede (cm)"),
+    "Zweibeinstütze (cm)": ("Bipod (cm)", "Bipied (cm)", "Bipiede (cm)"),
     "Iris (Brille)": ("Iris (glasses)", "Iris (lunettes)", "Iride (occhiali)"),
     "Höhe": ("Altitude", "Altitude", "Altitudine"),
     "m ü. M.": ("m a.s.l.", "m d'altitude", "m s.l.m."),

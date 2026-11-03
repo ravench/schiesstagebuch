@@ -33,7 +33,7 @@ struct SportFeatures: OptionSet, Hashable {
         switch self {
         case .filter: "Brillenfilter"
         case .sight: "Diopter, Ring und Iris"
-        case .bipod: "Zweibein"
+        case .bipod: "Zweibeinstütze"
         case .weather: "Wetter"
         default: ""
         }

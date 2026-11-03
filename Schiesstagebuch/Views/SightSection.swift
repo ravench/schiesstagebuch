@@ -24,7 +24,7 @@ struct SightSection: View {
                     if aperture != .iris { sliderRow("Ringgrösse", value: $sight.ringSize) }
                 }
                 if fields.contains(.bipod), aperture != .iris {
-                    sliderRow("Zweibein", value: $sight.bipodLength, unit: " cm",
+                    sliderRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm",
                               range: SightSettings.bipodRange, step: SightSettings.bipodStep,
                               start: 20, clamp: SightSettings.clampBipod)
                 }
