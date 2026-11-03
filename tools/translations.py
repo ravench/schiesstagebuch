@@ -123,6 +123,14 @@ T = {
     "Export fehlgeschlagen: %@": ("Export failed: %@", "Échec de l'export : %@", "Esportazione non riuscita: %@"),
     "Fertig": ("Done", "OK", "Fine"),
     "Filter": ("Filter", "Filtre", "Filtro"),
+    # Settings page and entries with two filters; German plural = singular, so the key carries a German value.
+    "Filter (Mehrzahl)": ("Filters", "Filtres", "Filtri", "Filter"),
+    "Zweiter Filter": ("Second filter", "Deuxième filtre", "Secondo filtro"),
+    "Korrekturlinsen": ("Adjustment lenses", "Verres correcteurs", "Lenti correttive"),
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.": (
+        "Two filters can be combined per entry, usually a colour filter with a +0.25 or -0.25 adjustment lens.",
+        "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre correcteur +0.25 ou -0.25.",
+        "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente correttiva +0.25 o -0.25."),
     "Filter zurücksetzen": ("Reset filters", "Réinitialiser les filtres", "Reimposta filtri"),
     "Flinte": ("Shotgun", "Fusil à canon lisse", "Fucile a canna liscia"),
     "Fotos": ("Photos", "Photos", "Foto"),
@@ -396,7 +404,7 @@ T = {
     "Zweibein": ("Bipod", "Bipied", "Bipiede"),
     "Eigene Filter": ("My filters", "Mes filtres", "I miei filtri"),
     "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
-    "AXIA-Filter": ("AXIA filters", "Filtres AXIA", "Filtri AXIA"),
+    "Farbfilter": ("Colour filters", "Filtres de couleur", "Filtri colorati"),
     "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.": ("Select the filters you own. Only these appear in the picker. Existing entries keep their filter.", "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre.", "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro."),
     "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.": ("Optional. New entries take the values of the last entry with this weapon. Choose your filters under Settings → Filter.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages → Filtre.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni → Filtro."),
     "Name": ("Name", "Nom", "Nome"),
