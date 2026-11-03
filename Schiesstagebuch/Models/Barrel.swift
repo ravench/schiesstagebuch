@@ -50,8 +50,9 @@ final class Barrel {
         self.weapon = weapon
     }
 
+    /// Alphabetical, with calibres of identical measurements (e.g. .308 Win / 7.62 NATO) next to each other.
     var sortedCalibers: [Caliber] {
-        (calibers ?? []).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        Caliber.keepingGroupsTogether((calibers ?? []).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending })
     }
 
     var caliberSummary: String { sortedCalibers.map(\.name).joined(separator: ", ") }
