@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-/// Preview and run the import from the old Schusszähler app.
+/// Preview and run the import from Schusszähler-Schiesstagebuch.
 struct LegacyImportView: View {
     @Environment(\.term) private var term
     @Environment(\.modelContext) private var context
@@ -57,7 +57,7 @@ struct LegacyImportView: View {
                         } header: {
                             Text("Probeschüsse abziehen")
                         } footer: {
-                            Text("Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.")
+                            Text("Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.")
                         }
                     }
                     Section {
@@ -72,13 +72,13 @@ struct LegacyImportView: View {
                     } header: {
                         Text("Munition → Kaliber")
                     } footer: {
-                        Text(term("Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.").loc)
+                        Text(term("Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.").loc)
                     }
                     if plan.photoCount > 0 {
                         Section {
                             Toggle("Fotos aus der Fotomediathek übernehmen", isOn: $loadPhotos)
                         } footer: {
-                            Text("Die alte App hat nur Verweise auf \(plan.photoCount) Fotos in deiner Mediathek gespeichert. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.")
+                            Text("Der Export enthält nur Verweise auf \(plan.photoCount) Fotos in deiner Mediathek. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.")
                         }
                     }
                     Section {
