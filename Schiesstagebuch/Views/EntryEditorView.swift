@@ -37,7 +37,7 @@ struct EntryEditorView: View {
     @State private var sight = SightSettings()
     @State private var weather: WeatherRecord?
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
-    @AppStorage(SightSettings.showKey) private var showSport = false
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
     @State private var sighters = 0
     @State private var scored = 0
@@ -226,8 +226,12 @@ struct EntryEditorView: View {
                     }
                 }
 
-                if showSport {
-                    SightSection(sight: $sight, aperture: SightSettings.aperture(for: weapon?.category))
+                let aperture = SightSettings.aperture(for: weapon?.category)
+                let sightFields = features.sightFields(for: aperture)
+                if !sightFields.isEmpty {
+                    SightSection(sight: $sight, aperture: aperture, fields: sightFields)
+                }
+                if features.contains(.weather) {
                     WeatherSection(weather: $weather, day: date, range: range)
                 }
 
@@ -499,11 +503,11 @@ struct EntryEditorView: View {
             target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
         }
         target.result = result; target.notes = notes
-        // While the sport-shooter fields are hidden, values already stored stay untouched.
-        if showSport {
-            sight.fitted(to: SightSettings.aperture(for: weapon?.category)).apply(to: target)
-            shootingEvent.weather = weather?.normalized()
-        }
+        // Fields switched off in Settings keep the values already stored.
+        sight.fitted(to: SightSettings.aperture(for: weapon?.category))
+            .keeping(SightSettings(entry: target), outside: features)
+            .apply(to: target)
+        if features.contains(.weather) { shootingEvent.weather = weather?.normalized() }
         target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
         target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
 

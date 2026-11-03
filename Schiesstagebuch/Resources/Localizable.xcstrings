@@ -806,6 +806,29 @@
         }
       }
     },
+    "An der Schiessbrille oder im Diopter, auch Korrekturgläser": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the shooting glasses or in the diopter, also correction lenses"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugli occhiali da tiro o nella diottra, anche lenti correttive"
+          }
+        }
+      }
+    },
     "Andere": {
       "extractionState": "manual",
       "localizations": {
@@ -1749,6 +1772,29 @@
         }
       }
     },
+    "Brillenfilter (AXIA)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glasses filters (AXIA)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres de lunettes (AXIA)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri per occhiali (AXIA)"
+          }
+        }
+      }
+    },
     "Darstellung": {
       "extractionState": "manual",
       "localizations": {
@@ -2297,6 +2343,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diottra"
+          }
+        }
+      }
+    },
+    "Diopter, Ring und Iris": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diopter, ring and iris"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dioptre, anneau et iris"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diottra, anello e iride"
           }
         }
       }
@@ -3273,6 +3342,52 @@
         }
       }
     },
+    "Filterrad Wyss (Stgw 90)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss filter wheel (Stgw 90)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roue à filtres Wyss (Fass 90)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruota filtri Wyss (Fass 90)"
+          }
+        }
+      }
+    },
+    "Filterräder Grünig + Elmiger (Stgw 90)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger filter wheels (Stgw 90)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roues à filtres Grünig + Elmiger (Fass 90)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruote filtri Grünig + Elmiger (Fass 90)"
+          }
+        }
+      }
+    },
     "Flinte": {
       "extractionState": "manual",
       "localizations": {
@@ -3522,6 +3637,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi i poligoni dove spari."
+          }
+        }
+      }
+    },
+    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später unter Einstellungen › Schiessanlagen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard sous Réglages › Stands de tir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi in Impostazioni › Poligoni."
+          }
+        }
+      }
+    },
+    "Für Sportschützen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For sport shooters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour tireurs sportifs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per tiratori sportivi"
           }
         }
       }
@@ -4308,29 +4469,6 @@
         }
       }
     },
-    "Ja, Anlagen übernehmen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yes, add ranges"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oui, ajouter les stands"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sì, aggiungi i poligoni"
-          }
-        }
-      }
-    },
     "Jagdgewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -4396,6 +4534,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ogni numero ha bisogno di una denominazione."
+          }
+        }
+      }
+    },
+    "Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switch each field on separately. Hidden values stay saved."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chaque champ s'active séparément. Les valeurs masquées restent enregistrées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni campo si attiva separatamente. I valori nascosti restano salvati."
           }
         }
       }
@@ -5182,6 +5343,29 @@
         }
       }
     },
+    "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light, wind and temperature per event, also for relays"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumière, vent et température par événement, aussi pour les relèves"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luce, vento e temperatura per evento, anche per i turni"
+          }
+        }
+      }
+    },
     "Lichtverhältnisse": {
       "extractionState": "manual",
       "localizations": {
@@ -5362,6 +5546,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lotto"
+          }
+        }
+      }
+    },
+    "Los geht's": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let's go"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C'est parti"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniziamo"
           }
         }
       }
@@ -5573,6 +5780,29 @@
         }
       }
     },
+    "Länge in cm, nur bei Gewehren": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Length in cm, rifles only"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Longueur en cm, fusils uniquement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lunghezza in cm, solo fucili"
+          }
+        }
+      }
+    },
     "Läufe": {
       "extractionState": "manual",
       "localizations": {
@@ -5753,29 +5983,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Con una durata prevista, l'app mostra quanto è usurata la canna."
-          }
-        }
-      }
-    },
-    "Mit «Ja» füllt die App deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Du kannst das auch später unter Einstellungen › Schiessanlagen tun.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tapping “Yes” prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avec «Oui», l'app pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Tu peux aussi le faire plus tard sous Réglages › Stands de tir."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Con «Sì» l'app precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Puoi farlo anche più tardi in Impostazioni › Poligoni."
           }
         }
       }
@@ -6213,29 +6420,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "velo di nebbia davanti ai bersagli"
-          }
-        }
-      }
-    },
-    "Nein": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No"
           }
         }
       }
@@ -8103,6 +8287,29 @@
         }
       }
     },
+    "Ring am Gewehr, Iris an der Brille für Pistolen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ring on the rifle, iris on the glasses for pistols"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anneau sur le fusil, iris sur les lunettes pour le pistolet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anello sul fucile, iride sugli occhiali per la pistola"
+          }
+        }
+      }
+    },
     "Ringgrösse": {
       "extractionState": "manual",
       "localizations": {
@@ -8444,29 +8651,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "berretto da tiro"
-          }
-        }
-      }
-    },
-    "Schiesst du in der Schweiz?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Do you shoot in Switzerland?"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tires-tu en Suisse ?"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spari in Svizzera?"
           }
         }
       }
@@ -9134,29 +9318,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Attrezzi"
-          }
-        }
-      }
-    },
-    "Sportgeräte-Einstellungen für Sportschützen erfassen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Record equipment settings for sport shooters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saisir les réglages d'équipement pour tireurs sportifs"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registra le impostazioni dell'attrezzo per tiratori sportivi"
           }
         }
       }
@@ -10403,29 +10564,6 @@
         }
       }
     },
-    "Waffen-Einstellungen für Sportschützen erfassen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Record weapon settings for sport shooters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saisir les réglages d'arme pour tireurs sportifs"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registra le impostazioni dell'arma per tiratori sportivi"
-          }
-        }
-      }
-    },
     "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": {
       "extractionState": "manual",
       "localizations": {
@@ -10702,6 +10840,29 @@
         }
       }
     },
+    "Willkommen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenue"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benvenuto"
+          }
+        }
+      }
+    },
     "Wind": {
       "extractionState": "manual",
       "localizations": {
@@ -10840,6 +11001,29 @@
         }
       }
     },
+    "Wähle, welche Felder deine Einträge zusätzlich zeigen. Du kannst das jederzeit unter Einstellungen ändern.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose which extra fields your entries show. You can change this any time in Settings."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisis les champs supplémentaires de tes entrées. Tu peux le modifier à tout moment dans Réglages."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli quali campi aggiuntivi mostrano le tue voci. Puoi cambiarlo in qualsiasi momento in Impostazioni."
+          }
+        }
+      }
+    },
     "Wählen": {
       "extractionState": "manual",
       "localizations": {
@@ -10905,29 +11089,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Punteggio su 10 (A10)"
-          }
-        }
-      }
-    },
-    "Zeigt in Einträgen Felder für Filter, Diopter, Ring oder Iris und Zweibein. Ausgeblendete Werte bleiben gespeichert.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shows fields for filter, diopter, ring or iris and bipod in entries. Hidden values stay saved."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Affiche dans les entrées des champs pour le filtre, la dioptrie, l'anneau ou l'iris et le bipied. Les valeurs masquées restent enregistrées."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostra nelle voci i campi per filtro, diottra, anello o iride e bipiede. I valori nascosti restano salvati."
           }
         }
       }
@@ -11001,7 +11162,30 @@
         }
       }
     },
-    "Zweibein": {
+    "Zwei Räder im Diopter mit je sechs Farben.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two wheels in the diopter with six colours each."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux roues dans le dioptre, six couleurs chacune."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due ruote nella diottra con sei colori ciascuna."
+          }
+        }
+      }
+    },
+    "Zweibeinstütze": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -11024,7 +11208,7 @@
         }
       }
     },
-    "Zweibein (cm)": {
+    "Zweibeinstütze (cm)": {
       "extractionState": "manual",
       "localizations": {
         "en": {

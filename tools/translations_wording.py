@@ -37,10 +37,6 @@ S = {
         "Ajoute tes équipements avec leurs calibres.",
         "Aggiungi i tuoi attrezzi con i loro calibri."),
     "Seriennummer in der Sportgeräteauswahl": ("Serial number in equipment picker", "Numéro de série dans le choix d'équipement", "Numero di serie nella scelta dell'attrezzo"),
-    "Sportgeräte-Einstellungen für Sportschützen erfassen": (
-        "Record equipment settings for sport shooters",
-        "Saisir les réglages d'équipement pour tireurs sportifs",
-        "Registra le impostazioni dell'attrezzo per tiratori sportivi"),
     "Ab wann Erinnerungen nach Tagen zählen. Pro Sportgerät kannst du das ändern.": (
         "When day-based reminders start counting. You can change this per item of equipment.",
         "À partir de quand les rappels en jours comptent. Modifiable pour chaque équipement.",
