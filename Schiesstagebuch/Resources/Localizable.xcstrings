@@ -1933,25 +1933,25 @@
         }
       }
     },
-    "Brillenfilter und Filterräder, die du besitzt. Nur diese erscheinen in Einträgen.": {
+    "Brillenfilter und Filterräder, die du besitzt": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Glasses filters and filter wheels you own. Only these appear in entries."
+            "value": "Glasses filters and filter wheels you own"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtres de lunettes et roues à filtres que tu possèdes. Seuls ceux-ci apparaissent dans les entrées."
+            "value": "Filtres de lunettes et roues à filtres que tu possèdes"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtri per occhiali e ruote filtri che possiedi. Solo questi compaiono nelle voci."
+            "value": "Filtri per occhiali e ruote filtri che possiedi"
           }
         }
       }
