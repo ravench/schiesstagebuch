@@ -47,7 +47,7 @@ final class WeaponCategoryTests: XCTestCase {
         let weapon = Weapon(name: "Armbrust"); context.insert(weapon)
         weapon.categoryRaw = "crossbow"
         XCTAssertEqual(weapon.category, .other)
-        XCTAssertEqual(WeaponCategory.guess(from: "Match-Armbrust"), .other)
+        XCTAssertEqual(WeaponCategory.guess(from: "Armbrust Wacker"), .other)
     }
 
     func testGuessesMachineGuns() {
