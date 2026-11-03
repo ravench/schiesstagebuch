@@ -277,6 +277,15 @@ T = {
     "Losnummern": ("Lot numbers", "Numéros de lot", "Numeri di lotto"),
     "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": ("Optional. You can pick the lot when logging an entry.", "Facultatif. Tu peux choisir le lot en saisissant une entrée.", "Facoltativo. Puoi scegliere il lotto quando registri una voce."),
     "Pro Los": ("By lot", "Par lot", "Per lotto"),
+    "Resultat pro Los": ("Result by lot", "Résultat par lot", "Risultato per lotto"),
+    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": (
+        "Box: middle half of the results (1st to 3rd quartile), bar: median, line: up to 1.5 × interquartile range, dots: single results, red: outliers. Counts entries with a percentage (points with a maximum, or a result in %).",
+        "Boîte : moitié centrale des résultats (1er au 3e quartile), trait : médiane, ligne : jusqu'à 1,5 × l'écart interquartile, points : résultats individuels, rouge : valeurs aberrantes. Compte les entrées avec pourcentage (points avec maximum ou résultat en %).",
+        "Box: metà centrale dei risultati (dal 1° al 3° quartile), tratto: mediana, linea: fino a 1,5 × lo scarto interquartile, punti: singoli risultati, rosso: valori anomali. Conta le voci con percentuale (punti con massimo o risultato in %)."),
+    "Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.": (
+        "With fewer than 5 results per lot, quartiles say little.",
+        "Avec moins de 5 résultats par lot, les quartiles sont peu significatifs.",
+        "Con meno di 5 risultati per lotto, i quartili sono poco significativi."),
     "App-Icon": ("App Icon", "Icône de l’app", "Icona dell’app"),
     "Offenes Tagebuch": ("Open journal", "Journal ouvert", "Diario aperto"),
     "Gebundenes Tagebuch": ("Hardcover journal", "Journal relié", "Diario rilegato"),
@@ -646,6 +655,19 @@ T = {
         "Time and A, C, D hits per stage, with hit factor",
         "Temps et impacts A, C, D par stage, avec hit factor",
         "Tempo e colpi A, C, D per stage, con hit factor"),
+    # Used-up ammunition lots
+    "Als aufgebraucht markieren": ("Mark as used up", "Marquer comme épuisé", "Segna come esaurito"),
+    "Aufgebraucht": ("Used up", "Épuisé", "Esaurito"),
+    "Wieder verwenden": ("Use again", "Réutiliser", "Usa di nuovo"),
+    "Aufgebrauchte Lose": ("Used-up lots", "Lots épuisés", "Lotti esauriti"),
+    "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen. Hast du ein Los ganz verschossen, markiere es mit ✓ als aufgebraucht.": (
+        "Optional. You can pick the lot when logging an entry. Once you have shot a whole lot, mark it as used up with ✓.",
+        "Facultatif. Tu peux choisir le lot en saisissant une entrée. Quand tu as tiré tout un lot, marque-le comme épuisé avec ✓.",
+        "Facoltativo. Puoi scegliere il lotto quando registri una voce. Quando hai sparato tutto un lotto, segnalo come esaurito con ✓."),
+    "Aufgebrauchte Lose erscheinen nicht mehr bei neuen Einträgen, bleiben aber in bisherigen Einträgen und in der Statistik.": (
+        "Used-up lots no longer appear for new entries, but stay in earlier entries and in the statistics.",
+        "Les lots épuisés n’apparaissent plus pour les nouvelles entrées, mais restent dans les entrées précédentes et dans les statistiques.",
+        "I lotti esauriti non compaiono più nelle nuove voci, ma restano nelle voci precedenti e nelle statistiche."),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.

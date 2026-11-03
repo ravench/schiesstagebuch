@@ -14,6 +14,38 @@ final class ScoreTests: XCTestCase {
         XCTAssertNil(s.medianPerShot, "median needs individual shots")
     }
 
+    func testPercentResultIsTakenAsPercentage() {
+        let s = score("87,5 %")
+        XCTAssertEqual(s.percentage!, 0.875, accuracy: 1e-9)
+        XCTAssertEqual(score("92%").percentage!, 0.92, accuracy: 1e-9)
+        XCTAssertNil(s.points, "a percentage is not a point total")
+        XCTAssertNil(s.meanPerShot, "no per-shot average from a percentage")
+    }
+
+    func testPercentResultIgnoredWhenSwitchedOff() {
+        var s = score("93%")
+        s.percentFromResult = false
+        XCTAssertNil(s.percentage, "old-app imports need a maximum first")
+        XCTAssertEqual(s.points, 93)
+    }
+
+    func testPercentResultWinsOverEnteredMaximum() {
+        XCTAssertEqual(score("80 %", max: 200).percentage!, 0.8, accuracy: 1e-9)
+    }
+
+    func testPercentResultAboveHundredIsFlagged() {
+        let s = score("104 %")
+        XCTAssertTrue(s.exceedsMax)
+        XCTAssertNil(s.percentage)
+        XCTAssertFalse(score("100 %").exceedsMax)
+    }
+
+    func testPercentResultKeepsShotSumAsPoints() {
+        let s = score("90 %", shots: "10 9 8")
+        XCTAssertEqual(s.points, 27)
+        XCTAssertEqual(s.percentage!, 0.9, accuracy: 1e-9)
+    }
+
     func testSlashResultGivesMaximum() {
         let s = score("96/100")
         XCTAssertEqual(s.effectiveMax, 100)
