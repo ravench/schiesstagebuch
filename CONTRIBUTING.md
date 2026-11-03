@@ -3,7 +3,7 @@
 Thanks for helping with Schiesstagebuch! Pull requests are welcome: bug fixes,
 features, translations, new calibres or icons.
 
-## License in short
+## Licence in short
 
 - The code is **source-available** under the
   [PolyForm Noncommercial License 1.0.0](LICENSE.md). You may read, build, change
@@ -30,7 +30,9 @@ See the [README](README.md#building). In short: `brew install xcodegen`,
 ## Guidelines
 
 - Write UI text in German and add English, French and Italian to
-  `tools/translations.py`, then run `python3 tools/localize.py`.
+  `tools/translations.py`, then run `python3 tools/localize.py`. A text that says
+  «Waffe» also needs its «Sportgerät» variant (see the [README](README.md#languages)).
 - New calibres go into `tools/cartridges.py`, icons into `tools/weapon_icons.py`;
   run `python3 tools/generate_assets.py` and commit the generated JSON.
-- Keep pull requests focused, and describe what you changed and how you tested it.
+- Every change comes with unit tests; CI runs them and SwiftLint on every push.
+- Keep pull requests small and focused, and describe what you changed and how you tested it.
