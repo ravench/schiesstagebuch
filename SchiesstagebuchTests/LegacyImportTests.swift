@@ -42,11 +42,38 @@ final class LegacyImportTests: ModelTestCase {
         let entries = try context.fetch(FetchDescriptor<Entry>())
         XCTAssertTrue(entries.allSatisfy { $0.sighterCount == nil && $0.shotValuesText.isEmpty && $0.lot == nil },
                       "imported entries are plain totals")
+        XCTAssertTrue(entries.allSatisfy { $0.shootingEvent?.stichCount == 1 }, "rows on different days stay separate events")
+        XCTAssertEqual(Set(entries.map(\.eventName)), ["Training", "Obligatorisches"])
+        XCTAssertTrue(entries.allSatisfy { $0.range?.name == "Albisgüetli" })
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 2)
         let stgw = try XCTUnwrap(try context.fetch(FetchDescriptor<Weapon>()).first { $0.name == "Stgw-90 Skye" })
         XCTAssertEqual(stgw.category, .serviceRifle)
 
         let again = LegacyImport.plan(rows, context: context)
         XCTAssertTrue(again.newRows.isEmpty)
+    }
+
+    func testSameDayAndAnlassBecomeOneEventWithSeveralStiche() async throws {
+        let tsv = """
+        Datum\tSchiessanlage\tAnlass\tWaffe\tSchusszahl\tMunition\tResultat\tBemerkungen\tPicture1
+        14.06.2026\tAlbisgüetli\tFeldschiessen\tStgw-90 Skye\t18\tGP90\t62\t\t
+        14.06.2026\tAlbisgüetli\tfeldschiessen \tP75\t20\t9x19\t\t\t
+        14.06.2026\tAlbisgüetli\tTraining\tP75\t50\t9x19\t\t\t
+        14.06.2026\tRehalp\tFeldschiessen\tP75\t10\t9x19\t\t\t
+        15.06.2026\tAlbisgüetli\tFeldschiessen\tStgw-90 Skye\t18\tGP90\t\t\t
+        """
+        let plan = LegacyImport.plan(LegacyImport.parseTSV(tsv), context: context)
+        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        XCTAssertEqual(summary.entries, 5)
+
+        let events = try context.fetch(FetchDescriptor<ShootingEvent>())
+        XCTAssertEqual(events.count, 4, "only the two Feldschiessen rows at Albisgüetli on the 14th share an event")
+        let feld = try XCTUnwrap(events.first { $0.stichCount == 2 })
+        XCTAssertEqual(feld.name, "Feldschiessen", "the first row's spelling names the event")
+        XCTAssertEqual(feld.range?.name, "Albisgüetli")
+        XCTAssertEqual(feld.sortedEntries.map(\.weapon?.name), ["Stgw-90 Skye", "P75"], "Stiche keep the file's order")
+        XCTAssertEqual(feld.totalShots, 38)
+        XCTAssertTrue(events.filter { $0 != feld }.allSatisfy { $0.stichCount == 1 })
     }
 
     func testRenamedCatalogueCalibreIsStillFound() async throws {

@@ -7,6 +7,7 @@ struct WeaponsTab: View {
 
 /// Weapons overview with maintenance status at a glance. Used as a tab and from Einstellungen.
 struct WeaponsListView: View {
+    @Environment(\.term) private var term
     @Query(sort: \Weapon.name) private var weapons: [Weapon]
     @State private var adding = false
     @State private var showArchived = false
@@ -17,11 +18,11 @@ struct WeaponsListView: View {
         Group {
                 if weapons.isEmpty {
                     ContentUnavailableView {
-                        Label("Keine Waffen", systemImage: "scope")
+                        Label(term("Keine Waffen").loc, systemImage: "scope")
                     } description: {
-                        Text("Lege deine Waffen mit ihren Kalibern an.")
+                        Text(term("Lege deine Waffen mit ihren Kalibern an.").loc)
                     } actions: {
-                        Button("Waffe hinzufügen") { adding = true }.buttonStyle(.borderedProminent)
+                        Button(term("Waffe hinzufügen").loc) { adding = true }.buttonStyle(.borderedProminent)
                     }
                 } else {
                     List(visible) { w in
@@ -29,12 +30,12 @@ struct WeaponsListView: View {
                     }
                 }
             }
-            .navigationTitle("Waffen")
+            .navigationTitle(term("Waffen").loc)
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
                     Toggle(isOn: $showArchived) { Label("Archivierte zeigen", systemImage: "archivebox") }
                         .toggleStyle(.button)
-                    Button { adding = true } label: { Label("Waffe hinzufügen", systemImage: "plus") }
+                    Button { adding = true } label: { Label(term("Waffe hinzufügen").loc, systemImage: "plus") }
                 }
             }
             .sheet(isPresented: $adding) { WeaponEditorView(weapon: nil) }
@@ -211,6 +212,7 @@ struct MaintenanceHistoryView: View {
 }
 
 struct WeaponEditorView: View {
+    @Environment(\.term) private var term
     let weapon: Weapon?
     var onCreate: ((Weapon) -> Void)?
     /// Called instead of deleting here: the screen that shows the weapon must leave first,
@@ -296,13 +298,13 @@ struct WeaponEditorView: View {
                 if weapon != nil {
                     Section {
                         Toggle("Archiviert", isOn: $isArchived)
-                        Button("Waffe löschen", role: .destructive) { confirmDelete = true }
+                        Button(term("Waffe löschen").loc, role: .destructive) { confirmDelete = true }
                     } footer: {
-                        Text("Archivierte Waffen erscheinen nicht mehr bei neuen Einträgen, bleiben aber in Tagebuch und Statistik.")
+                        Text(term("Archivierte Waffen erscheinen nicht mehr bei neuen Einträgen, bleiben aber in Tagebuch und Statistik.").loc)
                     }
                 }
             }
-            .navigationTitle(weapon == nil ? "Neue Waffe".loc : "Waffe bearbeiten".loc)
+            .navigationTitle(weapon == nil ? term("Neue Waffe").loc : term("Waffe bearbeiten").loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
@@ -321,13 +323,13 @@ struct WeaponEditorView: View {
             .sheet(isPresented: $addingBarrel) {
                 if let weapon { BarrelEditorView(weapon: weapon, barrel: nil) }
             }
-            .confirmationDialog("Waffe löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
+            .confirmationDialog(term("Waffe löschen?").loc, isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
                     dismiss()
                     onDelete?()
                 }
             } message: {
-                Text("Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.")
+                Text(term("Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.").loc)
             }
             .onAppear(perform: load)
         }
@@ -400,7 +402,7 @@ struct WeaponEditorView: View {
         } header: {
             Text("Kauf und Verkauf")
         } footer: {
-            Text("Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.")
+            Text(term("Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.").loc)
         }
     }
 

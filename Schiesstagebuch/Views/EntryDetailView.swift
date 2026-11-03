@@ -1,11 +1,14 @@
 import SwiftUI
 
 struct EntryDetailView: View {
+    @Environment(\.term) private var term
     let entry: Entry
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SightSettings.showKey) private var showSport = false
     @State private var editing = false
+    /// Set by "Weiteren Stich hinzufügen": the event the new Stich joins.
+    @State private var addingTo: ShootingEvent?
     @State private var confirmDelete = false
     /// The screen pops first and deletes in `onDisappear`, so it never renders a deleted entry.
     @State private var deleting = false
@@ -16,7 +19,10 @@ struct EntryDetailView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(entry.date, format: .dateTime.weekday(.wide).day().month(.wide).year())
                         .font(.subheadline).foregroundStyle(.secondary)
-                    Text(entry.event.isEmpty ? "Schiessen".loc : entry.event).font(.title2.bold())
+                    Text(entry.eventName.isEmpty ? "Schiessen".loc : entry.eventName).font(.title2.bold())
+                    if !entry.stich.isEmpty {
+                        Text(entry.stich).font(.headline)
+                    }
                     if let range = entry.range {
                         Label(range.place.isEmpty ? range.name : "\(range.name), \(range.place)",
                               systemImage: "mappin.and.ellipse")
@@ -59,7 +65,7 @@ struct EntryDetailView: View {
             }
 
             Section("Ausrüstung") {
-                row("Waffe", entry.weapon?.name)
+                row(term("Waffe"), entry.weapon?.name)
                 row("Kaliber", entry.caliber?.name)
                 if entry.weapon?.hasSeveralBarrels == true { row("Lauf", entry.effectiveBarrel?.displayName) }
                 row("Munition", entry.ammunition?.name)
@@ -99,6 +105,16 @@ struct EntryDetailView: View {
             if !photos.isEmpty {
                 Section("Fotos") { PhotoGrid(photos: .constant(photos), editable: false) }
             }
+
+            Section {
+                Button {
+                    addingTo = ShootingEvent.of(entry, in: context)
+                } label: {
+                    Label("Weiteren Stich hinzufügen", systemImage: "plus.circle")
+                }
+            } footer: {
+                Text(term("Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.").loc)
+            }
         }
         .navigationTitle(entry.date.formatted(date: .abbreviated, time: .omitted))
         .navigationBarTitleDisplayMode(.inline)
@@ -109,6 +125,7 @@ struct EntryDetailView: View {
             }
         }
         .sheet(isPresented: $editing) { EntryEditorView(entry: entry) }
+        .sheet(item: $addingTo) { EntryEditorView(entry: nil, addingTo: $0) }
         .confirmationDialog("Eintrag löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Löschen", role: .destructive) {
                 deleting = true
