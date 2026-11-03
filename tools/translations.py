@@ -424,10 +424,10 @@ T = {
     "Filterräder Grünig + Elmiger (Stgw 90)": ("Grünig + Elmiger filter wheels (Stgw 90)", "Roues à filtres Grünig + Elmiger (Fass 90)", "Ruote filtri Grünig + Elmiger (Fass 90)"),
     "Zwei Räder im Diopter mit je sechs Farben.": ("Two wheels in the diopter with six colours each.", "Deux roues dans le dioptre, six couleurs chacune.", "Due ruote nella diottra con sei colori ciascuna."),
     "Zusätzliche Felder": ("Extra fields", "Champs supplémentaires", "Campi aggiuntivi"),
-    "Brillenfilter und Filterräder, die du besitzt. Nur diese erscheinen in Einträgen.": (
-        "Glasses filters and filter wheels you own. Only these appear in entries.",
-        "Filtres de lunettes et roues à filtres que tu possèdes. Seuls ceux-ci apparaissent dans les entrées.",
-        "Filtri per occhiali e ruote filtri che possiedi. Solo questi compaiono nelle voci."),
+    "Brillenfilter und Filterräder, die du besitzt": (
+        "Glasses filters and filter wheels you own",
+        "Filtres de lunettes et roues à filtres que tu possèdes",
+        "Filtri per occhiali e ruote filtri che possiedi"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
     "An der Schiessbrille oder im Diopter, auch Korrekturgläser": (
         "On the shooting glasses or in the diopter, also correction lenses",
