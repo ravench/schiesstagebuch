@@ -14,6 +14,9 @@ enum RangeCatalog {
         let bearing: Double?
         let alt: Double?
         let distances: [Int]
+        /// Street address with postcode, e.g. "Steigstrasse 12, 8355 Aadorf": the shooting
+        /// house's own official address, else the nearest one (swisstopo building addresses).
+        var address: String?
     }
 
     struct File: Codable {
@@ -97,6 +100,7 @@ enum RangeCatalog {
             range.longitude = item.lon
         }
         if range.place.isEmpty { range.place = item.place }
+        if range.address.isEmpty, let address = item.address { range.address = address }
         if range.shootingBearing == nil { range.shootingBearing = item.bearing.map(Compass.normalized) }
         if range.altitude == nil { range.altitude = item.alt }
         if range.distances.isEmpty { range.distances = item.distances }

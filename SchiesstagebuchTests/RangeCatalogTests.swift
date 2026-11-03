@@ -19,7 +19,8 @@ final class RangeCatalogTests: ModelTestCase {
     }
 
     private let albis = RangeCatalog.Item(id: "tlm:A", name: "Schiessanlage Albisgüetli", place: "Zürich",
-                                          lat: 47.3561, lon: 8.5098, bearing: 251.5, alt: 486, distances: [300, 50, 25])
+                                          lat: 47.3561, lon: 8.5098, bearing: 251.5, alt: 486, distances: [300, 50, 25],
+                                          address: "Uetlibergstrasse 341, 8045 Zürich")
     private let thun = RangeCatalog.Item(id: "tlm:B", name: "Schiessanlage Guntelsey", place: "Thun",
                                          lat: 46.7330, lon: 7.6030, bearing: nil, alt: nil, distances: [300])
 
@@ -48,7 +49,7 @@ final class RangeCatalogTests: ModelTestCase {
         let json = """
         {"source": "swissTLM3D 2026-02 © swisstopo", "ranges": [
           {"id": "tlm:X", "name": "Schiessanlage Riedbach", "place": "Riedbach", "lat": 46.95, "lon": 7.44,
-           "bearing": 12.5, "alt": 550, "distances": [300, 50]},
+           "bearing": 12.5, "alt": 550, "distances": [300, 50], "address": "Riedbachstrasse 1, 3020 Bern"},
           {"id": "tlm:Y", "name": "Schiessanlage Moos", "place": "Moos", "lat": 46.9, "lon": 7.4, "distances": []}
         ]}
         """
@@ -58,6 +59,8 @@ final class RangeCatalogTests: ModelTestCase {
         XCTAssertEqual(file.ranges[0].distances, [300, 50])
         XCTAssertNil(file.ranges[1].bearing)
         XCTAssertNil(file.ranges[1].alt)
+        XCTAssertEqual(file.ranges[0].address, "Riedbachstrasse 1, 3020 Bern")
+        XCTAssertNil(file.ranges[1].address)
     }
 
     // MARK: First-launch question
@@ -96,7 +99,9 @@ final class RangeCatalogTests: ModelTestCase {
         XCTAssertEqual(first.shootingBearing, 251.5)
         XCTAssertEqual(first.altitude, 486)
         XCTAssertEqual(first.distances, [300, 50, 25])
+        XCTAssertEqual(first.address, "Uetlibergstrasse 341, 8045 Zürich")
         XCTAssertNil(all[1].shootingBearing)
+        XCTAssertEqual(all[1].address, "", "no address in the catalogue: none set")
 
         XCTAssertEqual(RangeCatalog.importAll([albis, thun], into: context), 0, "a second import adds nothing")
         XCTAssertEqual(try ranges().count, 2)
@@ -119,6 +124,18 @@ final class RangeCatalogTests: ModelTestCase {
         XCTAssertEqual(own.altitude, 486, "missing values are filled in")
         XCTAssertEqual(own.place, "Zürich")
         XCTAssertEqual(own.distances, [300, 50, 25])
+        XCTAssertEqual(own.address, "Uetlibergstrasse 341, 8045 Zürich", "a missing address is filled in")
+    }
+
+    func testOwnAddressStays() throws {
+        let own = ShootingRange(name: "Albisgüetli", place: "Zürich")
+        own.address = "Albisgüetli, Zürich"
+        own.latitude = 47.3562
+        own.longitude = 8.5099
+        context.insert(own)
+        try context.save()
+        XCTAssertEqual(RangeCatalog.importAll([albis], into: context), 0)
+        XCTAssertEqual(own.address, "Albisgüetli, Zürich", "the user's own address stays")
     }
 
     func testOwnRangeFarAwayStaysSeparate() throws {

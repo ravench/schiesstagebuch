@@ -5,6 +5,7 @@
 import csv
 import io
 import json
+import math
 import os
 import sqlite3
 import struct
@@ -199,7 +200,8 @@ def manual_fixture():
     return {"ranges": [
         {"id": "manual:halle", "name": "Indoor Halle", "place": "Riedbach", "lat": 46.9, "lon": 7.5,
          "distances": [10, 25], "website": "https://example.ch"},
-        {"id": "manual:keller", "name": "Schiesskeller", "place": "Moos", "lat": 47.1, "lon": 8.2},
+        {"id": "manual:keller", "name": "Schiesskeller", "place": "Moos", "lat": 47.1, "lon": 8.2,
+         "address": "Dorfstrasse 4, 3000 Moos"},
     ]}
 
 
@@ -333,6 +335,107 @@ class ManualListTests(unittest.TestCase):
             self.assertTrue(item.get("website", "").startswith("https://"), item["id"])
             self.assertTrue(item.get("address"), item["id"])
             self.assertFalse({"osm", "osm_id"} & item.keys(), "positions must not come from OSM")
+
+
+
+ADDRESS_HEADER = ("EGAID;STR_ESID;BDG_EGID;ADR_EDID;STN_LABEL;ADR_NUMBER;BDG_CATEGORY;BDG_NAME;ZIP_LABEL;"
+                  "COM_FOSNR;COM_CANTON;ADR_STATUS;ADR_OFFICIAL;ADR_VALID;ADR_MODIFIED;ADR_EASTING;ADR_NORTHING")
+
+
+def address_row(street, number, zip_label, e, n, status="1", official="1", name=""):
+    return ";".join(["1", "2", "3", "0", street, number, "5", name, zip_label, "351", "BE", status, official,
+                     "1", "01.01.2026", f"{e:.3f}", f"{n:.3f}"])
+
+
+def write_addresses(path, rows, header=ADDRESS_HEADER):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("﻿" + header + "\n" + "\n".join(rows) + "\n")
+
+
+class AddressTests(unittest.TestCase):
+    def test_point_in_ring(self):
+        ring = box(E0, N0)
+        self.assertTrue(rc.point_in_ring((E0, N0), ring))
+        self.assertTrue(rc.point_in_ring((E0 + 9, N0 + 3), ring))
+        self.assertFalse(rc.point_in_ring((E0 + 11, N0), ring))
+        self.assertFalse(rc.point_in_ring((E0, N0 + 5), ring))
+
+    def test_zip_label_and_hand_made_address(self):
+        self.assertEqual(rc.split_zip_label("3600 Thun"), ("3600", "Thun"))
+        self.assertEqual(rc.split_zip_label("3800 Matten b. Interlaken,3800 Interlaken"),
+                         ("3800", "Matten b. Interlaken"))
+        self.assertEqual(rc.split_zip_label(""), ("", ""))
+        self.assertEqual(rc.parse_address("Gsteigstrasse 12, 3800 Matten b. Interlaken"),
+                         {"street": "Gsteigstrasse 12", "zip": "3800", "town": "Matten b. Interlaken"})
+        self.assertEqual(rc.parse_address("Grindel 48, 6017 Ruswil")["zip"], "6017")
+        self.assertEqual(rc.address_text({"street": "Steigstrasse 12", "zip": "8355", "town": "Aadorf"}),
+                         "Steigstrasse 12, 8355 Aadorf")
+        self.assertEqual(rc.address_text({"street": "", "zip": "8355", "town": "Aadorf"}), "8355 Aadorf")
+
+    def test_read_addresses_filters_cells_and_abolished(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "addresses.csv")
+            write_addresses(path, [
+                address_row("Schützenweg", "3", "3000 Bern", E0 + 2, N0 + 1),
+                address_row("Altweg", "1", "3000 Bern", E0 + 5, N0 + 5, status="2"),     # abolished
+                address_row("", "", "3000 Bern", E0 + 50, N0, name="Schützenhaus"),        # name, no number
+                address_row("Fernstrasse", "9", "1200 Genève", E0 - 80000, N0 - 60000),   # far away
+                "broken;row",
+            ])
+            near = rc.read_addresses(path, rc.cells_near([(E0, N0)]))
+            everything = rc.read_addresses(path)
+        streets = sorted(a["street"] for cell in near.values() for a in cell)
+        self.assertEqual(streets, ["Schützenhaus", "Schützenweg 3"])
+        self.assertEqual(sum(len(c) for c in everything.values()), 3)
+        first = next(a for c in near.values() for a in c if a["street"] == "Schützenweg 3")
+        self.assertEqual((first["zip"], first["town"], first["official"]), ("3000", "Bern", True))
+
+    def test_read_addresses_by_column_name_and_comma(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "addresses.csv")
+            with open(path, "w", encoding="utf-8") as f:
+                f.write("ADR_NORTHING,ADR_EASTING,ZIP_LABEL,STN_LABEL,ADR_NUMBER\n"
+                        f"{N0},{E0},3000 Bern,Weg,7\n")
+            index = rc.read_addresses(path)
+            self.assertEqual([a["street"] for c in index.values() for a in c], ["Weg 7"])
+            with open(path, "w", encoding="utf-8") as f:
+                f.write("A;B\n1;2\n")
+            with self.assertRaises(ValueError):
+                rc.read_addresses(path)
+
+    def index_of(self, *addresses):
+        index = {}
+        for street, e, n, official in addresses:
+            index.setdefault(rc.address_cell((e, n)), []).append(
+                {"pos": (e, n), "street": street, "zip": "3000", "town": "Bern", "official": official})
+        return index
+
+    def test_shooting_house_address_beats_a_nearer_neighbour(self):
+        house = box(E0, N0, w=40)                     # firing point at its south edge
+        firing = (E0, N0 - 4)
+        index = self.index_of(("Nachbarweg 1", E0, N0 - 16, True),       # 12 m away, not on the house
+                              ("Schützenhausweg 5", E0 + 18, N0 + 2, True))
+        address, source, metres = rc.find_address(firing, [house], index)
+        self.assertEqual((address["street"], source), ("Schützenhausweg 5", "building"))
+        self.assertAlmostEqual(metres, math.hypot(18, 6), places=3)
+
+    def test_official_address_on_the_house_comes_first(self):
+        house = box(E0, N0)
+        index = self.index_of(("Inoffiziell 1", E0, N0, False), ("Offiziell 2", E0 + 8, N0, True))
+        self.assertEqual(rc.find_address((E0, N0), [house], index)[0]["street"], "Offiziell 2")
+
+    def test_nearest_address_without_one_on_the_house(self):
+        index = self.index_of(("Weit 1", E0 + 900, N0, True), ("Nah 2", E0 - 400, N0 + 100, True),
+                              ("Zu weit 3", E0 + 3500, N0, True))
+        address, source, metres = rc.find_address((E0, N0), [box(E0, N0)], index)
+        self.assertEqual((address["street"], source), ("Nah 2", "nearest"))
+        self.assertAlmostEqual(metres, math.hypot(400, 100), places=3)
+        self.assertIsNone(rc.find_address((E0, N0), [], self.index_of(("Zu weit 3", E0 + 3500, N0, True))))
+
+    def test_houses_at_firing_point(self):
+        houses = [{"id": "A", "ring": box(E0, N0)}, {"id": "B", "ring": box(E0 + 200, N0)}]
+        self.assertEqual(rc.houses_at((E0, N0 - 4), houses), [houses[0]["ring"]])
+        self.assertEqual(rc.houses_at((E0 + 100, N0), houses), [])
 
 
 class GeoPackageTests(unittest.TestCase):
@@ -481,6 +584,45 @@ class GeoPackageTests(unittest.TestCase):
         self.assertNotIn("bearing", app["ranges"][2])
         self.assertEqual(app["ranges"][5], {"id": "manual:x", "name": "Halle", "place": "Au", "lat": 47.0,
                                             "lon": 8.0, "distances": [25], "indoor": True})
+
+    def test_build_with_addresses(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "tlm.gpkg")
+            self.make_gpkg(path)
+            manual = os.path.join(tmp, "indoor.json")
+            with open(manual, "w") as f:
+                json.dump(manual_fixture(), f)
+            addresses = os.path.join(tmp, "addresses.csv")
+            write_addresses(addresses, [
+                address_row("Fänglenweg", "20", "3172 Fänglen", E0 + 30, N0 - 30),   # nearer, not on the house
+                address_row("Schiessstandweg", "4", "3172 Fänglen", E0 + 6, N0 + 1),
+            ])
+            out = os.path.join(tmp, "out")
+            stats = rc.build(path, manual, out, "2026-02", addresses)
+            with open(os.path.join(out, "ranges.json")) as f:
+                catalogue = json.load(f)
+            with open(os.path.join(out, "ranges.csv")) as f:
+                rows = {r["id"]: r for r in csv.DictReader(f)}
+        tlm = next(r for r in catalogue["ranges"] if r["id"].startswith("tlm:"))
+        self.assertEqual((tlm["street"], tlm["zip"], tlm["town"], tlm["addressSource"]),
+                         ("Schiessstandweg 4", "3172", "Fänglen", "building"))
+        self.assertIn("addressMetres", tlm)
+        self.assertEqual(stats["swisstopo ranges with the shooting house's address"], 1)
+        self.assertEqual(stats["swisstopo ranges without address"], 0)
+        self.assertEqual(rows[tlm["id"]]["street"], "Schiessstandweg 4")
+        self.assertEqual(rows[tlm["id"]]["address_source"], "building")
+        keller = next(r for r in catalogue["ranges"] if r["id"] == "manual:keller")
+        self.assertEqual((keller["street"], keller["zip"], keller["addressSource"]),
+                         ("Dorfstrasse 4", "3000", "manual"))
+        self.assertNotIn("addressMetres", keller)
+        self.assertNotIn("street", next(r for r in catalogue["ranges"] if r["id"] == "manual:halle"))
+        self.assertIn("Gebäudeadressverzeichnis", catalogue["attribution"]["swisstopo"])
+        app = rc.app_catalogue(catalogue)
+        self.assertIn("Gebäudeadressverzeichnis", app["source"])
+        by_id = {r["id"]: r for r in app["ranges"]}
+        self.assertEqual(by_id[tlm["id"]]["address"], "Schiessstandweg 4, 3172 Fänglen")
+        self.assertEqual(by_id["manual:keller"]["address"], "Dorfstrasse 4, 3000 Moos")
+        self.assertNotIn("address", by_id["manual:halle"])
 
     def test_build_without_manual_list(self):
         with tempfile.TemporaryDirectory() as tmp:

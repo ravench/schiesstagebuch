@@ -6,15 +6,18 @@ Where swisstopo also has a shooting trajectory line, that line gives the firing 
 and the target end directly. Otherwise each target row is paired with the shooting
 house in front of it. Names ("Thun Guntelsey 300/50/25m") and places come from swisstopo.
 Indoor ranges, which swisstopo doesn't map, come from data/indoor-ranges.json, a list
-kept by hand in this repository.
+kept by hand in this repository. Street addresses and postcodes come from swisstopo's
+official building address directory (amtliches Gebäudeadressverzeichnis): the address of
+the shooting house itself where one lies on its footprint, else the nearest address.
 
     python3 tools/range_catalogue.py latest-gpkg stac-items.json   # prints "<release> <url>"
     python3 tools/range_catalogue.py inspect swisstlm3d.gpkg
-    python3 tools/range_catalogue.py build swisstlm3d.gpkg data/indoor-ranges.json out/
+    python3 tools/range_catalogue.py build swisstlm3d.gpkg data/indoor-ranges.json out/ [release] [addresses.csv]
     python3 tools/range_catalogue.py app-json out/ranges.json Schiesstagebuch/Resources/SwissRanges.json
 
 The build writes out/ranges.json (for the app) and out/ranges.csv (for checking against
-other lists). Licence: swissTLM3D © swisstopo (open data, attribution required). The
+other lists). Licence: swissTLM3D and the building addresses © swisstopo (open data,
+commercial use allowed, attribution required). The
 indoor list uses no OpenStreetMap data, so no ODbL applies.
 
 Only the standard library is used, so the unit tests run anywhere.
@@ -664,7 +667,165 @@ def manual_ranges(data):
             "website": item.get("website", ""),
             "lanes": [],
         })
+        if item.get("address"):
+            ranges[-1]["address"] = dict(parse_address(item["address"]), source="manual")
     return ranges
+
+
+# ---------------------------------------------------------------------------
+# Street addresses (swisstopo, amtliches Gebäudeadressverzeichnis)
+
+ADDRESS_ON_HOUSE_METRES = 10.0  # an address point inside or this close to a shooting house is its address
+HOUSE_NEAR_FIRING_METRES = 30.0  # shooting houses this close to a range's firing point belong to it
+ADDRESS_SEARCH_METRES = 3000.0   # no address is better than one further away than this
+ADDRESS_CELL_METRES = 1000.0
+OUTDATED_STATUS = {"2", "outdated", "aufgehoben", "abolished"}
+
+ADDRESS_ATTRIBUTION = "swissTLM3D, amtliches Gebäudeadressverzeichnis © swisstopo"
+
+
+def point_in_ring(p, ring):
+    """True when p lies inside the polygon ring (even-odd rule)."""
+    inside = False
+    for i in range(len(ring) - 1):
+        (x1, y1), (x2, y2) = ring[i][:2], ring[i + 1][:2]
+        if (y1 > p[1]) != (y2 > p[1]) and p[0] < x1 + (p[1] - y1) * (x2 - x1) / (y2 - y1):
+            inside = not inside
+    return inside
+
+
+def split_zip_label(label):
+    """("3600", "Thun") from swisstopo's ZIP_LABEL "3600 Thun" (first one when several are listed)."""
+    first = (label or "").split(",")[0].strip()
+    match = re.match(r"^(\d{4})\s+(.+)$", first)
+    return (match.group(1), match.group(2).strip()) if match else ("", first)
+
+
+def parse_address(text):
+    """{"street", "zip", "town"} from "Gsteigstrasse 12, 3800 Matten b. Interlaken" (hand-made list)."""
+    street, _, rest = (text or "").rpartition(",")
+    if not street:
+        street, rest = rest, ""
+    postcode, town = split_zip_label(rest.strip())
+    return {"street": street.strip(), "zip": postcode, "town": town}
+
+
+def address_cell(position):
+    return (int(position[0] // ADDRESS_CELL_METRES), int(position[1] // ADDRESS_CELL_METRES))
+
+
+def cells_near(positions, radius=ADDRESS_SEARCH_METRES):
+    """Grid cells within `radius` of any of the positions."""
+    reach = int(math.ceil(radius / ADDRESS_CELL_METRES))
+    cells = set()
+    for position in positions:
+        cx, cy = address_cell(position)
+        cells.update((cx + dx, cy + dy) for dx in range(-reach, reach + 1) for dy in range(-reach, reach + 1))
+    return cells
+
+
+def read_addresses(path, cells=None):
+    """Addresses from the swisstopo CSV (amtliches-gebaeudeadressverzeichnis_ch_2056.csv).
+
+    Returns {cell: [address]}; with `cells`, only addresses in those cells are kept, which
+    keeps the 3+ million rows of the whole country out of memory. Abolished addresses are
+    skipped. Columns are found by name, so their order and the separator may change.
+    """
+    index = {}
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        header = f.readline()
+        delimiter = ";" if header.count(";") >= header.count(",") else ","
+        columns = [c.strip().strip('"').lower() for c in next(csv.reader([header], delimiter=delimiter))]
+
+        def col(*names):
+            return next((columns.index(n) for n in names if n in columns), None)
+
+        east, north = col("adr_easting", "e", "easting"), col("adr_northing", "n", "northing")
+        street, number = col("stn_label", "str_label", "strname"), col("adr_number", "deinr")
+        zip_label, name = col("zip_label"), col("bdg_name")
+        status, official = col("adr_status"), col("adr_official")
+        if east is None or north is None or street is None or zip_label is None:
+            raise ValueError(f"address CSV lacks coordinate, street or ZIP columns: {columns}")
+
+        def value(row, index):
+            return row[index].strip() if index is not None and index < len(row) else ""
+
+        for row in csv.reader(f, delimiter=delimiter):
+            if value(row, status).lower() in OUTDATED_STATUS:
+                continue
+            try:
+                position = (float(value(row, east)), float(value(row, north)))
+            except ValueError:
+                continue
+            cell = address_cell(position)
+            if cells is not None and cell not in cells:
+                continue
+            postcode, town = split_zip_label(value(row, zip_label))
+            line = " ".join(part for part in (value(row, street), value(row, number)) if part) \
+                or value(row, name)
+            if not line or not postcode:
+                continue
+            index.setdefault(cell, []).append({
+                "pos": position, "street": line, "zip": postcode, "town": town,
+                "official": value(row, official).lower() not in ("0", "false"),
+            })
+    return index
+
+
+def addresses_near(index, position, radius=ADDRESS_SEARCH_METRES):
+    for cell in cells_near([position], radius):
+        for address in index.get(cell, ()):
+            if dist2(address["pos"], position) <= radius:
+                yield address
+
+
+def find_address(position, house_rings, index):
+    """(address, "building"|"nearest", metres) for a range, or None.
+
+    An address on the shooting house's own footprint wins (the one nearest the firing
+    point, official ones first); otherwise the nearest address within ADDRESS_SEARCH_METRES.
+    """
+    candidates = list(addresses_near(index, position))
+    on_house = [a for a in candidates
+                if any(point_in_ring(a["pos"], ring) or ring_distance(a["pos"], ring) <= ADDRESS_ON_HOUSE_METRES
+                       for ring in house_rings)]
+    if on_house:
+        best = min(on_house, key=lambda a: (not a["official"], dist2(a["pos"], position)))
+        return best, "building", dist2(best["pos"], position)
+    if candidates:
+        best = min(candidates, key=lambda a: (dist2(a["pos"], position), not a["official"]))
+        return best, "nearest", dist2(best["pos"], position)
+    return None
+
+
+def houses_at(position, houses):
+    """Outlines of the shooting houses at a firing point."""
+    rings = []
+    for house in houses:
+        ring = house["ring"]
+        if dist2(centroid(ring), position) > 300:
+            continue
+        if point_in_ring(position, ring) or ring_distance(position, ring) <= HOUSE_NEAR_FIRING_METRES:
+            rings.append(ring)
+    return rings
+
+
+def assign_addresses(ranges, houses, index):
+    """Give each swisstopo range a street address and postcode (rng["address"])."""
+    for rng in ranges:
+        if not rng["id"].startswith("tlm:"):
+            continue
+        found = find_address(rng["firing"], houses_at(rng["firing"], houses), index)
+        if found:
+            address, source, metres = found
+            rng["address"] = {"street": address["street"], "zip": address["zip"], "town": address["town"],
+                              "source": source, "metres": metres}
+
+
+def address_text(address):
+    """"Steigstrasse 12, 8355 Aadorf"."""
+    town = " ".join(part for part in (address.get("zip", ""), address.get("town", "")) if part)
+    return ", ".join(part for part in (address.get("street", ""), town) if part)
 
 
 # ---------------------------------------------------------------------------
@@ -691,6 +852,12 @@ def range_record(rng):
         record["altitude"] = round(rng["altitude"])
     if rng.get("website"):
         record["website"] = rng["website"]
+    if rng.get("address"):
+        address = rng["address"]
+        record.update({"street": address["street"], "zip": address["zip"], "town": address["town"],
+                       "addressSource": address["source"]})
+        if address.get("metres") is not None:
+            record["addressMetres"] = round(address["metres"])
     if rng.get("indoor"):
         record["indoor"] = True
     if rng["lanes"]:
@@ -703,13 +870,16 @@ def range_record(rng):
     return record
 
 
-def build(tlm_path, manual_path, out_dir, release=""):
-    """manual_path "-" builds from swisstopo alone."""
+def build(tlm_path, manual_path, out_dir, release="", addresses_path=None):
+    """manual_path "-" builds from swisstopo alone; without addresses_path ranges get no address."""
     houses, targets, trajectories, tlm_places = read_tlm(tlm_path)
     lanes = build_lanes(houses, targets, trajectories)
     ranges = group_lanes(lanes)
     ranges += house_only_ranges(houses, lanes)
     name_ranges(ranges, tlm_places)
+    if addresses_path:
+        index = read_addresses(addresses_path, cells_near([r["firing"] for r in ranges]))
+        assign_addresses(ranges, houses, index)
     if manual_path != "-":
         with open(manual_path, encoding="utf-8") as f:
             ranges += manual_ranges(json.load(f))
@@ -721,7 +891,7 @@ def build(tlm_path, manual_path, out_dir, release=""):
         "version": 1,
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "swissTLM3D": release,
-        "attribution": ATTRIBUTION,
+        "attribution": {"swisstopo": ADDRESS_ATTRIBUTION} if addresses_path else ATTRIBUTION,
         "ranges": records,
     }
     with open(os.path.join(out_dir, "ranges.json"), "w", encoding="utf-8") as f:
@@ -745,6 +915,17 @@ def build(tlm_path, manual_path, out_dir, release=""):
                                                           for r in ranges),
         "indoor ranges from the hand-made list": sum(r["id"].startswith("manual:") for r in ranges),
     }
+    tlm = [r for r in ranges if r["id"].startswith("tlm:")]
+    metres = sorted(r["address"]["metres"] for r in tlm if r.get("address"))
+    stats.update({
+        "swisstopo ranges with the shooting house's address": sum(r.get("address", {}).get("source") == "building"
+                                                                 for r in tlm),
+        "swisstopo ranges with the nearest address": sum(r.get("address", {}).get("source") == "nearest"
+                                                         for r in tlm),
+        "swisstopo ranges without address": sum(not r.get("address") for r in tlm),
+        "  median metres to the address": round(metres[len(metres) // 2]) if metres else "",
+        "  ranges with the address over 500 m away": sum(m > 500 for m in metres),
+    })
     for name in (300, 100, 50, 25, 10):
         stats[f"ranges with {name} m"] = sum(name in r["distances"] for r in ranges)
     return stats
@@ -754,7 +935,8 @@ def write_csv(ranges, path):
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["id", "name", "place", "latitude", "longitude", "east_lv95", "north_lv95",
-                         "altitude", "shooting_bearing", "distances", "measured", "source", "website"])
+                         "altitude", "shooting_bearing", "distances", "measured", "source", "website",
+                         "street", "zip", "town", "address_source", "address_metres"])
         for rng in ranges:
             lat, lon = lv95_to_wgs84(*rng["firing"])
             writer.writerow([
@@ -767,7 +949,16 @@ def write_csv(ranges, path):
                 "+".join(sorted({lane["source"] for lane in rng["lanes"]}))
                 or ("manual" if rng["id"].startswith("manual:") else "house"),
                 rng.get("website", ""),
+                *address_columns(rng.get("address")),
             ])
+
+
+def address_columns(address):
+    if not address:
+        return ["", "", "", "", ""]
+    metres = address.get("metres")
+    return [address["street"], address["zip"], address["town"], address["source"],
+            "" if metres is None else round(metres)]
 
 
 def app_catalogue(catalogue):
@@ -809,8 +1000,11 @@ def app_catalogue(catalogue):
             item["alt"] = r["altitude"]
         if r.get("indoor"):
             item["indoor"] = True
+        if r.get("street") or r.get("zip"):
+            item["address"] = address_text(r)
         items.append(item)
-    return {"source": "Schiessanlagen: swissTLM3D © swisstopo",
+    with_addresses = any("address" in item for item in items)
+    return {"source": "Schiessanlagen: " + (ADDRESS_ATTRIBUTION if with_addresses else "swissTLM3D © swisstopo"),
             "swissTLM3D": catalogue.get("swissTLM3D", ""), "ranges": items}
 
 
@@ -834,7 +1028,8 @@ def main(argv):
         inspect_tlm(argv[1])
         return 0
     if len(argv) >= 4 and argv[0] == "build":
-        stats = build(argv[1], argv[2], argv[3], argv[4] if len(argv) > 4 else "")
+        stats = build(argv[1], argv[2], argv[3], argv[4] if len(argv) > 4 else "",
+                      argv[5] if len(argv) > 5 else None)
         for key, value in stats.items():
             print(f"{key}: {value}")
         return 0
