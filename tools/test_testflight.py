@@ -98,6 +98,23 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("branches: [main]", self.workflow)
         self.assertIn("conclusion == 'success'", self.workflow)
 
+    def test_actions_run_on_node_24(self):
+        # GitHub retired Node 20 for actions; checkout v5 is the first major on Node 24.
+        node24 = {"actions/checkout": 5}
+        workflows = os.path.join(testflight.ROOT, ".github", "workflows")
+        for name in sorted(os.listdir(workflows)):
+            with open(os.path.join(workflows, name)) as f:
+                for action, major in re.findall(r"uses:\s*([\w-]+/[\w-]+)@v(\d+)", f.read()):
+                    self.assertGreaterEqual(int(major), node24.get(action, 0), f"{name}: {action}@v{major}")
+
+    def test_build_pushes_only_on_main(self):
+        # One Mac run per commit: branches build via their pull request; main's
+        # push build is what triggers the TestFlight upload.
+        with open(os.path.join(testflight.ROOT, ".github", "workflows", "build.yml")) as f:
+            build = f.read()
+        self.assertRegex(build, r"push:\n\s+branches: \[main\]")
+        self.assertIn("pull_request:", build)
+
     def test_uses_ci_build_number(self):
         self.assertIn('CURRENT_PROJECT_VERSION="$BUILD_NUMBER"', self.workflow)
 
@@ -115,11 +132,13 @@ class WorkflowTests(unittest.TestCase):
         family = re.search(r"TARGETED_DEVICE_FAMILY:\s*\"?([\d,]+)", self.project).group(1)
         if "2" not in family.split(","):
             self.skipTest("iPhone only")
-        ipad = re.search(r"INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:\s*\"?([^\"\n]+)", self.project)
-        self.assertIsNotNone(ipad)
-        self.assertEqual(set(ipad.group(1).split()), {
-            "UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown",
-            "UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationLandscapeRight"})
+        # App Store Connect checks the plain key, not only the ~ipad one.
+        for key in ("INFOPLIST_KEY_UISupportedInterfaceOrientations", "INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad"):
+            value = re.search(rf"{key}:\s*\"?([^\"\n]+)", self.project)
+            self.assertIsNotNone(value, key)
+            self.assertEqual(set(value.group(1).split()), {
+                "UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown",
+                "UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationLandscapeRight"}, key)
 
     def test_no_export_compliance_prompt(self):
         # Otherwise every build waits in App Store Connect for the encryption question.

@@ -57,8 +57,8 @@ struct KPIGrid: View {
             }
             if entries.contains(where: { $0.sighterCount != nil }) {
                 GridRow {
-                    tile("Probeschüsse", entries.compactMap(\.sighterCount).reduce(0, +).formatted(), "scope")
-                    tile("Wertungsschüsse", entries.compactMap(\.scoredCount).reduce(0, +).formatted(), "target")
+                    tile("Probeschüsse", entries.sighterShots.formatted(), "scope")
+                    tile("Wertungsschüsse", entries.scoredShots.formatted(), "target")
                 }
             }
             let percent = entries.averagePercentage, perShot = entries.averagePerShot

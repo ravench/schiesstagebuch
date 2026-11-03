@@ -43,9 +43,11 @@ targets:
         # No own encryption, only what iOS provides: skips the export compliance question per build.
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
-        # iPhone: portrait only. iPad: all four, which App Store Connect requires for multitasking.
-        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        # App Store Connect checks the plain key and wants all four (iPad multitasking);
+        # the iPhone-only key keeps the iPhone in portrait.
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Fotos von Scheiben und Resultaten zu einem Eintrag hinzufügen."
         INFOPLIST_KEY_NSCameraUsageDescription: "Standblätter direkt fotografieren und zum Eintrag speichern."
   SchiesstagebuchTests:
