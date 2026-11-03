@@ -1,0 +1,46 @@
+name: Range distance check
+# Temporary: measures 300 m lanes in swissTLM3D and fetches SWISSIMAGE crops for a few
+# sample ranges. Output goes to the range-distance-check branch.
+on:
+  push:
+    branches: [claude/project-thread-4krox9]
+    paths:
+      - tools/range_distance_check.py
+      - .github/workflows/range-distance-check.yml
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash -eo pipefail {0}
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - name: swissTLM3D
+        run: |
+          sudo mkdir -p /mnt/ranges && sudo chown "$USER" /mnt/ranges
+          WORK=/mnt/ranges
+          curl -fsS --retry 3 "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swisstlm3d/items" -o "$WORK/stac.json"
+          read -r RELEASE URL < <(python3 tools/range_catalogue.py latest-gpkg "$WORK/stac.json")
+          curl -fL --retry 3 -sS "$URL" -o "$WORK/tlm.zip"
+          unzip -o -j "$WORK/tlm.zip" '*.gpkg' -d "$WORK"
+          rm "$WORK/tlm.zip"
+          echo "GPKG=$(ls "$WORK"/*.gpkg | head -1)" >> "$GITHUB_ENV"
+      - name: Check
+        run: python3 tools/range_distance_check.py "$GPKG" out
+      - name: Publish
+        run: |
+          cd out
+          git init -q -b range-distance-check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -q -m "Range distance check (${GITHUB_SHA::7})"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" range-distance-check
