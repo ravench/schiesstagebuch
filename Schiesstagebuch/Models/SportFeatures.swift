@@ -49,15 +49,19 @@ struct SportFeatures: OptionSet, Hashable {
         }
     }
 
-    var systemImage: String {
+    /// SF Symbol for the switch; nil for colour filters, which use the drawn filter holder (FilterHolderIcon).
+    var systemImage: String? {
         switch self {
-        case .filter: "eyeglasses"
+        case .filter: nil
         case .sight: "scope"
         case .bipod: "ruler"
         case .weather: "cloud.sun"
         default: "questionmark"
         }
     }
+
+    /// Settings lists the filter list right under this feature's switch.
+    var hasFilterList: Bool { self == .filter }
 
     /// Sight-section fields an entry shows for this kind of weapon: pistols have no bipod.
     func sightFields(for aperture: SightSettings.Aperture) -> SportFeatures {

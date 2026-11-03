@@ -171,7 +171,11 @@ struct SportFeatureToggle: View {
                     Text(feature.detail.loc).font(.caption).foregroundStyle(.secondary)
                 }
             } icon: {
-                Image(systemName: feature.systemImage)
+                if let symbol = feature.systemImage {
+                    Image(systemName: symbol)
+                } else {
+                    FilterHolderIcon()
+                }
             }
         }
     }

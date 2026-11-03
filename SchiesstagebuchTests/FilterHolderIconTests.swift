@@ -27,7 +27,7 @@ final class FilterHolderIconTests: XCTestCase {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in ["Zusätzliche Felder", "Brillenfilter und Filterräder, die du besitzt. Nur diese erscheinen in Einträgen."] {
+            for key in ["Zusätzliche Felder", "Brillenfilter und Filterräder, die du besitzt"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
