@@ -67,6 +67,7 @@ struct EntryDetailView: View {
             Section("Ausrüstung") {
                 row(term("Waffe"), entry.weapon?.name)
                 row("Kaliber", entry.caliber?.name)
+                if entry.weapon?.hasSeveralBarrels == true { row("Lauf", entry.effectiveBarrel?.displayName) }
                 row("Munition", entry.ammunition?.name)
                 if let lot = entry.lot { row("Los", lot.number) }
             }

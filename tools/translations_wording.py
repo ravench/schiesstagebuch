@@ -12,6 +12,10 @@ S = {
         "Cambia solo le parole nell'app, i tuoi dati restano invariati."),
     # Sportgerät variants of the Waffe keys
     "Sportgerät": ("Equipment", "Équipement", "Attrezzo"),
+    "Einträge zählen für den Lauf ihres Kalibers, der an diesem Tag montiert war. Pflege-Erinnerungen zählen alle Schüsse des Sportgeräts.": (
+        "Entries count for the barrel of their calibre that was fitted on that day. Maintenance reminders count all shots of the equipment.",
+        "Les entrées comptent pour le canon de leur calibre monté ce jour-là. Les rappels d'entretien comptent tous les coups de l'équipement.",
+        "Le voci contano per la canna del loro calibro montata quel giorno. I promemoria di manutenzione contano tutti i colpi dell'attrezzo."),
     "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": (
         "For another program at the same event, also with different equipment.",
         "Pour un autre programme au même événement, aussi avec un autre équipement.",

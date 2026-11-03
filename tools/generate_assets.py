@@ -109,13 +109,31 @@ def outline(s):
     return {"width": round(width, 2), "height": round(H, 2), **paths}
 
 
+# Measurements that define the chamber. Cartridges that agree on all of them fit the same
+# barrel (e.g. .308 Win / 7.62 NATO), so the app suggests the others when one is picked.
+CHAMBER_KEYS = ("kind", "rim", "base", "shoulder", "neck", "case", "sh_at", "bullet")
+
+
+def dimension_groups():
+    """Calibre name -> group id (first name of the group) for cartridges with identical measurements."""
+    groups = {}
+    for _, items in CATALOGUE:
+        for s in items:
+            groups.setdefault(tuple(s[k] for k in CHAMBER_KEYS), []).append(s["name"])
+    return {name: names[0] for names in groups.values() if len(names) > 1 for name in names}
+
+
 def build():
     calibers = []
+    groups = dimension_groups()
     for category, items in CATALOGUE:
         for s in items:
-            calibers.append({"id": s["name"], "name": s["name"], "category": category,
-                             "aliases": s["aliases"], "displayAliases": DISPLAY_ALIASES.get(s["name"], []),
-                             "kind": s["kind"], "outline": outline(s)})
+            item = {"id": s["name"], "name": s["name"], "category": category,
+                    "aliases": s["aliases"], "displayAliases": DISPLAY_ALIASES.get(s["name"], []),
+                    "kind": s["kind"], "outline": outline(s)}
+            if s["name"] in groups:
+                item["dimensionGroup"] = groups[s["name"]]
+            calibers.append(item)
     names = {c["name"] for c in calibers}
     unknown = set(DISPLAY_ALIASES) - names
     assert not unknown, f"DISPLAY_ALIASES for unknown calibres: {unknown}"

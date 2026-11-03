@@ -20,11 +20,9 @@ enum ScreenshotData {
         let luger = Caliber(name: "9mm Luger")
         let rifle = Weapon(name: "Stgw 90")
         rifle.category = .serviceRifle
-        rifle.calibers = [gp11]
         rifle.serialNumber = "A 123456"
         let pistol = Weapon(name: "SIG P226")
         pistol.category = .pistol
-        pistol.calibers = [luger]
         let ammo = Ammunition(name: "GP 11", caliber: gp11)
         context.insert(range)
         context.insert(gp11)
@@ -32,6 +30,8 @@ enum ScreenshotData {
         context.insert(rifle)
         context.insert(pistol)
         context.insert(ammo)
+        rifle.ensureBarrel(for: gp11, in: context)
+        pistol.ensureBarrel(for: luger, in: context)
 
         let samples = [
             Sample(daysAgo: 2, event: "Obligatorisch", weapon: rifle, shots: 20, result: "78"),
@@ -43,7 +43,7 @@ enum ScreenshotData {
         ]
         for s in samples {
             let date = Calendar.current.date(byAdding: .day, value: -s.daysAgo, to: now) ?? now
-            let caliber = s.weapon.calibers?.first
+            let caliber = s.weapon.calibers.first
             let event = ShootingEvent(date: date, name: s.event, range: range)
             context.insert(event)
             let entry = Entry(date: date, weapon: s.weapon, caliber: caliber,
