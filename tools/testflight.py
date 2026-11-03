@@ -48,6 +48,18 @@ def export_options(team):
     }
 
 
+def missing_entitlements(signed, expected):
+    """Entitlements from the project that the signed app lacks (values may differ, e.g.
+    aps-environment development -> production; list entries such as iCloud containers must stay)."""
+    missing = []
+    for key, value in expected.items():
+        if key not in signed:
+            missing.append(key)
+        elif isinstance(value, list):
+            missing += [f"{key}: {v}" for v in value if v not in signed[key]]
+    return missing
+
+
 def main(argv):
     if len(argv) == 3 and argv[1] == "build-number":
         print(build_number(argv[2]))
@@ -56,6 +68,17 @@ def main(argv):
             options = export_options(team_id(f.read()))
         with open(argv[2], "wb") as f:
             plistlib.dump(options, f)
+    elif len(argv) == 4 and argv[1] == "check-entitlements":
+        with open(argv[2], "rb") as f:
+            signed = plistlib.load(f)
+        expected = {}
+        if os.path.exists(argv[3]):
+            with open(argv[3], "rb") as f:
+                expected = plistlib.load(f)
+        missing = missing_entitlements(signed, expected)
+        if missing:
+            sys.exit("Signed app lacks entitlements: " + ", ".join(missing))
+        print(f"All {len(expected)} entitlements present")
     else:
         sys.exit(__doc__)
 
