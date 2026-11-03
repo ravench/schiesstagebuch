@@ -83,4 +83,16 @@ final class ScoreTests: XCTestCase {
     func testJoinPassesDropsEmptyLines() {
         XCTAssertEqual(Score.joinPasses([" 10 9 ", "  ", "8"]), "10 9\n8")
     }
+
+    func testResultOverMaximumIsFlaggedAndLeftOut() {
+        let over = score("90/75")
+        XCTAssertTrue(over.exceedsMax, "90 of 75 points would be 120 %")
+        XCTAssertNil(over.percentage)
+        XCTAssertNil(over.meanPerShot)
+        XCTAssertTrue(score("101", max: 100).exceedsMax)
+        XCTAssertTrue(score("", max: 20, shots: "10 10,9").exceedsMax, "the shot sum counts too")
+        XCTAssertFalse(score("100", max: 100).exceedsMax)
+        XCTAssertEqual(score("100", max: 100).percentage!, 1, accuracy: 1e-9)
+        XCTAssertFalse(score("96").exceedsMax, "without a maximum there is nothing to check")
+    }
 }

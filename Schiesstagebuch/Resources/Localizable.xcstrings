@@ -277,6 +277,29 @@
         }
       }
     },
+    "%lld Wertung + %lld Probe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld scored + %2$lld sighters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld coups comptés + %2$lld coups d'essai"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld colpi di gara + %2$lld colpi di prova"
+          }
+        }
+      }
+    },
     "AXIA-Filter": {
       "extractionState": "manual",
       "localizations": {
@@ -1427,6 +1450,29 @@
         }
       }
     },
+    "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The result is above the maximum. Correct the result or the max. points."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le résultat dépasse le maximum. Corrige le résultat ou les points max."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il risultato supera il massimo. Correggi il risultato o i punti max."
+          }
+        }
+      }
+    },
     "Datei wählen …": {
       "extractionState": "manual",
       "localizations": {
@@ -1653,6 +1699,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "La vecchia app non conosceva i calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."
+          }
+        }
+      }
+    },
+    "Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The old app only knew the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'ancienne app ne connaissait que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."
           }
         }
       }
@@ -5912,6 +5981,29 @@
         }
       }
     },
+    "Probeschüsse abziehen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split off sighters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déduire les coups d'essai"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scorporare i colpi di prova"
+          }
+        }
+      }
+    },
     "Prozent": {
       "extractionState": "manual",
       "localizations": {
@@ -7541,6 +7633,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Totale"
+          }
+        }
+      }
+    },
+    "Total %@ liegt über dem Maximum von %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total %1$@ is above the maximum of %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le total %1$@ dépasse le maximum de %2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il totale %1$@ supera il massimo di %2$@"
           }
         }
       }
