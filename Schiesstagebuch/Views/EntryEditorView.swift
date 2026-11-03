@@ -384,7 +384,8 @@ struct EntryEditorView: View {
             date = addingTo.date; range = addingTo.range; event = addingTo.name; weather = addingTo.weather
             let last = addingTo.sortedEntries.last
             weapon = last?.weapon?.isArchived == false ? last?.weapon : nil
-            caliber = weapon == nil ? nil : last?.caliber ?? weapon?.preferredCaliber
+            barrel = weapon == nil ? nil : last?.effectiveBarrel ?? weapon?.preferredBarrel(on: date)
+            caliber = weapon == nil ? nil : last?.caliber ?? weapon?.preferredCaliber(for: barrel)
             ammunition = last?.ammunition?.isArchived == false && last?.ammunition?.fits(caliber) == true
                 ? last?.ammunition : suggestedAmmunition(weapon: weapon, caliber: caliber)
             lot = ammunition == last?.ammunition && last?.lot?.isArchived == false ? last?.lot : suggestedLot(for: ammunition)
