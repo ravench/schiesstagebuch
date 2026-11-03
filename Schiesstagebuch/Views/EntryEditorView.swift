@@ -40,7 +40,9 @@ struct EntryEditorView: View {
 
     private struct PassDraft: Identifiable {
         let id = UUID()
-        var text: String
+        var boxes: ShotBoxes
+        var text: String { boxes.text }
+        init(text: String) { boxes = ShotBoxes(text: text) }
     }
     @State private var notes = ""
     @State private var photos: [Data] = []
@@ -145,15 +147,7 @@ struct EntryEditorView: View {
                     case .shots:
                         countRow("Probeschüsse", value: $sighters, step: 1)
                         ForEach($passes) { $pass in
-                            HStack {
-                                Text("Passe \((passes.firstIndex { $0.id == pass.id } ?? 0) + 1)").foregroundStyle(.secondary)
-                                TextField("z. B. 10 9 10 8 9", text: $pass.text)
-                                    .keyboardType(.numbersAndPunctuation)
-                                let shots = Score.parseShots(pass.text)
-                                if !shots.isEmpty {
-                                    Text(ScoreFormat.points(shots.reduce(0, +))).monospacedDigit().bold()
-                                }
-                            }
+                            ShotBoxesRow(number: (passes.firstIndex { $0.id == pass.id } ?? 0) + 1, boxes: $pass.boxes)
                         }
                         .onDelete { passes.remove(atOffsets: $0) }
                         Button {
