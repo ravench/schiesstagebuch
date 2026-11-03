@@ -46,17 +46,27 @@ jobs:
           echo "GPKG=$GPKG" >> "$GITHUB_ENV"
           ls -l "$GPKG"
       - name: Building addresses
-        # swisstopo's official building address directory (amtliches Gebäudeadressverzeichnis).
+        # swisstopo's official building address directories (amtliches Gebäudeadressverzeichnis)
+        # for Switzerland and Liechtenstein, which swissTLM3D also covers. Same columns in both.
         run: |
-          curl -fL --retry 3 -sS "https://data.geo.admin.ch/ch.swisstopo.amtliches-gebaeudeadressverzeichnis/amtliches-gebaeudeadressverzeichnis_ch/amtliches-gebaeudeadressverzeichnis_ch_2056.csv.zip" \
-            -o "$WORK/addresses.zip"
-          unzip -l "$WORK/addresses.zip"
-          unzip -o -j "$WORK/addresses.zip" '*.csv' -d "$WORK/addresses"
-          rm "$WORK/addresses.zip"
-          ADDRESSES=$(ls -S "$WORK"/addresses/*.csv | head -1)
+          BASE=https://data.geo.admin.ch/ch.swisstopo.amtliches-gebaeudeadressverzeichnis
+          for COUNTRY in ch li; do
+            curl -fL --retry 3 -sS "$BASE/amtliches-gebaeudeadressverzeichnis_$COUNTRY/amtliches-gebaeudeadressverzeichnis_${COUNTRY}_2056.csv.zip" \
+              -o "$WORK/addresses.zip"
+            unzip -l "$WORK/addresses.zip"
+            unzip -o -j "$WORK/addresses.zip" '*.csv' -d "$WORK/addresses-$COUNTRY"
+            rm "$WORK/addresses.zip"
+          done
+          CH=$(ls -S "$WORK"/addresses-ch/*.csv | head -1)
+          LI=$(ls -S "$WORK"/addresses-li/*.csv | head -1)
+          if [ "$(head -1 "$CH" | sed 's/^\xEF\xBB\xBF//')" != "$(head -1 "$LI" | sed 's/^\xEF\xBB\xBF//')" ]; then
+            echo "::error::Swiss and Liechtenstein address files have different columns"; head -1 "$CH" "$LI"; exit 1
+          fi
+          ADDRESSES="$WORK/addresses.csv"
+          { cat "$CH"; echo; tail -n +2 "$LI"; } > "$ADDRESSES"  # echo: in case CH lacks a final newline
           echo "ADDRESSES=$ADDRESSES" >> "$GITHUB_ENV"
           head -3 "$ADDRESSES"
-          wc -l "$ADDRESSES"
+          wc -l "$CH" "$LI" "$ADDRESSES"
       - name: Inspect
         run: python3 tools/range_catalogue.py inspect "$GPKG" | tee "$WORK/inspect.txt"
       - name: Build
