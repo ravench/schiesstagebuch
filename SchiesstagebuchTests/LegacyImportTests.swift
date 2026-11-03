@@ -97,10 +97,14 @@ final class LegacyImportTests: ModelTestCase {
         let catalogue = RangeMatcherTests.catalogue
         let plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
         let rows = LegacyImport.rangeMatchRows(plan)
-        XCTAssertEqual(rows.map(\.name), ["Albisgüetli", "Schiessanlage Bubendorf"])
-        XCTAssertEqual(rows.map(\.match.name), ["Zürich-Albisgütli 300/50m", "Bubendorf Riedbach 300m"])
-        XCTAssertEqual(rows[0].weapons, ["Stgw-90"], "Albisgüetli stands for two stands, so the weapon is shown")
-        XCTAssertEqual(rows[1].weapons, [])
+        XCTAssertEqual(rows.map(\.name), ["Albisgüetli", "Albisgüetli", "Schiessanlage Bubendorf"])
+        XCTAssertEqual(rows.map { $0.options.map(\.name) }, [
+            ["Zürich-Albisgütli 300/50m"],
+            ["Zürich-Albisgütli 25m", "Zürich-Albisgütli 300/50m"],
+            ["Bubendorf Riedbach 300m"],
+        ], "the 25 m and 50 m stand both fit a pistol, so both are offered")
+        XCTAssertEqual(rows.map(\.weapons), [["Stgw-90"], ["P75"], []], "weapons only where one name has several lines")
+        XCTAssertNil(plan.rangeChoice[try XCTUnwrap(rows[1].keys.first)], "among several, nothing is chosen for the user")
 
         let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
         XCTAssertEqual(summary.ranges, 4, "two from the catalogue, own Albisgüetli for the pistol, Training Keller")
@@ -110,16 +114,27 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(obligatorisch.range?.distances, [300, 50])
         XCTAssertEqual(obligatorisch.shootingEvent?.stichCount, 2)
         let pistol = try entry("Training", 13)
-        XCTAssertEqual(pistol.range?.name, "Albisgüetli", "25 m and 50 m stand both fit: a range of its own")
+        XCTAssertEqual(pistol.range?.name, "Albisgüetli", "no stand picked: a range of its own")
         XCTAssertEqual(pistol.range?.catalogID, "")
         XCTAssertEqual(try entry("Training", 14).range?.catalogID, "tlm:bubendorf")
         XCTAssertEqual(try entry("Training", 15).range?.name, "Training Keller")
     }
 
+    func testPickedRangeAmongSeveralIsUsed() async throws {
+        let catalogue = RangeMatcherTests.catalogue
+        var plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
+        let several = try XCTUnwrap(LegacyImport.rangeMatchRows(plan).first { $0.options.count > 1 })
+        for key in several.keys { plan.rangeChoice[key] = several.options[0].target }
+        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        XCTAssertEqual(try entry("Training", 13).range?.catalogID, "tlm:albis25")
+        XCTAssertEqual(summary.ranges, 4, "both Albisgütli stands, Bubendorf, Training Keller")
+        XCTAssertFalse(try context.fetch(FetchDescriptor<ShootingRange>()).contains { $0.name == "Albisgüetli" })
+    }
+
     func testSwitchedOffMatchesCreateOwnRanges() async throws {
         let catalogue = RangeMatcherTests.catalogue
         var plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
-        plan.useRangeMatch = []
+        plan.rangeChoice = [:]
         _ = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
         let ranges = try context.fetch(FetchDescriptor<ShootingRange>())
         XCTAssertEqual(Set(ranges.map(\.name)), ["Albisgüetli", "Schiessanlage Bubendorf", "Training Keller"])
@@ -143,7 +158,7 @@ final class LegacyImportTests: ModelTestCase {
         """
         let catalogue = RangeMatcherTests.catalogue
         let plan = LegacyImport.plan(LegacyImport.parseTSV(tsv), context: context, catalogue: catalogue)
-        XCTAssertEqual(LegacyImport.rangeMatchRows(plan).map(\.match.target), [.existing(imported.id), .existing(own.id)],
+        XCTAssertEqual(LegacyImport.rangeMatchRows(plan).flatMap { $0.options.map(\.target) }, [.existing(imported.id), .existing(own.id)],
                        "the own range beats the catalogue's Bern-Riedbach; the same name needs no match")
 
         let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)

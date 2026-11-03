@@ -52,11 +52,13 @@ struct LegacyImportView: View {
                     let rangeRows = LegacyImport.rangeMatchRows(plan)
                     if !rangeRows.isEmpty {
                         Section {
-                            ForEach(rangeRows) { rangeToggle($0) }
+                            ForEach(rangeRows) { row in
+                                if row.options.count == 1 { rangeToggle(row) } else { rangePicker(row) }
+                            }
                         } header: {
                             Text("Bekannte Schiessanlagen")
                         } footer: {
-                            Text("Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen. Erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen; dann wird eine neue Anlage angelegt.")
+                            Text("Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.")
                         }
                     }
                     if !plan.sighterSuggestions.isEmpty {
@@ -152,17 +154,38 @@ struct LegacyImportView: View {
         }
     }
 
+    /// The range chosen for all keys of a preview line; nil = add a new range.
+    private func rangeChoice(_ row: LegacyImport.RangeMatchRow) -> Binding<LegacyImport.RangeMatch.Target?> {
+        Binding(
+            get: { row.keys.lazy.compactMap { self.plan?.rangeChoice[$0] }.first },
+            set: { target in for key in row.keys { self.plan?.rangeChoice[key] = target } })
+    }
+
     private func rangeToggle(_ row: LegacyImport.RangeMatchRow) -> some View {
-        Toggle(isOn: Binding(
-            get: { self.plan.map { !row.keys.isDisjoint(with: $0.useRangeMatch) } ?? false },
-            set: { on in
-                if on { self.plan?.useRangeMatch.formUnion(row.keys) } else { self.plan?.useRangeMatch.subtract(row.keys) }
-            })) {
+        let choice = rangeChoice(row)
+        return Toggle(isOn: Binding(get: { choice.wrappedValue != nil },
+                                    set: { choice.wrappedValue = $0 ? row.options[0].target : nil })) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: ([row.name] + row.weapons).joined(separator: " · "))
-                Text(verbatim: "→ \(row.match.name)").font(.caption).foregroundStyle(.secondary)
+                Text(verbatim: "→ \(row.options[0].name)").font(.caption).foregroundStyle(.secondary)
             }
         }
+    }
+
+    /// Several ranges fit equally well: the user picks one or adds a new range.
+    private func rangePicker(_ row: LegacyImport.RangeMatchRow) -> some View {
+        Picker(selection: rangeChoice(row)) {
+            Text("Neue Anlage anlegen").tag(LegacyImport.RangeMatch.Target?.none)
+            ForEach(row.options, id: \.target) { option in
+                Text(verbatim: option.name).tag(LegacyImport.RangeMatch.Target?.some(option.target))
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: ([row.name] + row.weapons).joined(separator: " · "))
+                Text("Mehrere Anlagen passen").font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .pickerStyle(.navigationLink)
     }
 
     private func ammoKeys(_ plan: LegacyImport.Plan) -> [String] {

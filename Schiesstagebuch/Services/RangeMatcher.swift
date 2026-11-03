@@ -149,11 +149,15 @@ enum RangeMatcher {
         return Score(parts: [postcode, name, c.place.isExisting ? 1 : 0, distance, town])
     }
 
-    /// Index of the range `text` stands for, or nil when none or several fit equally well.
+    /// More equally good ranges than this means the name says too little to offer them.
+    static let maxChoices = 6
+
+    /// Indices of the ranges `text` may stand for: none, the one that fits best, or several that fit
+    /// equally well (ranges in the app first, then by name) for the user to choose from.
     /// `hint`: distances the weapons shot there usually need (e.g. 300 for a service rifle).
-    static func bestMatch(for text: String, preferring hint: [Int] = [], among candidates: [Candidate]) -> Int? {
+    static func matches(for text: String, preferring hint: [Int] = [], among candidates: [Candidate]) -> [Int] {
         let query = parse(text)
-        guard !query.tokens.isEmpty else { return nil }
+        guard !query.tokens.isEmpty else { return [] }
         let hint = Set(hint)
         var best: [Int] = []
         var bestScore: Score?
@@ -162,12 +166,24 @@ enum RangeMatcher {
             if let b = bestScore, s < b { continue }
             if let b = bestScore, s == b { best.append(i) } else { best = [i]; bestScore = s }
         }
-        if best.count <= 1 { return best.first }
+        if best.count <= 1 { return best }
         // A tie goes to the range whose whole name was typed ("Aarwangen" → "Aarwangen 50m").
         let whole = best.filter { i in
             candidates[i].nameTokens.allSatisfy { t in query.tokens.contains { wordMatch(t, $0) > 0 } }
         }
-        return whole.count == 1 ? whole[0] : nil
+        if whole.count == 1 { return whole }
+        guard best.count <= maxChoices else { return [] }
+        return best.sorted {
+            let a = candidates[$0].place, b = candidates[$1].place
+            if a.isExisting != b.isExisting { return a.isExisting }
+            return a.name.localizedStandardCompare(b.name) == .orderedAscending
+        }
+    }
+
+    /// Index of the range `text` stands for, or nil when none or several fit equally well.
+    static func bestMatch(for text: String, preferring hint: [Int] = [], among candidates: [Candidate]) -> Int? {
+        let found = matches(for: text, preferring: hint, among: candidates)
+        return found.count == 1 ? found[0] : nil
     }
 
     // MARK: Matching a backed-up range

@@ -154,10 +154,12 @@ enum LegacyImport {
         var splitSighters: Set<String> = []
         /// Row key → the old range name with the distances its weapon is usually shot at.
         var rowRangeKeys: [String: RangeKey] = [:]
-        /// Old range → range in the app or in the Swiss catalogue it stands for.
-        var rangeMatches: [RangeKey: RangeMatch] = [:]
-        /// Matches used on import. All on by default; the preview has a switch per match.
-        var useRangeMatch: Set<RangeKey> = []
+        /// Old range → ranges in the app or in the Swiss catalogue it may stand for: one that fits
+        /// best, or several that fit equally well.
+        var rangeOptions: [RangeKey: [RangeMatch]] = [:]
+        /// The range used on import; none means a new range. A single option is chosen by default,
+        /// among several the user picks in the preview.
+        var rangeChoice: [RangeKey: RangeMatch.Target] = [:]
     }
 
     /// The old app had one free-text range per row. The same name can stand for two shooting houses
@@ -174,14 +176,14 @@ enum LegacyImport {
         var name: String
     }
 
-    /// One line of the preview: an old range name and the range it was matched to.
+    /// One line of the preview: an old range name and the range or ranges it may stand for.
     struct RangeMatchRow: Hashable, Identifiable {
         var name: String
-        var match: RangeMatch
+        var options: [RangeMatch]
         var keys: Set<RangeKey>
-        /// Weapons of these rows, shown only when rows with the same name go to different ranges.
+        /// Weapons of these rows, shown only when rows with the same name have different options.
         var weapons: [String]
-        var id: String { "\(name)|\(match.target)" }
+        var id: String { "\(name)|\(options.map(\.target))" }
     }
 
     /// Usual shot counts of a Stich (a match is 60).
@@ -240,16 +242,18 @@ enum LegacyImport {
             let category = weapons[norm(row.weapon)] ?? WeaponCategory.guess(from: row.weapon)
             let key = RangeKey(name: row.range.trimmingCharacters(in: .whitespaces), distances: category.usualDistances)
             plan.rowRangeKeys[row.key] = key
-            guard !byName.contains(norm(key.name)), plan.rangeMatches[key] == nil else { continue }
+            guard !byName.contains(norm(key.name)), plan.rangeOptions[key] == nil else { continue }
             // Built only when needed: the catalogue has close to 2000 ranges.
             let pool = candidates ?? (existing.map { RangeMatcher.Candidate(RangeMatcher.Place($0)) }
                 + catalogue.filter { !known.contains($0.id) }.map { RangeMatcher.Candidate(RangeMatcher.Place($0)) })
             candidates = pool
-            guard let i = RangeMatcher.bestMatch(for: key.name, preferring: key.distances, among: pool) else { continue }
-            let place = pool[i].place
-            let target: RangeMatch.Target = i < existing.count ? .existing(existing[i].id) : .catalogue(place.catalogID)
-            plan.rangeMatches[key] = RangeMatch(target: target, name: place.name)
-            plan.useRangeMatch.insert(key)
+            let options = RangeMatcher.matches(for: key.name, preferring: key.distances, among: pool).map { i in
+                RangeMatch(target: i < existing.count ? .existing(existing[i].id) : .catalogue(pool[i].place.catalogID),
+                           name: pool[i].place.name)
+            }
+            guard !options.isEmpty else { continue }
+            plan.rangeOptions[key] = options
+            if options.count == 1 { plan.rangeChoice[key] = options[0].target }
         }
     }
 
@@ -263,15 +267,14 @@ enum LegacyImport {
         let keysByName = Dictionary(grouping: weaponsByKey.keys, by: \.name)
         var rows: [RangeMatchRow] = []
         for (name, keys) in keysByName {
-            let outcomes = Dictionary(grouping: keys) { plan.rangeMatches[$0] }
-            for (match, group) in outcomes {
-                guard let match else { continue }
+            let outcomes = Dictionary(grouping: keys) { plan.rangeOptions[$0] ?? [] }
+            for (options, group) in outcomes where !options.isEmpty {
                 let weapons = outcomes.count > 1
                     ? group.flatMap { weaponsByKey[$0] ?? [] }.filter { !$0.isEmpty } : []
-                rows.append(RangeMatchRow(name: name, match: match, keys: Set(group), weapons: Array(Set(weapons)).sorted()))
+                rows.append(RangeMatchRow(name: name, options: options, keys: Set(group), weapons: Array(Set(weapons)).sorted()))
             }
         }
-        return rows.sorted { ($0.name, $0.match.name) < ($1.name, $1.match.name) }
+        return rows.sorted { ($0.name, $0.options.count, $0.options[0].name) < ($1.name, $1.options.count, $1.options[0].name) }
     }
 
     // MARK: Apply
@@ -399,10 +402,9 @@ enum LegacyImport {
         }
 
         private func matchedRange(for row: Row, added: inout Int) -> ShootingRange? {
-            guard let key = plan.rowRangeKeys[row.key], plan.useRangeMatch.contains(key),
-                  let match = plan.rangeMatches[key] else { return nil }
+            guard let key = plan.rowRangeKeys[row.key], let target = plan.rangeChoice[key] else { return nil }
             var range: ShootingRange?
-            switch match.target {
+            switch target {
             case .existing(let id): range = byID[id]
             case .catalogue(let id):
                 range = byCatalogID[id]
