@@ -1220,29 +1220,6 @@
         }
       }
     },
-    "Armbrust": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Crossbow"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Arbalète"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Balestra"
-          }
-        }
-      }
-    },
     "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben %@.": {
       "extractionState": "manual",
       "localizations": {
