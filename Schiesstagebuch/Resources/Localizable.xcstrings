@@ -806,6 +806,29 @@
         }
       }
     },
+    "Als aufgebraucht markieren": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark as used up"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marquer comme épuisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segna come esaurito"
+          }
+        }
+      }
+    },
     "An der Schiessbrille oder im Diopter, auch Korrekturgläser": {
       "extractionState": "manual",
       "localizations": {
@@ -1216,6 +1239,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scelto sulla mappa"
+          }
+        }
+      }
+    },
+    "Aufgebraucht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used up"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Épuisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esaurito"
+          }
+        }
+      }
+    },
+    "Aufgebrauchte Lose": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used-up lots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lots épuisés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lotti esauriti"
+          }
+        }
+      }
+    },
+    "Aufgebrauchte Lose erscheinen nicht mehr bei neuen Einträgen, bleiben aber in bisherigen Einträgen und in der Statistik.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Used-up lots no longer appear for new entries, but stay in earlier entries and in the statistics."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les lots épuisés n’apparaissent plus pour les nouvelles entrées, mais restent dans les entrées précédentes et dans les statistiques."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I lotti esauriti non compaiono più nelle nuove voci, ma restano nelle voci precedenti e nelle statistiche."
           }
         }
       }
@@ -7206,6 +7298,29 @@
         }
       }
     },
+    "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen. Hast du ein Los ganz verschossen, markiere es mit ✓ als aufgebraucht.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Optional. You can pick the lot when logging an entry. Once you have shot a whole lot, mark it as used up with ✓."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facultatif. Tu peux choisir le lot en saisissant une entrée. Quand tu as tiré tout un lot, marque-le comme épuisé avec ✓."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativo. Puoi scegliere il lotto quando registri una voce. Quando hai sparato tutto un lotto, segnalo come esaurito con ✓."
+          }
+        }
+      }
+    },
     "Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.": {
       "extractionState": "manual",
       "localizations": {
@@ -10905,6 +11020,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra il meteo"
+          }
+        }
+      }
+    },
+    "Wieder verwenden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use again"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réutiliser"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa di nuovo"
           }
         }
       }
