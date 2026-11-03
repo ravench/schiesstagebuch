@@ -3,6 +3,7 @@
 included:
   - Schiesstagebuch
   - SchiesstagebuchTests
+  - SchiesstagebuchUITests
 excluded:
   - DerivedData
   - build
