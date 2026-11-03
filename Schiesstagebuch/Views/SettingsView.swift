@@ -412,16 +412,26 @@ struct AmmunitionEditorView: View {
 // MARK: - Shooting ranges
 
 struct RangeListView: View {
+    @Environment(\.modelContext) private var context
     @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @State private var showArchived = false
     @State private var adding = false
+    @State private var importedCount: Int?
+
+    private var hasCatalogueRanges: Bool { ranges.contains { !$0.catalogID.isEmpty } }
 
     var body: some View {
-        List(ranges.filter { showArchived || !$0.isArchived }) { r in
-            NavigationLink { RangeDetailView(range: r) } label: {
-                StatsLinkRow(name: r.name, subtitle: r.place, archived: r.isArchived, shots: (r.entries ?? []).totalShots)
+        List {
+            Section {
+                ForEach(ranges.filter { showArchived || !$0.isArchived }) { r in
+                    NavigationLink { RangeDetailView(range: r) } label: {
+                        StatsLinkRow(name: r.name, subtitle: r.place, archived: r.isArchived, shots: (r.entries ?? []).totalShots)
+                    }
+                    .swipeActions { ArchiveButton(item: r) }
+                }
+            } footer: {
+                if hasCatalogueRanges { Text(RangeCatalog.attribution) }
             }
-            .swipeActions { ArchiveButton(item: r) }
         }
         .overlay {
             if ranges.isEmpty {
@@ -432,9 +442,27 @@ struct RangeListView: View {
         .navigationTitle("Schiessanlagen")
         .toolbar {
             Toggle(isOn: $showArchived) { Label("Archivierte", systemImage: "archivebox") }.toggleStyle(.button)
-            Button { adding = true } label: { Label("Hinzufügen", systemImage: "plus") }
+            Menu {
+                Button { adding = true } label: { Label("Hinzufügen", systemImage: "plus") }
+                if !RangeCatalog.items.isEmpty {
+                    Button {
+                        UserDefaults.standard.set(true, forKey: RangeCatalog.askedKey)
+                        importedCount = RangeCatalog.importAll(into: context)
+                    } label: {
+                        Label("Schweizer Schiessanlagen übernehmen", systemImage: "square.and.arrow.down.on.square")
+                    }
+                }
+            } label: {
+                Label("Hinzufügen", systemImage: "plus")
+            }
         }
         .sheet(isPresented: $adding) { RangeEditorView(range: nil) }
+        .alert("Schiessanlagen übernommen", isPresented: Binding(get: { importedCount != nil },
+                                                                 set: { if !$0 { importedCount = nil } })) {
+            Button("OK") { importedCount = nil }
+        } message: {
+            Text("\(importedCount ?? 0) Anlagen hinzugefügt.")
+        }
     }
 }
 

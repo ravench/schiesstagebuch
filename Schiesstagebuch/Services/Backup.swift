@@ -72,6 +72,7 @@ enum Backup {
         var id: UUID; var name: String; var place: String; var isArchived: Bool
         var address: String?; var latitude: Double?; var longitude: Double?
         var shootingBearing: Double?; var altitude: Double?
+        var catalogID: String?; var distances: [Int]?
         var createdAt: Date?
     }
     struct LicenceCardDTO: Codable { var id: UUID; var holderName: String; var licenceNumber: String; var updatedAt: Date }
@@ -126,7 +127,8 @@ enum Backup {
             ranges: try all(ShootingRange.self, context).map {
                 .init(id: $0.id, name: $0.name, place: $0.place, isArchived: $0.isArchived,
                       address: $0.address, latitude: $0.latitude, longitude: $0.longitude,
-                      shootingBearing: $0.shootingBearing, altitude: $0.altitude, createdAt: $0.createdAt)
+                      shootingBearing: $0.shootingBearing, altitude: $0.altitude,
+                      catalogID: $0.catalogID, distances: $0.distances, createdAt: $0.createdAt)
             },
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
@@ -296,6 +298,7 @@ enum Backup {
             let r = ShootingRange(name: d.name, place: d.place); r.id = d.id; r.isArchived = d.isArchived
             r.address = d.address ?? ""; r.latitude = d.latitude; r.longitude = d.longitude
             r.shootingBearing = d.shootingBearing.map(Compass.normalized); r.altitude = d.altitude
+            r.catalogID = d.catalogID ?? ""; r.distances = d.distances ?? []
             if let created = d.createdAt { r.createdAt = created }
             context.insert(r); ranges[d.id] = r
         }
