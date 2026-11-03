@@ -102,6 +102,28 @@ final class RangeMatcherTests: XCTestCase {
         XCTAssertNil(match("Aarberg 100m"), "no 100 m stand there")
     }
 
+    func testEquallyGoodRangesAreAllOffered() {
+        let names = { (text: String, hint: [Int]) in
+            RangeMatcher.matches(for: text, preferring: hint, among: self.candidates).map { self.candidates[$0].place.name }
+        }
+        XCTAssertEqual(names("Albisgüetli", [25, 50]), ["Zürich-Albisgütli 25m", "Zürich-Albisgütli 300/50m"])
+        XCTAssertEqual(names("Riedbach", [300]), ["Bern-Riedbach Forst 300/50/25m", "Bubendorf Riedbach 300m"])
+        XCTAssertEqual(names("Albisgüetli", [300]), ["Zürich-Albisgütli 300/50m"], "a clear winner comes alone")
+        XCTAssertEqual(names("Olten", [300]), [])
+        var own = RangeMatcher.Place(name: "Zürich-Albisgütli 25m")
+        own.isExisting = true
+        let pool = [RangeMatcher.Candidate(own)] + candidates
+        XCTAssertEqual(RangeMatcher.matches(for: "Albisgüetli", among: pool), [0], "the range in the app wins")
+    }
+
+    func testTooManyEqualRangesAreNotOffered() {
+        let many = (1...RangeMatcher.maxChoices + 1).map {
+            RangeMatcher.Candidate(RangeMatcher.Place(name: "Allmend \($0)00m", distances: [$0 * 100]))
+        }
+        XCTAssertTrue(RangeMatcher.matches(for: "Allmend", among: many).isEmpty)
+        XCTAssertEqual(RangeMatcher.matches(for: "Allmend", among: Array(many.prefix(2))).count, 2)
+    }
+
     func testWholeNameWinsATie() {
         XCTAssertEqual(match("Aarwangen", [25, 50]), "tlm:aarwangen")
     }

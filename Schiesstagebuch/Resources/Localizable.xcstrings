@@ -2508,25 +2508,25 @@
         }
       }
     },
-    "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen. Erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen; dann wird eine neue Anlage angelegt.": {
+    "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "These ranges are already in the app or in the directory of Swiss shooting ranges, recognised by name, town, postcode and distance. Switch off matches that are wrong; a new range is then created."
+            "value": "These ranges are already in the app or in the directory of Swiss shooting ranges, recognised by name, town, postcode and distance. Switch off matches that are wrong. Where several ranges fit, pick the right one. Without a match, a new range is created."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ces stands sont déjà dans l'app ou dans le répertoire des stands de tir suisses, reconnus par nom, localité, NPA et distance. Désactive les correspondances erronées ; un nouveau stand sera alors créé."
+            "value": "Ces stands sont déjà dans l'app ou dans le répertoire des stands de tir suisses, reconnus par nom, localité, NPA et distance. Désactive les correspondances erronées. Si plusieurs stands conviennent, choisis le bon. Sans correspondance, un nouveau stand est créé."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Questi poligoni sono già nell'app o nell'elenco dei poligoni svizzeri, riconosciuti da nome, località, NPA e distanza. Disattiva gli abbinamenti errati; verrà creato un nuovo poligono."
+            "value": "Questi poligoni sono già nell'app o nell'elenco dei poligoni svizzeri, riconosciuti da nome, località, NPA e distanza. Disattiva gli abbinamenti errati. Se più poligoni corrispondono, scegli quello giusto. Senza abbinamento viene creato un nuovo poligono."
           }
         }
       }
@@ -6424,6 +6424,29 @@
         }
       }
     },
+    "Mehrere Anlagen passen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Several ranges fit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plusieurs stands conviennent"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Più poligoni corrispondono"
+          }
+        }
+      }
+    },
     "Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.": {
       "extractionState": "manual",
       "localizations": {
@@ -6995,6 +7018,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "velo di nebbia davanti ai bersagli"
+          }
+        }
+      }
+    },
+    "Neue Anlage anlegen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add as new range"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter comme nouveau stand"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi come nuovo poligono"
           }
         }
       }
