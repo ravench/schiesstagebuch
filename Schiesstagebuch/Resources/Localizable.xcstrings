@@ -1473,25 +1473,25 @@
         }
       }
     },
-    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen.": {
+    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The date of sale can't be before the date of purchase."
+            "value": "The date of sale can't be before the date of purchase. Sold firearms are archived."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La date de vente ne peut pas précéder la date d'achat."
+            "value": "La date de vente ne peut pas précéder la date d'achat. Les armes vendues sont archivées."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "La data di vendita non può precedere la data di acquisto."
+            "value": "La data di vendita non può precedere la data di acquisto. Le armi vendute vengono archiviate."
           }
         }
       }
