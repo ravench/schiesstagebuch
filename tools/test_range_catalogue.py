@@ -229,6 +229,7 @@ class NameTests(unittest.TestCase):
         self.assertEqual(rc.clean_name("Schiessstand"), "")
         self.assertEqual(rc.clean_name("stand de tir"), "")
         self.assertEqual(rc.clean_name(None), "")
+        self.assertEqual(rc.clean_name("k_W"), "")  # swissTLM3D's "no value"
 
     def test_swisstopo_name_used_without_osm(self):
         houses = [{"id": "h1", "ring": box(E0, N0), "name": ""}]
@@ -336,6 +337,8 @@ class GeoPackageTests(unittest.TestCase):
         self.assertIn("3 feature tables", text)
         self.assertIn("'Scheibenstand': 1", text)
         self.assertIn("nutzung = 'Schiessstand': 1", text)
+        self.assertIn("tlm_bauten_sportbaute_lin names: 1 of 1 named", text)
+        self.assertIn("'Ortsteil': 1", text)
 
     def test_build_writes_json_and_csv(self):
         with tempfile.TemporaryDirectory() as tmp:
