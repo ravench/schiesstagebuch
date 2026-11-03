@@ -9,9 +9,6 @@ struct FilterHolderIcon: View {
         Canvas { ctx, canvas in
             let g = FilterHolderGeometry(size: min(canvas.width, canvas.height))
             let tint = GraphicsContext.Shading.style(.tint)
-            ctx.opacity = 0.25
-            ctx.fill(g.lens, with: tint)
-            ctx.opacity = 1
             ctx.stroke(g.wire, with: tint, style: StrokeStyle(lineWidth: g.wireLine, lineCap: .round, lineJoin: .round))
             ctx.stroke(g.ring, with: tint, lineWidth: g.ringLine)
         }
@@ -29,7 +26,7 @@ struct FilterHolderGeometry {
     static let tilt = Angle.degrees(45)
     /// Line widths in model units (ring radius = 1).
     static let ringWidth: CGFloat = 0.18
-    static let wireWidth: CGFloat = 0.08
+    static let wireWidth: CGFloat = 0.12
     /// Half the distance between the wire's two legs, and how far above the ring centre the loop's bend starts.
     static let legOffset: CGFloat = 0.42
     static let bendHeight: CGFloat = 2.2
@@ -37,11 +34,6 @@ struct FilterHolderGeometry {
     static let margin: CGFloat = 0.04
 
     private static var modelRing: Path { Path(ellipseIn: CGRect(x: -1, y: -1, width: 2, height: 2)) }
-
-    private static var modelLens: Path {
-        let r = 1 - ringWidth / 2
-        return Path(ellipseIn: CGRect(x: -r, y: -r, width: 2 * r, height: 2 * r))
-    }
 
     /// Left leg up from the ring, a round bend over the top, right leg back down to the ring.
     private static var modelWire: Path {
@@ -94,7 +86,6 @@ struct FilterHolderGeometry {
     var wirePoints: [CGPoint] { Self.modelWirePoints.map { $0.applying(transform) } }
 
     var ring: Path { Self.modelRing.applying(transform) }
-    var lens: Path { Self.modelLens.applying(transform) }
     var wire: Path { Self.modelWire.applying(transform) }
     var ringLine: CGFloat { Self.ringWidth * scale }
     var wireLine: CGFloat { Self.wireWidth * scale }

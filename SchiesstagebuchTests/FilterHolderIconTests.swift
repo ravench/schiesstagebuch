@@ -39,8 +39,8 @@ final class FilterHolderIconTests: XCTestCase {
 
     func testRingIsThickerThanTheWire() {
         let g = FilterHolderGeometry(size: 22)
-        XCTAssertGreaterThan(g.ringLine, g.wireLine * 2)
-        XCTAssertLessThan(g.lens.boundingRect.width, 2 * g.ringRadius, "tinted filter sits in the ring")
+        XCTAssertGreaterThan(g.ringLine, g.wireLine * 1.3)
+        XCTAssertGreaterThan(g.wireLine, g.ringLine / 2, "wire is clearly visible, not a hairline")
     }
 
     func testFilterSectionTextsAreTranslated() throws {
