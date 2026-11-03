@@ -209,17 +209,6 @@ icon("air_pistol", "Luftpistole", [
     "M30 12 L50 16 L52 22 L47 40 L53.5 42.5 L53 46.5 L28.8 41 Q27.4 40.6 27.7 38.8 L31.5 23 Q26 20 22 15 Z",
 ], [g_hole])
 
-# Match crossbow (Armbrust): sport stock, rail, prod and string.
-icon("crossbow", "Armbrust", [
-    SPORT_STOCK.format(fe=100),
-    rect(38, 11, 22, 5),
-    rect(56, 13, 54, 3),
-    "M107 4 Q115.5 24 107 44 L110 44 Q118.5 24 110 4 Z",
-    poly((107.5, 5), (108.5, 5.8), (66, 14.2), (65, 13.4)),
-    poly((107.5, 43), (108.5, 42.2), (66, 15.8), (65, 16.6)),
-    rect(36, 6, 6, 5), rect(97, 7, 6, 6),
-], [THUMBHOLE, rect(98.5, 8.5, 3, 3)])
-
 # Lever-action rifle: straight-grip stock, tube magazine, lever loop.
 icon("lever_action", "Unterhebelrepetierer", [
     "M2 19 Q16 17 32 15.5 L36 15.5 L38 22 Q34 24 30 25 Q16 29 2 35 Z",
