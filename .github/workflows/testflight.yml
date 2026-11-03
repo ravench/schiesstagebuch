@@ -65,7 +65,14 @@ jobs:
             -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
-            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" | xcpretty
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" | tee "$RUNNER_TEMP/archive.log" | xcpretty
+      - name: Show the archive errors
+        # xcpretty drops signing and account errors; show what xcodebuild actually said.
+        if: failure() && steps.secrets.outputs.ready == 'true'
+        run: |
+          grep -iE "error|warning: .*(sign|certificate|profile)|certificate|provisioning" "$RUNNER_TEMP/archive.log" | sort -u | tail -40 || true
+          echo "--- last lines ---"
+          tail -40 "$RUNNER_TEMP/archive.log"
       - name: Upload to TestFlight
         if: steps.secrets.outputs.ready == 'true'
         run: |
