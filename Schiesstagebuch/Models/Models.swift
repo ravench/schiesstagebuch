@@ -250,6 +250,12 @@ final class ShootingEvent {
     var name: String = ""
     /// Weather as JSON (`WeatherRecord`); nil when none was recorded, e.g. indoors.
     var weatherData: Data?
+    /// `ScoringSystem` raw value: how the Stiche are scored.
+    var scoringSystemRaw: String = "rings"
+    /// IPSC only: division, e.g. "Production"; empty when not entered.
+    var ipscDivision: String = ""
+    /// IPSC only: `IPSCPowerFactor` raw value.
+    var ipscPowerFactorRaw: String = "minor"
     var createdAt: Date = Date.now
 
     var range: ShootingRange?
@@ -324,6 +330,8 @@ final class Entry {
     var bipodLength: Double?
     /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
     var shotValuesText: String = ""
+    /// IPSC stage as JSON (`IPSCStage`): time and hits; nil for point scoring or when nothing was entered.
+    var ipscData: Data?
     var notes: String = ""
     var createdAt: Date = Date.now
     /// Set for entries imported from the old Schusszähler app, so re-importing skips them.

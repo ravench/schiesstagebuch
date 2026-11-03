@@ -57,4 +57,15 @@ final class LocalizationTests: XCTestCase {
             XCTAssertEqual(String(format: try localized("Schuss %lld", lang), 3), text, lang)
         }
     }
+
+    func testScoringSystemTextsAreTranslated() throws {
+        let keys = ScoringSystem.allCases.flatMap { [$0.title, $0.detail] }
+            + ["Wertungsart", "Hitfaktor", "A-Treffer", "Verfahrensfehler", "Stage hinzufügen"]
+        for lang in ["en", "fr", "it"] {
+            for key in keys {
+                XCTAssertNotEqual(try localized(key, lang), "<missing>", "\(key) has no \(lang) translation")
+            }
+        }
+        XCTAssertEqual(try localized("Hitfaktor", "en"), "Hit factor")
+    }
 }
