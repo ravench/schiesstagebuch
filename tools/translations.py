@@ -189,6 +189,8 @@ T = {
     "Nach Tagen": ("After days", "Après jours", "Dopo giorni"),
     "Name, z. B. Albisgüetli": ("Name, e.g. Albisgüetli", "Nom, p. ex. Albisgüetli", "Nome, ad es. Albisgüetli"),
     "Name, z. B. SIG P210": ("Name, e.g. SIG P210", "Nom, p. ex. SIG P210", "Nome, ad es. SIG P210"),
+    "Hersteller": ("Manufacturer", "Fabricant", "Produttore"),
+    "Hersteller (optional)": ("Manufacturer (optional)", "Fabricant (facultatif)", "Produttore (facoltativo)"),
     "Neue Munition": ("New ammunition", "Nouvelle munition", "Nuova munizione"),
     "Neue Schiessanlage": ("New range", "Nouveau stand de tir", "Nuovo poligono"),
     "Neue Schiessanlagen": ("New ranges", "Nouveaux stands de tir", "Nuovi poligoni"),
