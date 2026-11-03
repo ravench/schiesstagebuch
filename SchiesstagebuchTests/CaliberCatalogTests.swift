@@ -1,5 +1,6 @@
 import XCTest
 import SwiftData
+import SwiftUI
 @testable import Schiesstagebuch
 
 final class CaliberCatalogTests: ModelTestCase {
@@ -63,6 +64,20 @@ final class CaliberCatalogTests: ModelTestCase {
         }
         XCTAssertNotNil(gp1890.outline.case)
         XCTAssertNotNil(gp1890.outline.bullet)
+    }
+
+    func testGP1890HasPaperPatchedSteelCappedBullet() throws {
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
+        XCTAssertEqual(gp1890.outline.bulletMaterial, "steel")
+        let patch = try XCTUnwrap(gp1890.outline.patch, "paper band above the case mouth")
+        let bulletPath = try XCTUnwrap(gp1890.outline.bullet)
+        let band = SVGPath.parse(patch).boundingRect
+        let bullet = SVGPath.parse(bulletPath).boundingRect
+        XCTAssertEqual(band.maxY, bullet.maxY, accuracy: 0.01, "the paper starts at the case mouth")
+        XCTAssertLessThan(band.height, bullet.height / 2, "most of the visible bullet is the steel cap")
+        let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11"))
+        XCTAssertNil(gp11.outline.patch)
+        XCTAssertNil(gp11.outline.bulletMaterial)
     }
 
     func testGP1890DoesNotTakeOverGP90OrGP11() throws {

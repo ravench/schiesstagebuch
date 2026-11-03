@@ -20,6 +20,10 @@ enum CaliberCatalog {
         let `case`: String?
         let head: String?
         let bullet: String?
+        /// Paper band drawn over the bullet (paper-patched GP 1890 bullet); nil for jacketed bullets.
+        let patch: String?
+        /// "steel" for a steel-capped nose; nil means a copper-coloured jacket.
+        let bulletMaterial: String?
     }
 
     struct Item: Decodable, Identifiable {
