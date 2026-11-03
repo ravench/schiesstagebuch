@@ -28,9 +28,10 @@ struct BoxStats: Equatable {
         q1 = Self.quantile(s, 0.25); median = Self.quantile(s, 0.5); q3 = Self.quantile(s, 0.75)
         mean = s.reduce(0, +) / Double(s.count)
         let lowFence = q1 - 1.5 * (q3 - q1), highFence = q3 + 1.5 * (q3 - q1)
-        lowerWhisker = s.first { $0 >= lowFence - 1e-12 } ?? first
-        upperWhisker = s.last { $0 <= highFence + 1e-12 } ?? last
-        outliers = s.filter { $0 < lowerWhisker || $0 > upperWhisker }
+        let low = s.first { $0 >= lowFence - 1e-12 } ?? first
+        let high = s.last { $0 <= highFence + 1e-12 } ?? last
+        lowerWhisker = low; upperWhisker = high
+        outliers = s.filter { $0 < low || $0 > high }
     }
 
     /// Type 7 quantile of sorted values: h = (n − 1)·p, interpolated between neighbours.
