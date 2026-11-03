@@ -140,12 +140,6 @@ extension WeatherField {
             o("rising", "aufkommend", "arrow.up.right"),
             o("falling", "abflauend", "arrow.down.right"),
         ])),
-        .init(key: "wind_type", label: "Windart", icon: "wind.snow", group: .wind, levels: [.entry], kind: .select([
-            o("bise", "Bise", "snowflake"),
-            o("foehn", "Föhn", "thermometer.sun"),
-            o("west", "Westwind", "w.circle"),
-            o("thunderstorm", "Gewitterwind", "cloud.bolt"),
-        ])),
         .init(key: "air_temp_c", label: "Lufttemperatur", icon: "thermometer.medium", group: .temperature, levels: both,
               kind: .number(unit: "°C", range: -40...50)),
         .init(key: "temp_feel", label: "Temperaturgefühl", icon: "figure.stand", group: .temperature, levels: both, kind: .select([
@@ -158,8 +152,6 @@ extension WeatherField {
             o("hot", "heiss", "thermometer.sun"),
             o("oppressive", "drückend", "humidity"),
         ])),
-        .init(key: "stand_temp", label: "Temperatur im Stand", icon: "house", group: .temperature, levels: [.entry],
-              kind: .number(unit: "°C", range: -40...50)),
         .init(key: "ammo_temp", label: "Munition", icon: "shippingbox", group: .temperature, levels: [.entry], kind: .select([
             o("cold", "kalt", "snowflake"),
             o("room", "Raumtemperatur", "house"),
