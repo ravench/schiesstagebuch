@@ -5,8 +5,8 @@ struct StatsView: View {
     @Environment(\.term) private var term
     @Query(sort: \Entry.date) private var entries: [Entry]
     @Query(sort: \Weapon.name) private var weapons: [Weapon]
-    @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @State private var period: StatsPeriod = .all
+    @State private var rangeSearch = ""
 
     private var filtered: [Entry] { entries.filter { period.contains($0.date) } }
 
@@ -42,14 +42,33 @@ struct StatsView: View {
                 Section {
                     BreakdownChart(title: "Pro Schiessanlage", entries: filtered, key: \.range, label: \.name)
                 }
-                if !ranges.isEmpty {
+                let usedRanges = RangeStats.used(in: filtered)
+                if !usedRanges.isEmpty {
                 Section("Schiessanlagen") {
-                    ForEach(ranges) { r in
+                    if usedRanges.count > 1 {
+                        HStack {
+                            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+                            TextField("Schiessanlage suchen", text: $rangeSearch)
+                                .autocorrectionDisabled()
+                            if !rangeSearch.isEmpty {
+                                Button { rangeSearch = "" } label: {
+                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Suche löschen")
+                            }
+                        }
+                    }
+                    let shown = usedRanges.filter { RangeStats.matches($0.range, rangeSearch.trimmingCharacters(in: .whitespaces)) }
+                    if shown.isEmpty {
+                        Text("Keine passende Schiessanlage").foregroundStyle(.secondary)
+                    }
+                    ForEach(shown) { item in
                         NavigationLink {
-                            RangeDetailView(range: r)
+                            RangeDetailView(range: item.range)
                         } label: {
-                            StatsLinkRow(name: r.name, subtitle: r.place, archived: r.isArchived,
-                                         shots: filtered.filter { $0.range == r }.totalShots)
+                            StatsLinkRow(name: item.range.name, subtitle: item.range.place,
+                                         archived: item.range.isArchived, shots: item.shots)
                         }
                     }
                 }

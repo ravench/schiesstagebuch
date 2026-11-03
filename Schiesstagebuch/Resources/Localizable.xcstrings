@@ -5412,6 +5412,29 @@
         }
       }
     },
+    "Keine passende Schiessanlage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matching range"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun stand de tir correspondant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun poligono corrispondente"
+          }
+        }
+      }
+    },
     "Kontrolle": {
       "extractionState": "manual",
       "localizations": {
@@ -9253,6 +9276,29 @@
         }
       }
     },
+    "Schiessanlage suchen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search ranges"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher un stand de tir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca poligono"
+          }
+        }
+      }
+    },
     "Schiessanlagen": {
       "extractionState": "manual",
       "localizations": {
@@ -10491,6 +10537,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "paglia"
+          }
+        }
+      }
+    },
+    "Suche löschen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear search"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer la recherche"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancella ricerca"
           }
         }
       }
