@@ -70,9 +70,10 @@ final class SightSettingsTests: ModelTestCase {
     }
 
     func testFilterListMatchesTheShop() {
-        XCTAssertEqual(FilterColor.all.count, 17)
+        XCTAssertEqual(FilterColor.filters.count, 17)
+        XCTAssertEqual(FilterColor.all.count, 19, "17 colour filters plus +0.25 and -0.25")
         XCTAssertEqual(Set(FilterColor.all).count, FilterColor.all.count, "names are unique")
-        XCTAssertEqual(Set(FilterColor.filters.map(\.rgb)).count, FilterColor.filters.count, "swatches are distinct")
+        XCTAssertEqual(Set(FilterColor.builtIn.map(\.rgb)).count, FilterColor.builtIn.count, "swatches are distinct")
         XCTAssertTrue(FilterColor.all.contains("Eidgenoss polarisiert"))
         XCTAssertFalse(FilterColor.all.contains { $0.contains("Filterhalter") }, "the holder is not a filter")
     }

@@ -50,6 +50,7 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Fotos von Scheiben und Resultaten zu einem Eintrag hinzufügen."
         INFOPLIST_KEY_NSCameraUsageDescription: "Standblätter direkt fotografieren und zum Eintrag speichern."
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Wählt beim neuen Eintrag die Schiessanlage, bei der du gerade bist. Der Standort wird nicht gespeichert."
   SchiesstagebuchTests:
     type: bundle.unit-test
     platform: iOS
@@ -63,6 +64,21 @@ targets:
         CODE_SIGN_STYLE: Automatic
         SWIFT_VERSION: "5.10"
         GENERATE_INFOPLIST_FILE: YES
+  # Screenshots of every main screen for the iPad layout check (.github/workflows/ipad-screens.yml).
+  SchiesstagebuchUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [SchiesstagebuchUITests]
+    dependencies:
+      - target: Schiesstagebuch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ch.giotta.schiesstagebuch.uitests
+        DEVELOPMENT_TEAM: PD9YC6KM5T
+        CODE_SIGN_STYLE: Automatic
+        SWIFT_VERSION: "5.10"
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Schiesstagebuch
 schemes:
   Schiesstagebuch:
     build:
@@ -78,3 +94,13 @@ schemes:
         - SchiesstagebuchTests
     archive:
       config: Release
+  # Own scheme so the screenshot run stays out of the normal unit test run.
+  SchiesstagebuchScreens:
+    build:
+      targets:
+        Schiesstagebuch: all
+        SchiesstagebuchUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - SchiesstagebuchUITests
