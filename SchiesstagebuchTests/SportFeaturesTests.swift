@@ -60,6 +60,12 @@ final class SportFeaturesTests: ModelTestCase {
         }
     }
 
+    func testOnlyColourFiltersUseTheFilterHolderAndListTheFilters() {
+        XCTAssertNil(SportFeatures.filter.systemImage, "drawn filter holder instead of a symbol")
+        XCTAssertEqual(SportFeatures.each.filter { $0.systemImage == nil }, [.filter], "the holder icon appears once")
+        XCTAssertEqual(SportFeatures.each.filter(\.hasFilterList), [.filter])
+    }
+
     func testPistolsNeverShowTheBipod() {
         let all = SportFeatures.all
         XCTAssertEqual(all.sightFields(for: .ring), [.filter, .sight, .bipod])
