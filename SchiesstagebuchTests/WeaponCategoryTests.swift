@@ -1,4 +1,5 @@
 import XCTest
+import SwiftData
 @testable import Schiesstagebuch
 
 final class WeaponCategoryTests: XCTestCase {
@@ -6,7 +7,7 @@ final class WeaponCategoryTests: XCTestCase {
     func testPickerOrder() {
         XCTAssertEqual(WeaponCategory.allCases, [
             .airPistol, .sportPistol, .luger, .pistol, .revolver,
-            .pcc, .airgun, .sportRifle, .crossbow, .leverAction,
+            .pcc, .airgun, .sportRifle, .leverAction,
             .serviceRifle, .serviceCarbine, .huntingRifle, .longRange,
             .shotgun, .pumpShotgun, .blackPowder, .machineGun, .other,
         ])
@@ -34,6 +35,19 @@ final class WeaponCategoryTests: XCTestCase {
         let ids = Set(file.icons.map(\.id))
         XCTAssertEqual(ids, Set(WeaponCategory.allCases.map(\.rawValue)))
         XCTAssertTrue(file.icons.allSatisfy { !$0.solids.isEmpty })
+    }
+
+    /// Crossbows were dropped for now (2026-11-03): no category, and a stored
+    /// "crossbow" from an older build falls back to "other".
+    func testCrossbowIsNotACategory() throws {
+        XCTAssertNil(WeaponCategory(rawValue: "crossbow"))
+        let container = try ModelContainer(for: SchiesstagebuchApp.schema,
+                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+        let context = ModelContext(container)
+        let weapon = Weapon(name: "Armbrust"); context.insert(weapon)
+        weapon.categoryRaw = "crossbow"
+        XCTAssertEqual(weapon.category, .other)
+        XCTAssertEqual(WeaponCategory.guess(from: "Armbrust Wacker"), .other)
     }
 
     func testGuessesMachineGuns() {

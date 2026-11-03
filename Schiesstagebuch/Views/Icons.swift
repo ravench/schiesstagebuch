@@ -68,7 +68,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
     // roughly from small to large, machine gun last. Raw values are stored, so
     // reordering is safe; renaming a raw value is not.
     case airPistol = "air_pistol", sportPistol = "sport_pistol", luger, pistol, revolver
-    case pcc, airgun, sportRifle = "sport_rifle", crossbow, leverAction = "lever_action"
+    case pcc, airgun, sportRifle = "sport_rifle", leverAction = "lever_action"
     case serviceRifle = "service_rifle", serviceCarbine = "service_carbine", huntingRifle = "hunting_rifle"
     case longRange = "long_range", shotgun, pumpShotgun = "pump_shotgun", blackPowder = "black_powder"
     case machineGun = "machine_gun", other
@@ -87,7 +87,6 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         case .serviceCarbine: "Historisches Ordonnanzgewehr"
         case .leverAction: "Unterhebelrepetierer"
         case .pumpShotgun: "Vorderschaftrepetierflinte"
-        case .crossbow: "Armbrust"
         case .pcc: "PCC (Pistolenkaliber-Karabiner)"
         case .serviceRifle: "Ordonnanzgewehr"
         case .sportRifle: "Sportgewehr / Kleinkaliber"
@@ -108,7 +107,6 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         case .sportPistol: ["Randfeuer", "Kurzwaffe"]
         case .shotgun, .pumpShotgun: ["Flinte"]
         case .airgun, .airPistol: ["Luftdruck"]
-        case .crossbow: ["Andere"]
         case .leverAction: ["Langwaffe", "Kurzwaffe", "Schwarzpulver"]
         case .blackPowder: ["Schwarzpulver"]
         default: ["Langwaffe", "Randfeuer"]
@@ -122,7 +120,6 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.luger, ["parabellum", "luger", "p08", "p 08", "06/29", "1900", "1906"]),
             (.sportPistol, ["sportpistole", "gsp", "pardini", "hämmerli", "hammerli", "walther sp", "morini", "match"]),
             (.revolver, ["revolver", "357", "38 sp", "44 mag", "gp100", "python", "s&w 686", "korth"]),
-            (.crossbow, ["armbrust", "crossbow"]),
             (.airPistol, ["luftpistole", "lp10", "lp 10", "air pistol"]),
             (.serviceCarbine, ["k31", "k 31", "k11", "k 11", "g11", "g 11", "karabiner", "schmidt-rubin", "langgewehr"]),
             (.machineGun, ["maschinengewehr", "machine gun", "mg51", "mg 51", "mg42", "mg 42", "mg3", "minimi", "m249"]),
