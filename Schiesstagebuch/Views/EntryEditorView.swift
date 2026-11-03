@@ -5,6 +5,7 @@ import CoreLocation
 
 /// Create (entry == nil) or edit an entry. Changes are only written on "Sichern".
 struct EntryEditorView: View {
+    @Environment(\.term) private var term
     let entry: Entry?
 
     @Environment(\.modelContext) private var context
@@ -107,7 +108,7 @@ struct EntryEditorView: View {
                 }
 
                 Section {
-                    pickerRow("Waffe", selection: $weapon, items: weapons, label: \.name, add: .weapon,
+                    pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
                     if let weapon, !(weapon.calibers ?? []).isEmpty {
                         Picker("Kaliber", selection: $caliber) {
