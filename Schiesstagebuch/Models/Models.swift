@@ -204,6 +204,10 @@ final class ShootingRange: ArchivableItem {
     var shootingBearing: Double?
     /// Height above sea level in metres; nil when not set.
     var altitude: Double?
+    /// Id in the bundled Swiss range catalogue ("tlm:<uuid>"); empty for ranges the user added.
+    var catalogID: String = ""
+    /// Distances of the range in metres, e.g. [300, 50]; empty when unknown.
+    var distances: [Int] = []
     var isArchived: Bool = false
     var createdAt: Date = Date.now
 
