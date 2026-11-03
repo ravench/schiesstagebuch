@@ -1657,6 +1657,29 @@
         }
       }
     },
+    "Bekannte Schiessanlagen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Known shooting ranges"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stands de tir connus"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poligoni conosciuti"
+          }
+        }
+      }
+    },
     "Bemerkung Wetter": {
       "extractionState": "manual",
       "localizations": {
@@ -2481,6 +2504,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."
+          }
+        }
+      }
+    },
+    "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen. Erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen; dann wird eine neue Anlage angelegt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These ranges are already in the app or in the directory of Swiss shooting ranges, recognised by name, town, postcode and distance. Switch off matches that are wrong; a new range is then created."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ces stands sont déjà dans l'app ou dans le répertoire des stands de tir suisses, reconnus par nom, localité, NPA et distance. Désactive les correspondances erronées ; un nouveau stand sera alors créé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questi poligoni sono già nell'app o nell'elenco dei poligoni svizzeri, riconosciuti da nome, località, NPA e distanza. Disattiva gli abbinamenti errati; verrà creato un nuovo poligono."
           }
         }
       }

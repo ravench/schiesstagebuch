@@ -49,6 +49,16 @@ struct LegacyImportView: View {
                         LabeledContent(term("Waffen").loc, value: plan.weapons.joined(separator: ", "))
                         LabeledContent("Schiessanlagen", value: "\(plan.ranges.count)")
                     }
+                    let rangeRows = LegacyImport.rangeMatchRows(plan)
+                    if !rangeRows.isEmpty {
+                        Section {
+                            ForEach(rangeRows) { rangeToggle($0) }
+                        } header: {
+                            Text("Bekannte Schiessanlagen")
+                        } footer: {
+                            Text("Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen. Erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen; dann wird eine neue Anlage angelegt.")
+                        }
+                    }
                     if !plan.sighterSuggestions.isEmpty {
                         Section {
                             ForEach(plan.newRows.filter { plan.sighterSuggestions[$0.key] != nil }, id: \.self) { row in
@@ -138,6 +148,19 @@ struct LegacyImportView: View {
                     .filter { !$0.isEmpty }.joined(separator: " · "))
                 (Text("\(row.shots - sighters) Wertung + \(sighters) Probe") + Text(verbatim: " · \(row.result)"))
                     .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func rangeToggle(_ row: LegacyImport.RangeMatchRow) -> some View {
+        Toggle(isOn: Binding(
+            get: { self.plan.map { !row.keys.isDisjoint(with: $0.useRangeMatch) } ?? false },
+            set: { on in
+                if on { self.plan?.useRangeMatch.formUnion(row.keys) } else { self.plan?.useRangeMatch.subtract(row.keys) }
+            })) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: ([row.name] + row.weapons).joined(separator: " · "))
+                Text(verbatim: "→ \(row.match.name)").font(.caption).foregroundStyle(.secondary)
             }
         }
     }
