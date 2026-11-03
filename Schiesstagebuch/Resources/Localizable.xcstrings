@@ -1772,6 +1772,29 @@
         }
       }
     },
+    "Brillenfilter (AXIA)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glasses filters (AXIA)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtres de lunettes (AXIA)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri per occhiali (AXIA)"
+          }
+        }
+      }
+    },
     "Darstellung": {
       "extractionState": "manual",
       "localizations": {
@@ -3315,6 +3338,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reimposta filtri"
+          }
+        }
+      }
+    },
+    "Filterrad Wyss (Stgw 90)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss filter wheel (Stgw 90)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roue à filtres Wyss (Fass 90)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruota filtri Wyss (Fass 90)"
+          }
+        }
+      }
+    },
+    "Filterräder Grünig + Elmiger (Stgw 90)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger filter wheels (Stgw 90)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roues à filtres Grünig + Elmiger (Fass 90)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruote filtri Grünig + Elmiger (Fass 90)"
           }
         }
       }
@@ -11089,6 +11158,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Indietro"
+          }
+        }
+      }
+    },
+    "Zwei Räder im Diopter mit je sechs Farben.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two wheels in the diopter with six colours each."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux roues dans le dioptre, six couleurs chacune."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due ruote nella diottra con sei colori ciascuna."
           }
         }
       }

@@ -409,6 +409,10 @@ T = {
     "Ringgrösse": ("Ring size", "Taille de l'anneau", "Dimensione dell'anello"),
     "Einstellungen für Sportschützen": ("Sport shooter settings", "Réglages pour tireurs sportifs", "Impostazioni per tiratori sportivi"),
     "Zweibeinstütze": ("Bipod", "Bipied", "Bipiede"),
+    "Brillenfilter (AXIA)": ("Glasses filters (AXIA)", "Filtres de lunettes (AXIA)", "Filtri per occhiali (AXIA)"),
+    "Filterrad Wyss (Stgw 90)": ("Wyss filter wheel (Stgw 90)", "Roue à filtres Wyss (Fass 90)", "Ruota filtri Wyss (Fass 90)"),
+    "Filterräder Grünig + Elmiger (Stgw 90)": ("Grünig + Elmiger filter wheels (Stgw 90)", "Roues à filtres Grünig + Elmiger (Fass 90)", "Ruote filtri Grünig + Elmiger (Fass 90)"),
+    "Zwei Räder im Diopter mit je sechs Farben.": ("Two wheels in the diopter with six colours each.", "Deux roues dans le dioptre, six couleurs chacune.", "Due ruote nella diottra con sei colori ciascuna."),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
     "An der Schiessbrille oder im Diopter, auch Korrekturgläser": (
         "On the shooting glasses or in the diopter, also correction lenses",

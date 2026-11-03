@@ -169,14 +169,40 @@ enum FilterColor {
         .init(name: "ACE", rgb: 0xC98AF0),
     ]
 
+    /// Wyss 6-Farbfilter for the Stgw 90: one wheel in the diopter (colours as the shop lists them).
+    static let wyss: [Filter] = [
+        .init(name: "Wyss hellgrau", rgb: 0xB4B4B4),
+        .init(name: "Wyss dunkelgrau", rgb: 0x5C5C5C),
+        .init(name: "Wyss gelb", rgb: 0xF2D200),
+        .init(name: "Wyss orange", rgb: 0xF08C1E),
+        .init(name: "Wyss grün", rgb: 0x4CA64C),
+        .init(name: "Wyss blau", rgb: 0x3C6EC8),
+    ]
+
+    /// Grünig + Elmiger filter cassette for the Stgw 90: two wheels with six colours each, wheel 1 first.
+    static let gruenigElmiger: [Filter] = [
+        .init(name: "G+E hellblau", rgb: 0x9CC4F0),
+        .init(name: "G+E dunkelblau", rgb: 0x1F3C8C),
+        .init(name: "G+E hellgrau", rgb: 0xC0C0C0),
+        .init(name: "G+E dunkelgrau", rgb: 0x505050),
+        .init(name: "G+E hellgelb", rgb: 0xFAF08C),
+        .init(name: "G+E hellorange", rgb: 0xF8B868),
+        .init(name: "G+E hellgrün", rgb: 0xA8DC90),
+        .init(name: "G+E dunkelgrün", rgb: 0x2E6E3A),
+        .init(name: "G+E rosa", rgb: 0xF4A6C0),
+        .init(name: "G+E dunkelgelb", rgb: 0xE0B000),
+        .init(name: "G+E dunkelorange", rgb: 0xE06A10),
+        .init(name: "G+E rot", rgb: 0xC8202A),
+    ]
+
     /// Dioptre-changing lenses (+0.25 / -0.25), usually stacked with a colour filter.
     static let dioptre: [Filter] = [
         .init(name: "+0.25", rgb: 0xEEF1F3, polarised: false, dioptre: 0.25),
         .init(name: "-0.25", rgb: 0xE6E9EC, polarised: false, dioptre: -0.25),
     ]
 
-    /// Every built-in filter: colour filters, then the dioptre lenses.
-    static var builtIn: [Filter] { filters + dioptre }
+    /// Every built-in filter: glasses filters, the diopter filter wheels, then the dioptre lenses.
+    static var builtIn: [Filter] { filters + wyss + gruenigElmiger + dioptre }
 
     static var all: [String] { builtIn.map(\.name) }
 
