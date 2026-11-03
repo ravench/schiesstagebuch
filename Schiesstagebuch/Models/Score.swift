@@ -14,6 +14,9 @@ struct Score {
     /// Whether "96/100" means 96 of 100. The old app used "/" between the results of several
     /// Stiche ("130 / 131"), so imported results never take their maximum from it.
     var maxFromSlash = true
+    /// Whether "93 %" is read as a percentage. Off for old-app imports: their free-text "93%" may
+    /// mean something else (e.g. a hit rate), so they only get a percentage once a maximum is entered.
+    var percentFromResult = true
 
     /// Individual shots grouped into Passen, one Passe per line: "10 9 10 8,5" (spaces or semicolons
     /// between shots, comma or point for decimals). Empty lines are skipped.
@@ -23,7 +26,7 @@ struct Score {
     /// A result written as a percentage ("87,5 %", "92%"), as programs scored in percent of the
     /// maximum report it (e.g. an IPSC match percentage). Stored as a fraction: 0.875.
     var resultPercent: Double? {
-        guard result.contains("%"), let first = Score.numbers(in: result).first else { return nil }
+        guard percentFromResult, result.contains("%"), let first = Score.numbers(in: result).first else { return nil }
         return first / 100
     }
 
@@ -102,7 +105,8 @@ struct Score {
 extension Entry {
     var score: Score {
         Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount,
-              scoredShotsKnown: !isLegacyImport || sighterCount != nil, maxFromSlash: !isLegacyImport)
+              scoredShotsKnown: !isLegacyImport || sighterCount != nil, maxFromSlash: !isLegacyImport,
+              percentFromResult: !isLegacyImport)
     }
 
     /// Imported from the old app, which only knew a shot total and a free-text result. Such entries

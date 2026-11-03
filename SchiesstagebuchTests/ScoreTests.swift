@@ -22,6 +22,13 @@ final class ScoreTests: XCTestCase {
         XCTAssertNil(s.meanPerShot, "no per-shot average from a percentage")
     }
 
+    func testPercentResultIgnoredWhenSwitchedOff() {
+        var s = score("93%")
+        s.percentFromResult = false
+        XCTAssertNil(s.percentage, "old-app imports need a maximum first")
+        XCTAssertEqual(s.points, 93)
+    }
+
     func testPercentResultWinsOverEnteredMaximum() {
         XCTAssertEqual(score("80 %", max: 200).percentage!, 0.8, accuracy: 1e-9)
     }
