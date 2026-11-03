@@ -9,6 +9,12 @@ T = {
     "%@ erfassen": ("Log %@", "Enregistrer : %@", "Registra: %@"),
     "%@ fällig: %@": ("%1$@ due: %2$@", "%1$@ à faire : %2$@", "%1$@ da fare: %2$@"),
     "%@ hinzufügen": ("Add %@", "Ajouter : %@", "Aggiungi: %@"),
+    "Nach Standort gewählt · %@": ("Picked by location · %@", "Choisi selon la position · %@", "Scelto in base alla posizione · %@"),
+    "Schiessanlage nach Standort wählen": ("Pick range by location", "Choisir le stand selon la position", "Scegliere il poligono in base alla posizione"),
+    "Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.": (
+        "New entries for today pick the range you are at and list nearby ranges first. Your location is only read for this and is never stored or sent.",
+        "Les nouvelles entrées du jour choisissent le stand où tu te trouves et listent d'abord les stands proches. La position n'est lue que pour cela, sans être enregistrée ni envoyée.",
+        "Le nuove voci di oggi scelgono il poligono in cui ti trovi ed elencano prima quelli vicini. La posizione viene letta solo a questo scopo e non viene né salvata né inviata."),
     "%lld Einträge": ("%lld entries", "%lld entrées", "%lld voci"),
     "%lld Einträge importieren": ("Import %lld entries", "Importer %lld entrées", "Importa %lld voci"),
     "%lld Einträge importiert": ("%lld entries imported", "%lld entrées importées", "%lld voci importate"),

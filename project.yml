@@ -50,6 +50,7 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Fotos von Scheiben und Resultaten zu einem Eintrag hinzufügen."
         INFOPLIST_KEY_NSCameraUsageDescription: "Standblätter direkt fotografieren und zum Eintrag speichern."
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Wählt beim neuen Eintrag die Schiessanlage, bei der du gerade bist. Der Standort wird nicht gespeichert."
   SchiesstagebuchTests:
     type: bundle.unit-test
     platform: iOS

@@ -7,7 +7,7 @@ replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French a
 
 - **Tagebuch**: entries grouped by month with date, range, event, weapon, calibre,
   ammo, shot count, result, notes and up to 4 photos. Search across all fields,
-  filter by weapon, range and year. New entries start from the last range, weapon and ammo.
+  filter by weapon, range and year. New entries start from the last weapon and ammo; the range is picked by your position or left empty.
 - **Stammdaten** (Einstellungen): weapons, calibres, ammunition, shooting ranges.
   Anything can be archived instead of deleted, so history and statistics stay intact.
 - **Kaliber**: pre-filled with common calibres (rimfire, handgun, rifle incl. GP 90 / GP 11,
