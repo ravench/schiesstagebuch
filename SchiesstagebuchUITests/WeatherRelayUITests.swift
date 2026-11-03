@@ -31,6 +31,10 @@ final class WeatherRelayUITests: XCTestCase {
         addRelay.tap()
 
         XCTAssertTrue(app.navigationBars["Ablösung"].waitForExistence(timeout: 5), "The Ablösung editor did not open")
+        // Before the fix the editor opened and closed again at once (or the app crashed).
+        sleep(2)
+        XCTAssertEqual(app.state, .runningForeground, "The app crashed")
+        XCTAssertTrue(app.navigationBars["Ablösung"].exists, "The Ablösung editor closed by itself")
         app.navigationBars["Ablösung"].buttons["Sichern"].tap()
 
         XCTAssertEqual(app.state, .runningForeground)
@@ -41,6 +45,8 @@ final class WeatherRelayUITests: XCTestCase {
         XCTAssertTrue(scroll(to: addRelay))
         addRelay.tap()
         XCTAssertTrue(app.navigationBars["Ablösung"].waitForExistence(timeout: 5), "The second Ablösung editor did not open")
+        sleep(2)
+        XCTAssertTrue(app.navigationBars["Ablösung"].exists, "The second Ablösung editor closed by itself")
         app.navigationBars["Ablösung"].buttons["Sichern"].tap()
         XCTAssertEqual(app.state, .runningForeground)
     }

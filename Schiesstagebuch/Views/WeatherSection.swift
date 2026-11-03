@@ -46,15 +46,17 @@ struct WeatherSection: View {
                 } label: {
                     Label("Ablösung hinzufügen", systemImage: "plus")
                 }
+                // On this one row: a modifier on the whole Section goes to every row of it, so each
+                // Ablösung (and the new one appearing with it) would present the same sheet at once.
+                .sheet(item: $editingRelay) { relay in
+                    RelayEditorView(relay: relay, day: day, range: range) { saved in
+                        if let i = weather?.relays.firstIndex(where: { $0.id == saved.id }) { weather?.relays[i] = saved }
+                    }
+                }
             } header: {
                 Text("Ablösungen / Serien")
             } footer: {
                 Text("Optional: Wetter pro Ablösung oder Serie, mit Uhrzeit, um Wechsel festzuhalten.")
-            }
-            .sheet(item: $editingRelay) { relay in
-                RelayEditorView(relay: relay, day: day, range: range) { saved in
-                    if let i = weather?.relays.firstIndex(where: { $0.id == saved.id }) { weather?.relays[i] = saved }
-                }
             }
         }
     }
