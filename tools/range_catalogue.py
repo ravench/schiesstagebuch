@@ -22,6 +22,7 @@ import csv
 import json
 import math
 import os
+import re
 import sqlite3
 import struct
 import sys
@@ -360,8 +361,8 @@ def read_tlm_places(conn, tables):
     for value, objektart, blob in conn.execute(sql):
         geometry = parse_gpkg_geometry(blob)
         position = representative_point(geometry) if geometry else None
-        # Districts ("Ortsteil") are too fine-grained for a place name.
-        if position and "teil" not in str(objektart or "").lower():
+        # Only villages and towns ("Ort"); districts and quarters make poor place names.
+        if position and str(objektart or "Ort") == "Ort":
             places.append({"pos": position, "tags": {"name": str(value)}})
     return places
 
@@ -494,6 +495,7 @@ def lanes_from_pairing(houses, targets, used_targets=()):
         lane = make_lane(firing, mid, altitude, "pairing", [house["id"], target["id"]],
                          [target.get("name", ""), house.get("name", "")])
         lane["house"] = house["id"]
+        lane["house_name"] = house.get("name", "")
         lanes.append(lane)
     return lanes
 
@@ -526,6 +528,49 @@ def build_lanes(houses, targets, trajectories):
 # ---------------------------------------------------------------------------
 # Ranges: lanes whose firing points are close together
 
+SAME_NAME_METRES = 500.0  # buildings with the same swisstopo name this close are one range
+
+
+def name_distances(name):
+    """Distances listed at the end of a swisstopo range name: "Thun Guntelsey 300/50/25m" -> [300, 50, 25]."""
+    match = re.search(r"(\d+(?:\s*/\s*\d+)*)\s*m\s*$", name or "")
+    if not match:
+        return []
+    return sorted({int(d) for d in re.split(r"\s*/\s*", match.group(1))}, reverse=True)
+
+
+def house_only_ranges(houses, lanes):
+    """Named shooting houses without a target row in front: indoor ranges and missing rows.
+
+    Houses with the same name close together are one range; it has no direction.
+    """
+    paired = {lane.get("house") for lane in lanes}
+    paired_names = [(lane.get("house_name"), lane["firing"]) for lane in lanes if lane.get("house_name")]
+    ranges = []
+    for house in houses:
+        name = house.get("name", "")
+        if house["id"] in paired or not name:
+            continue
+        center = centroid(house["ring"])
+        if any(n == name and dist2(p, center) <= SAME_NAME_METRES for n, p in paired_names):
+            continue  # another building of a range that is already there
+        existing = next((r for r in ranges if r["tlm_name"] == name
+                         and dist2(r["firing"], center) <= SAME_NAME_METRES), None)
+        if existing:
+            continue
+        ranges.append({
+            "id": "tlm:" + house["id"],
+            "firing": center,
+            "target": center,
+            "bearing": None,
+            "altitude": mean_z(house["ring"]),
+            "distances": name_distances(name),
+            "lanes": [],
+            "tlm_name": name,
+        })
+    return ranges
+
+
 def group_lanes(lanes):
     parent = list(range(len(lanes)))
 
@@ -538,7 +583,11 @@ def group_lanes(lanes):
     for i in range(len(lanes)):
         for j in range(i + 1, len(lanes)):
             same_house = lanes[i].get("house") and lanes[i].get("house") == lanes[j].get("house")
-            if same_house or dist2(lanes[i]["firing"], lanes[j]["firing"]) <= RANGE_CLUSTER_METRES:
+            near = dist2(lanes[i]["firing"], lanes[j]["firing"])
+            # swisstopo gives every building of one range the same name, e.g. "Thun Guntelsey 300/50/25m".
+            same_name = (lanes[i].get("house_name") and lanes[i].get("house_name") == lanes[j].get("house_name")
+                         and near <= SAME_NAME_METRES)
+            if same_house or same_name or near <= RANGE_CLUSTER_METRES:
                 parent[root(i)] = root(j)
     groups = {}
     for i, lane in enumerate(lanes):
@@ -550,15 +599,20 @@ def group_lanes(lanes):
         primary = max(members, key=lambda lane: (lane["distance"] == 300, lane["measured"]))
         distances = sorted({lane["distance"] or round(lane["measured"] / 5) * 5 for lane in members},
                            reverse=True)
+        house_names = [lane["house_name"] for lane in members if lane.get("house_name")]
+        tlm_name = (max(set(house_names), key=lambda n: (house_names.count(n), n)) if house_names
+                    else next((n for lane in sorted(members, key=lambda lane: -lane["measured"])
+                               for n in lane["names"]), ""))
+        named_distances = name_distances(tlm_name)
         ranges.append({
             "firing": primary["firing"],
             "target": primary["target"],
             "bearing": primary["bearing"],
             "altitude": primary["altitude"],
-            "distances": distances,
+            # The name lists the official distances ("300/50/25m"); measured ones are the fallback.
+            "distances": named_distances or distances,
             "lanes": members,
-            "tlm_name": next((n for lane in sorted(members, key=lambda lane: -lane["measured"])
-                              for n in lane["names"]), ""),
+            "tlm_name": tlm_name,
             "id": "tlm:" + sorted(i for lane in members for i in lane["ids"])[0],
         })
     return ranges
@@ -587,6 +641,19 @@ def parse_overpass(data):
                 continue
             shooting.append(item)
     return shooting, places
+
+
+def place_from_name(name, position, places, radius=15000.0):
+    """The town a swisstopo range name starts with ("Thun Guntelsey 300/50/25m" -> "Thun")."""
+    lowered = (name or "").lower()
+    best = ""
+    for place in places:
+        town = place["tags"]["name"]
+        if len(town) > len(best) and lowered.startswith(town.lower()) \
+                and (len(lowered) == len(town) or not lowered[len(town)].isalnum()) \
+                and dist2(place["pos"], position) <= radius:
+            best = town
+    return best
 
 
 def nearest_place(position, places):
@@ -620,7 +687,9 @@ def match_osm(ranges, shooting, places, tlm_places=()):
         best = max(named, key=lambda c: (osm_score(c[0]), -c[1]))[0] if named else None
         tags = best["tags"] if best else {}
 
-        rng["place"], rng["place_source"] = nearest_place(rng["firing"], tlm_places), "swisstopo"
+        rng["place"] = (place_from_name(rng.get("tlm_name"), rng["firing"], tlm_places)
+                        or nearest_place(rng["firing"], tlm_places))
+        rng["place_source"] = "swisstopo"
         if not rng["place"]:
             rng["place"] = tags.get("addr:city") or nearest_place(rng["firing"], places)
             rng["place_source"] = "osm" if rng["place"] else ""
@@ -698,11 +767,15 @@ def range_record(rng):
 
 
 def build(tlm_path, overpass_path, out_dir, release=""):
+    """overpass_path "-" builds from swisstopo alone."""
     houses, targets, trajectories, tlm_places = read_tlm(tlm_path)
     lanes = build_lanes(houses, targets, trajectories)
     ranges = group_lanes(lanes)
-    with open(overpass_path, encoding="utf-8") as f:
-        shooting, places = parse_overpass(json.load(f))
+    ranges += house_only_ranges(houses, lanes)
+    shooting, places = [], []
+    if overpass_path != "-":
+        with open(overpass_path, encoding="utf-8") as f:
+            shooting, places = parse_overpass(json.load(f))
     leftovers = match_osm(ranges, shooting, places, tlm_places)
     ranges += osm_only_ranges(leftovers, places, tlm_places)
     ranges.sort(key=lambda r: (r["place"].lower(), r["name"].lower(), r["id"]))
@@ -713,7 +786,8 @@ def build(tlm_path, overpass_path, out_dir, release=""):
         "version": 1,
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "swissTLM3D": release,
-        "attribution": ATTRIBUTION,
+        # Without OSM data the file is swisstopo's alone and the ODbL does not apply.
+        "attribution": ATTRIBUTION if shooting else {"swisstopo": ATTRIBUTION["swisstopo"]},
         "ranges": records,
     }
     with open(os.path.join(out_dir, "ranges.json"), "w", encoding="utf-8") as f:
@@ -737,6 +811,8 @@ def build(tlm_path, overpass_path, out_dir, release=""):
         "  place from swisstopo": sum(r.get("place_source") == "swisstopo" for r in ranges),
         "  place from OSM": sum(r.get("place_source") == "osm" for r in ranges),
         "  website from OSM": sum(r["id"].startswith("tlm:") and bool(r["website"]) for r in ranges),
+        "  without direction (no target row found)": sum(r["id"].startswith("tlm:") and r["bearing"] is None
+                                                          for r in ranges),
         "ranges from OSM only": sum(r["id"].startswith("osm:") for r in ranges),
         "  of which indoor": sum(r["id"].startswith("osm:") and r.get("indoor", False) for r in ranges),
     }
