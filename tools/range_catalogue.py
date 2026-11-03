@@ -1,20 +1,20 @@
-"""Build the shooting range catalogue from swisstopo swissTLM3D and OpenStreetMap.
+"""Build the shooting range catalogue from swisstopo swissTLM3D and a hand-made indoor list.
 
 swissTLM3D maps outdoor ranges as a shooting house (building footprint with the use
 "Schiessstand") and one target row per distance (TLM_SPORTBAUTE_LIN "Scheibenstand").
 Where swisstopo also has a shooting trajectory line, that line gives the firing point
 and the target end directly. Otherwise each target row is paired with the shooting
-house in front of it. Names and places come from swisstopo first; OpenStreetMap only
-fills gaps (names, websites) and adds ranges swisstopo doesn't map (indoor, 10 m).
+house in front of it. Names ("Thun Guntelsey 300/50/25m") and places come from swisstopo.
+Indoor ranges, which swisstopo doesn't map, come from data/indoor-ranges.json, a list
+kept by hand in this repository.
 
     python3 tools/range_catalogue.py latest-gpkg stac-items.json   # prints "<release> <url>"
-    python3 tools/range_catalogue.py overpass-query > query.overpassql
     python3 tools/range_catalogue.py inspect swisstlm3d.gpkg
-    python3 tools/range_catalogue.py build swisstlm3d.gpkg overpass.json out/
+    python3 tools/range_catalogue.py build swisstlm3d.gpkg data/indoor-ranges.json out/
 
 The build writes out/ranges.json (for the app) and out/ranges.csv (for checking against
-other lists). Licences: swissTLM3D © swisstopo; OpenStreetMap data © OpenStreetMap
-contributors, ODbL 1.0, so the generated files are ODbL too.
+other lists). Licence: swissTLM3D © swisstopo (open data, attribution required). The
+indoor list uses no OpenStreetMap data, so no ODbL applies.
 
 Only the standard library is used, so the unit tests run anywhere.
 """
@@ -28,23 +28,7 @@ import struct
 import sys
 from datetime import datetime, timezone
 
-# Overpass query for the OpenStreetMap part. Paintball is not a shooting range in our sense.
-OVERPASS_QUERY = """[out:json][timeout:300];
-area["ISO3166-1"="CH"][admin_level=2]->.ch;
-(
-  nwr["sport"~"shooting"](area.ch);
-  nwr["leisure"="shooting_ground"](area.ch);
-);
-out center tags;
-node["place"~"^(city|town|village)$"](area.ch);
-out tags;
-"""
-
-ATTRIBUTION = {
-    "swisstopo": "swissTLM3D © swisstopo",
-    "osm": "© OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
-    "licence": "ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/)",
-}
+ATTRIBUTION = {"swisstopo": "swissTLM3D © swisstopo"}
 
 NOMINAL_DISTANCES = (10, 25, 50, 100, 300)
 SNAP_TOLERANCE = 0.12          # measured distance within 12 % of a nominal one snaps to it
@@ -52,9 +36,8 @@ MAX_RANGE_DISTANCE = 1100.0    # metres; longer house-to-target pairs are not ra
 MIN_RANGE_DISTANCE = 5.0
 ALIGNMENT_DEGREES = 25.0       # house must sit within this angle of the target row's normal
 RANGE_CLUSTER_METRES = 150.0   # firing points closer than this belong to one range
-OSM_MATCH_METRES = 200.0       # OSM object within this distance of the line of fire
 PLACE_MATCH_METRES = 10000.0
-OSM_ONLY_MERGE_METRES = 300.0  # OSM-only objects with the same name this close are one range
+SWISS_BOUNDS = (45.8, 47.9, 5.9, 10.6)  # lat min/max, lon min/max
 
 
 # ---------------------------------------------------------------------------
@@ -346,7 +329,7 @@ def representative_point(geometry):
 
 
 def read_tlm_places(conn, tables):
-    """Settlement names (swissTLM3D TLM_SIEDLUNGSNAME), shaped like OSM place items."""
+    """Settlement names (swissTLM3D TLM_SIEDLUNGSNAME) as {"pos", "tags": {"name"}} items."""
     table = find_table(tables, "siedlungsname")
     if not table:
         return []
@@ -619,29 +602,7 @@ def group_lanes(lanes):
 
 
 # ---------------------------------------------------------------------------
-# OpenStreetMap
-
-def parse_overpass(data):
-    """Shooting objects and place nodes from Overpass JSON, positions in LV95."""
-    shooting, places = [], []
-    for element in data.get("elements", []):
-        tags = element.get("tags", {})
-        if "lat" in element:
-            lat, lon = element["lat"], element["lon"]
-        elif "center" in element:
-            lat, lon = element["center"]["lat"], element["center"]["lon"]
-        else:
-            continue
-        position = wgs84_to_lv95(lat, lon)
-        item = {"osm": f"{element['type']}/{element['id']}", "pos": position, "tags": tags}
-        if tags.get("place") in ("city", "town", "village") and "name" in tags:
-            places.append(item)
-        elif "shooting" in tags.get("sport", "") or tags.get("leisure") == "shooting_ground":
-            if tags.get("shooting") == "paintball":
-                continue
-            shooting.append(item)
-    return shooting, places
-
+# Names, places and the indoor list
 
 def place_from_name(name, position, places, radius=15000.0):
     """The town a swisstopo range name starts with ("Thun Guntelsey 300/50/25m" -> "Thun")."""
@@ -663,73 +624,43 @@ def nearest_place(position, places):
     return ""
 
 
-def osm_score(item):
-    """Prefer named, linked objects that describe the whole site over single lanes."""
-    tags = item["tags"]
-    return (("name" in tags) * 4 + ("website" in tags or "contact:website" in tags) * 2
-            + (tags.get("leisure") in ("sports_centre", "shooting_ground")))
-
-
-def match_osm(ranges, shooting, places, tlm_places=()):
-    """Give each range a name, place and website; return OSM objects no range claimed.
-
-    swisstopo comes first: its range name and its settlement names win, OSM only fills gaps.
-    """
-    claimed = set()
+def name_ranges(ranges, places):
+    """Give each swisstopo range its name and place; both come from swisstopo."""
     for rng in ranges:
-        candidates = []
-        for item in shooting:
-            d = point_segment_distance(item["pos"], rng["firing"], rng["target"])
-            if d <= OSM_MATCH_METRES:
-                candidates.append((item, d))
-                claimed.add(item["osm"])
-        named = [(item, d) for item, d in candidates if "name" in item["tags"]]
-        best = max(named, key=lambda c: (osm_score(c[0]), -c[1]))[0] if named else None
-        tags = best["tags"] if best else {}
-
-        rng["place"] = (place_from_name(rng.get("tlm_name"), rng["firing"], tlm_places)
-                        or nearest_place(rng["firing"], tlm_places))
-        rng["place_source"] = "swisstopo"
-        if not rng["place"]:
-            rng["place"] = tags.get("addr:city") or nearest_place(rng["firing"], places)
-            rng["place_source"] = "osm" if rng["place"] else ""
-
-        if rng.get("tlm_name"):
-            rng["name"], rng["name_source"] = rng["tlm_name"], "swisstopo"
-        elif best:
-            rng["name"], rng["name_source"] = tags["name"], "osm"
-        else:
-            rng["name"] = f"Schiessanlage {rng['place']}".strip()
-            rng["name_source"] = "generated"
-        rng["osm"] = best["osm"] if best else ""
-        rng["website"] = tags.get("website") or tags.get("contact:website") or ""
-    return [item for item in shooting if item["osm"] not in claimed]
+        rng["place"] = (place_from_name(rng.get("tlm_name"), rng["firing"], places)
+                        or nearest_place(rng["firing"], places))
+        rng["name"] = rng.get("tlm_name") or f"Schiessanlage {rng['place']}".strip()
+        rng["name_source"] = "swisstopo" if rng.get("tlm_name") else "generated"
 
 
-def osm_only_ranges(items, places, tlm_places=()):
-    """Named OSM ranges without swisstopo geometry (indoor ranges, 10 m, missing target rows)."""
-    ranges = []
-    for item in sorted(items, key=lambda i: (-osm_score(i), i["osm"])):
-        tags = item["tags"]
-        if "name" not in tags:
-            continue
-        if any(r["name"] == tags["name"] and dist2(r["firing"], item["pos"]) <= OSM_ONLY_MERGE_METRES
-               for r in ranges):
-            continue
+def manual_ranges(data):
+    """Ranges from the hand-made list (data/indoor-ranges.json); checks every entry."""
+    ranges, seen = [], set()
+    for item in data.get("ranges", []):
+        ident, name = item.get("id", ""), (item.get("name") or "").strip()
+        if not ident.startswith("manual:") or ident in seen:
+            raise ValueError(f"bad or duplicate id: {ident!r}")
+        lat, lon = item.get("lat"), item.get("lon")
+        if not name or not item.get("place") or not isinstance(lat, (int, float)) \
+                or not isinstance(lon, (int, float)):
+            raise ValueError(f"{ident}: name, place, lat and lon are required")
+        if not (SWISS_BOUNDS[0] <= lat <= SWISS_BOUNDS[1] and SWISS_BOUNDS[2] <= lon <= SWISS_BOUNDS[3]):
+            raise ValueError(f"{ident}: position outside Switzerland")
+        distances = item.get("distances", [])
+        if any(not isinstance(d, int) or d <= 0 for d in distances):
+            raise ValueError(f"{ident}: distances must be positive whole metres")
+        seen.add(ident)
         ranges.append({
-            "id": "osm:" + item["osm"],
-            "name": tags["name"],
-            "place": (nearest_place(item["pos"], tlm_places) or tags.get("addr:city")
-                      or nearest_place(item["pos"], places)),
-            "name_source": "osm",
-            "indoor": tags.get("shooting") == "indoor_range" or tags.get("indoor") == "yes"
-            or "building" in tags,
-            "firing": item["pos"],
+            "id": ident,
+            "name": name,
+            "place": item["place"],
+            "name_source": "manual",
+            "indoor": item.get("indoor", True),
+            "firing": wgs84_to_lv95(lat, lon),
             "bearing": None,
             "altitude": None,
-            "distances": [],
-            "osm": item["osm"],
-            "website": tags.get("website") or tags.get("contact:website") or "",
+            "distances": sorted(distances, reverse=True),
+            "website": item.get("website", ""),
             "lanes": [],
         })
     return ranges
@@ -754,8 +685,8 @@ def range_record(rng):
         record["altitude"] = round(rng["altitude"])
     if rng.get("website"):
         record["website"] = rng["website"]
-    if rng.get("osm"):
-        record["osm"] = rng["osm"]
+    if rng.get("indoor"):
+        record["indoor"] = True
     if rng["lanes"]:
         record["lanes"] = [{
             "distance": lane["distance"],
@@ -766,18 +697,16 @@ def range_record(rng):
     return record
 
 
-def build(tlm_path, overpass_path, out_dir, release=""):
-    """overpass_path "-" builds from swisstopo alone."""
+def build(tlm_path, manual_path, out_dir, release=""):
+    """manual_path "-" builds from swisstopo alone."""
     houses, targets, trajectories, tlm_places = read_tlm(tlm_path)
     lanes = build_lanes(houses, targets, trajectories)
     ranges = group_lanes(lanes)
     ranges += house_only_ranges(houses, lanes)
-    shooting, places = [], []
-    if overpass_path != "-":
-        with open(overpass_path, encoding="utf-8") as f:
-            shooting, places = parse_overpass(json.load(f))
-    leftovers = match_osm(ranges, shooting, places, tlm_places)
-    ranges += osm_only_ranges(leftovers, places, tlm_places)
+    name_ranges(ranges, tlm_places)
+    if manual_path != "-":
+        with open(manual_path, encoding="utf-8") as f:
+            ranges += manual_ranges(json.load(f))
     ranges.sort(key=lambda r: (r["place"].lower(), r["name"].lower(), r["id"]))
     records = [range_record(r) for r in ranges]
 
@@ -786,8 +715,7 @@ def build(tlm_path, overpass_path, out_dir, release=""):
         "version": 1,
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "swissTLM3D": release,
-        # Without OSM data the file is swisstopo's alone and the ODbL does not apply.
-        "attribution": ATTRIBUTION if shooting else {"swisstopo": ATTRIBUTION["swisstopo"]},
+        "attribution": ATTRIBUTION,
         "ranges": records,
     }
     with open(os.path.join(out_dir, "ranges.json"), "w", encoding="utf-8") as f:
@@ -805,16 +733,11 @@ def build(tlm_path, overpass_path, out_dir, release=""):
         "swisstopo place names": len(tlm_places),
         "ranges from swisstopo": sum(r["id"].startswith("tlm:") for r in ranges),
         "  name from swisstopo": sum(r.get("name_source") == "swisstopo" for r in ranges),
-        "  name from OSM (no swisstopo name)": sum(r["id"].startswith("tlm:") and r.get("name_source") == "osm"
-                                                   for r in ranges),
         "  name generated (Schiessanlage <place>)": sum(r.get("name_source") == "generated" for r in ranges),
-        "  place from swisstopo": sum(r.get("place_source") == "swisstopo" for r in ranges),
-        "  place from OSM": sum(r.get("place_source") == "osm" for r in ranges),
-        "  website from OSM": sum(r["id"].startswith("tlm:") and bool(r["website"]) for r in ranges),
+        "  with place": sum(r["id"].startswith("tlm:") and bool(r["place"]) for r in ranges),
         "  without direction (no target row found)": sum(r["id"].startswith("tlm:") and r["bearing"] is None
                                                           for r in ranges),
-        "ranges from OSM only": sum(r["id"].startswith("osm:") for r in ranges),
-        "  of which indoor": sum(r["id"].startswith("osm:") and r.get("indoor", False) for r in ranges),
+        "indoor ranges from the hand-made list": sum(r["id"].startswith("manual:") for r in ranges),
     }
     for name in (300, 100, 50, 25, 10):
         stats[f"ranges with {name} m"] = sum(name in r["distances"] for r in ranges)
@@ -825,7 +748,7 @@ def write_csv(ranges, path):
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["id", "name", "place", "latitude", "longitude", "east_lv95", "north_lv95",
-                         "altitude", "shooting_bearing", "distances", "measured", "source", "osm"])
+                         "altitude", "shooting_bearing", "distances", "measured", "source", "website"])
         for rng in ranges:
             lat, lon = lv95_to_wgs84(*rng["firing"])
             writer.writerow([
@@ -835,8 +758,9 @@ def write_csv(ranges, path):
                 "" if rng["bearing"] is None else f"{rng['bearing']:.1f}",
                 " ".join(str(d) for d in rng["distances"]),
                 " ".join(f"{lane['measured']:.0f}" for lane in rng["lanes"]),
-                "+".join(sorted({lane["source"] for lane in rng["lanes"]})) or "osm",
-                rng["osm"],
+                "+".join(sorted({lane["source"] for lane in rng["lanes"]}))
+                or ("manual" if rng["id"].startswith("manual:") else "house"),
+                rng.get("website", ""),
             ])
 
 
@@ -868,9 +792,6 @@ def main(argv):
         with open(argv[1], encoding="utf-8") as f:
             release, url = latest_gpkg(json.load(f))
         print(f"{release} {url}")
-        return 0
-    if argv[:1] == ["overpass-query"]:
-        sys.stdout.write(OVERPASS_QUERY)
         return 0
     print(__doc__)
     return 2

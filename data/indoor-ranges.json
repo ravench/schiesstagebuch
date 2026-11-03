@@ -1,0 +1,216 @@
+{
+  "note": "Hand-curated indoor shooting ranges that swissTLM3D does not map. Candidates came from OpenStreetMap and public lists (gunworld.ch, zplac.com, Kantonspolizei Bern list of approved Schiesskeller); every entry was checked on the operator's website. Coordinates are the geocoded street address (geo.admin.ch SearchServer, © swisstopo), not OSM positions. Distances only where the operator states them.",
+  "ranges": [
+    {
+      "id": "manual:action-sport-matten",
+      "name": "Action-Sport Indoor Shooting Range",
+      "place": "Matten b. Interlaken",
+      "address": "Gsteigstrasse 12, 3800 Matten b. Interlaken",
+      "lat": 46.676239,
+      "lon": 7.865585,
+      "distances": [],
+      "website": "https://actionsport.ch/courses/indoor-shooting-range/"
+    },
+    {
+      "id": "manual:bruenig-indoor",
+      "name": "Brünig Indoor",
+      "place": "Lungern",
+      "address": "Walchistrasse 30, 6078 Lungern",
+      "lat": 46.777641,
+      "lon": 8.141741,
+      "distances": [],
+      "website": "https://www.bruenigindoor.ch/"
+    },
+    {
+      "id": "manual:ego-waffen-ruswil",
+      "name": "Ego Waffen Schiesskeller",
+      "place": "Ruswil",
+      "address": "Grindel 48, 6017 Ruswil",
+      "lat": 47.090286,
+      "lon": 8.104063,
+      "distances": [],
+      "website": "https://www.egowaffen.ch/"
+    },
+    {
+      "id": "manual:haktac-brittnau",
+      "name": "HAKTAC",
+      "place": "Brittnau",
+      "address": "Strählgasse 3, 4805 Brittnau",
+      "lat": 47.260021,
+      "lon": 7.947228,
+      "distances": [],
+      "website": "https://haktac.ch/"
+    },
+    {
+      "id": "manual:indoorshooting-wittenbach",
+      "name": "Indoor Shooting Wittenbach",
+      "place": "Wittenbach",
+      "address": "Industriestrasse 18, 9300 Wittenbach",
+      "lat": 47.462353,
+      "lon": 9.390451,
+      "distances": [],
+      "website": "https://www.indoorshooting-wittenbach.ch/"
+    },
+    {
+      "id": "manual:luzern-indoor",
+      "name": "Luzern Indoor",
+      "place": "Luzern",
+      "address": "Zihlmattweg 43, 6005 Luzern",
+      "lat": 47.031132,
+      "lon": 8.30618,
+      "distances": [],
+      "website": "https://luzernindoor.ch/"
+    },
+    {
+      "id": "manual:retos-schiesskeller",
+      "name": "Reto's Schiesskeller",
+      "place": "Weiningen TG",
+      "address": "Hauptstrasse 34b, 8532 Weiningen TG",
+      "lat": 47.589218,
+      "lon": 8.88718,
+      "distances": [],
+      "website": "https://www.retos-schiesskeller.ch/"
+    },
+    {
+      "id": "manual:swiss-shooting-range-schinznach",
+      "name": "Swiss Shooting Range Schinznach",
+      "place": "Schinznach Dorf",
+      "address": "Veltheimerstrasse 2, 5107 Schinznach Dorf",
+      "lat": 47.444244,
+      "lon": 8.146719,
+      "distances": [],
+      "website": "https://www.swiss-shooting-range.ch/"
+    },
+    {
+      "id": "manual:swiss-shooting-range-spreitenbach",
+      "name": "Swiss Shooting Range Spreitenbach",
+      "place": "Spreitenbach",
+      "address": "Härdlistrasse 15, 8957 Spreitenbach",
+      "lat": 47.431564,
+      "lon": 8.368537,
+      "distances": [
+        5,
+        10,
+        15,
+        20
+      ],
+      "website": "https://www.swiss-shooting-range.ch/standorte/spreitenbach/"
+    },
+    {
+      "id": "manual:toggenburg-indoor-shooting",
+      "name": "Toggenburg Indoor Shooting",
+      "place": "Wattwil",
+      "address": "Industriestrasse 4, 9630 Wattwil",
+      "lat": 47.294849,
+      "lon": 9.093221,
+      "distances": [
+        15
+      ],
+      "website": "https://www.toggenburg-indoorshooting.ch/"
+    },
+    {
+      "id": "manual:isa-schwanden",
+      "name": "Indoor-Schiessanlage Schwanden",
+      "place": "Schüpfen",
+      "address": "Schwanden 64, 3054 Schüpfen",
+      "lat": 47.039642,
+      "lon": 7.402231,
+      "distances": [
+        10,
+        15,
+        20,
+        25
+      ],
+      "website": "https://www.isa-sks.ch/"
+    },
+    {
+      "id": "manual:lakeside-shooting",
+      "name": "Lakeside Shooting",
+      "place": "Au ZH",
+      "address": "Alte Landstrasse 15, 8804 Au ZH",
+      "lat": 47.239803,
+      "lon": 8.657198,
+      "distances": [
+        17
+      ],
+      "website": "https://www.lakeside-shooting.ch/"
+    },
+    {
+      "id": "manual:tactic-hall",
+      "name": "Tactic'hall",
+      "place": "Evionnaz",
+      "address": "Route du Simplon 29, 1902 Evionnaz",
+      "lat": 46.167469,
+      "lon": 7.026098,
+      "distances": [
+        25
+      ],
+      "website": "https://tactic-hall.com/"
+    },
+    {
+      "id": "manual:shooting-inn",
+      "name": "Shooting-Inn",
+      "place": "Oberentfelden",
+      "address": "Köllikerstrasse 32, 5036 Oberentfelden",
+      "lat": 47.353333,
+      "lon": 8.042048,
+      "distances": [],
+      "website": "https://www.shooting-inn.ch/"
+    },
+    {
+      "id": "manual:tsb-birmensdorf",
+      "name": "TSB Birmensdorf",
+      "place": "Birmensdorf ZH",
+      "address": "Industriestrasse 8, 8903 Birmensdorf ZH",
+      "lat": 47.366379,
+      "lon": 8.428542,
+      "distances": [
+        10,
+        15,
+        20,
+        25
+      ],
+      "website": "https://www.tsbirmensdorf.ch/"
+    },
+    {
+      "id": "manual:elite-guard-huenenberg",
+      "name": "Elite-Guard Schiessanlage",
+      "place": "Hünenberg",
+      "address": "Bösch 104, 6331 Hünenberg",
+      "lat": 47.160915,
+      "lon": 8.433907,
+      "distances": [],
+      "website": "https://elite-guard.ch/"
+    },
+    {
+      "id": "manual:szo-weinfelden",
+      "name": "Schiesszentrum Ostschweiz",
+      "place": "Weinfelden",
+      "address": "Mühlfangstrasse 6, 8570 Weinfelden",
+      "lat": 47.561558,
+      "lon": 9.121721,
+      "distances": [],
+      "website": "https://szo.swiss/"
+    },
+    {
+      "id": "manual:bt-schiesskeller-thun",
+      "name": "B&T Schiesskeller",
+      "place": "Thun",
+      "address": "Zelglistrasse 10, 3608 Thun",
+      "lat": 46.744709,
+      "lon": 7.595525,
+      "distances": [],
+      "website": "https://bt-shop.ch/schiesskeller/"
+    },
+    {
+      "id": "manual:rene-hild-tactical",
+      "name": "Rene Hild Tactical Schiesskeller",
+      "place": "Thalheim an der Thur",
+      "address": "Dätwilerstrasse 12, 8478 Thalheim an der Thur",
+      "lat": 47.589684,
+      "lon": 8.733521,
+      "distances": [],
+      "website": "https://renehild-tactical.ch/schiesskeller/"
+    }
+  ]
+}
