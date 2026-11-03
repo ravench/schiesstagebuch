@@ -131,8 +131,15 @@ struct WeaponDetailView: View {
                 if !weapon.caliberSummary.isEmpty { LabeledContent("Kaliber", value: weapon.caliberSummary) }
                 if !weapon.serialNumber.isEmpty { LabeledContent("Hauptnummer", value: weapon.serialNumber) }
                 ForEach(weapon.extraSerials) { LabeledContent($0.label, value: $0.number) }
+                if let bought = weapon.purchaseDate {
+                    LabeledContent("Kaufdatum", value: bought.formatted(date: .long, time: .omitted))
+                }
+                if let sold = weapon.saleDate {
+                    LabeledContent("Verkaufsdatum", value: sold.formatted(date: .long, time: .omitted))
+                }
             }
-            BarrelSection(weapon: weapon) { barrelSheet = $0 }
+            // A single (e.g. fixed) barrel adds nothing to the firearm's own figures.
+            if weapon.hasSeveralBarrels { BarrelSection(weapon: weapon) { barrelSheet = $0 } }
             MaintenanceSection(weapon: weapon) { maintenanceSheet = $0 }
         } breakdowns: { entries in
             if weapon.hasSeveralBarrels {

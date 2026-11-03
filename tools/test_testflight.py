@@ -99,8 +99,8 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("conclusion == 'success'", self.workflow)
 
     def test_actions_run_on_node_24(self):
-        # GitHub retired Node 20 for actions; checkout v5 is the first major on Node 24.
-        node24 = {"actions/checkout": 5}
+        # GitHub retired Node 20 for actions; checkout v5 and upload-artifact v5 are the first majors on Node 24.
+        node24 = {"actions/checkout": 5, "actions/upload-artifact": 5}
         workflows = os.path.join(testflight.ROOT, ".github", "workflows")
         for name in sorted(os.listdir(workflows)):
             with open(os.path.join(workflows, name)) as f:

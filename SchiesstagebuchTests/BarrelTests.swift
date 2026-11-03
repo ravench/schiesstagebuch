@@ -348,7 +348,19 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(w.sortedBarrels.first(where: \.isDefault)?.caliberSummary, ".22 LR")
     }
 
+    func testCSVLeavesTheBarrelEmptyForASingleBarrel() throws {
+        barrel("Fest", nine)
+        shoot(nine, on: day(1), shots: 10)
+        try context.save()
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
+        let lines = csv.components(separatedBy: "\r\n")
+        let header = try XCTUnwrap(lines.first).components(separatedBy: ";")
+        let index = try XCTUnwrap(header.firstIndex(of: "Lauf".loc))
+        XCTAssertEqual(lines[1].components(separatedBy: ";")[index], "", "a fixed barrel is not worth a column value")
+    }
+
     func testCSVHasTheBarrelColumn() throws {
+        barrel("", nine)
         barrel("Umbausatz", rimfire)
         shoot(rimfire, on: day(1), shots: 10)
         try context.save()

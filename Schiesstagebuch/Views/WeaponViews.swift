@@ -224,6 +224,8 @@ struct WeaponEditorView: View {
     @State private var name = ""
     @State private var serialNumber = ""
     @State private var extraSerials: [PartSerial] = []
+    @State private var purchaseDate: Date?
+    @State private var saleDate: Date?
     @State private var category: WeaponCategory = .other
     /// Calibres and serial of the first barrel, for a new weapon.
     @State private var calibers: Set<Caliber> = []
@@ -269,6 +271,8 @@ struct WeaponEditorView: View {
                     .pickerStyle(.navigationLink)
                 }
 
+                ownershipSection
+
                 SerialNumbersSection(main: $serialNumber, extras: $extraSerials)
 
                 if let weapon {
@@ -303,7 +307,8 @@ struct WeaponEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Sichern", action: save).bold().disabled(!canSave)
+                    Button("Sichern", action: save).bold()
+                        .disabled(!canSave || !Weapon.ownershipDatesValid(purchase: purchaseDate, sale: saleDate))
                 }
             }
             .sheet(isPresented: $choosingCalibers) {
@@ -342,14 +347,34 @@ struct WeaponEditorView: View {
             }
             SerialField(title: "Nummer Lauf (optional)", text: $barrelSerial)
         } header: {
-            Text("Lauf")
+            Text("Kaliber")
         } footer: {
-            Text("Mindestens ein Kaliber. Weitere Läufe, z. B. Wechselläufe, fügst du nach dem Sichern hinzu.")
+            Text("Mindestens ein Kaliber. Wechselläufe fügst du nach dem Sichern hinzu.")
         }
     }
 
-    /// Barrels of an existing weapon; changes there are saved right away.
+    /// Barrels of an existing weapon; changes there are saved right away. With a single barrel
+    /// (e.g. a revolver) it reads as the weapon's calibres, and barrel details stay out of sight.
+    @ViewBuilder
     private func barrelsSection(_ weapon: Weapon) -> some View {
+        if !weapon.hasSeveralBarrels, let only = weapon.sortedBarrels.first {
+            Section {
+                Button { editingBarrel = only } label: {
+                    LabeledContent("Kaliber", value: only.caliberSummary.isEmpty ? "Wählen".loc : only.caliberSummary)
+                }
+                .foregroundStyle(.primary)
+                Button { addingBarrel = true } label: { Label("Lauf hinzufügen", systemImage: "plus") }
+            } header: {
+                Text("Kaliber")
+            } footer: {
+                Text("Weitere Läufe nur für Wechselläufe oder nach einem Laufwechsel. Dann zählt die App die Schüsse auch pro Lauf.")
+            }
+        } else {
+            severalBarrelsSection(weapon)
+        }
+    }
+
+    private func severalBarrelsSection(_ weapon: Weapon) -> some View {
         Section {
             ForEach(weapon.sortedBarrels) { b in
                 Button { editingBarrel = b } label: { BarrelRow(barrel: b) }
@@ -360,6 +385,22 @@ struct WeaponEditorView: View {
             Text("Läufe")
         } footer: {
             Text("Die Kaliber gehören zum Lauf. Beim Erfassen werden nur die Kaliber der montierten Läufe angeboten.")
+        }
+    }
+
+    private var ownershipSection: some View {
+        Section {
+            OptionalDateRow(title: "Kaufdatum", date: $purchaseDate,
+                            range: Date.distantPast...(saleDate ?? .distantFuture))
+            // Entering a sale date archives the weapon; the user can still switch archiving off.
+            OptionalDateRow(title: "Verkaufsdatum", date: Binding(get: { saleDate }, set: { new in
+                isArchived = Weapon.archivedAfterSaleChange(isArchived: isArchived, from: saleDate, to: new)
+                saleDate = new
+            }), range: (purchaseDate ?? .distantPast)...Date.distantFuture)
+        } header: {
+            Text("Kauf und Verkauf")
+        } footer: {
+            Text("Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.")
         }
     }
 
@@ -381,6 +422,8 @@ struct WeaponEditorView: View {
         name = weapon.name
         serialNumber = weapon.serialNumber
         extraSerials = weapon.extraSerials
+        purchaseDate = weapon.purchaseDate
+        saleDate = weapon.saleDate
         category = weapon.category
         isArchived = weapon.isArchived
         cleaningShots = weapon.cleaningIntervalShots; cleaningDays = weapon.cleaningIntervalDays
@@ -394,6 +437,8 @@ struct WeaponEditorView: View {
         target.name = name.trimmingCharacters(in: .whitespaces)
         target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
         target.extraSerials = PartSerial.cleaned(extraSerials) ?? target.extraSerials
+        target.purchaseDate = purchaseDate
+        target.saleDate = saleDate
         target.category = category
         target.isArchived = isArchived
         target.cleaningIntervalShots = cleaningShots; target.cleaningIntervalDays = cleaningDays
@@ -465,6 +510,31 @@ struct SerialField: View {
         TextField(title.loc, text: $text)
             .textInputAutocapitalization(.characters)
             .autocorrectionDisabled()
+    }
+}
+
+/// A date that can be switched off. Switching it on starts at today, kept inside `range`.
+struct OptionalDateRow: View {
+    let title: LocalizedStringKey
+    @Binding var date: Date?
+    let range: ClosedRange<Date>
+
+    var body: some View {
+        Toggle(title, isOn: Binding(
+            get: { date != nil },
+            set: { date = $0 ? OptionalDateRow.startDate(today: .now, in: range) : nil }
+        ))
+        if let value = date {
+            DatePicker(title, selection: Binding(get: { value }, set: { date = Calendar.current.startOfDay(for: $0) }),
+                       in: range, displayedComponents: .date)
+                .labelsHidden()
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+
+    /// Today's date at midnight, moved into `range` when today lies outside it.
+    static func startDate(today: Date, in range: ClosedRange<Date>, calendar: Calendar = .current) -> Date {
+        calendar.startOfDay(for: min(max(today, range.lowerBound), range.upperBound))
     }
 }
 

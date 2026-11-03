@@ -79,4 +79,20 @@ final class EntryModelTests: ModelTestCase {
         XCTAssertEqual(w.pickerSerial(show: true), "P-123456")
         XCTAssertNil(w.pickerSerial(show: false))
     }
+
+    func testScoredShotsCountEntriesWithoutSplitInFull() {
+        let split = addEntry(nil, on: day(1), shots: 25); split.sighterCount = 5
+        let total = addEntry(nil, on: day(2), shots: 40)
+        let entries = [split, total]
+        XCTAssertEqual(entries.sighterShots, 5)
+        XCTAssertEqual(entries.scoredShots, 60, "an entry with only a total counts all its shots")
+        XCTAssertEqual(entries.sighterShots + entries.scoredShots, entries.totalShots)
+    }
+
+    func testAveragesSkipResultsOverMaximum() {
+        let a = addEntry(nil, on: day(1), shots: 10); a.result = "90"; a.maxPoints = 100
+        let b = addEntry(nil, on: day(2), shots: 48); b.result = "90/75"
+        XCTAssertEqual([a, b].averagePercentage!, 0.9, accuracy: 1e-9)
+        XCTAssertEqual([a, b].averagePerShot!, 9, accuracy: 1e-9)
+    }
 }

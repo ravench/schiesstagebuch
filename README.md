@@ -7,7 +7,7 @@ replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French a
 
 - **Tagebuch**: entries grouped by month with date, range, event, weapon, calibre,
   ammo, shot count, result, notes and up to 4 photos. Search across all fields,
-  filter by weapon, range and year. New entries start from the last range, weapon and ammo.
+  filter by weapon, range and year. New entries start from the last weapon and ammo; the range is picked by your position or left empty.
 - **Stammdaten** (Einstellungen): weapons, calibres, ammunition, shooting ranges.
   Anything can be archived instead of deleted, so history and statistics stay intact.
 - **Kaliber**: pre-filled with common calibres (rimfire, handgun, rifle incl. GP 90 / GP 11,
@@ -82,6 +82,13 @@ Admin role (Users and Access, Integrations, Team Keys): `ASC_KEY_ID` (Key ID),
 `ASC_ISSUER_ID` (Issuer ID) and `ASC_KEY_P8` (the whole content of the downloaded
 `AuthKey_….p8`). Without them the workflow skips the upload. Forks don't get the secrets.
 
+## iPad screens
+
+The **iPad screens** workflow (Actions › iPad screens › Run workflow) starts the app on an iPad simulator
+with sample data (launch argument `-screenshotData`, kept in memory only) and screenshots every tab in
+portrait and landscape. Browse them on the `ipad-screens` branch (latest run only) or download the run's `ipad-screens` artifact. The UI test lives in
+`SchiesstagebuchUITests` and has its own scheme, `SchiesstagebuchScreens`, so the normal test run skips it.
+
 ## Code style
 
 CI runs [SwiftLint](https://github.com/realm/SwiftLint) 0.59.1 in strict mode, so any warning
@@ -113,6 +120,22 @@ python3 tools/localize.py   # fails if any UI string lacks a translation
 
 Write UI text in German. Literals in `Text`, `Button`, `Label` etc. are localized
 automatically; strings built at runtime go through `"…".loc` or `String(localized:)`.
+
+## Shooting range catalogue
+
+`tools/range_catalogue.py` builds a list of Swiss shooting ranges with position,
+altitude, distances (300/50/25/10 m) and shooting direction. Outdoor ranges come
+from swisstopo's swissTLM3D: each target row ("Scheibenstand") is paired with the
+shooting house in front of it, or taken from a shooting trajectory line where
+swisstopo has one. OpenStreetMap adds names, websites, the nearest place and indoor
+ranges. The "Range catalogue" workflow downloads both sources, builds
+`ranges.json` (for the app) and `ranges.csv` (with LV95 coordinates, for checking)
+and uploads them as a build artifact. Run it from the Actions tab.
+
+The generated data is not covered by the app licence: it is © swisstopo and
+© OpenStreetMap contributors, available under the
+[ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The app must show both
+credits wherever it uses the catalogue.
 
 ## License
 

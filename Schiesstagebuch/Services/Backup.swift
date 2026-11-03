@@ -56,6 +56,7 @@ enum Backup {
         var dayCounting: String?
         var serialNumber: String?
         var extraSerials: [PartSerial]?
+        var purchaseDate: Date?; var saleDate: Date?
     }
     struct BarrelDTO: Codable {
         var id: UUID; var weaponID: UUID?; var caliberIDs: [UUID]; var isDefault: Bool; var name: String; var serialNumber: String
@@ -80,7 +81,7 @@ enum Backup {
         var sighterCount: Int?
         var maxPoints: Double?
         var shotValuesText: String?
-        var filterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
+        var filterColor: String?; var secondFilterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
         var bipodLength: Double?
         var weather: WeatherRecord?
         var photos: [Data]
@@ -106,7 +107,8 @@ enum Backup {
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
                       dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber,
-                      extraSerials: $0.extraSerials)
+                      extraSerials: $0.extraSerials,
+                      purchaseDate: $0.purchaseDate, saleDate: $0.saleDate)
             },
             ammunition: try all(Ammunition.self, context).map {
                 .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived, createdAt: $0.createdAt)
@@ -122,7 +124,8 @@ enum Backup {
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, rangeID: $0.range?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, barrelID: $0.barrel?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
-                      filterColor: $0.filterColor, diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
+                      filterColor: $0.filterColor, secondFilterColor: $0.secondFilterColor,
+                      diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
                       weather: $0.weather,
                       photos: $0.sortedPhotos.compactMap(\.imageData),
                       importKey: $0.importKey, createdAt: $0.createdAt)
@@ -224,6 +227,7 @@ enum Backup {
             w.dayCountingRaw = d.dayCounting ?? ""
             w.serialNumber = d.serialNumber ?? ""
             w.extraSerials = d.extraSerials ?? []
+            w.purchaseDate = d.purchaseDate; w.saleDate = d.saleDate
             if let created = d.createdAt { w.createdAt = created }
             context.insert(w); weapons[d.id] = w
         }
@@ -280,7 +284,8 @@ enum Backup {
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
-            SightSettings(filter: d.filterColor ?? "", diopter: d.diopter, ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
+            SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "", diopter: d.diopter,
+                          ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
             e.weather = d.weather
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
@@ -315,7 +320,7 @@ enum Backup {
             cols.append(e.event)
             cols.append(e.weapon?.name ?? "")
             cols.append(e.caliber?.name ?? "")
-            cols.append(e.effectiveBarrel?.displayName ?? "")
+            cols.append(e.weapon?.hasSeveralBarrels == true ? e.effectiveBarrel?.displayName ?? "" : "")
             cols.append(e.ammunition?.name ?? "")
             cols.append(e.lot?.number ?? "")
             cols.append(String(e.shotCount))
@@ -325,7 +330,7 @@ enum Backup {
             cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
             cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
             cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
-            cols.append(e.filterColor)
+            cols.append(SightSettings(entry: e).filters.joined(separator: " + "))
             cols.append(e.diopter.map { SightSettings.format($0) } ?? "")
             cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")
             cols.append(e.irisSize.map { SightSettings.format($0) } ?? "")

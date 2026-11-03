@@ -140,6 +140,24 @@ enum LegacyImport {
         var weapons: [String]
         var ranges: [String]
         var photoCount: Int
+        /// Row key → suggested sighters, for rows whose total looks like a usual Stich plus sighters.
+        var sighterSuggestions: [String: Int] = [:]
+        /// Rows (by key) whose suggested sighters are split off on import. All on by default;
+        /// the preview has a switch per row.
+        var splitSighters: Set<String> = []
+    }
+
+    /// Usual shot counts of a Stich (a match is 60).
+    static let stichSizes = [10, 15, 16, 17, 18, 20, 30, 60]
+
+    /// Sighters hidden in an old-app total: the total minus the largest usual Stich size below it,
+    /// if that leaves 1–5 sighters (1–10 for a 60-shot match). Only for rows with a single numeric
+    /// result: training rows have none, and rows like "82 / 371 / 45" hold several Stiche.
+    static func suggestedSighters(for row: Row) -> Int? {
+        guard Score.numbers(in: row.result).count == 1, !stichSizes.contains(row.shots),
+              let size = stichSizes.last(where: { $0 < row.shots }) else { return nil }
+        let sighters = row.shots - size
+        return sighters <= (size == 60 ? 10 : 5) ? sighters : nil
     }
 
     @MainActor
@@ -156,10 +174,13 @@ enum LegacyImport {
                 mapping[a] = calibers.first { $0.catalogID == item.id && !$0.isArchived }?.name ?? item.name
             }
         }
+        var suggestions: [String: Int] = [:]
+        for row in newRows { if let n = suggestedSighters(for: row) { suggestions[row.key] = n } }
         return Plan(rows: rows, newRows: newRows, ammoCaliber: mapping,
                     weapons: Array(Set(rows.map(\.weapon).filter { !$0.isEmpty })).sorted(),
                     ranges: Array(Set(rows.map(\.range).filter { !$0.isEmpty })).sorted(),
-                    photoCount: newRows.reduce(0) { $0 + $1.pictures.count })
+                    photoCount: newRows.reduce(0) { $0 + $1.pictures.count },
+                    sighterSuggestions: suggestions, splitSighters: Set(suggestions.keys))
     }
 
     // MARK: Apply
@@ -223,6 +244,9 @@ enum LegacyImport {
                               weapon: weapon, caliber: cal, shotCount: row.shots, ammunition: ammo,
                               result: row.result, notes: row.notes)
             entry.importKey = row.key
+            if plan.splitSighters.contains(row.key), let sighters = plan.sighterSuggestions[row.key] {
+                entry.sighterCount = sighters
+            }
             context.insert(entry)
 
             if canReadPhotos {

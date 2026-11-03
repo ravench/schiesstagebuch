@@ -9,6 +9,12 @@ T = {
     "%@ erfassen": ("Log %@", "Enregistrer : %@", "Registra: %@"),
     "%@ fällig: %@": ("%1$@ due: %2$@", "%1$@ à faire : %2$@", "%1$@ da fare: %2$@"),
     "%@ hinzufügen": ("Add %@", "Ajouter : %@", "Aggiungi: %@"),
+    "Nach Standort gewählt · %@": ("Picked by location · %@", "Choisi selon la position · %@", "Scelto in base alla posizione · %@"),
+    "Schiessanlage nach Standort wählen": ("Pick range by location", "Choisir le stand selon la position", "Scegliere il poligono in base alla posizione"),
+    "Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.": (
+        "New entries for today pick the range you are at and list nearby ranges first. Your location is only read for this and is never stored or sent.",
+        "Les nouvelles entrées du jour choisissent le stand où tu te trouves et listent d'abord les stands proches. La position n'est lue que pour cela, sans être enregistrée ni envoyée.",
+        "Le nuove voci di oggi scelgono il poligono in cui ti trovi ed elencano prima quelli vicini. La posizione viene letta solo a questo scopo e non viene né salvata né inviata."),
     "%lld Einträge": ("%lld entries", "%lld entrées", "%lld voci"),
     "%lld Einträge importieren": ("Import %lld entries", "Importer %lld entrées", "Importa %lld voci"),
     "%lld Einträge importiert": ("%lld entries imported", "%lld entrées importées", "%lld voci importate"),
@@ -123,6 +129,14 @@ T = {
     "Export fehlgeschlagen: %@": ("Export failed: %@", "Échec de l'export : %@", "Esportazione non riuscita: %@"),
     "Fertig": ("Done", "OK", "Fine"),
     "Filter": ("Filter", "Filtre", "Filtro"),
+    # Settings page and entries with two filters; German plural = singular, so the key carries a German value.
+    "Filter (Mehrzahl)": ("Filters", "Filtres", "Filtri", "Filter"),
+    "Zweiter Filter": ("Second filter", "Deuxième filtre", "Secondo filtro"),
+    "Korrekturlinsen": ("Adjustment lenses", "Verres correcteurs", "Lenti correttive"),
+    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.": (
+        "Two filters can be combined per entry, usually a colour filter with a +0.25 or -0.25 adjustment lens.",
+        "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre correcteur +0.25 ou -0.25.",
+        "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente correttiva +0.25 o -0.25."),
     "Filter zurücksetzen": ("Reset filters", "Réinitialiser les filtres", "Reimposta filtri"),
     "Flinte": ("Shotgun", "Fusil à canon lisse", "Fucile a canna liscia"),
     "Fotos": ("Photos", "Photos", "Foto"),
@@ -278,7 +292,7 @@ T = {
     "Resultat in Prozent": ("Result in percent", "Résultat en pourcentage", "Risultato in percentuale"),
     "Ø Prozent": ("Avg. percent", "Moy. pourcentage", "Media percentuale"),
     "Ø pro Schuss": ("Avg. per shot", "Moy. par coup", "Media per colpo"),
-    "z. B. 10 9 10 8 9": ("e.g. 10 9 10 8 9", "p. ex. 10 9 10 8 9", "p. es. 10 9 10 8 9"),
+    "Schuss %lld": ("Shot %lld", "Coup %lld", "Colpo %lld"),
     "Erfassung": ("Recording", "Saisie", "Registrazione"),
     "Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.": ("Applies to new entries. You can switch the mode in any entry.", "S'applique aux nouvelles entrées. Tu peux changer le mode dans chaque entrée.", "Vale per le nuove voci. Puoi cambiare modalità in ogni voce."),
     "Probe/Wertung": ("Sighters/Scored", "Essai/Comptés", "Prova/Gara"),
@@ -295,6 +309,10 @@ T = {
     "Tage zählen ab dem nächsten Schuss": ("Days count from the next shot", "Les jours comptent dès le prochain tir", "I giorni contano dal prossimo colpo"),
     "Nr.": ("No.", "N°", "N."),
     "Seriennummer (optional)": ("Serial number (optional)", "Numéro de série (facultatif)", "Numero di serie (facoltativo)"),
+    "Kauf und Verkauf": ("Purchase and sale", "Achat et vente", "Acquisto e vendita"),
+    "Kaufdatum": ("Date of purchase", "Date d'achat", "Data di acquisto"),
+    "Verkaufsdatum": ("Date of sale", "Date de vente", "Data di vendita"),
+    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.": ("The date of sale can't be before the date of purchase. Sold firearms are archived.", "La date de vente ne peut pas précéder la date d'achat. Les armes vendues sont archivées.", "La data di vendita non può precedere la data di acquisto. Le armi vendute vengono archiviate."),
     "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
 
     # Standblatt scanner
@@ -341,6 +359,20 @@ T = {
     "Standblatt fotografieren": ("Photograph score strip", "Photographier la feuille de stand", "Fotografa il foglio di tiro"),
     "Standblatt scannen": ("Scan score strip", "Scanner la feuille de stand", "Scansiona foglio di tiro"),
     "Standblatt wird gelesen …": ("Reading score strip …", "Lecture de la feuille de stand …", "Lettura del foglio di tiro …"),
+    "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighters", "%1$lld coups comptés + %2$lld coups d'essai", "%1$lld colpi di gara + %2$lld colpi di prova"),
+    "Probeschüsse abziehen": ("Split off sighters", "Déduire les coups d'essai", "Scorporare i colpi di prova"),
+    "Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
+        "The old app only knew the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",
+        "L'ancienne app ne connaissait que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste.",
+        "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."),
+    "Total %@ liegt über dem Maximum von %@": (
+        "Total %1$@ is above the maximum of %2$@",
+        "Le total %1$@ dépasse le maximum de %2$@",
+        "Il totale %1$@ supera il massimo di %2$@"),
+    "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": (
+        "The result is above the maximum. Correct the result or the max. points.",
+        "Le résultat dépasse le maximum. Corrige le résultat ou les points max.",
+        "Il risultato supera il massimo. Correggi il risultato o i punti max."),
     "Total: gedruckt %@, gelesen %@": ("Total: printed %1$@, read %2$@", "Total : imprimé %1$@, lu %2$@", "Totale: stampato %1$@, letto %2$@"),
     "Unsicher gelesen, Schuss %@": ("Uncertain reading, shot %@", "Lecture incertaine, coup %@", "Lettura incerta, colpo %@"),
     "Wiederholte Anzeigen (nicht gezählt)": (
@@ -378,7 +410,7 @@ T = {
     "Zweibein": ("Bipod", "Bipied", "Bipiede"),
     "Eigene Filter": ("My filters", "Mes filtres", "I miei filtri"),
     "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
-    "AXIA-Filter": ("AXIA filters", "Filtres AXIA", "Filtri AXIA"),
+    "Farbfilter": ("Colour filters", "Filtres de couleur", "Filtri colorati"),
     "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.": ("Select the filters you own. Only these appear in the picker. Existing entries keep their filter.", "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre.", "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro."),
     "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.": ("Optional. New entries take the values of the last entry with this weapon. Choose your filters under Settings → Filter.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages → Filtre.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni → Filtro."),
     "Name": ("Name", "Nom", "Nome"),
@@ -461,10 +493,14 @@ T = {
         "At least one calibre. Several when the chamber takes them all, e.g. .308 Win and 7.62 NATO.",
         "Au moins un calibre. Plusieurs si la chambre les accepte tous, p. ex. .308 Win et 7.62 OTAN.",
         "Almeno un calibro. Più di uno se la camera li accetta tutti, p. es. .308 Win e 7.62 NATO."),
-    "Mindestens ein Kaliber. Weitere Läufe, z. B. Wechselläufe, fügst du nach dem Sichern hinzu.": (
-        "At least one calibre. Add more barrels, e.g. swappable ones, after saving.",
-        "Au moins un calibre. Ajoute d'autres canons, p. ex. interchangeables, après l'enregistrement.",
-        "Almeno un calibro. Aggiungi altre canne, p. es. intercambiabili, dopo il salvataggio."),
+    "Mindestens ein Kaliber. Wechselläufe fügst du nach dem Sichern hinzu.": (
+        "At least one calibre. Add swappable barrels after saving.",
+        "Au moins un calibre. Ajoute les canons interchangeables après l'enregistrement.",
+        "Almeno un calibro. Aggiungi le canne intercambiabili dopo il salvataggio."),
+    "Weitere Läufe nur für Wechselläufe oder nach einem Laufwechsel. Dann zählt die App die Schüsse auch pro Lauf.": (
+        "Add barrels only for swappable barrels or after a barrel replacement. The app then also counts shots per barrel.",
+        "N'ajoute des canons que pour des canons interchangeables ou après un changement de canon. L'app compte alors aussi les coups par canon.",
+        "Aggiungi canne solo se intercambiabili o dopo una sostituzione. L'app conta allora anche i colpi per canna."),
     "Nummer": ("Number", "Numéro", "Numero"),
     "Nummer Lauf (optional)": ("Barrel number (optional)", "Numéro du canon (facultatif)", "Numero della canna (facoltativo)"),
     "Nummer fehlt.": ("Number missing.", "Numéro manquant.", "Numero mancante."),

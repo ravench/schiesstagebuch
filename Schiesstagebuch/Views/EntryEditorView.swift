@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
+import CoreLocation
 
 /// Create (entry == nil) or edit an entry. Changes are only written on "Sichern".
 struct EntryEditorView: View {
@@ -15,6 +16,10 @@ struct EntryEditorView: View {
 
     @State private var date = Date.now
     @State private var range: ShootingRange?
+    /// The range picked by position, shown with its distance until the user picks another.
+    @State private var autoRange: NearbyRanges.Match?
+    @State private var here = OneShotLocation()
+    @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
     @State private var event = ""
     @State private var weapon: Weapon?
     @State private var caliber: Caliber?
@@ -37,7 +42,9 @@ struct EntryEditorView: View {
 
     private struct PassDraft: Identifiable {
         let id = UUID()
-        var text: String
+        var boxes: ShotBoxes
+        var text: String { boxes.text }
+        init(text: String) { boxes = ShotBoxes(text: text) }
     }
     @State private var notes = ""
     @State private var photos: [Data] = []
@@ -88,7 +95,16 @@ struct EntryEditorView: View {
 
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    pickerRow("Schiessanlage", selection: $range, items: ranges, label: \.name, add: .range)
+                    pickerRow("Schiessanlage", selection: $range, items: NearbyRanges.pickerOrder(ranges, from: here.location),
+                              label: \.name, add: .range,
+                              subtitle: { NearbyRanges.subtitle(for: $0, from: here.location) })
+                    if let autoRange, autoRange.range == range {
+                        Label { Text("Nach Standort gewählt · \(formattedAutoDistance)") } icon: {
+                            Image(systemName: "location.fill")
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
                     HStack {
                         TextField("Anlass", text: $event)
                             .focused($eventFocused)
@@ -147,15 +163,7 @@ struct EntryEditorView: View {
                     case .shots:
                         countRow("Probeschüsse", value: $sighters, step: 1)
                         ForEach($passes) { $pass in
-                            HStack {
-                                Text("Passe \((passes.firstIndex { $0.id == pass.id } ?? 0) + 1)").foregroundStyle(.secondary)
-                                TextField("z. B. 10 9 10 8 9", text: $pass.text)
-                                    .keyboardType(.numbersAndPunctuation)
-                                let shots = Score.parseShots(pass.text)
-                                if !shots.isEmpty {
-                                    Text(ScoreFormat.points(shots.reduce(0, +))).monospacedDigit().bold()
-                                }
-                            }
+                            ShotBoxesRow(number: (passes.firstIndex { $0.id == pass.id } ?? 0) + 1, boxes: $pass.boxes)
                         }
                         .onDelete { passes.remove(atOffsets: $0) }
                         Button {
@@ -179,6 +187,11 @@ struct EntryEditorView: View {
                             .frame(maxWidth: 100)
                     }
                     ScoreSummary(score: currentScore)
+                    if currentScore.exceedsMax {
+                        Label("Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.",
+                              systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(.red)
+                    }
                 } header: {
                     Text("Resultat")
                 } footer: {
@@ -215,9 +228,15 @@ struct EntryEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold() }
+                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(currentScore.exceedsMax) }
             }
             .onAppear(perform: load)
+            .onChange(of: here.location) { _, new in applyNearestRange(new) }
+            .onChange(of: date) { _, new in
+                // A back-dated entry was shot elsewhere: undo the pick by position.
+                guard let autoRange, autoRange.range == range, !Calendar.current.isDateInToday(new) else { return }
+                range = nil; self.autoRange = nil
+            }
             .onChange(of: weapon) { _, new in
                 guard didLoad else { return }
                 // New entries take the sight settings and weather switch of the last entry with this
@@ -337,8 +356,8 @@ struct EntryEditorView: View {
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
         } else if let last = allEntries.first {
-            // New entries start from the most recent range, weapon and ammo: usually what you shoot next.
-            range = last.range?.isArchived == false ? last.range : nil
+            // New entries start from the most recent weapon and ammo: usually what you shoot next.
+            // The range stays empty unless the position picks one (NearbyRanges).
             weapon = last.weapon?.isArchived == false ? last.weapon : nil
             barrel = weapon?.preferredBarrel(on: date)
             caliber = weapon?.preferredCaliber(for: barrel)
@@ -351,8 +370,22 @@ struct EntryEditorView: View {
             weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: .now) : nil
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
+            if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges) {
+                here.request()
+            }
         }
         didLoad = true
+    }
+
+    private var formattedAutoDistance: String { autoRange.map { NearbyRanges.format($0.distance) } ?? "" }
+
+    /// Selects the range you are at once the position arrives, unless you picked one yourself meanwhile.
+    private func applyNearestRange(_ location: CLLocation?) {
+        guard entry == nil, let location,
+              NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges),
+              let match = NearbyRanges.preselection(ranges, from: location, current: range)
+        else { return }
+        range = match.range; autoRange = match
     }
 
     /// Last ammo used with this weapon and calibre, else the only ammo of that calibre.
