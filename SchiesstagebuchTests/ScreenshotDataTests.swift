@@ -25,7 +25,7 @@ final class ScreenshotDataTests: ModelTestCase {
         ScreenshotData.seed(context)
         for entry in try context.fetch(FetchDescriptor<Entry>()) {
             let caliber = try XCTUnwrap(entry.caliber)
-            XCTAssertTrue(entry.weapon?.calibers?.contains { $0 === caliber } ?? false)
+            XCTAssertTrue(entry.weapon?.calibers.contains { $0 === caliber } ?? false)
         }
     }
 

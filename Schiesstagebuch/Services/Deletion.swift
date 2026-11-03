@@ -12,6 +12,12 @@ enum Deletion {
         try context.save()
     }
 
+    /// Deletes a barrel. Entries that named it explicitly fall back to matching by calibre and date.
+    static func delete(_ barrel: Barrel, in context: ModelContext) throws {
+        context.delete(barrel)
+        try context.save()
+    }
+
     /// Deletes entries and recalculates the shot-based reminders of the weapons they belonged to.
     /// An event left without any Stich is deleted with its last one.
     static func delete(_ entries: [Entry], in context: ModelContext) throws {

@@ -114,6 +114,10 @@ struct WeaponDetailView: View {
     @State private var editing = false
     /// Maintenance sheet, attached outside the List (see `MaintenanceSection`).
     @State private var maintenanceSheet: MaintenanceSheet?
+    /// Barrel sheet, attached outside the List (see `BarrelSection`).
+    @State private var barrelSheet: BarrelSheet?
+    /// Deleted once the barrel sheet is gone, so no view still reads the deleted barrel.
+    @State private var pendingBarrelDelete: Barrel?
     /// Set when the user chose to delete: the screen pops first and deletes in `onDisappear`,
     /// so no view still shows the weapon when its record disappears from the store.
     @State private var deleting = false
@@ -126,6 +130,8 @@ struct WeaponDetailView: View {
                     .listRowBackground(Color.clear)
                 LabeledContent("Kategorie", value: weapon.category.title)
                 if !weapon.caliberSummary.isEmpty { LabeledContent("Kaliber", value: weapon.caliberSummary) }
+                if !weapon.serialNumber.isEmpty { LabeledContent("Hauptnummer", value: weapon.serialNumber) }
+                ForEach(weapon.extraSerials) { LabeledContent($0.label, value: $0.number) }
                 if let bought = weapon.purchaseDate {
                     LabeledContent("Kaufdatum", value: bought.formatted(date: .long, time: .omitted))
                 }
@@ -133,8 +139,13 @@ struct WeaponDetailView: View {
                     LabeledContent("Verkaufsdatum", value: sold.formatted(date: .long, time: .omitted))
                 }
             }
+            // A single (e.g. fixed) barrel adds nothing to the firearm's own figures.
+            if weapon.hasSeveralBarrels { BarrelSection(weapon: weapon) { barrelSheet = $0 } }
             MaintenanceSection(weapon: weapon) { maintenanceSheet = $0 }
         } breakdowns: { entries in
+            if weapon.hasSeveralBarrels {
+                Section { BreakdownChart(title: "Pro Lauf", entries: entries, key: \.effectiveBarrel, label: \.displayName) }
+            }
             Section { BreakdownChart(title: "Pro Kaliber", entries: entries, key: \.caliber, label: \.name) }
             Section { BreakdownChart(title: "Pro Schiessanlage", entries: entries, key: \.range, label: \.name) }
             Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.displayName) }
@@ -150,6 +161,12 @@ struct WeaponDetailView: View {
             case .history: MaintenanceHistoryView(weapon: weapon)
             }
         }
+        .sheet(item: $barrelSheet, onDismiss: deletePendingBarrel) { sheet in
+            switch sheet {
+            case .edit(let b): BarrelEditorView(weapon: weapon, barrel: b, onDelete: { pendingBarrelDelete = b })
+            case .add: BarrelEditorView(weapon: weapon, barrel: nil)
+            }
+        }
         .onChange(of: editing) { _, shown in
             // Pop once the editor sheet is gone, not while it is still animating away.
             if !shown, deleting { dismiss() }
@@ -159,6 +176,12 @@ struct WeaponDetailView: View {
             deleting = false
             try? Deletion.delete(weapon, in: context)
         }
+    }
+
+    private func deletePendingBarrel() {
+        guard let b = pendingBarrelDelete else { return }
+        pendingBarrelDelete = nil
+        try? Deletion.delete(b, in: context)
     }
 }
 

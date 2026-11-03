@@ -11,9 +11,16 @@ replacing "Schusszähler-Schiesstagebuch". iOS 17+, in German, English, French a
 - **Stammdaten** (Einstellungen): weapons, calibres, ammunition, shooting ranges.
   Anything can be archived instead of deleted, so history and statistics stay intact.
 - **Kaliber**: pre-filled with common calibres (rimfire, handgun, rifle incl. GP 90 / GP 11,
-  shotgun, air). A weapon has one or more calibres (e.g. SIG P210 with 9x19 and .22 LR
-  barrels) and one default. Entries only offer the weapon's calibres; ammunition is
-  linked to a calibre and filtered accordingly.
+  shotgun, air). Cartridges with identical measurements (.308 Win / 7.62 NATO,
+  .223 Rem / 5.56 NATO / GP 90) are grouped in the catalogue and suggested together.
+- **Läufe**: every weapon has at least one barrel, and the barrels carry the calibres
+  (a P210 with a 9x19 and a .22 LR barrel; a .308 barrel that also takes 7.62 NATO). Each
+  barrel has its own number, fitted/removed dates, shots before logging and an expected
+  life. Entries count for the barrel of their calibre fitted on that day (or one picked in
+  the entry); ammunition is offered for the barrel's calibres. Totals per barrel and per
+  weapon; maintenance reminders stay per weapon.
+- **Nummern**: main serial number plus any number of further part numbers, each with a name
+  (e.g. Verschluss, Trommel).
 - **Statistik**: totals, shots over time (monthly or cumulative), shots per weapon,
   calibre and range, with a period filter. Every weapon, calibre, range and ammo has
   its own statistics page.
