@@ -132,9 +132,10 @@ extension Sequence where Element == Entry {
         return shots == 0 ? nil : b.map(\.points).reduce(0, +) / Double(shots)
     }
 
-    /// Average percentage per ammunition lot, best first, for comparing lots. Only entries with a
-    /// percentage count (points with a maximum, or a result written in percent), so lots shot in
-    /// different programmes stay comparable. Lots without any such result are left out.
+    /// Result percentages per ammunition lot with their distribution, for comparing lots. Only
+    /// entries with a percentage count (points with a maximum, or a result written in percent), so
+    /// lots shot in different programmes stay comparable. Lots without any such result are left out.
+    /// Best median first, then best mean, then by lot number.
     var percentageByLot: [LotResult] {
         var groups: [PersistentIdentifier: (lot: AmmoLot, values: [Double])] = [:]
         for entry in self {
@@ -142,8 +143,12 @@ extension Sequence where Element == Entry {
             groups[lot.persistentModelID, default: (lot, [])].values.append(p)
         }
         return groups.values
-            .map { LotResult(lot: $0.lot, count: $0.values.count, averagePercentage: $0.values.reduce(0, +) / Double($0.values.count)) }
-            .sorted { $0.averagePercentage != $1.averagePercentage ? $0.averagePercentage > $1.averagePercentage : $0.lot.number < $1.lot.number }
+            .compactMap { g in BoxStats(g.values).map { LotResult(lot: g.lot, values: g.values.sorted(), stats: $0) } }
+            .sorted {
+                if $0.stats.median != $1.stats.median { return $0.stats.median > $1.stats.median }
+                if $0.stats.mean != $1.stats.mean { return $0.stats.mean > $1.stats.mean }
+                return $0.lot.number < $1.lot.number
+            }
     }
 
     /// Mean points per entry over the entries with a numeric result.
@@ -156,9 +161,10 @@ extension Sequence where Element == Entry {
 /// One ammunition lot's results, see `percentageByLot`.
 struct LotResult {
     var lot: AmmoLot
-    /// Entries with a percentage.
-    var count: Int
-    var averagePercentage: Double
+    /// Percentages (0...1), ascending.
+    var values: [Double]
+    var stats: BoxStats
+    var count: Int { values.count }
 }
 
 /// A Stich shot more than once at the same event, e.g. bought twice ("nachgedoppelt").

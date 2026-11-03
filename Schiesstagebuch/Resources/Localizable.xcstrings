@@ -1772,6 +1772,29 @@
         }
       }
     },
+    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Box: middle half of the results (1st to 3rd quartile), bar: median, line: up to 1.5 × interquartile range, dots: single results, red: outliers. Counts entries with a percentage (points with a maximum, or a result in %)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boîte : moitié centrale des résultats (1er au 3e quartile), trait : médiane, ligne : jusqu'à 1,5 × l'écart interquartile, points : résultats individuels, rouge : valeurs aberrantes. Compte les entrées avec pourcentage (points avec maximum ou résultat en %)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Box: metà centrale dei risultati (dal 1° al 3° quartile), tratto: mediana, linea: fino a 1,5 × lo scarto interquartile, punti: singoli risultati, rosso: valori anomali. Conta le voci con percentuale (punti con massimo o risultato in %)."
+          }
+        }
+      }
+    },
     "Brillenfilter (AXIA)": {
       "extractionState": "manual",
       "localizations": {
@@ -2803,29 +2826,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le voci restano ma perdono l'arma. L'archiviazione conserva tutto."
-          }
-        }
-      }
-    },
-    "Einträge mit Prozent: Punkte mit Maximum oder Resultat in %. In Klammern die Anzahl.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entries with a percentage: points with a maximum, or a result in %. Number of entries in brackets."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entrées avec pourcentage : points avec maximum ou résultat en %. Nombre d'entrées entre parenthèses."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voci con percentuale: punti con massimo o risultato in %. Tra parentesi il numero di voci."
           }
         }
       }
@@ -6033,6 +6033,29 @@
         }
       }
     },
+    "Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With fewer than 5 results per lot, quartiles say little."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec moins de 5 résultats par lot, les quartiles sont peu significatifs."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con meno di 5 risultati per lotto, i quartili sono poco significativi."
+          }
+        }
+      }
+    },
     "Monat": {
       "extractionState": "manual",
       "localizations": {
@@ -8283,6 +8306,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato in percentuale"
+          }
+        }
+      }
+    },
+    "Resultat pro Los": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result by lot"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat par lot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato per lotto"
           }
         }
       }
@@ -12883,29 +12929,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media percentuale"
-          }
-        }
-      }
-    },
-    "Ø Prozent pro Los": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avg. percent by lot"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moy. pourcentage par lot"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media percentuale per lotto"
           }
         }
       }

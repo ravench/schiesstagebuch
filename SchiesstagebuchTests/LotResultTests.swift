@@ -26,10 +26,11 @@ final class LotResultTests: ModelTestCase {
             entry(b, result: "Kranz")           // no percentage, left out
         ]
         let rows = entries.percentageByLot
-        XCTAssertEqual(rows.map(\.lot.number), ["B2", "A1"], "best lot first")
-        XCTAssertEqual(rows[0].averagePercentage, 0.95, accuracy: 1e-9)
+        XCTAssertEqual(rows.map(\.lot.number), ["B2", "A1"], "best median first")
+        XCTAssertEqual(rows[0].stats.median, 0.95, accuracy: 1e-9)
         XCTAssertEqual(rows[0].count, 1)
-        XCTAssertEqual(rows[1].averagePercentage, 0.85, accuracy: 1e-9)
+        XCTAssertEqual(rows[1].stats.median, 0.85, accuracy: 1e-9)
+        XCTAssertEqual(rows[1].values, [0.8, 0.9], "values ascending")
         XCTAssertEqual(rows[1].count, 2)
     }
 
@@ -39,8 +40,20 @@ final class LotResultTests: ModelTestCase {
         let a = lot("A", ammo), b = lot("B", ammo)
         let rows = [entry(a, result: "540", max: 600), entry(b, result: "90", max: 100)].percentageByLot
         XCTAssertEqual(rows.count, 2)
-        XCTAssertEqual(rows[0].averagePercentage, rows[1].averagePercentage, accuracy: 1e-9)
+        XCTAssertEqual(rows[0].stats.median, rows[1].stats.median, accuracy: 1e-9)
         XCTAssertEqual(rows.map(\.lot.number), ["A", "B"], "ties ordered by lot number")
+    }
+
+    func testRankedByMedianNotMean() {
+        // One bad outlier drags A's mean below B's, but A's typical result is better.
+        let ammo = Ammunition(name: "GP 11"); context.insert(ammo)
+        let a = lot("A", ammo), b = lot("B", ammo)
+        let entries = ["95 %", "96 %", "94 %", "40 %"].map { entry(a, result: $0) }
+            + ["88 %", "89 %", "90 %"].map { entry(b, result: $0) }
+        let rows = entries.percentageByLot
+        XCTAssertLessThan(rows.first { $0.lot.number == "A" }!.stats.mean, rows.first { $0.lot.number == "B" }!.stats.mean)
+        XCTAssertEqual(rows.map(\.lot.number), ["A", "B"])
+        XCTAssertEqual(rows[0].stats.outliers, [0.4])
     }
 
     func testEntriesWithoutLotOrPercentageAreLeftOut() {
