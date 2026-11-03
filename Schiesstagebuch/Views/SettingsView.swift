@@ -3,6 +3,7 @@ import SwiftData
 import UniformTypeIdentifiers
 
 struct SettingsView: View {
+    @Environment(\.term) private var term
     @Environment(\.modelContext) private var context
     /// One exporter for both formats: SwiftUI only honours one fileExporter per view.
     @State private var exportDoc: BackupDocument?
@@ -17,12 +18,13 @@ struct SettingsView: View {
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @AppStorage(SightSettings.showKey) private var showSport = false
     @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
+    @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
 
     var body: some View {
         NavigationStack {
             List {
                 Section {
-                    NavigationLink { WeaponsListView() } label: { Label("Waffen", systemImage: "scope") }
+                    NavigationLink { WeaponsListView() } label: { Label(term("Waffen").loc, systemImage: "scope") }
                     NavigationLink { CaliberListView() } label: { Label("Kaliber", systemImage: "circle.dotted") }
                     NavigationLink { AmmunitionListView() } label: { Label("Munition", systemImage: "shippingbox") }
                     NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "mappin.and.ellipse") }
@@ -35,13 +37,23 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Toggle(isOn: $sportsEquipment) {
+                        Label("«Sportgeräte» statt «Waffen»", systemImage: "textformat")
+                    }
+                } header: {
+                    Text("Bezeichnung")
+                } footer: {
+                    Text("Ändert nur die Wörter in der App, deine Daten bleiben gleich.")
+                }
+
+                Section {
                     Picker(selection: $defaultMode) {
                         ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
                     } label: {
                         Label("Schüsse erfassen als", systemImage: "list.number")
                     }
                     Toggle(isOn: $showSerial) {
-                        Label("Seriennummer in der Waffenauswahl", systemImage: "number")
+                        Label(term("Seriennummer in der Waffenauswahl").loc, systemImage: "number")
                     }
                 } header: {
                     Text("Erfassung")
@@ -59,7 +71,7 @@ struct SettingsView: View {
 
                 Section {
                     Toggle(isOn: $showSport) {
-                        Label("Waffen-Einstellungen für Sportschützen erfassen", systemImage: "scope")
+                        Label(term("Waffen-Einstellungen für Sportschützen erfassen").loc, systemImage: "scope")
                     }
                     if showSport {
                         NavigationLink { FilterSettingsView() } label: {
@@ -79,7 +91,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Erinnerungen")
                 } footer: {
-                    Text("Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.")
+                    Text(term("Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.").loc)
                 }
 
                 Section {
@@ -299,6 +311,7 @@ struct AmmunitionListView: View {
 }
 
 struct AmmunitionEditorView: View {
+    @Environment(\.term) private var term
     let ammunition: Ammunition?
     var suggestedCaliber: Caliber?
     var onCreate: ((Ammunition) -> Void)?
@@ -328,7 +341,7 @@ struct AmmunitionEditorView: View {
                 Picker("Kaliber", selection: $caliber) {
                     Text("–").tag(Caliber?.none)
                     if !inUse.isEmpty {
-                        Section("Deine Waffen") { ForEach(inUse) { Text($0.name).tag(Optional($0)) } }
+                        Section(term("Deine Waffen").loc) { ForEach(inUse) { Text($0.name).tag(Optional($0)) } }
                     }
                     Section("Alle") { ForEach(others) { Text($0.name).tag(Optional($0)) } }
                 }

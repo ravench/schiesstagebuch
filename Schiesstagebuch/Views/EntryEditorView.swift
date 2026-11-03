@@ -6,6 +6,7 @@ import CoreLocation
 /// Create (entry == nil) or edit an entry, i.e. one Stich and the event it belongs to.
 /// With `addingTo`, the new entry becomes another Stich of that event. Changes are only written on "Sichern".
 struct EntryEditorView: View {
+    @Environment(\.term) private var term
     let entry: Entry?
     var addingTo: ShootingEvent?
 
@@ -130,7 +131,7 @@ struct EntryEditorView: View {
                 }
 
                 Section {
-                    pickerRow("Waffe", selection: $weapon, items: weapons, label: \.name, add: .weapon,
+                    pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
                     if let weapon, !(weapon.calibers ?? []).isEmpty {
                         Picker("Kaliber", selection: $caliber) {
