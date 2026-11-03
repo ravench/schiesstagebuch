@@ -597,6 +597,19 @@ T = {
         "Left out so the series matches the printed sum: shot %@",
         "Omis pour que la passe corresponde à la somme imprimée : coup %@",
         "Omesso perché la serie corrisponda alla somma stampata: colpo %@"),
+    # Used-up ammunition lots
+    "Als aufgebraucht markieren": ("Mark as used up", "Marquer comme épuisé", "Segna come esaurito"),
+    "Aufgebraucht": ("Used up", "Épuisé", "Esaurito"),
+    "Wieder verwenden": ("Use again", "Réutiliser", "Usa di nuovo"),
+    "Aufgebrauchte Lose": ("Used-up lots", "Lots épuisés", "Lotti esauriti"),
+    "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen. Hast du ein Los ganz verschossen, markiere es mit ✓ als aufgebraucht.": (
+        "Optional. You can pick the lot when logging an entry. Once you have shot a whole lot, mark it as used up with ✓.",
+        "Facultatif. Tu peux choisir le lot en saisissant une entrée. Quand tu as tiré tout un lot, marque-le comme épuisé avec ✓.",
+        "Facoltativo. Puoi scegliere il lotto quando registri una voce. Quando hai sparato tutto un lotto, segnalo come esaurito con ✓."),
+    "Aufgebrauchte Lose erscheinen nicht mehr bei neuen Einträgen, bleiben aber in bisherigen Einträgen und in der Statistik.": (
+        "Used-up lots no longer appear for new entries, but stay in earlier entries and in the statistics.",
+        "Les lots épuisés n’apparaissent plus pour les nouvelles entrées, mais restent dans les entrées précédentes et dans les statistiques.",
+        "I lotti esauriti non compaiono più nelle nuove voci, ma restano nelle voci precedenti e nelle statistiche."),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.
