@@ -92,7 +92,7 @@ struct RootView: View {
             Button("Ja, Anlagen übernehmen") { answerRangeCatalog(importing: true) }
             Button("Nein", role: .cancel) { answerRangeCatalog(importing: false) }
         } message: {
-            Text("Die App kann die Schweizer Schiessanlagen mit Ort, Höhe, Distanzen und Schussrichtung in deine Liste übernehmen (Daten: swisstopo). Du kannst das später unter Einstellungen › Schiessanlagen nachholen.")
+            Text("Mit «Ja» füllt die App deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Du kannst das auch später unter Einstellungen › Schiessanlagen tun.")
         }
     }
 
