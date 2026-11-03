@@ -615,6 +615,7 @@ T = {
     "No-Shoots": ("No-shoots", "No-shoots", "No-shoot"),
     "Power-Faktor": ("Power factor", "Facteur de puissance", "Power factor"),
     "Punkte": ("Points", "Points", "Punti"),
+    "Punkte (Ringwertung)": ("Points (ring scoring)", "Points (anneaux)", "Punti (anelli)"),
     "Resultat, Einzelschüsse und Max. Punkte pro Stich": (
         "Result, single shots and max. points per match",
         "Résultat, coups individuels et points max. par cible",
