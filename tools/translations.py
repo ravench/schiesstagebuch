@@ -156,6 +156,7 @@ T = {
     "In der Datei wurden keine Einträge gefunden.": (
         "No entries were found in the file.", "Aucune entrée n'a été trouvée dans le fichier.", "Nel file non sono state trovate voci."),
     "Jagdgewehr": ("Hunting rifle", "Carabine de chasse", "Carabina da caccia"),
+    "Maschinengewehr": ("Machine gun", "Mitrailleuse", "Mitragliatrice"),
     "Jahr": ("Year", "Année", "Anno"),
     "Kaliber": ("Caliber", "Calibre", "Calibro"),
     "Kaliber bearbeiten": ("Edit caliber", "Modifier le calibre", "Modifica calibro"),
