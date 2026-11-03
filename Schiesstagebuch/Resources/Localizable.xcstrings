@@ -4768,6 +4768,29 @@
         }
       }
     },
+    "Maschinengewehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Machine gun"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitrailleuse"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitragliatrice"
+          }
+        }
+      }
+    },
     "Max. Punkte": {
       "extractionState": "manual",
       "localizations": {

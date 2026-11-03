@@ -57,11 +57,14 @@ extension Color {
 // MARK: - Weapon categories
 
 enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
-    case pistol, sportPistol = "sport_pistol", luger, revolver, airPistol = "air_pistol", pcc
-    case serviceCarbine = "service_carbine", serviceRifle = "service_rifle", sportRifle = "sport_rifle"
-    case longRange = "long_range", huntingRifle = "hunting_rifle", leverAction = "lever_action"
-    case shotgun, pumpShotgun = "pump_shotgun", airgun, crossbow
-    case blackPowder = "black_powder", other
+    // Declaration order is the picker order: handguns first, then long guns,
+    // roughly from small to large, machine gun last. Raw values are stored, so
+    // reordering is safe; renaming a raw value is not.
+    case airPistol = "air_pistol", sportPistol = "sport_pistol", luger, pistol, revolver
+    case pcc, airgun, sportRifle = "sport_rifle", crossbow, leverAction = "lever_action"
+    case serviceRifle = "service_rifle", serviceCarbine = "service_carbine", huntingRifle = "hunting_rifle"
+    case longRange = "long_range", shotgun, pumpShotgun = "pump_shotgun", blackPowder = "black_powder"
+    case machineGun = "machine_gun", other
 
     var id: Self { self }
 
@@ -86,6 +89,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         case .shotgun: "Flinte"
         case .airgun: "Luftgewehr"
         case .blackPowder: "Vorderlader / Schwarzpulver"
+        case .machineGun: "Maschinengewehr"
         case .other: "Andere"
         }
     }
@@ -114,6 +118,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.crossbow, ["armbrust", "crossbow"]),
             (.airPistol, ["luftpistole", "lp10", "lp 10", "air pistol"]),
             (.serviceCarbine, ["k31", "k 31", "k11", "k 11", "g11", "g 11", "karabiner", "schmidt-rubin", "langgewehr"]),
+            (.machineGun, ["maschinengewehr", "machine gun", "mg51", "mg 51", "mg42", "mg 42", "mg3", "minimi", "m249"]),
             (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15"]),
             (.leverAction, ["unterhebel", "lever", "marlin", "henry", "winchester 94", "winchester 73"]),
             (.pumpShotgun, ["pump", "vorderschaft", "870", "590", "mossberg 500"]),
