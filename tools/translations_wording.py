@@ -61,10 +61,10 @@ S = {
         "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings › Filters.",
         "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres.",
         "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."),
-    "Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.": (
-        "The old app had no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your equipment.",
-        "L'ancienne app ne connaissait pas les calibres. Chaque munition est attribuée à un calibre ; on en déduit les calibres de tes équipements.",
-        "La vecchia app non conosceva i calibri. Ogni munizione viene assegnata a un calibro; da qui risultano i calibri dei tuoi attrezzi."),
+    "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.": (
+        "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your equipment.",
+        "L'export ne contient pas de calibres. Chaque munition est attribuée à un calibre ; on en déduit les calibres de tes équipements.",
+        "L'esportazione non contiene calibri. Ogni munizione viene assegnata a un calibro; da qui risultano i calibri dei tuoi attrezzi."),
     "Prüfe unter Sportgeräte die Kategorie und die Kaliber der importierten Sportgeräte.": (
         "Check the category and calibres of the imported equipment under Equipment.",
         "Vérifie la catégorie et les calibres des équipements importés sous Équipements.",
