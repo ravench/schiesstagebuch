@@ -27,3 +27,16 @@ final class NumberStepperTests: XCTestCase {
         XCTAssertEqual(snap(7, 1, up: false), 6)
     }
 }
+
+final class EntryEditorCountStepTests: XCTestCase {
+    func testScoredShotsStepByOne() {
+        let step = EntryEditorView.CountStep.scored
+        XCTAssertEqual(step, 1)
+        XCTAssertEqual(NumberStepperRow.snap(18, step: step, up: true, in: 0...10_000), 19)
+        XCTAssertEqual(NumberStepperRow.snap(18, step: step, up: false, in: 0...10_000), 17)
+    }
+
+    func testSightersStepByOne() {
+        XCTAssertEqual(EntryEditorView.CountStep.sighters, 1)
+    }
+}

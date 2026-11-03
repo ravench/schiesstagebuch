@@ -307,13 +307,13 @@ struct EntryEditorView: View {
             .pickerStyle(.segmented)
             switch mode {
             case .total:
-                countRow("Schusszahl", value: $shotCount, step: 5)
+                countRow("Schusszahl", value: $shotCount, step: Self.CountStep.total)
             case .split:
-                countRow("Probeschüsse", value: $sighters, step: 1)
-                countRow("Wertungsschüsse", value: $scored, step: 5)
+                countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
+                countRow("Wertungsschüsse", value: $scored, step: Self.CountStep.scored)
                 LabeledContent("Total", value: (sighters + scored).formatted())
             case .shots:
-                countRow("Probeschüsse", value: $sighters, step: 1)
+                countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
                 ForEach($passes) { $pass in
                     ShotBoxesRow(number: (passes.firstIndex { $0.id == pass.id } ?? 0) + 1, boxes: $pass.boxes)
                 }
@@ -399,6 +399,14 @@ struct EntryEditorView: View {
         case .split: scored
         case .shots: passShotCount
         }
+    }
+
+    /// How far +/− moves each shot count. Scored shots go one by one, since Stiche
+    /// often have odd sizes (e.g. 18).
+    enum CountStep {
+        static let total = 5
+        static let sighters = 1
+        static let scored = 1
     }
 
     private func countRow(_ title: String, value: Binding<Int>, step: Int) -> some View {
