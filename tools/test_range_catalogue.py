@@ -240,6 +240,69 @@ class NameTests(unittest.TestCase):
         self.assertEqual(ranges[0]["name"], "Schiessanlage Allmend")  # longest lane's name first
 
 
+class SwisstopoNameTests(unittest.TestCase):
+    def test_name_distances(self):
+        self.assertEqual(rc.name_distances("Thun Guntelsey 300/50/25m"), [300, 50, 25])
+        self.assertEqual(rc.name_distances("Zuchwil Feldacker 300/150/100/60/50/25m"), [300, 150, 100, 60, 50, 25])
+        self.assertEqual(rc.name_distances("Bôle 300m"), [300])
+        self.assertEqual(rc.name_distances("Stans Schwybogen 50 / 30 / 25 m"), [50, 30, 25])
+        self.assertEqual(rc.name_distances("Schiessanlage Moos"), [])
+        self.assertEqual(rc.name_distances(""), [])
+
+    def test_buildings_with_one_name_are_one_range(self):
+        # Two shooting houses 200 m apart (300 m and 25 m stand), both named like the range.
+        name = "Riedbach Forst 300/25m"
+        houses = [{"id": "h300", "ring": box(E0, N0), "name": name},
+                  {"id": "h25", "ring": box(E0 + 200, N0), "name": name}]
+        targets = [{"id": "t300", "line": target_row(E0, N0 + 304), "name": ""},
+                   {"id": "t25", "line": target_row(E0 + 200, N0 + 29), "name": ""}]
+        ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
+        self.assertEqual(len(ranges), 1)
+        self.assertEqual(ranges[0]["tlm_name"], name)
+        self.assertEqual(ranges[0]["distances"], [300, 25])
+        self.assertAlmostEqual(ranges[0]["bearing"], 0, delta=0.5)
+
+    def test_name_distances_beat_measured_ones(self):
+        houses = [{"id": "h", "ring": box(E0, N0), "name": "Moos 300/50m"}]
+        targets = [{"id": "t", "line": target_row(E0, N0 + 4 + 280), "name": ""}]  # measured 280 m
+        ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
+        self.assertEqual(ranges[0]["distances"], [300, 50])
+
+    def test_house_without_target_row(self):
+        houses = [{"id": "paired", "ring": box(E0, N0), "name": "Moos 300m"},
+                  {"id": "annex", "ring": box(E0 + 60, N0), "name": "Moos 300m"},
+                  {"id": "indoor1", "ring": box(E0 + 5000, N0), "name": "Au Halle 10m"},
+                  {"id": "indoor2", "ring": box(E0 + 5030, N0), "name": "Au Halle 10m"},
+                  {"id": "unnamed", "ring": box(E0 + 9000, N0), "name": ""}]
+        targets = [{"id": "t", "line": target_row(E0, N0 + 304), "name": ""}]
+        lanes = rc.lanes_from_pairing(houses, targets)
+        extra = rc.house_only_ranges(houses, lanes)
+        self.assertEqual([r["tlm_name"] for r in extra], ["Au Halle 10m"])
+        self.assertIsNone(extra[0]["bearing"])
+        self.assertEqual(extra[0]["distances"], [10])
+        self.assertEqual(extra[0]["altitude"], 550)
+
+    def test_place_from_name(self):
+        places = [{"pos": (E0 + 3000, N0), "tags": {"name": "Bern"}},
+                  {"pos": (E0 + 1000, N0), "tags": {"name": "Riedbach"}},
+                  {"pos": (E0 + 900, N0), "tags": {"name": "Ried"}},
+                  {"pos": (E0 + 90000, N0), "tags": {"name": "Moos"}}]
+        self.assertEqual(rc.place_from_name("Bern-Riedbach Forst 300m", (E0, N0), places), "Bern")
+        self.assertEqual(rc.place_from_name("Riedbach Forst 300m", (E0, N0), places), "Riedbach")
+        self.assertEqual(rc.place_from_name("Moos 300m", (E0, N0), places), "", "too far away")
+        self.assertEqual(rc.place_from_name("Riedli 300m", (E0, N0), places), "", "whole words only")
+
+    def test_place_prefers_the_town_in_the_name(self):
+        houses = [{"id": "h", "ring": box(E0, N0), "name": "Kiesen 300m"}]
+        targets = [{"id": "t", "line": target_row(E0, N0 + 304), "name": ""}]
+        ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
+        tlm_places = [{"pos": (E0 + 100, N0), "tags": {"name": "Aarhus"}},
+                      {"pos": (E0 + 2000, N0), "tags": {"name": "Kiesen"}}]
+        rc.match_osm(ranges, [], [], tlm_places)
+        self.assertEqual(ranges[0]["place"], "Kiesen")
+        self.assertEqual(ranges[0]["name"], "Kiesen 300m")
+
+
 class OsmTests(unittest.TestCase):
     def test_parse_skips_paintball(self):
         shooting, places = rc.parse_overpass(overpass_fixture())
@@ -394,6 +457,19 @@ class GeoPackageTests(unittest.TestCase):
         self.assertEqual(rc.latest_gpkg(stac), ("2026-02", "https://x/2026.gpkg.zip"))
         with self.assertRaises(ValueError):
             rc.latest_gpkg({"features": []})
+
+    def test_build_without_osm(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "tlm.gpkg")
+            self.make_gpkg(path)
+            out = os.path.join(tmp, "out")
+            stats = rc.build(path, "-", out)
+            with open(os.path.join(out, "ranges.json")) as f:
+                catalogue = json.load(f)
+        self.assertEqual(stats["ranges from OSM only"], 0)
+        self.assertEqual([r["name"] for r in catalogue["ranges"]], ["Schiessanlage Fänglen"])
+        self.assertNotIn("osm", catalogue["ranges"][0])
+        self.assertEqual(list(catalogue["attribution"]), ["swisstopo"])
 
     def test_overpass_query_covers_switzerland(self):
         self.assertIn('"ISO3166-1"="CH"', rc.OVERPASS_QUERY)
