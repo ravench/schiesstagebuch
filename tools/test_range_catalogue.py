@@ -446,6 +446,34 @@ class GeoPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             rc.latest_gpkg({"features": []})
 
+    def test_app_catalogue(self):
+        def rng(ident, name, place, distances, bearing=10.0):
+            return {"id": ident, "name": name, "place": place, "latitude": 46.9, "longitude": 7.4,
+                    "distances": distances, "shootingBearing": bearing, "altitude": 500}
+
+        catalogue = {"swissTLM3D": "2026-02", "ranges": [
+            rng("tlm:1", "Schiessanlage Moos", "Moos", [300]),
+            rng("tlm:2", "Schiessanlage Moos", "Moos", [50, 25]),
+            rng("tlm:3", "Schiessanlage Moos", "Moos", [50, 25], bearing=None),
+            rng("tlm:4", "Schiessanlage Moos", "Riedbach", [300]),
+            rng("tlm:5", "Schiessanlage Au", "Au", []),
+            {"id": "manual:x", "name": "Halle", "place": "Au", "latitude": 47.0, "longitude": 8.0,
+             "distances": [25], "indoor": True},
+        ]}
+        app = rc.app_catalogue(catalogue)
+        self.assertEqual(app["source"], "Schiessanlagen: swissTLM3D © swisstopo")
+        self.assertEqual(app["swissTLM3D"], "2026-02")
+        names = [r["name"] for r in app["ranges"]]
+        self.assertEqual(names, ["Schiessanlage Moos (300 m)", "Schiessanlage Moos (50/25 m) 1",
+                                 "Schiessanlage Moos (50/25 m) 2", "Schiessanlage Moos", "Schiessanlage Au",
+                                 "Halle"])
+        self.assertEqual(app["ranges"][0], {"id": "tlm:1", "name": "Schiessanlage Moos (300 m)", "place": "Moos",
+                                            "lat": 46.9, "lon": 7.4, "distances": [300],
+                                            "bearing": 10.0, "alt": 500})
+        self.assertNotIn("bearing", app["ranges"][2])
+        self.assertEqual(app["ranges"][5], {"id": "manual:x", "name": "Halle", "place": "Au", "lat": 47.0,
+                                            "lon": 8.0, "distances": [25], "indoor": True})
+
     def test_build_without_manual_list(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "tlm.gpkg")
