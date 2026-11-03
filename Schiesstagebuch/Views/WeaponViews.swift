@@ -224,6 +224,7 @@ struct WeaponEditorView: View {
     @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var allCalibers: [Caliber]
 
     @State private var name = ""
+    @State private var manufacturer = ""
     @State private var serialNumber = ""
     @State private var extraSerials: [PartSerial] = []
     @State private var purchaseDate: Date?
@@ -255,6 +256,8 @@ struct WeaponEditorView: View {
             Form {
                 Section {
                     TextField("Name, z. B. SIG P210", text: $name)
+                    TextField("Hersteller (optional)", text: $manufacturer)
+                        .textInputAutocapitalization(.words)
                     Picker(selection: $category) {
                         ForEach(WeaponCategory.allCases) { c in
                             HStack(spacing: 12) {
@@ -422,6 +425,7 @@ struct WeaponEditorView: View {
     private func load() {
         guard !didLoad, let weapon else { didLoad = true; return }
         name = weapon.name
+        manufacturer = weapon.manufacturer
         serialNumber = weapon.serialNumber
         extraSerials = weapon.extraSerials
         purchaseDate = weapon.purchaseDate
@@ -437,6 +441,7 @@ struct WeaponEditorView: View {
     private func save() {
         let target = weapon ?? Weapon(name: "")
         target.name = name.trimmingCharacters(in: .whitespaces)
+        target.manufacturer = manufacturer.trimmingCharacters(in: .whitespaces)
         target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
         target.extraSerials = PartSerial.cleaned(extraSerials) ?? target.extraSerials
         target.purchaseDate = purchaseDate
