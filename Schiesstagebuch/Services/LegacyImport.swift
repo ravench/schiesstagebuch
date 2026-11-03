@@ -213,7 +213,7 @@ enum LegacyImport {
         var weapons = Dictionary(((try? context.fetch(FetchDescriptor<Weapon>())) ?? []).map { (norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
         var ammos = Dictionary(((try? context.fetch(FetchDescriptor<Ammunition>())) ?? []).map { (norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
 
-        // Calibre usage per weapon decides its calibre list and default.
+        // Calibre usage per weapon decides its barrels (one per calibre) and the default one.
         var usage: [String: [Caliber: Int]] = [:]
 
         let canReadPhotos = loadPhotos ? await requestPhotoAccess() : false
@@ -275,13 +275,13 @@ enum LegacyImport {
             summary.entries += 1
         }
 
-        // A calibre used with a weapon becomes one of its calibres; the most-shot one is the default.
+        // Each calibre used with a weapon gets a barrel; the most-shot one is the default for new weapons.
         for (key, counts) in usage {
             guard let w = weapons[key] else { continue }
-            var set = Set(w.calibers ?? [])
-            counts.keys.forEach { set.insert($0) }
-            w.calibers = Array(set)
-            if w.defaultCaliber == nil { w.defaultCaliber = counts.max { $0.value < $1.value }?.key }
+            let hadBarrels = !(w.barrels ?? []).isEmpty
+            let ordered = counts.sorted { ($0.value, $1.key.name) > ($1.value, $0.key.name) }.map(\.key)
+            let created = ordered.map { w.ensureBarrel(for: $0, in: context) }
+            if !hadBarrels, let first = created.first { w.makeDefault(first) }
         }
 
         try? context.save()
