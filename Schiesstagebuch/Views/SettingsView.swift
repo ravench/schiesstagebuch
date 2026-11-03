@@ -16,7 +16,7 @@ struct SettingsView: View {
     @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
     @Query private var weapons: [Weapon]
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
-    @AppStorage(SightSettings.showKey) private var showSport = false
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
 
@@ -70,16 +70,18 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Toggle(isOn: $showSport) {
-                        Label(term("Waffen-Einstellungen für Sportschützen erfassen").loc, systemImage: "scope")
+                    ForEach(SportFeatures.each, id: \.rawValue) { feature in
+                        SportFeatureToggle(feature: feature, features: $features)
                     }
-                    if showSport {
+                    if features.contains(.filter) {
                         NavigationLink { FilterSettingsView() } label: {
                             Label("Filter (Mehrzahl)", systemImage: "circle.lefthalf.filled")
                         }
                     }
+                } header: {
+                    Text("Für Sportschützen")
                 } footer: {
-                    Text("Zeigt in Einträgen Felder für Filter, Diopter, Ring oder Iris und Zweibein. Ausgeblendete Werte bleiben gespeichert.")
+                    Text("Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.")
                 }
 
                 Section {

@@ -6,7 +6,7 @@ struct EventDetailView: View {
     let event: ShootingEvent
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(SightSettings.showKey) private var showSport = false
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var editing = false
     @State private var addingStich = false
     @State private var confirmDelete = false
@@ -59,7 +59,7 @@ struct EventDetailView: View {
                 }
             }
 
-            if showSport, let weather = event.weather {
+            if features.contains(.weather), let weather = event.weather {
                 WeatherDetailSections(record: weather)
             }
         }
@@ -170,7 +170,7 @@ struct EventEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
-    @AppStorage(SightSettings.showKey) private var showSport = false
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
 
     @State private var date = Date.now
     @State private var range: ShootingRange?
@@ -196,7 +196,7 @@ struct EventEditorView: View {
                 } footer: {
                     Text("Gilt für alle \(event.stichCount) Stiche dieses Anlasses.")
                 }
-                if showSport {
+                if features.contains(.weather) {
                     WeatherSection(weather: $weather, day: date, range: range)
                 }
             }
@@ -218,7 +218,7 @@ struct EventEditorView: View {
         event.name = name.trimmingCharacters(in: .whitespaces)
         event.range = range
         event.setDate(date)
-        if showSport { event.weather = weather?.normalized() }
+        if features.contains(.weather) { event.weather = weather?.normalized() }
         try? context.save()
         // Day-based reminders count from entry dates.
         if moved { Set((event.entries ?? []).compactMap(\.weapon)).forEach { MaintenanceNotifier.refresh($0) } }

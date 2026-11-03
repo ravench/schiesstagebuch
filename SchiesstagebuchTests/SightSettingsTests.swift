@@ -62,7 +62,7 @@ final class SightSettingsTests: ModelTestCase {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Waffen-Einstellungen für Sportschützen erfassen",
+            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Für Sportschützen", "Brillenfilter",
                                              "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibein", "Zweibein (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
@@ -121,13 +121,6 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertTrue(row.contains(SightSettings.format(3.6)))
         XCTAssertTrue(row.contains(SightSettings.format(1.8)))
         XCTAssertTrue(row.contains(SightSettings.format(32.5)))
-    }
-
-    func testSportShooterFieldsAreHiddenByDefault() {
-        let defaults = UserDefaults(suiteName: "SightSettingsTests")!
-        defaults.removePersistentDomain(forName: "SightSettingsTests")
-        XCTAssertFalse(defaults.bool(forKey: SightSettings.showKey))
-        XCTAssertEqual(SightSettings.showKey, "showSportShooterSettings")
     }
 
     func testBipodClampsToHalfCentimetres() {
