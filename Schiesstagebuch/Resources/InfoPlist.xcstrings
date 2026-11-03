@@ -59,6 +59,35 @@
         }
       }
     },
+    "NSLocationWhenInUseUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wählt beim neuen Eintrag die Schiessanlage, bei der du gerade bist. Der Standort wird nicht gespeichert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picks the shooting range you are at when you start a new entry. Your location is not stored."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisit le stand de tir où tu te trouves lors d'une nouvelle entrée. La position n'est pas enregistrée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sceglie il poligono di tiro in cui ti trovi quando crei una nuova voce. La posizione non viene salvata."
+          }
+        }
+      }
+    },
     "NSPhotoLibraryUsageDescription": {
       "extractionState": "manual",
       "localizations": {
