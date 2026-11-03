@@ -195,31 +195,11 @@ class LaneTests(unittest.TestCase):
         self.assertEqual(ranges[0]["distances"], [200])
 
 
-def overpass_fixture():
-    def element(kind, ident, lat, lon, tags, center=False):
-        item = {"type": kind, "id": ident, "tags": tags}
-        if center:
-            item["center"] = {"lat": lat, "lon": lon}
-        else:
-            item.update(lat=lat, lon=lon)
-        return item
-
-    lat_mid, lon_mid = rc.lv95_to_wgs84(E0, N0 + 150)
-    lat_town, lon_town = rc.lv95_to_wgs84(E0 + 2000, N0 + 2000)
-    lat_indoor, lon_indoor = rc.lv95_to_wgs84(E0 + 5000, N0)
-    return {"elements": [
-        element("way", 1, lat_mid, lon_mid,
-                {"sport": "shooting", "leisure": "pitch", "name": "Schiessanlage Riedbach",
-                 "website": "https://example.ch"}, center=True),
-        element("way", 2, lat_mid, lon_mid, {"sport": "shooting", "leisure": "pitch"}, center=True),
-        element("node", 3, lat_town, lon_town, {"place": "village", "name": "Riedbach"}),
-        element("way", 4, lat_indoor, lon_indoor,
-                {"sport": "shooting", "shooting": "indoor_range", "name": "Luftgewehr Halle"}, center=True),
-        element("way", 5, lat_indoor, lon_indoor,
-                {"sport": "shooting", "name": "Luftgewehr Halle"}, center=True),
-        element("node", 6, lat_indoor, lon_indoor,
-                {"sport": "shooting", "shooting": "paintball", "name": "Paintball"}),
-        element("node", 7, lat_indoor, lon_indoor, {"sport": "shooting"}),
+def manual_fixture():
+    return {"ranges": [
+        {"id": "manual:halle", "name": "Indoor Halle", "place": "Riedbach", "lat": 46.9, "lon": 7.5,
+         "distances": [10, 25], "website": "https://example.ch"},
+        {"id": "manual:keller", "name": "Schiesskeller", "place": "Moos", "lat": 47.1, "lon": 8.2},
     ]}
 
 
@@ -231,12 +211,12 @@ class NameTests(unittest.TestCase):
         self.assertEqual(rc.clean_name(None), "")
         self.assertEqual(rc.clean_name("k_W"), "")  # swissTLM3D's "no value"
 
-    def test_swisstopo_name_used_without_osm(self):
+    def test_swisstopo_name_from_target_rows(self):
         houses = [{"id": "h1", "ring": box(E0, N0), "name": ""}]
         targets = [{"id": "t50", "line": target_row(E0, N0 + 54), "name": "Stand Allmend"},
                    {"id": "t300", "line": target_row(E0, N0 + 304), "name": "Schiessanlage Allmend"}]
         ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
-        rc.match_osm(ranges, [], [])
+        rc.name_ranges(ranges, [])
         self.assertEqual(ranges[0]["name"], "Schiessanlage Allmend")  # longest lane's name first
 
 
@@ -298,52 +278,61 @@ class SwisstopoNameTests(unittest.TestCase):
         ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
         tlm_places = [{"pos": (E0 + 100, N0), "tags": {"name": "Aarhus"}},
                       {"pos": (E0 + 2000, N0), "tags": {"name": "Kiesen"}}]
-        rc.match_osm(ranges, [], [], tlm_places)
+        rc.name_ranges(ranges, tlm_places)
         self.assertEqual(ranges[0]["place"], "Kiesen")
         self.assertEqual(ranges[0]["name"], "Kiesen 300m")
 
 
-class OsmTests(unittest.TestCase):
-    def test_parse_skips_paintball(self):
-        shooting, places = rc.parse_overpass(overpass_fixture())
-        self.assertEqual([p["tags"]["name"] for p in places], ["Riedbach"])
-        self.assertNotIn("node/6", [s["osm"] for s in shooting])
-        self.assertEqual(len(shooting), 5)
-
-    def test_match_and_osm_only(self):
-        shooting, places = rc.parse_overpass(overpass_fixture())
+class NamingTests(unittest.TestCase):
+    def test_unnamed_range_gets_place_name(self):
         houses = [{"id": "h1", "ring": box(E0, N0)}, {"id": "h9", "ring": box(E0 + 30000, N0)}]
         targets = [{"id": "t300", "line": target_row(E0, N0 + 304)},
                    {"id": "t9", "line": target_row(E0 + 30000, N0 + 54)}]
         ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
-        leftovers = rc.match_osm(ranges, shooting, places)
-        named = next(r for r in ranges if r["osm"])
-        self.assertEqual(named["name"], "Schiessanlage Riedbach")
-        self.assertEqual(named["osm"], "way/1")
-        self.assertEqual(named["website"], "https://example.ch")
-        self.assertEqual(named["place"], "Riedbach")
-        self.assertEqual(named["name_source"], "osm")
-        unnamed = next(r for r in ranges if not r["osm"])
-        self.assertEqual(unnamed["name"], "Schiessanlage")  # no place within 10 km
-        self.assertEqual(unnamed["name_source"], "generated")
+        rc.name_ranges(ranges, [{"pos": (E0 + 3000, N0), "tags": {"name": "Musterdorf"}}])
+        near = next(r for r in ranges if r["place"])
+        self.assertEqual(near["name"], "Schiessanlage Musterdorf")
+        self.assertEqual(near["name_source"], "generated")
+        far = next(r for r in ranges if not r["place"])
+        self.assertEqual(far["name"], "Schiessanlage")  # no place within 10 km
 
-        extra = rc.osm_only_ranges(leftovers, places)
-        self.assertEqual([r["name"] for r in extra], ["Luftgewehr Halle"])  # merged, unnamed dropped
-        self.assertIsNone(extra[0]["bearing"])
-        self.assertEqual(extra[0]["place"], "Riedbach")
-        self.assertTrue(extra[0]["indoor"])
 
-    def test_swisstopo_place_beats_osm(self):
-        shooting, places = rc.parse_overpass(overpass_fixture())
-        houses = [{"id": "h1", "ring": box(E0, N0)}]
-        targets = [{"id": "t300", "line": target_row(E0, N0 + 304), "name": ""}]
-        ranges = rc.group_lanes(rc.lanes_from_pairing(houses, targets))
-        tlm_places = [{"pos": (E0 + 3000, N0), "tags": {"name": "Musterdorf"}}]
-        rc.match_osm(ranges, shooting, places, tlm_places)
-        self.assertEqual(ranges[0]["place"], "Musterdorf")
-        self.assertEqual(ranges[0]["place_source"], "swisstopo")
-        self.assertEqual(ranges[0]["name"], "Schiessanlage Riedbach")  # OSM fills the missing name
-        self.assertEqual(ranges[0]["name_source"], "osm")
+class ManualListTests(unittest.TestCase):
+    def test_manual_ranges(self):
+        ranges = rc.manual_ranges(manual_fixture())
+        self.assertEqual([r["id"] for r in ranges], ["manual:halle", "manual:keller"])
+        halle = ranges[0]
+        self.assertTrue(halle["indoor"])
+        self.assertIsNone(halle["bearing"])
+        self.assertEqual(halle["distances"], [25, 10])
+        lat, lon = rc.lv95_to_wgs84(*halle["firing"])
+        self.assertAlmostEqual(lat, 46.9, delta=1e-4)
+        self.assertAlmostEqual(lon, 7.5, delta=1e-4)
+        record = rc.range_record(halle)
+        self.assertTrue(record["indoor"])
+        self.assertEqual(record["website"], "https://example.ch")
+        self.assertNotIn("shootingBearing", record)
+        self.assertEqual(ranges[1]["distances"], [])
+
+    def test_manual_ranges_reject_bad_entries(self):
+        good = manual_fixture()["ranges"][0]
+        for bad in ({**good, "id": "osm:node/1"}, {**good, "name": " "}, {**good, "lat": None},
+                    {**good, "lat": 48.5}, {**good, "distances": [25.5]}, {**good, "place": ""}):
+            with self.assertRaises(ValueError, msg=bad):
+                rc.manual_ranges({"ranges": [bad]})
+        with self.assertRaises(ValueError):
+            rc.manual_ranges({"ranges": [good, good]})
+
+    def test_repository_indoor_list_is_valid(self):
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "indoor-ranges.json")
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        ranges = rc.manual_ranges(data)
+        self.assertGreaterEqual(len(ranges), 10)
+        for item in data["ranges"]:
+            self.assertTrue(item.get("website", "").startswith("https://"), item["id"])
+            self.assertTrue(item.get("address"), item["id"])
+            self.assertFalse({"osm", "osm_id"} & item.keys(), "positions must not come from OSM")
 
 
 class GeoPackageTests(unittest.TestCase):
@@ -407,11 +396,11 @@ class GeoPackageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "tlm.gpkg")
             self.make_gpkg(path)
-            osm = os.path.join(tmp, "overpass.json")
-            with open(osm, "w") as f:
-                json.dump(overpass_fixture(), f)
+            manual = os.path.join(tmp, "indoor.json")
+            with open(manual, "w") as f:
+                json.dump(manual_fixture(), f)
             out = os.path.join(tmp, "out")
-            stats = rc.build(path, osm, out, "2026-02")
+            stats = rc.build(path, manual, out, "2026-02")
             with open(os.path.join(out, "ranges.json")) as f:
                 catalogue = json.load(f)
             with open(os.path.join(out, "ranges.csv")) as f:
@@ -419,28 +408,27 @@ class GeoPackageTests(unittest.TestCase):
 
         self.assertEqual(stats["shooting houses"], 1)
         self.assertEqual(stats["  name from swisstopo"], 1)
-        self.assertEqual(stats["  name from OSM (no swisstopo name)"], 0)
-        self.assertEqual(stats["  place from swisstopo"], 1)
-        self.assertEqual(stats["  website from OSM"], 1)
-        self.assertEqual(stats["ranges from OSM only"], 1)
-        self.assertEqual(stats["  of which indoor"], 1)
+        self.assertEqual(stats["  with place"], 1)
+        self.assertEqual(stats["indoor ranges from the hand-made list"], 2)
         self.assertEqual(stats["lanes from trajectories"], 1)
         self.assertEqual(catalogue["version"], 1)
         self.assertEqual(catalogue["swissTLM3D"], "2026-02")
-        self.assertIn("OpenStreetMap", catalogue["attribution"]["osm"])
-        self.assertIn("swisstopo", catalogue["attribution"]["swisstopo"])
+        self.assertEqual(list(catalogue["attribution"]), ["swisstopo"])
         tlm = next(r for r in catalogue["ranges"] if r["id"].startswith("tlm:"))
-        self.assertEqual(tlm["name"], "Schiessanlage Fänglen")  # swisstopo name beats OSM
+        self.assertEqual(tlm["name"], "Schiessanlage Fänglen")
         self.assertEqual(tlm["place"], "Fänglen")
-        self.assertEqual(tlm["website"], "https://example.ch")
-        self.assertEqual(tlm["osm"], "way/1")
+        self.assertNotIn("website", tlm)
+        self.assertNotIn("indoor", tlm)
         self.assertEqual(tlm["distances"], [300, 50])
         self.assertAlmostEqual(tlm["shootingBearing"], 0, delta=0.5)
         self.assertEqual(tlm["altitude"], 550)
         self.assertAlmostEqual(tlm["latitude"], 46.95112, delta=1e-4)
         self.assertEqual({lane["source"] for lane in tlm["lanes"]}, {"pairing", "trajectory"})
-        indoor = next(r for r in catalogue["ranges"] if r["id"].startswith("osm:"))
+        indoor = next(r for r in catalogue["ranges"] if r["id"] == "manual:halle")
         self.assertNotIn("shootingBearing", indoor)
+        self.assertTrue(indoor["indoor"])
+        self.assertEqual(indoor["place"], "Riedbach")
+        self.assertEqual(next(r for r in rows if r["id"] == "manual:halle")["source"], "manual")
         self.assertEqual(len(rows), len(catalogue["ranges"]))
         self.assertEqual(rows[0].keys() >= {"east_lv95", "north_lv95", "shooting_bearing"}, True)
 
@@ -458,7 +446,7 @@ class GeoPackageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             rc.latest_gpkg({"features": []})
 
-    def test_build_without_osm(self):
+    def test_build_without_manual_list(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = os.path.join(tmp, "tlm.gpkg")
             self.make_gpkg(path)
@@ -466,16 +454,9 @@ class GeoPackageTests(unittest.TestCase):
             stats = rc.build(path, "-", out)
             with open(os.path.join(out, "ranges.json")) as f:
                 catalogue = json.load(f)
-        self.assertEqual(stats["ranges from OSM only"], 0)
+        self.assertEqual(stats["indoor ranges from the hand-made list"], 0)
         self.assertEqual([r["name"] for r in catalogue["ranges"]], ["Schiessanlage Fänglen"])
-        self.assertNotIn("osm", catalogue["ranges"][0])
         self.assertEqual(list(catalogue["attribution"]), ["swisstopo"])
-
-    def test_overpass_query_covers_switzerland(self):
-        self.assertIn('"ISO3166-1"="CH"', rc.OVERPASS_QUERY)
-        self.assertIn("sport", rc.OVERPASS_QUERY)
-        self.assertIn("place", rc.OVERPASS_QUERY)
-
 
 if __name__ == "__main__":
     unittest.main()
