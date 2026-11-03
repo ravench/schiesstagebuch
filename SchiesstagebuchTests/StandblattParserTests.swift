@@ -300,6 +300,7 @@ final class StandblattParserTests: XCTestCase {
         XCTAssertEqual(strips.map(\.title), ["Übungskehr EF", "Vereinsstich EF", "Auszahlungsstich EF"])
         XCTAssertTrue(strips.allSatisfy(\.handwritten))
         XCTAssertEqual(strips[0].details, ["Rehalp-Schiessen 2026"])
+        XCTAssertEqual(strips[0].issues(.rings), [], "practice series of 2 shots on handwritten sheets are not flagged")
 
         XCTAssertEqual(rings(strips[0]), [[9, 10]])
         XCTAssertNil(strips[0].printedRings)
@@ -440,7 +441,7 @@ final class StandblattParserTests: XCTestCase {
         Total 19 181
         """
         let s = try XCTUnwrap(StandblattParser.parse(text: text).first)
-        XCTAssertEqual(s.issues(.rings), [.missingShots([2])])
+        XCTAssertEqual(s.issues(.rings), [.missingShots([2]), .unusualPasseLength(1, shots: 2)])
     }
 
     func testCopyHeadersWithoutK() {
@@ -490,5 +491,18 @@ final class StandblattParserTests: XCTestCase {
                           shotValuesText: Score.joinPasses(rings.passes), scoredShots: 10)
         XCTAssertEqual(score.shotValues.reduce(0, +), 95)
         XCTAssertEqual(score.percentage!, 0.95, accuracy: 1e-9)
+    }
+
+    func testTotalAboveMaximumIsReported() throws {
+        let text = """
+        Scheibe 1/1
+        1 ↖ 10 92
+        2 ↖ 9 89
+        3 ↖ 9 88
+        Total 39 269
+        """
+        let s = try XCTUnwrap(StandblattParser.parse(text: text).first)
+        XCTAssertEqual(s.issues(.rings), [.totalMismatch(printed: 39, read: 28), .exceedsMax(total: 39, max: 30)])
+        XCTAssertEqual(s.issues(.hundredths), [])
     }
 }
