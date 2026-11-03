@@ -115,6 +115,13 @@ class WorkflowTests(unittest.TestCase):
         self.assertRegex(build, r"push:\n\s+branches: \[main\]")
         self.assertIn("pull_request:", build)
 
+    def test_archive_errors_shown(self):
+        # xcpretty hides signing errors; the raw log is kept and printed when the archive fails.
+        self.assertIn('| tee "$RUNNER_TEMP/archive.log" | xcpretty', self.workflow)
+        shown = self.workflow.split("Show the archive errors")[1].split("- name:")[0]
+        self.assertIn("if: failure()", shown)
+        self.assertIn("archive.log", shown)
+
     def test_uses_ci_build_number(self):
         self.assertIn('CURRENT_PROJECT_VERSION="$BUILD_NUMBER"', self.workflow)
 
