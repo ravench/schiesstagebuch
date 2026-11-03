@@ -62,7 +62,6 @@ T = {
         "Les armes archivées ne sont plus proposées pour les nouvelles entrées, mais restent dans le journal et les statistiques.",
         "Le armi archiviate non vengono più proposte per le nuove voci, ma restano nel diario e nelle statistiche."),
     "Archivierte zeigen": ("Show archived", "Afficher les archivées", "Mostra archiviate"),
-    "Armbrust": ("Crossbow", "Arbalète", "Balestra"),
     "Aus": ("Off", "Désactivé", "Disattivato"),
     "Ausgewählt": ("Selected", "Sélectionnés", "Selezionati"),
     "Ausrüstung": ("Equipment", "Équipement", "Equipaggiamento"),

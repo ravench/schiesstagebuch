@@ -28,7 +28,7 @@ struct SightSettings: Equatable {
         switch category {
         case .pistol, .sportPistol, .luger, .revolver, .airPistol: .iris
         case .serviceCarbine, .serviceRifle, .sportRifle, .longRange, .huntingRifle,
-             .leverAction, .airgun, .crossbow, .pcc: .ring
+             .leverAction, .airgun, .pcc: .ring
         default: .both
         }
     }
