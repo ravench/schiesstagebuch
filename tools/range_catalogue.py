@@ -670,6 +670,11 @@ def manual_ranges(data):
 # ---------------------------------------------------------------------------
 # Output
 
+def round_bearing(bearing):
+    """Bearing to 0.1°, in [0, 360): 359.96 rounds to 0.0, not 360.0."""
+    return round(bearing, 1) % 360.0
+
+
 def range_record(rng):
     lat, lon = lv95_to_wgs84(*rng["firing"])
     record = {
@@ -681,7 +686,7 @@ def range_record(rng):
         "distances": rng["distances"],
     }
     if rng["bearing"] is not None:
-        record["shootingBearing"] = round(rng["bearing"], 1)
+        record["shootingBearing"] = round_bearing(rng["bearing"])
     if rng["altitude"] is not None:
         record["altitude"] = round(rng["altitude"])
     if rng.get("website"):
@@ -692,7 +697,7 @@ def range_record(rng):
         record["lanes"] = [{
             "distance": lane["distance"],
             "measured": round(lane["measured"], 1),
-            "shootingBearing": round(lane["bearing"], 1),
+            "shootingBearing": round_bearing(lane["bearing"]),
             "source": lane["source"],
         } for lane in sorted(rng["lanes"], key=lambda lane: -lane["measured"])]
     return record
@@ -799,7 +804,7 @@ def app_catalogue(catalogue):
         item = {"id": r["id"], "name": name, "place": r["place"],
                 "lat": r["latitude"], "lon": r["longitude"], "distances": r["distances"]}
         if r.get("shootingBearing") is not None:
-            item["bearing"] = r["shootingBearing"]
+            item["bearing"] = round_bearing(r["shootingBearing"])
         if r.get("altitude") is not None:
             item["alt"] = r["altitude"]
         if r.get("indoor"):
