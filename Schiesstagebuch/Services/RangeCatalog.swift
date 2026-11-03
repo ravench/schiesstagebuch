@@ -24,6 +24,10 @@ enum RangeCatalog {
     /// Credit the data licences ask for, shown wherever catalogue ranges are listed.
     static var attribution: String { file?.source ?? "Schiessanlagen: swissTLM3D © swisstopo" }
 
+    /// catalogID of the user's own ranges. Predicates compare against it because SwiftData
+    /// evaluates `!catalogID.isEmpty` wrongly on the store.
+    private static let noCatalogID = String()
+
     /// Set once the first-launch question was answered on this device.
     static let askedKey = "rangeCatalogAsked.v1"
 
@@ -49,7 +53,8 @@ enum RangeCatalog {
 
     @MainActor
     static func hasCatalogueRanges(_ context: ModelContext) -> Bool {
-        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { !$0.catalogID.isEmpty })
+        let none = noCatalogID
+        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { $0.catalogID != none })
         return ((try? context.fetchCount(descriptor)) ?? 0) > 0
     }
 
@@ -117,7 +122,8 @@ enum RangeCatalog {
     @MainActor
     @discardableResult
     static func deduplicate(_ context: ModelContext) -> Int {
-        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { !$0.catalogID.isEmpty },
+        let none = noCatalogID
+        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { $0.catalogID != none },
                                                         sortBy: [SortDescriptor(\.createdAt)])
         guard let all = try? context.fetch(descriptor) else { return 0 }
         var keeper: [String: ShootingRange] = [:]
