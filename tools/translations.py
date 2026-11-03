@@ -566,6 +566,7 @@ T = {
         "Queste cartucce hanno le stesse dimensioni. Verifica le indicazioni del produttore prima di spararle nella stessa canna."),
     "Gehäuse": ("Receiver", "Boîtier de culasse", "Castello"),
     "Gleiche Abmessungen": ("Same dimensions", "Mêmes dimensions", "Stesse dimensioni"),
+    "Gleiche Masse wie %@": ("Same dimensions as %@", "Mêmes dimensions que %@", "Stesse dimensioni di %@"),
     "Griffstück": ("Frame", "Carcasse", "Fusto"),
     "Hauptnummer": ("Main serial number", "Numéro principal", "Numero principale"),
     "Hauptnummer (optional)": ("Main serial number (optional)", "Numéro principal (facultatif)", "Numero principale (facoltativo)"),

@@ -563,7 +563,7 @@ struct CaliberMultiPicker: View {
         let order = preferred + CaliberCatalog.Category.allCases.map(\.rawValue).filter { !preferred.contains($0) }
         return Dictionary(grouping: matches) { $0.category.isEmpty ? CaliberCatalog.Category.other.rawValue : $0.category }
             .sorted { (order.firstIndex(of: $0.key) ?? 99) < (order.firstIndex(of: $1.key) ?? 99) }
-            .map { ($0.key, $0.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }) }
+            .map { ($0.key, Caliber.keepingGroupsTogether($0.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending })) }
     }
 
     var body: some View {
@@ -612,6 +612,9 @@ struct CaliberMultiPicker: View {
                     Text(c.name).foregroundStyle(.primary)
                     if !c.aliasSummary.isEmpty {
                         Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
+                    }
+                    if let note = c.sameDimensionsNote(in: all) {
+                        Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 Spacer()
