@@ -44,6 +44,20 @@ final class WeaponOwnershipTests: ModelTestCase {
                        cal.startOfDay(for: day(5)))
     }
 
+    func testEnteringASaleDateArchives() {
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: false, from: nil, to: day(10)))
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: nil, to: day(10)))
+    }
+
+    func testChangingOrRemovingTheSaleDateKeepsTheArchiveState() {
+        // The user un-archived a sold weapon: moving the date must not archive it again.
+        XCTAssertFalse(Weapon.archivedAfterSaleChange(isArchived: false, from: day(10), to: day(12)))
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: day(10), to: day(12)))
+        // Removing the date does not un-archive.
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: day(10), to: nil))
+        XCTAssertFalse(Weapon.archivedAfterSaleChange(isArchived: false, from: nil, to: nil))
+    }
+
     func testBackupKeepsPurchaseAndSaleDates() throws {
         let w = Weapon(name: "Stgw 57"); context.insert(w)
         w.purchaseDate = day(1, month: 4, year: 2019)
@@ -82,7 +96,7 @@ final class WeaponOwnershipTests: ModelTestCase {
 
     func testLabelsAreTranslated() throws {
         let keys = ["Kaufdatum", "Verkaufsdatum", "Kauf und Verkauf",
-                    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen."]
+                    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert."]
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))

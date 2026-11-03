@@ -311,7 +311,7 @@ T = {
     "Kauf und Verkauf": ("Purchase and sale", "Achat et vente", "Acquisto e vendita"),
     "Kaufdatum": ("Date of purchase", "Date d'achat", "Data di acquisto"),
     "Verkaufsdatum": ("Date of sale", "Date de vente", "Data di vendita"),
-    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen.": ("The date of sale can't be before the date of purchase.", "La date de vente ne peut pas précéder la date d'achat.", "La data di vendita non può precedere la data di acquisto."),
+    "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.": ("The date of sale can't be before the date of purchase. Sold firearms are archived.", "La date de vente ne peut pas précéder la date d'achat. Les armes vendues sont archivées.", "La data di vendita non può precedere la data di acquisto. Le armi vendute vengono archiviate."),
     "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
 
     # Standblatt scanner
@@ -481,5 +481,11 @@ T = {
 from translations_weather import W  # noqa: E402
 
 for _k, _v in W.items():
+    assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
+    T[_k] = _v
+
+from translations_wording import S  # noqa: E402
+
+for _k, _v in S.items():
     assert T.get(_k, _v) == _v, f"conflicting translation for {_k!r}: {T[_k]} vs {_v}"
     T[_k] = _v
