@@ -277,6 +277,11 @@ T = {
     "Losnummern": ("Lot numbers", "Numéros de lot", "Numeri di lotto"),
     "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": ("Optional. You can pick the lot when logging an entry.", "Facultatif. Tu peux choisir le lot en saisissant une entrée.", "Facoltativo. Puoi scegliere il lotto quando registri una voce."),
     "Pro Los": ("By lot", "Par lot", "Per lotto"),
+    "Ø Prozent pro Los": ("Avg. percent by lot", "Moy. pourcentage par lot", "Media percentuale per lotto"),
+    "Einträge mit Prozent: Punkte mit Maximum oder Resultat in %. In Klammern die Anzahl.": (
+        "Entries with a percentage: points with a maximum, or a result in %. Number of entries in brackets.",
+        "Entrées avec pourcentage : points avec maximum ou résultat en %. Nombre d'entrées entre parenthèses.",
+        "Voci con percentuale: punti con massimo o risultato in %. Tra parentesi il numero di voci."),
     "App-Icon": ("App Icon", "Icône de l’app", "Icona dell’app"),
     "Offenes Tagebuch": ("Open journal", "Journal ouvert", "Diario aperto"),
     "Gebundenes Tagebuch": ("Hardcover journal", "Journal relié", "Diario rilegato"),

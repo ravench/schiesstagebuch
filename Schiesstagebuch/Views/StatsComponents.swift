@@ -220,3 +220,31 @@ struct BreakdownChart<Key: Hashable>: View {
         }
     }
 }
+
+/// Average result percentage per ammunition lot, so lots can be compared however each entry was
+/// scored (points of a maximum or a result in percent). Shown once two lots have a percentage.
+struct LotResultsChart: View {
+    let entries: [Entry]
+
+    var body: some View {
+        let rows = entries.percentageByLot
+        if rows.count >= 2 {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Ø Prozent pro Los").font(.headline)
+                Chart(rows, id: \.lot.persistentModelID) { row in
+                    BarMark(x: .value("Prozent", row.averagePercentage), y: .value("Los", row.lot.number))
+                        .annotation(position: .trailing) {
+                            Text(verbatim: "\(ScoreFormat.percent(row.averagePercentage)) (\(row.count))")
+                                .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                        }
+                        .cornerRadius(3)
+                }
+                .chartXScale(domain: 0...1.15)
+                .chartXAxis(.hidden)
+                .frame(height: CGFloat(rows.count) * 34 + 10)
+                Text("Einträge mit Prozent: Punkte mit Maximum oder Resultat in %. In Klammern die Anzahl.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+}

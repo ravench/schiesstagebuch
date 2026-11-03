@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 /// Scoring maths for one entry. Everything is optional: a free-text result like
 /// "Kranz" simply yields no numbers.
@@ -19,9 +20,17 @@ struct Score {
     var passes: [[Double]] { Score.parsePasses(shotValuesText) }
     var shotValues: [Double] { passes.flatMap { $0 } }
 
+    /// A result written as a percentage ("87,5 %", "92%"), as programs scored in percent of the
+    /// maximum report it (e.g. an IPSC match percentage). Stored as a fraction: 0.875.
+    var resultPercent: Double? {
+        guard result.contains("%"), let first = Score.numbers(in: result).first else { return nil }
+        return first / 100
+    }
+
     /// Points from the result text ("96", "96,4", "96/100"); the sum of the shot values when the result has no number.
+    /// A percentage result has no points of its own, only the shot values when they are entered.
     var points: Double? {
-        if let first = Score.numbers(in: result).first { return first }
+        if resultPercent == nil, let first = Score.numbers(in: result).first { return first }
         let shots = shotValues
         return shots.isEmpty ? nil : shots.reduce(0, +)
     }
@@ -36,11 +45,15 @@ struct Score {
     /// More points than the maximum: impossible, a result is at most 100 %. Such data is
     /// flagged in the editor and import and left out of percentages and averages.
     var exceedsMax: Bool {
+        if let resultPercent { return resultPercent > 1 + 1e-9 }
         guard let points, let max = effectiveMax else { return false }
         return points > max + 1e-9
     }
 
+    /// Share of the maximum, 0...1. A result written in percent is taken as it is, so it compares
+    /// directly with results in points (e.g. between ammunition lots).
     var percentage: Double? {
+        if let resultPercent { return exceedsMax ? nil : resultPercent }
         guard let points, let max = effectiveMax, !exceedsMax else { return nil }
         return points / max
     }
@@ -119,11 +132,33 @@ extension Sequence where Element == Entry {
         return shots == 0 ? nil : b.map(\.points).reduce(0, +) / Double(shots)
     }
 
+    /// Average percentage per ammunition lot, best first, for comparing lots. Only entries with a
+    /// percentage count (points with a maximum, or a result written in percent), so lots shot in
+    /// different programmes stay comparable. Lots without any such result are left out.
+    var percentageByLot: [LotResult] {
+        var groups: [PersistentIdentifier: (lot: AmmoLot, values: [Double])] = [:]
+        for entry in self {
+            guard let lot = entry.lot, let p = entry.score.percentage else { continue }
+            groups[lot.persistentModelID, default: (lot, [])].values.append(p)
+        }
+        return groups.values
+            .map { LotResult(lot: $0.lot, count: $0.values.count, averagePercentage: $0.values.reduce(0, +) / Double($0.values.count)) }
+            .sorted { $0.averagePercentage != $1.averagePercentage ? $0.averagePercentage > $1.averagePercentage : $0.lot.number < $1.lot.number }
+    }
+
     /// Mean points per entry over the entries with a numeric result.
     var averagePoints: Double? {
         let p = compactMap(\.score.points)
         return p.isEmpty ? nil : p.reduce(0, +) / Double(p.count)
     }
+}
+
+/// One ammunition lot's results, see `percentageByLot`.
+struct LotResult {
+    var lot: AmmoLot
+    /// Entries with a percentage.
+    var count: Int
+    var averagePercentage: Double
 }
 
 /// A Stich shot more than once at the same event, e.g. bought twice ("nachgedoppelt").
