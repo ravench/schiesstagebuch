@@ -91,7 +91,13 @@ For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates t
 container on first run. Change the bundle id / container in `project.yml` if
 `ch.giotta` isn't yours.
 
-Calibres and icons are generated assets. After editing `tools/cartridges.py` or
+The calibre catalogue lives in the shared [calibre-data](https://github.com/ravench/calibre-data)
+repository, included as a git submodule at `calibre-data/` (also used by Kaliberfinder and the
+[calibre poster](https://github.com/ravench/calibre-poster)). After cloning, run
+`git submodule update --init`. To change calibres, edit `cartridges.py` there, then bump the
+submodule here (`git -C calibre-data pull origin main && git add calibre-data`).
+
+Calibres and icons are generated assets. After bumping `calibre-data` or editing
 `tools/weapon_icons.py`, run:
 
 ```sh

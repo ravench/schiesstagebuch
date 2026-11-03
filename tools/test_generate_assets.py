@@ -43,6 +43,25 @@ class PatchedBulletTests(unittest.TestCase):
             self.assertNotIn("bulletMaterial", o, name)
 
 
+class CalibreDataSubmoduleTests(unittest.TestCase):
+    """The catalogue comes from the shared calibre-data submodule (github.com/ravench/calibre-data)."""
+
+    def test_catalogue_comes_from_the_submodule(self):
+        import cartridges, outline
+        data = os.path.join(ROOT, "calibre-data")
+        self.assertTrue(os.path.isfile(os.path.join(data, "cartridges.py")), "run: git submodule update --init")
+        self.assertEqual(os.path.dirname(os.path.abspath(cartridges.__file__)), data)
+        self.assertIs(generate_assets.outline, outline.outline)
+        self.assertFalse(os.path.exists(os.path.join(ROOT, "tools", "cartridges.py")), "no second copy of the catalogue")
+
+    def test_ci_checks_out_the_submodule(self):
+        with open(os.path.join(ROOT, ".gitmodules")) as f:
+            self.assertIn("url = https://github.com/ravench/calibre-data", f.read())
+        with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
+            build_job = f.read().split("  build:", 1)[1]
+        self.assertIn("submodules: true", build_job.split("- run:", 1)[0])
+
+
 class DimensionGroupTests(unittest.TestCase):
     def test_identical_chambers_share_a_group(self):
         groups = generate_assets.dimension_groups()
