@@ -14,6 +14,14 @@ struct SchiesstagebuchApp: App {
     /// Syncs through the iCloud container from the entitlements when the user is signed in to iCloud,
     /// otherwise SwiftData simply keeps working locally.
     static func makeContainer() -> ModelContainer {
+        if ScreenshotData.isActive {
+            // Screenshot runs: sample data in memory only, never the user's store or iCloud.
+            do {
+                return try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
+            } catch {
+                fatalError("Datenbank konnte nicht geöffnet werden: \(error)")
+            }
+        }
         do {
             return try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, cloudKitDatabase: .automatic))
         } catch {
@@ -32,6 +40,7 @@ struct SchiesstagebuchApp: App {
                 .task {
                     CaliberCatalog.seedIfNeeded(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
+                    if ScreenshotData.isActive { ScreenshotData.seed(container.mainContext) }
                 }
                 // Core Data posts this from a background queue; mainContext must only be used on the main thread.
                 .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: RunLoop.main)) { _ in

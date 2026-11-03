@@ -48,6 +48,17 @@ struct LegacyImportView: View {
                         LabeledContent("Waffen", value: plan.weapons.joined(separator: ", "))
                         LabeledContent("Schiessanlagen", value: "\(plan.ranges.count)")
                     }
+                    if !plan.sighterSuggestions.isEmpty {
+                        Section {
+                            ForEach(plan.newRows.filter { plan.sighterSuggestions[$0.key] != nil }, id: \.self) { row in
+                                sighterToggle(row, sighters: plan.sighterSuggestions[row.key] ?? 0)
+                            }
+                        } header: {
+                            Text("Probeschüsse abziehen")
+                        } footer: {
+                            Text("Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.")
+                        }
+                    }
                     Section {
                         ForEach(ammoKeys(plan), id: \.self) { ammo in
                             Picker(ammo, selection: Binding(
@@ -112,6 +123,21 @@ struct LegacyImportView: View {
             } message: { Text(error ?? "") }
             .interactiveDismissDisabled(running)
             .onAppear { found = LegacyImport.candidates(in: URL.documentsDirectory) }
+        }
+    }
+
+    private func sighterToggle(_ row: LegacyImport.Row, sighters: Int) -> some View {
+        Toggle(isOn: Binding(
+            get: { self.plan?.splitSighters.contains(row.key) ?? false },
+            set: { on in
+                if on { self.plan?.splitSighters.insert(row.key) } else { self.plan?.splitSighters.remove(row.key) }
+            })) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: [row.date.formatted(date: .numeric, time: .omitted), row.weapon, row.event]
+                    .filter { !$0.isEmpty }.joined(separator: " · "))
+                (Text("\(row.shots - sighters) Wertung + \(sighters) Probe") + Text(verbatim: " · \(row.result)"))
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         }
     }
 

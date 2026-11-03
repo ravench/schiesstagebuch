@@ -60,8 +60,8 @@ struct KPIGrid: View {
             }
             if entries.contains(where: { $0.sighterCount != nil }) {
                 GridRow {
-                    tile("Probeschüsse", entries.compactMap(\.sighterCount).reduce(0, +).formatted(), "scope")
-                    tile("Wertungsschüsse", entries.compactMap(\.scoredCount).reduce(0, +).formatted(), "target")
+                    tile("Probeschüsse", entries.sighterShots.formatted(), "scope")
+                    tile("Wertungsschüsse", entries.scoredShots.formatted(), "target")
                 }
             }
         }
@@ -136,6 +136,12 @@ struct ShotsOverTimeChart: View {
         return grouped.map { Point(month: $0, shots: $1.totalShots) }.sorted { $0.month < $1.month }
     }
 
+    /// Months between axis labels, so that about six labels show however long the span is.
+    static func monthStride(first: Date, last: Date, labels: Int = 6) -> Int {
+        let months = (Calendar.current.dateComponents([.month], from: first, to: last).month ?? 0) + 1
+        return max(1, Int((Double(months) / Double(labels)).rounded(.up)))
+    }
+
     private var running: [Point] {
         var total = 0
         return monthly.map { total += $0.shots; return Point(month: $0.month, shots: total) }
@@ -168,7 +174,8 @@ struct ShotsOverTimeChart: View {
                     }
                 }
                 .chartXAxis {
-                    AxisMarks(values: .automatic(desiredCount: 6)) {
+                    // Whole months only: automatic ticks fall on weeks for short spans and repeat the month label.
+                    AxisMarks(values: .stride(by: .month, count: Self.monthStride(first: monthly.first!.month, last: monthly.last!.month))) {
                         AxisGridLine()
                         AxisValueLabel(format: .dateTime.month(.abbreviated).year(.twoDigits))
                     }

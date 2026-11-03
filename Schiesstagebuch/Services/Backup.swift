@@ -55,6 +55,7 @@ enum Backup {
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
         var dayCounting: String?
         var serialNumber: String?
+        var purchaseDate: Date?; var saleDate: Date?
     }
     struct AmmunitionDTO: Codable { var id: UUID; var name: String; var caliberID: UUID?; var isArchived: Bool; var createdAt: Date? }
     struct LotDTO: Codable { var id: UUID; var ammunitionID: UUID?; var number: String; var notes: String; var isArchived: Bool; var createdAt: Date }
@@ -81,7 +82,7 @@ enum Backup {
         var sighterCount: Int?
         var maxPoints: Double?
         var shotValuesText: String?
-        var filterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
+        var filterColor: String?; var secondFilterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
         var bipodLength: Double?
         var photos: [Data]
         /// Marker of entries imported from the old app, so a re-import after a restore skips them.
@@ -105,7 +106,8 @@ enum Backup {
                       caliberIDs: ($0.calibers ?? []).map(\.id), defaultCaliberID: $0.defaultCaliber?.id,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
-                      dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber)
+                      dayCounting: $0.dayCountingRaw, serialNumber: $0.serialNumber,
+                      purchaseDate: $0.purchaseDate, saleDate: $0.saleDate)
             },
             ammunition: try all(Ammunition.self, context).map {
                 .init(id: $0.id, name: $0.name, caliberID: $0.caliber?.id, isArchived: $0.isArchived, createdAt: $0.createdAt)
@@ -122,7 +124,8 @@ enum Backup {
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
-                      filterColor: $0.filterColor, diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
+                      filterColor: $0.filterColor, secondFilterColor: $0.secondFilterColor,
+                      diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
                       photos: $0.sortedPhotos.compactMap(\.imageData),
                       importKey: $0.importKey, createdAt: $0.createdAt)
             },
@@ -209,6 +212,7 @@ enum Backup {
             w.serviceIntervalShots = d.serviceIntervalShots; w.serviceIntervalDays = d.serviceIntervalDays
             w.dayCountingRaw = d.dayCounting ?? ""
             w.serialNumber = d.serialNumber ?? ""
+            w.purchaseDate = d.purchaseDate; w.saleDate = d.saleDate
             if let created = d.createdAt { w.createdAt = created }
             context.insert(w); weapons[d.id] = w
         }
@@ -266,7 +270,8 @@ enum Backup {
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
-            SightSettings(filter: d.filterColor ?? "", diopter: d.diopter, ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
+            SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "", diopter: d.diopter,
+                          ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
         }
@@ -310,7 +315,7 @@ enum Backup {
             cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
             cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
             cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
-            cols.append(e.filterColor)
+            cols.append(SightSettings(entry: e).filters.joined(separator: " + "))
             cols.append(e.diopter.map { SightSettings.format($0) } ?? "")
             cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")
             cols.append(e.irisSize.map { SightSettings.format($0) } ?? "")

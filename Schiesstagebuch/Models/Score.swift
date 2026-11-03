@@ -8,6 +8,11 @@ struct Score {
     var shotValuesText: String
     /// Wertungsschüsse when split, else all shots.
     var scoredShots: Int
+    /// False when `scoredShots` may include sighters (an imported total): no per-shot average then.
+    var scoredShotsKnown = true
+    /// Whether "96/100" means 96 of 100. The old app used "/" between the results of several
+    /// Stiche ("130 / 131"), so imported results never take their maximum from it.
+    var maxFromSlash = true
 
     /// Individual shots grouped into Passen, one Passe per line: "10 9 10 8,5" (spaces or semicolons
     /// between shots, comma or point for decimals). Empty lines are skipped.
@@ -25,19 +30,27 @@ struct Score {
     var effectiveMax: Double? {
         if let maxPoints, maxPoints > 0 { return maxPoints }
         let n = Score.numbers(in: result)
-        return result.contains("/") && n.count >= 2 && n[1] > 0 ? n[1] : nil
+        return maxFromSlash && result.contains("/") && n.count >= 2 && n[1] > 0 ? n[1] : nil
+    }
+
+    /// More points than the maximum: impossible, a result is at most 100 %. Such data is
+    /// flagged in the editor and import and left out of percentages and averages.
+    var exceedsMax: Bool {
+        guard let points, let max = effectiveMax else { return false }
+        return points > max + 1e-9
     }
 
     var percentage: Double? {
-        guard let points, let max = effectiveMax else { return nil }
+        guard let points, let max = effectiveMax, !exceedsMax else { return nil }
         return points / max
     }
 
     /// Points and shot count the per-shot average is based on.
     var perShotBasis: (points: Double, shots: Int)? {
+        guard !exceedsMax else { return nil }
         let shots = shotValues
         if !shots.isEmpty { return (shots.reduce(0, +), shots.count) }
-        guard let points, scoredShots > 0 else { return nil }
+        guard let points, scoredShotsKnown, scoredShots > 0 else { return nil }
         return (points, scoredShots)
     }
 
@@ -75,11 +88,24 @@ struct Score {
 
 extension Entry {
     var score: Score {
-        Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount)
+        Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount,
+              scoredShotsKnown: !isLegacyImport || sighterCount != nil, maxFromSlash: !isLegacyImport)
     }
+
+    /// Imported from the old app, which only knew a shot total and a free-text result. Such entries
+    /// get a percentage only once a maximum is entered, and a per-shot average only once the
+    /// sighters are split off.
+    var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
 }
 
 extension Sequence where Element == Entry {
+    /// Probeschüsse of the entries that record them.
+    var sighterShots: Int { reduce(0) { $0 + ($1.sighterCount ?? 0) } }
+
+    /// Wertungsschüsse. An entry without a sighter count (e.g. imported from the old app, which
+    /// only knew a total) counts all its shots, as its score does.
+    var scoredShots: Int { reduce(0) { $0 + ($1.scoredCount ?? $1.shotCount) } }
+
     /// Average percentage over the entries that have one.
     var averagePercentage: Double? {
         let p = compactMap(\.score.percentage)
