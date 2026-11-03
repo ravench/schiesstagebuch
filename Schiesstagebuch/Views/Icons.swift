@@ -8,7 +8,8 @@ struct CartridgeView: View {
     /// When set, draws at true scale (points per millimetre) instead of fitting the frame.
     var pointsPerMillimetre: CGFloat?
 
-    private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let isShot: Bool }
+    private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let patch: Path?
+        let bulletFill: Color; let isShot: Bool }
 
     private static var cache: [String: Parts] = [:]
 
@@ -18,7 +19,8 @@ struct CartridgeView: View {
         let o = item.outline
         let p = Parts(box: CGSize(width: o.width, height: o.height),
                       hull: o.case.map(SVGPath.parse), head: o.head.map(SVGPath.parse),
-                      bullet: o.bullet.map(SVGPath.parse), isShot: item.kind == "shot")
+                      bullet: o.bullet.map(SVGPath.parse), patch: o.patch.map(SVGPath.parse),
+                      bulletFill: o.bulletMaterial == "steel" ? .steel : .copper, isShot: item.kind == "shot")
         Self.cache[id] = p
         return p
     }
@@ -40,7 +42,8 @@ struct CartridgeView: View {
                 }
                 draw(parts.hull, parts.isShot ? Color(red: 0.75, green: 0.22, blue: 0.17) : .brass)
                 draw(parts.head, .brass)
-                draw(parts.bullet, .copper)
+                draw(parts.bullet, parts.bulletFill)
+                draw(parts.patch, .paper)
             }
             .accessibilityLabel(caliber?.name ?? "")
         } else {
@@ -52,6 +55,10 @@ struct CartridgeView: View {
 extension Color {
     static let brass = Color(red: 0.89, green: 0.76, blue: 0.44)
     static let copper = Color(red: 0.72, green: 0.45, blue: 0.20)
+    /// Steel bullet cap (GP 1890).
+    static let steel = Color(red: 0.65, green: 0.68, blue: 0.71)
+    /// Paper patch around a lead bullet (GP 1890).
+    static let paper = Color(red: 0.95, green: 0.93, blue: 0.88)
 }
 
 // MARK: - Weapon categories
