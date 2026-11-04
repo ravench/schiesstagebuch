@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// One Passe in the entry editor: a box per shot with the shot number above it, the Passe total on the right.
-/// A space, ";" or "+" (or the keyboard's Next key) moves on to the next box.
+/// A space, ";" or "+" (or the keyboard's Next key) moves on to the next box. The empty box for the
+/// next shot only shows while one of this Passe's boxes has the cursor.
 struct ShotBoxesRow: View {
     let number: Int
     @Binding var boxes: ShotBoxes
@@ -20,7 +21,7 @@ struct ShotBoxesRow: View {
                 }
             }
             LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
-                ForEach(boxes.values.indices, id: \.self) { box($0) }
+                ForEach(0..<boxes.visibleCount(editing: focused != nil), id: \.self) { box($0) }
             }
         }
         .padding(.vertical, 4)
