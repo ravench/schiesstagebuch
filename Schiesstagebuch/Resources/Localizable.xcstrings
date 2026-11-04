@@ -2301,6 +2301,98 @@
         }
       }
     },
+    "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'export ne contient pas de calibres. Chaque munition est attribuée à un calibre ; on en déduit les calibres de tes équipements."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'esportazione non contiene calibri. Ogni munizione viene assegnata a un calibro; da qui risultano i calibri dei tuoi attrezzi."
+          }
+        }
+      }
+    },
+    "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'esportazione non contiene calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."
+          }
+        }
+      }
+    },
+    "Der Export enthält nur Verweise auf %lld Fotos in deiner Mediathek. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The export only holds references to %lld photos in your library. They are found if the photos are still on this device or in iCloud Photos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'export ne contient que des références vers %lld photos de votre photothèque. Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'esportazione contiene solo riferimenti a %lld foto della tua libreria. Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."
+          }
+        }
+      }
+    },
+    "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The export only holds the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'export ne contient que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'esportazione contiene solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."
+          }
+        }
+      }
+    },
     "Der Standardlauf ist bei neuen Einträgen vorausgewählt.": {
       "extractionState": "manual",
       "localizations": {
@@ -2389,98 +2481,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Il numero di licenza ha al massimo 6 cifre."
-          }
-        }
-      }
-    },
-    "Die alte App hat nur Verweise auf %lld Fotos in deiner Mediathek gespeichert. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The old app only stored references to %lld photos in your library. They are found if the photos are still on this device or in iCloud Photos."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'ancienne app n'a enregistré que des références vers %lld photos de votre photothèque. Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La vecchia app ha salvato solo riferimenti a %lld foto della tua libreria. Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."
-          }
-        }
-      }
-    },
-    "Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The old app had no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your equipment."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'ancienne app ne connaissait pas les calibres. Chaque munition est attribuée à un calibre ; on en déduit les calibres de tes équipements."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La vecchia app non conosceva i calibri. Ogni munizione viene assegnata a un calibro; da qui risultano i calibri dei tuoi attrezzi."
-          }
-        }
-      }
-    },
-    "Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The old app had no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'ancienne app ne connaissait pas les calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La vecchia app non conosceva i calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."
-          }
-        }
-      }
-    },
-    "Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The old app only knew the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'ancienne app ne connaissait que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."
           }
         }
       }

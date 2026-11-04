@@ -91,14 +91,14 @@ T = {
         "The file could not be read. Expected ShootCounter-Export.tsv or data.db.",
         "Le fichier n'a pas pu être lu. Fichier attendu : ShootCounter-Export.tsv ou data.db.",
         "Impossibile leggere il file. Previsto: ShootCounter-Export.tsv o data.db."),
-    "Die alte App hat nur Verweise auf %lld Fotos in deiner Mediathek gespeichert. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": (
-        "The old app only stored references to %lld photos in your library. They are found if the photos are still on this device or in iCloud Photos.",
-        "L'ancienne app n'a enregistré que des références vers %lld photos de votre photothèque. Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud.",
-        "La vecchia app ha salvato solo riferimenti a %lld foto della tua libreria. Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."),
-    "Die alte App kannte keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.": (
-        "The old app had no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms.",
-        "L'ancienne app ne connaissait pas les calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes.",
-        "La vecchia app non conosceva i calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."),
+    "Der Export enthält nur Verweise auf %lld Fotos in deiner Mediathek. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": (
+        "The export only holds references to %lld photos in your library. They are found if the photos are still on this device or in iCloud Photos.",
+        "L'export ne contient que des références vers %lld photos de votre photothèque. Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud.",
+        "L'esportazione contiene solo riferimenti a %lld foto della tua libreria. Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."),
+    "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.": (
+        "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms.",
+        "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes.",
+        "L'esportazione non contiene calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."),
     "Eigenes Kaliber": ("Custom calibre", "Calibre personnalisé", "Calibro personalizzato"),
     "Einstellungen": ("Settings", "Réglages", "Impostazioni"),
     "Eintrag bearbeiten": ("Edit entry", "Modifier l'entrée", "Modifica voce"),
@@ -377,10 +377,10 @@ T = {
     "Standblatt wird gelesen …": ("Reading score strip …", "Lecture de la feuille de stand …", "Lettura del foglio di tiro …"),
     "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighters", "%1$lld coups comptés + %2$lld coups d'essai", "%1$lld colpi di gara + %2$lld colpi di prova"),
     "Probeschüsse abziehen": ("Split off sighters", "Déduire les coups d'essai", "Scorporare i colpi di prova"),
-    "Die alte App kannte nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
-        "The old app only knew the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",
-        "L'ancienne app ne connaissait que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste.",
-        "La vecchia app conosceva solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."),
+    "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
+        "The export only holds the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",
+        "L'export ne contient que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste.",
+        "L'esportazione contiene solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."),
     "Total %@ liegt über dem Maximum von %@": (
         "Total %1$@ is above the maximum of %2$@",
         "Le total %1$@ dépasse le maximum de %2$@",
