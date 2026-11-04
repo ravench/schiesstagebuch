@@ -70,10 +70,19 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
     case airPistol = "air_pistol", sportPistol = "sport_pistol", luger, pistol, revolver
     case pcc, airgun, sportRifle = "sport_rifle", leverAction = "lever_action"
     case serviceRifle = "service_rifle", serviceCarbine = "service_carbine", huntingRifle = "hunting_rifle"
-    case longRange = "long_range", shotgun, pumpShotgun = "pump_shotgun", blackPowder = "black_powder"
+    case longRange = "long_range", shotgun, blackPowder = "black_powder"
     case machineGun = "machine_gun", other
 
     var id: Self { self }
+
+    /// Raw values of categories that were merged into another one, so stored weapons keep a sensible category.
+    /// The pump-action shotgun became part of «Flinte» (2026-11-04).
+    static let mergedRawValues: [String: WeaponCategory] = ["pump_shotgun": .shotgun]
+
+    /// The category for a stored raw value: current cases, merged ones, else «Andere».
+    init(stored raw: String) {
+        self = WeaponCategory(rawValue: raw) ?? Self.mergedRawValues[raw] ?? .other
+    }
 
     var title: String { titleKey.loc }
 
@@ -86,7 +95,6 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         case .airPistol: "Luftpistole"
         case .serviceCarbine: "Historisches Ordonnanzgewehr"
         case .leverAction: "Unterhebelrepetierer"
-        case .pumpShotgun: "Vorderschaftrepetierflinte"
         case .pcc: "PCC (Pistolenkaliber-Karabiner)"
         case .serviceRifle: "Ordonnanzgewehr"
         case .sportRifle: "Sportgewehr / Kleinkaliber"
@@ -105,7 +113,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .pistol, .luger, .revolver, .pcc: ["Kurzwaffe", "Randfeuer"]
         case .sportPistol: ["Randfeuer", "Kurzwaffe"]
-        case .shotgun, .pumpShotgun: ["Flinte"]
+        case .shotgun: ["Flinte"]
         case .airgun, .airPistol: ["Luftdruck"]
         case .leverAction: ["Langwaffe", "Kurzwaffe", "Schwarzpulver"]
         case .blackPowder: ["Schwarzpulver"]
@@ -125,9 +133,8 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.machineGun, ["maschinengewehr", "machine gun", "mg51", "mg 51", "mg42", "mg 42", "mg3", "minimi", "m249"]),
             (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15"]),
             (.leverAction, ["unterhebel", "lever", "marlin", "henry", "winchester 94", "winchester 73"]),
-            (.pumpShotgun, ["pump", "vorderschaft", "870", "590", "mossberg 500"]),
             (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
-            (.shotgun, ["flinte", "shotgun", "bock"]),
+            (.shotgun, ["flinte", "shotgun", "bock", "pump", "vorderschaft", "870", "590", "mossberg 500"]),
             (.airgun, ["luftgewehr", "luft", "air", "lg "]),
             (.longRange, ["long", "precision", "tikka tac", "accuracy"]),
             (.huntingRifle, ["jagd", "blaser", "sauer"]),

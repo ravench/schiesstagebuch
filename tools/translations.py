@@ -255,7 +255,6 @@ T = {
     "Verlauf anzeigen": ("Show history", "Afficher l'historique", "Mostra storico"),
     "Version": ("Version", "Version", "Versione"),
     "Vorderlader / Schwarzpulver": ("Muzzleloader / black powder", "Arme à chargement par la bouche / poudre noire", "Avancarica / polvere nera"),
-    "Vorderschaftrepetierflinte": ("Pump-action shotgun", "Fusil à pompe", "Fucile a pompa"),
     "Waffe": ("Firearm", "Arme", "Arma"),
     "Waffe bearbeiten": ("Edit firearm", "Modifier l'arme", "Modifica arma"),
     "Waffe hinzufügen": ("Add firearm", "Ajouter une arme", "Aggiungi arma"),
