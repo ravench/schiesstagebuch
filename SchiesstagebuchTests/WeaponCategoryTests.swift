@@ -57,6 +57,16 @@ final class WeaponCategoryTests: XCTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "Stgw 90"), .serviceRifle)
     }
 
+    /// «Match» alone says nothing about the type: a match rifle is not a sport pistol.
+    func testGuessesMatchRiflesAndPistols() {
+        XCTAssertEqual(WeaponCategory.guess(from: "Matchgewehr 300 m"), .sportRifle)
+        XCTAssertEqual(WeaponCategory.guess(from: "Anschütz Match 54"), .sportRifle)
+        XCTAssertEqual(WeaponCategory.guess(from: "Grünig Racer"), .sportRifle)
+        XCTAssertEqual(WeaponCategory.guess(from: "Anschütz 9015 Luftgewehr"), .airgun)
+        XCTAssertEqual(WeaponCategory.guess(from: "Matchpistole"), .sportPistol)
+        XCTAssertEqual(WeaponCategory.guess(from: "Hämmerli 208"), .sportPistol)
+    }
+
     /// Shotgun words win over pistol makers: a Beretta Bockflinte is a shotgun, not a pistol.
     func testGuessesShotguns() {
         XCTAssertEqual(WeaponCategory.guess(from: "Beretta Bockflinte"), .shotgun)
