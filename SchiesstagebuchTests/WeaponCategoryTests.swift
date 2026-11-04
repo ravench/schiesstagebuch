@@ -9,7 +9,7 @@ final class WeaponCategoryTests: XCTestCase {
             .airPistol, .sportPistol, .luger, .pistol, .revolver,
             .pcc, .airgun, .sportRifle, .leverAction,
             .serviceRifle, .serviceCarbine, .huntingRifle, .longRange,
-            .shotgun, .blackPowder, .machineGun, .other,
+            .shotgun, .pumpShotgun, .blackPowder, .machineGun, .other,
         ])
     }
 
@@ -57,24 +57,11 @@ final class WeaponCategoryTests: XCTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "Stgw 90"), .serviceRifle)
     }
 
-    /// Pump-action shotguns were merged into «Flinte» (2026-11-04): one category for all shotguns.
-    func testPumpShotgunsAreShotguns() throws {
-        XCTAssertNil(WeaponCategory(rawValue: "pump_shotgun"))
-        XCTAssertEqual(WeaponCategory(stored: "pump_shotgun"), .shotgun)
-        XCTAssertEqual(WeaponCategory(stored: "shotgun"), .shotgun)
-        XCTAssertEqual(WeaponCategory(stored: "nonsense"), .other)
-        XCTAssertEqual(WeaponCategory.allCases.filter { $0.preferredCaliberCategories == ["Flinte"] }, [.shotgun])
-
-        let container = try ModelContainer(for: SchiesstagebuchApp.schema,
-                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
-        let context = ModelContext(container)
-        let weapon = Weapon(name: "Remington 870"); context.insert(weapon)
-        weapon.categoryRaw = "pump_shotgun"
-        XCTAssertEqual(weapon.category, .shotgun)
-        XCTAssertEqual(weapon.category.title, "Flinte".loc)
-
-        XCTAssertEqual(WeaponCategory.guess(from: "Remington 870"), .shotgun)
-        XCTAssertEqual(WeaponCategory.guess(from: "Mossberg 590 Pump"), .shotgun)
+    /// Shotgun words win over pistol makers: a Beretta Bockflinte is a shotgun, not a pistol.
+    func testGuessesShotguns() {
         XCTAssertEqual(WeaponCategory.guess(from: "Beretta Bockflinte"), .shotgun)
+        XCTAssertEqual(WeaponCategory.guess(from: "Beretta 92"), .pistol)
+        XCTAssertEqual(WeaponCategory.guess(from: "Remington 870"), .pumpShotgun)
+        XCTAssertEqual(WeaponCategory.guess(from: "Mossberg 590 Pump"), .pumpShotgun)
     }
 }
