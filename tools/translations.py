@@ -300,6 +300,7 @@ T = {
     "Wertungsschüsse": ("Scored shots", "Coups comptés", "Colpi di gara"),
     "Auswertung": ("Scoring", "Évaluation", "Valutazione"),
     "Einzelschüsse": ("Individual shots", "Coups individuels", "Colpi singoli"),
+    "Probeschüsse einzeln": ("Individual sighters", "Coups d'essai individuels", "Colpi di prova singoli"),
     "Max. Punkte": ("Max. points", "Points max.", "Punti max."),
     "Median pro Schuss": ("Median per shot", "Médiane par coup", "Mediana per colpo"),
     "Passe %lld": ("Series %lld", "Passe %lld", "Serie %lld"),

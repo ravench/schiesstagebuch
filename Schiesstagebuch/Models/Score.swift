@@ -113,6 +113,9 @@ extension Entry {
     /// get a percentage only once a maximum is entered, and a per-shot average only once the
     /// sighters are split off.
     var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
+
+    /// The sighters' values, when they were entered shot by shot.
+    var sighterValues: [Double] { Score.parseShots(sighterValuesText) }
 }
 
 extension Sequence where Element == Entry {
@@ -218,7 +221,7 @@ enum ShotEntryMode: String, CaseIterable, Identifiable {
     }
 
     init(of entry: Entry) {
-        if !entry.shotValuesText.isEmpty { self = .shots }
+        if !entry.shotValuesText.isEmpty || !entry.sighterValuesText.isEmpty { self = .shots }
         else if entry.sighterCount != nil { self = .split }
         else { self = .total }
     }

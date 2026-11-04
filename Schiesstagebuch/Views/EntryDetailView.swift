@@ -59,8 +59,15 @@ struct EntryDetailView: View {
             if entry.scoringSystem == .rings, score.percentage != nil || score.meanPerShot != nil {
                 Section("Auswertung") { ScoreSummary(score: score) }
             }
-            if entry.scoringSystem == .rings, !score.passes.isEmpty {
+            if entry.scoringSystem == .rings, !score.passes.isEmpty || !entry.sighterValues.isEmpty {
                 Section("Einzelschüsse") {
+                    if !entry.sighterValues.isEmpty {
+                        HStack {
+                            Text("Probe").foregroundStyle(.secondary)
+                            Text(entry.sighterValues.map(ScoreFormat.points).joined(separator: " ")).monospacedDigit()
+                            Spacer()
+                        }
+                    }
                     ForEach(Array(score.passes.enumerated()), id: \.offset) { i, pass in
                         HStack {
                             Text("Passe \(i + 1)").foregroundStyle(.secondary)

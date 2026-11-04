@@ -8563,6 +8563,29 @@
         }
       }
     },
+    "Probeschüsse einzeln": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Individual sighters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coups d'essai individuels"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi di prova singoli"
+          }
+        }
+      }
+    },
     "Prozent": {
       "extractionState": "manual",
       "localizations": {
