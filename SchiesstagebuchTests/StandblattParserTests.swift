@@ -408,6 +408,12 @@ final class StandblattParserTests: XCTestCase {
         XCTAssertNil(StandblattParser.date(in: "45.13.2026 10:00"))
     }
 
+    func testDatesAreGregorianWhateverThePhoneCalendar() throws {
+        let date = try XCTUnwrap(StandblattParser.date(in: "13.8.2026 17:47"))
+        XCTAssertEqual(Calendar(identifier: .gregorian).component(.year, from: date), 2026)
+        XCTAssertEqual(Calendar(identifier: .buddhist).component(.year, from: date), 2569, "the same day, not 2026 BE")
+    }
+
     func testRingFromHundredths() {
         XCTAssertEqual(StandblattParser.ring(forHundredths: 100), 10)
         XCTAssertEqual(StandblattParser.ring(forHundredths: 91), 10)

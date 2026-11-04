@@ -247,7 +247,8 @@ enum StandblattParser {
               (1...31).contains(d), (1...12).contains(mo), (1990...2100).contains(y) else { return nil }
         var c = DateComponents(year: y, month: mo, day: d)
         if let h = group(4), let mi = group(5), h < 24, mi < 60 { c.hour = h; c.minute = mi } else { c.hour = 12 }
-        return Calendar.current.date(from: c)
+        // The strip prints Gregorian dates, whatever calendar the phone is set to.
+        return Calendar(identifier: .gregorian).date(from: c)
     }
 
     /// OCR reads the thermal font's digits with a few typical mix-ups.
