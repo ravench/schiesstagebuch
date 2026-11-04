@@ -29,7 +29,7 @@ final class LegacyImportTests: ModelTestCase {
 
     func testApplyCreatesReferenceDataAndSkipsOnReimport() async throws {
         let rows = LegacyImport.parseTSV(tsv)
-        let plan = LegacyImport.plan(rows, context: context)
+        let plan = LegacyImport.plan(rows, context: context, catalogue: [])
         XCTAssertEqual(plan.newRows.count, 2)
         XCTAssertEqual(plan.weapons, ["P75", "Stgw-90 Skye"])
 
@@ -62,7 +62,7 @@ final class LegacyImportTests: ModelTestCase {
         14.06.2026\tRehalp\tFeldschiessen\tP75\t10\t9x19\t\t\t
         15.06.2026\tAlbisgüetli\tFeldschiessen\tStgw-90 Skye\t18\tGP90\t\t\t
         """
-        let plan = LegacyImport.plan(LegacyImport.parseTSV(tsv), context: context)
+        let plan = LegacyImport.plan(LegacyImport.parseTSV(tsv), context: context, catalogue: [])
         let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false)
         XCTAssertEqual(summary.entries, 5)
 
@@ -74,6 +74,100 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(feld.sortedEntries.map(\.weapon?.name), ["Stgw-90 Skye", "P75"], "Stiche keep the file's order")
         XCTAssertEqual(feld.totalShots, 38)
         XCTAssertTrue(events.filter { $0 != feld }.allSatisfy { $0.stichCount == 1 })
+    }
+
+    // MARK: Ranges matched to known ones
+
+    private let rangeTSV = """
+    Datum\tSchiessanlage\tAnlass\tWaffe\tSchusszahl\tMunition\tResultat\tBemerkungen
+    12.06.2026\tAlbisgüetli\tObligatorisches\tStgw-90\t20\tGP90\t85\t
+    12.06.2026\tAlbisgüetli\tObligatorisches\tP75\t20\t9x19\t180\t
+    13.06.2026\tAlbisgüetli\tTraining\tP75\t30\t9x19\t\t
+    14.06.2026\tSchiessanlage Bubendorf\tTraining\tStgw-90\t20\tGP90\t\t
+    15.06.2026\tTraining Keller\tTraining\tP75\t20\t9x19\t\t
+    """
+
+    private func entry(_ event: String, _ day: Int) throws -> Entry {
+        try XCTUnwrap(try context.fetch(FetchDescriptor<Entry>()).first {
+            $0.eventName == event && Calendar.current.component(.day, from: $0.date) == day
+        })
+    }
+
+    func testRangesAreMatchedToTheCatalogueByNameAndWeapon() async throws {
+        let catalogue = RangeMatcherTests.catalogue
+        let plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
+        let rows = LegacyImport.rangeMatchRows(plan)
+        XCTAssertEqual(rows.map(\.name), ["Albisgüetli", "Albisgüetli", "Schiessanlage Bubendorf"])
+        XCTAssertEqual(rows.map { $0.options.map(\.name) }, [
+            ["Zürich-Albisgütli 300/50m"],
+            ["Zürich-Albisgütli 25m", "Zürich-Albisgütli 300/50m"],
+            ["Bubendorf Riedbach 300m"],
+        ], "the 25 m and 50 m stand both fit a pistol, so both are offered")
+        XCTAssertEqual(rows.map(\.weapons), [["Stgw-90"], ["P75"], []], "weapons only where one name has several lines")
+        XCTAssertNil(plan.rangeChoice[try XCTUnwrap(rows[1].keys.first)], "among several, nothing is chosen for the user")
+
+        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        XCTAssertEqual(summary.ranges, 4, "two from the catalogue, own Albisgüetli for the pistol, Training Keller")
+        let obligatorisch = try entry("Obligatorisches", 12)
+        XCTAssertEqual(obligatorisch.range?.catalogID, "tlm:albis300", "the event takes its first row's range")
+        XCTAssertEqual(obligatorisch.range?.address, "Uetlibergstrasse 331, 8045 Zürich")
+        XCTAssertEqual(obligatorisch.range?.distances, [300, 50])
+        XCTAssertEqual(obligatorisch.shootingEvent?.stichCount, 2)
+        let pistol = try entry("Training", 13)
+        XCTAssertEqual(pistol.range?.name, "Albisgüetli", "no stand picked: a range of its own")
+        XCTAssertEqual(pistol.range?.catalogID, "")
+        XCTAssertEqual(try entry("Training", 14).range?.catalogID, "tlm:bubendorf")
+        XCTAssertEqual(try entry("Training", 15).range?.name, "Training Keller")
+    }
+
+    func testPickedRangeAmongSeveralIsUsed() async throws {
+        let catalogue = RangeMatcherTests.catalogue
+        var plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
+        let several = try XCTUnwrap(LegacyImport.rangeMatchRows(plan).first { $0.options.count > 1 })
+        for key in several.keys { plan.rangeChoice[key] = several.options[0].target }
+        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        XCTAssertEqual(try entry("Training", 13).range?.catalogID, "tlm:albis25")
+        XCTAssertEqual(summary.ranges, 4, "both Albisgütli stands, Bubendorf, Training Keller")
+        XCTAssertFalse(try context.fetch(FetchDescriptor<ShootingRange>()).contains { $0.name == "Albisgüetli" })
+    }
+
+    func testSwitchedOffMatchesCreateOwnRanges() async throws {
+        let catalogue = RangeMatcherTests.catalogue
+        var plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
+        plan.rangeChoice = [:]
+        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        let ranges = try context.fetch(FetchDescriptor<ShootingRange>())
+        XCTAssertEqual(Set(ranges.map(\.name)), ["Albisgüetli", "Schiessanlage Bubendorf", "Training Keller"])
+        XCTAssertTrue(ranges.allSatisfy { $0.catalogID.isEmpty })
+    }
+
+    func testRangesInTheAppAreReusedAndShownAgain() async throws {
+        let own = ShootingRange(name: "Bern-Riedbach Forst", place: "Bern")
+        own.isArchived = true
+        context.insert(own)
+        let imported = RangeCatalog.makeRange(RangeMatcherTests.bubendorf)
+        context.insert(imported)
+        let exact = ShootingRange(name: "Training Keller")
+        context.insert(exact)
+        try context.save()
+        let tsv = """
+        Datum\tSchiessanlage\tAnlass\tWaffe\tSchusszahl\tMunition\tResultat\tBemerkungen
+        12.06.2026\tRiedbach Forst\tTraining\tStgw-90\t20\tGP90\t\t
+        13.06.2026\tBubendorf\tTraining\tStgw-90\t20\tGP90\t\t
+        14.06.2026\ttraining keller\tTraining\tP75\t20\t9x19\t\t
+        """
+        let catalogue = RangeMatcherTests.catalogue
+        let plan = LegacyImport.plan(LegacyImport.parseTSV(tsv), context: context, catalogue: catalogue)
+        XCTAssertEqual(LegacyImport.rangeMatchRows(plan).flatMap { $0.options.map(\.target) }, [.existing(imported.id), .existing(own.id)],
+                       "the own range beats the catalogue's Bern-Riedbach; the same name needs no match")
+
+        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        XCTAssertEqual(summary.ranges, 0)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingRange>()), 3)
+        XCTAssertEqual(try entry("Training", 12).range, own)
+        XCTAssertFalse(own.isArchived, "an archived range that gets entries is shown again")
+        XCTAssertEqual(try entry("Training", 13).range, imported)
+        XCTAssertEqual(try entry("Training", 14).range, exact)
     }
 
     func testRenamedCatalogueCalibreIsStillFound() async throws {
