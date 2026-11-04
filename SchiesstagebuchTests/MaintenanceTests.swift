@@ -133,4 +133,16 @@ final class MaintenanceTests: ModelTestCase {
             }
         }
     }
+
+    func testDueReminderFiresOnlyWhenTheCallerSawTheCrossing() throws {
+        addEntry(weapon, on: .now, shots: 150)
+        try context.save()
+        XCTAssertTrue(weapon.status(.cleaning).isDue)
+
+        // Editing the weapon, logging maintenance, restoring a backup…: already due, no new notification.
+        XCTAssertEqual(MaintenanceNotifier.plans(weapon)[.cleaning], ReminderPlan.none)
+        // The entry editor saw the weapon below the limit before this entry.
+        XCTAssertEqual(MaintenanceNotifier.plans(weapon, previouslyDue: [])[.cleaning], ReminderPlan.now)
+        XCTAssertEqual(MaintenanceNotifier.plans(weapon, previouslyDue: [.cleaning])[.cleaning], ReminderPlan.none)
+    }
 }
