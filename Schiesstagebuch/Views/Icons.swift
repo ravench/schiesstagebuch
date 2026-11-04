@@ -133,8 +133,9 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.machineGun, ["maschinengewehr", "machine gun", "mg51", "mg 51", "mg42", "mg 42", "mg3", "minimi", "m249"]),
             (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15"]),
             (.leverAction, ["unterhebel", "lever", "marlin", "henry", "winchester 94", "winchester 73"]),
-            (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
+            // Before pistols, so "Beretta Bockflinte" is not taken for a Beretta pistol.
             (.shotgun, ["flinte", "shotgun", "bock", "pump", "vorderschaft", "870", "590", "mossberg 500"]),
+            (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
             (.airgun, ["luftgewehr", "luft", "air", "lg "]),
             (.longRange, ["long", "precision", "tikka tac", "accuracy"]),
             (.huntingRifle, ["jagd", "blaser", "sauer"]),
