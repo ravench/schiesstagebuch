@@ -42,7 +42,7 @@ struct SportFeatures: OptionSet, Hashable {
     var detail: String {
         switch self {
         case .filter: "An der Schiessbrille oder im Diopter, auch Korrekturgläser"
-        case .sight: "Ring am Gewehr, Iris an der Brille für Pistolen"
+        case .sight: "Ring und Iris am Diopter oder Iris an der Brille"
         case .bipod: "Länge in cm, nur bei Gewehren"
         case .weather: "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen"
         default: ""

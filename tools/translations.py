@@ -437,10 +437,10 @@ T = {
         "Sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs",
         "Sugli occhiali da tiro o nella diottra, anche lenti correttive"),
     "Diopter, Ring und Iris": ("Diopter, ring and iris", "Dioptre, anneau et iris", "Diottra, anello e iride"),
-    "Ring am Gewehr, Iris an der Brille für Pistolen": (
-        "Ring on the rifle, iris on the glasses for pistols",
-        "Anneau sur le fusil, iris sur les lunettes pour le pistolet",
-        "Anello sul fucile, iride sugli occhiali per la pistola"),
+    "Ring und Iris am Diopter oder Iris an der Brille": (
+        "Ring and iris on the diopter, or iris on the glasses",
+        "Anneau et iris sur le dioptre, ou iris sur les lunettes",
+        "Anello e iride sulla diottra, o iride sugli occhiali"),
     "Länge in cm, nur bei Gewehren": ("Length in cm, rifles only", "Longueur en cm, fusils uniquement", "Lunghezza in cm, solo fucili"),
     "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen": (
         "Light, wind and temperature per event, also for relays",
@@ -477,7 +477,7 @@ T = {
     "Neuer Filter": ("New filter", "Nouveau filtre", "Nuovo filtro"),
     "Filter bearbeiten": ("Edit filter", "Modifier le filtre", "Modifica filtro"),
     "Zweibeinstütze (cm)": ("Bipod (cm)", "Bipied (cm)", "Bipiede (cm)"),
-    "Iris (Brille)": ("Iris (glasses)", "Iris (lunettes)", "Iride (occhiali)"),
+    "Iris": ("Iris", "Iris", "Iride"),
     "Höhe": ("Altitude", "Altitude", "Altitudine"),
     "m ü. M.": ("m a.s.l.", "m d'altitude", "m s.l.m."),
     "Schussrichtung": ("Shooting direction", "Direction de tir", "Direzione di tiro"),
