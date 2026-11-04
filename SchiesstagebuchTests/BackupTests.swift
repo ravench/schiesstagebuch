@@ -195,4 +195,14 @@ final class BackupTests: ModelTestCase {
         XCTAssertTrue(csv.contains("\"Zeile 1\r\nZeile 2\""), "a note with a Windows line break stays one quoted field")
         XCTAssertEqual(csv.components(separatedBy: "\r\n").count, 3, "header, one row, and the break inside the quoted note")
     }
+
+    func testCSVWritesGregorianDates() throws {
+        // The formatter must not follow the phone's calendar (Buddhist would give 2569).
+        XCTAssertEqual(Backup.csvDate.calendar.identifier, .gregorian)
+        XCTAssertEqual(Backup.csvDate.string(from: day(13, month: 8)), "13.08.2026")
+        addEntry(nil, on: day(13, month: 8), shots: 1)
+        try context.save()
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
+        XCTAssertTrue(csv.components(separatedBy: "\r\n")[1].hasPrefix("13.08.2026;"))
+    }
 }
