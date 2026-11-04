@@ -102,6 +102,9 @@ extension Weapon {
     var dueMaintenance: [MaintenanceStatus] {
         MaintenanceKind.allCases.map(status).filter { $0.isDue }
     }
+
+    /// Cleaning or service is due: the firearms list shows a bell. Archived weapons get no reminders.
+    var needsMaintenance: Bool { !isArchived && !dueMaintenance.isEmpty }
 }
 
 /// Local notifications for maintenance reminders.
