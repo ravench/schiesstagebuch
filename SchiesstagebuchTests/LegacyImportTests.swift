@@ -192,7 +192,7 @@ final class LegacyImportTests: ModelTestCase {
     }
 
     func testReadsTheOldAppsSQLiteDatabase() throws {
-        // Same columns (with the old app's typos) as the real data.db: table "wepon".
+        // Same columns (with their original spelling) as the real data.db: table "wepon".
         let url = FileManager.default.temporaryDirectory.appending(path: "legacy-\(UUID().uuidString).db")
         defer { try? FileManager.default.removeItem(at: url) }
         var db: OpaquePointer?
@@ -306,7 +306,7 @@ final class LegacyImportTests: ModelTestCase {
         _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
         let entries = try context.fetch(FetchDescriptor<Entry>())
         XCTAssertTrue(entries.allSatisfy(\.isLegacyImport))
-        // "/" separated the results of several Stiche in the old app, it is not "of max".
+        // "/" separated the results of several Stiche in Schusszähler, it is not "of max".
         XCTAssertTrue(entries.allSatisfy { $0.score.percentage == nil && !$0.score.exceedsMax })
         // The shot totals may include sighters, so points per shot would be too low.
         XCTAssertTrue(entries.allSatisfy { $0.score.meanPerShot == nil })

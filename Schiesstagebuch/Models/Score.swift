@@ -11,7 +11,7 @@ struct Score {
     var scoredShots: Int
     /// False when `scoredShots` may include sighters (an imported total): no per-shot average then.
     var scoredShotsKnown = true
-    /// Whether "96/100" means 96 of 100. The old app used "/" between the results of several
+    /// Whether "96/100" means 96 of 100. Schusszähler used "/" between the results of several
     /// Stiche ("130 / 131"), so imported results never take their maximum from it.
     var maxFromSlash = true
     /// Whether "93 %" is read as a percentage. Off for old-app imports: their free-text "93%" may
@@ -109,7 +109,7 @@ extension Entry {
               percentFromResult: !isLegacyImport)
     }
 
-    /// Imported from the old app, which only knew a shot total and a free-text result. Such entries
+    /// Imported from Schusszähler, whose export only holds a shot total and a free-text result. Such entries
     /// get a percentage only once a maximum is entered, and a per-shot average only once the
     /// sighters are split off.
     var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
@@ -119,8 +119,8 @@ extension Sequence where Element == Entry {
     /// Probeschüsse of the entries that record them.
     var sighterShots: Int { reduce(0) { $0 + ($1.sighterCount ?? 0) } }
 
-    /// Wertungsschüsse. An entry without a sighter count (e.g. imported from the old app, which
-    /// only knew a total) counts all its shots, as its score does.
+    /// Wertungsschüsse. An entry without a sighter count (e.g. imported from Schusszähler, whose export
+    /// only holds a total) counts all its shots, as its score does.
     var scoredShots: Int { reduce(0) { $0 + ($1.scoredCount ?? $1.shotCount) } }
 
     /// Average percentage over the entries that have one.

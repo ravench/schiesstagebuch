@@ -4,12 +4,12 @@ import SQLite3
 import Photos
 import UIKit
 
-/// Import from the old "Schusszähler-Schiesstagebuch" app. It exports either a
+/// Import from "Schusszähler-Schiesstagebuch" by carusoNET. It exports either a
 /// tab-separated file (ShootCounter-Export.tsv) or its SQLite database (data.db).
 /// Both hold the same columns: datum, schiessanlage, anlass, waffe, schusszahi,
 /// munition, resultat, bemerkungen, picture1…4. Pictures are Photos library ids.
 enum LegacyImport {
-    /// The old app's App Store name and developer, shown as-is in every language.
+    /// The source app's App Store name and developer, shown as-is in every language.
     static let sourceAppName = "Schusszähler-Schiesstagebuch"
     static let sourceDeveloper = "carusoNET"
     struct Row: Hashable {
@@ -162,7 +162,7 @@ enum LegacyImport {
         var rangeChoice: [RangeKey: RangeMatch.Target] = [:]
     }
 
-    /// The old app had one free-text range per row. The same name can stand for two shooting houses
+    /// Schusszähler has one free-text range per row. The same name can stand for two shooting houses
     /// (e.g. the 300 m and the 25 m stand of Albisgüetli), so the weapon's usual distances are part of the key.
     struct RangeKey: Hashable {
         var name: String
@@ -329,7 +329,7 @@ enum LegacyImport {
                 if let cal { usage[norm(row.weapon), default: [:]][cal, default: 0] += row.shots }
             }
 
-            // The old app had no events: its entries of one day with the same Anlass and range become one event.
+            // Schusszähler has no events: its entries of one day with the same Anlass and range become one event.
             let event = events[row.eventKey] ?? ShootingEvent(date: row.date, name: row.event.trimmingCharacters(in: .whitespaces))
             if events[row.eventKey] == nil {
                 // The event's range comes from its first row; later Stiche share it.
@@ -427,7 +427,7 @@ enum LegacyImport {
         return status == .authorized || status == .limited
     }
 
-    /// The old app stored Photos asset ids ("UUID/L0/001"). They resolve only on the
+    /// Schusszähler stores Photos asset ids ("UUID/L0/001"). They resolve only on the
     /// device (or iCloud Photos library) where the pictures were taken.
     private static func photoData(localIdentifier: String) async -> Data? {
         guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject else { return nil }

@@ -1,8 +1,7 @@
 # Schiesstagebuch
 
-Native iOS app (SwiftUI, SwiftData, Swift Charts) to log shooting sessions,
-replacing «Schusszähler-Schiesstagebuch». iPhone and iPad, iOS 17+, in German,
-English, French and Italian.
+Native iOS app (SwiftUI, SwiftData, Swift Charts) to log shooting sessions.
+iPhone and iPad, iOS 17+, in German, English, French and Italian.
 
 This README uses the app's English names and gives the German ones in
 parentheses where Swiss shooters know them better, e.g. event (Anlass) and
@@ -65,11 +64,11 @@ match (Stich).
   data is never stored.
 - **Data** (Daten): JSON backup with photos (restore merges, no duplicates), CSV export
   for Excel. Backup copies are kept in the app's folder, visible in the Files app.
-- **Import** from the old Schusszähler app: its `ShootCounter-Export.tsv` or `data.db`.
-  Old ammunition names are mapped to calibres (editable before importing), firearms get
-  their calibres and a guessed category, rows of one day with the same event become
-  matches of one event, and photos are pulled from the Photos library when the
-  referenced pictures still exist there.
+- **Import** from «Schusszähler-Schiesstagebuch» by carusoNET: its
+  `ShootCounter-Export.tsv` or `data.db`. Its ammunition names are mapped to calibres
+  (editable before importing), firearms get their calibres and a guessed category, rows
+  of one day with the same event become matches of one event, and photos are pulled from
+  the Photos library when the referenced pictures still exist there.
 - **iCloud sync** via SwiftData + CloudKit (container `iCloud.ch.giotta.schiesstagebuch`).
   Works offline and without iCloud; calibres seeded on several devices are merged.
 - **Icons**: a silhouette per firearm category and a true-to-scale cartridge outline
