@@ -197,6 +197,7 @@ T = {
     "Neue Waffen": ("New firearms", "Nouvelles armes", "Nuove armi"),
     "Neuer Eintrag": ("New entry", "Nouvelle entrée", "Nuova voce"),
     "Neues Kaliber": ("New calibre", "Nouveau calibre", "Nuovo calibro"),
+    "Nicht alle Fotos konnten geladen werden.": ("Not all photos could be loaded.", "Toutes les photos n'ont pas pu être chargées.", "Non è stato possibile caricare tutte le foto."),
     "Noch keine Einträge": ("No entries yet", "Pas encore d'entrées", "Ancora nessuna voce"),
     "Notizen": ("Notes", "Notes", "Note"),
     "Notizen (optional)": ("Notes (optional)", "Notes (facultatif)", "Note (facoltativo)"),
