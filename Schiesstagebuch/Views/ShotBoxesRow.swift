@@ -1,11 +1,13 @@
 import SwiftUI
 
-/// One Passe in the entry editor: a box per shot with the shot number above it, the Passe total on the right.
+/// One Passe (or the sighters) in the entry editor: a box per shot with the shot number above it,
+/// the total on the right unless `showsTotal` is off.
 /// A space, ";" or "+" (or the keyboard's Next key) moves on to the next box. The empty box for the
 /// next shot only shows while one of this Passe's boxes has the cursor.
 struct ShotBoxesRow: View {
-    let number: Int
+    let title: Text
     @Binding var boxes: ShotBoxes
+    var showsTotal = true
     @FocusState private var focused: Int?
 
     private let columns = [GridItem(.adaptive(minimum: 44, maximum: 52), spacing: 6)]
@@ -13,10 +15,10 @@ struct ShotBoxesRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("Passe \(number)").foregroundStyle(.secondary)
+                title.foregroundStyle(.secondary)
                 Spacer()
                 let shots = Score.parseShots(boxes.text)
-                if !shots.isEmpty {
+                if showsTotal, !shots.isEmpty {
                     Text(ScoreFormat.points(shots.reduce(0, +))).monospacedDigit().bold()
                 }
             }

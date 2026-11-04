@@ -44,6 +44,8 @@ struct EntryEditorView: View {
     @State private var result = ""
     @State private var maxPoints: Double?
     @State private var passes: [PassDraft] = []
+    /// Sighter values in per-shot mode; their number is the sighter count there.
+    @State private var sighterBoxes = ShotBoxes(text: "")
     @AppStorage(ScoringSystem.enabledKey) private var enabledScoring = ""
     /// The event's scoring system; changing it here changes it for all its Stiche.
     @State private var scoring: ScoringSystem = .rings
@@ -273,6 +275,7 @@ struct EntryEditorView: View {
                 guard didLoad else { return }
                 // Carry the count over so switching modes never loses what was typed.
                 let total = shotTotal(in: old)
+                if old == .shots { sighters = sighterShotCount }
                 switch new {
                 case .total: shotCount = total
                 case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
@@ -311,9 +314,9 @@ struct EntryEditorView: View {
                 countRow("Wertungsschüsse", value: $scored, step: Self.CountStep.scored)
                 LabeledContent("Total", value: (sighters + scored).formatted())
             case .shots:
-                countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
+                ShotBoxesRow(title: Text("Probeschüsse"), boxes: $sighterBoxes, showsTotal: false)
                 ForEach($passes) { $pass in
-                    ShotBoxesRow(number: (passes.firstIndex { $0.id == pass.id } ?? 0) + 1, boxes: $pass.boxes)
+                    ShotBoxesRow(title: Text("Passe \((passes.firstIndex { $0.id == pass.id } ?? 0) + 1)"), boxes: $pass.boxes)
                 }
                 .onDelete { passes.remove(atOffsets: $0) }
                 Button {
@@ -322,7 +325,7 @@ struct EntryEditorView: View {
                     Label("Passe hinzufügen", systemImage: "plus.circle")
                 }
                 LabeledContent("Wertungsschüsse", value: passShotCount.formatted())
-                LabeledContent("Total", value: (sighters + passShotCount).formatted())
+                LabeledContent("Total", value: (sighterShotCount + passShotCount).formatted())
             }
         }
 
@@ -385,11 +388,13 @@ struct EntryEditorView: View {
         switch mode {
         case .total: shotCount
         case .split: sighters + scored
-        case .shots: sighters + passShotCount
+        case .shots: sighterShotCount + passShotCount
         }
     }
 
     private var passShotCount: Int { passes.map { Score.parseShots($0.text).count }.reduce(0, +) }
+
+    private var sighterShotCount: Int { Score.parseShots(sighterBoxes.text).count }
 
     /// Shots the per-shot average divides by, as the current mode defines them.
     private var scoredShotsForScore: Int {
@@ -421,6 +426,7 @@ struct EntryEditorView: View {
             sight = SightSettings(entry: entry)
             weather = entry.weather
             passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
+            sighterBoxes = ShotBoxes(text: entry.sighterValuesText)
             mode = ShotEntryMode(of: entry)
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
@@ -558,7 +564,7 @@ struct EntryEditorView: View {
         case .split:
             target.shotCount = max(0, sighters) + max(0, scored); target.sighterCount = max(0, sighters)
         case .shots:
-            target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
+            target.shotCount = sighterShotCount + passShotCount; target.sighterCount = sighterShotCount
         }
         target.notes = notes
         if scoring == .rings { target.result = result }
@@ -570,6 +576,7 @@ struct EntryEditorView: View {
         if scoring == .rings {
             target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
             target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
+            target.sighterValuesText = mode == .shots ? sighterBoxes.text : ""
         }
 
         let existing = target.sortedPhotos
