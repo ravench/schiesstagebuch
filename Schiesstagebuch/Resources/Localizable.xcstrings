@@ -7298,6 +7298,29 @@
         }
       }
     },
+    "Nicht alle Fotos konnten geladen werden.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not all photos could be loaded."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toutes les photos n'ont pas pu être chargées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non è stato possibile caricare tutte le foto."
+          }
+        }
+      }
+    },
     "Niederschlag": {
       "extractionState": "manual",
       "localizations": {

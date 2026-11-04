@@ -63,6 +63,7 @@ struct EntryEditorView: View {
     @State private var notes = ""
     @State private var photos: [Data] = []
     @State private var pickerItems: [PhotosPickerItem] = []
+    @State private var photoLoadFailed = false
     @State private var quickAdd: QuickAdd?
     @State private var showingScanner = false
     @State private var didLoad = false
@@ -296,6 +297,7 @@ struct EntryEditorView: View {
             .onChange(of: pickerItems) { _, items in
                 Task { await loadPhotos(items) }
             }
+            .alert("Nicht alle Fotos konnten geladen werden.", isPresented: $photoLoadFailed) {}
             .sheet(isPresented: $showingScanner) {
                 StandblattScanView { scanned, scannedPhotos in applyScan(scanned, photos: scannedPhotos) }
             }
@@ -557,11 +559,9 @@ struct EntryEditorView: View {
     }
 
     private func loadPhotos(_ items: [PhotosPickerItem]) async {
-        for item in items {
-            guard photos.count < Limits.maxPhotos,
-                  let data = try? await item.loadTransferable(type: Data.self) else { continue }
-            photos.append(ImageCompressor.jpeg(from: data) ?? data)
-        }
+        var loaded: [Data?] = []
+        for item in items { loaded.append(try? await item.loadTransferable(type: Data.self)) }
+        (photos, photoLoadFailed) = ImageCompressor.adding(loaded, to: photos)
         pickerItems = []
     }
 
