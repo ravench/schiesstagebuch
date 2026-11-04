@@ -122,7 +122,7 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         let n = name.lowercased()
         let rules: [(WeaponCategory, [String])] = [
             (.luger, ["parabellum", "luger", "p08", "p 08", "06/29", "1900", "1906"]),
-            (.sportPistol, ["sportpistole", "gsp", "pardini", "hämmerli", "hammerli", "walther sp", "morini", "match"]),
+            (.sportPistol, ["sportpistole", "gsp", "pardini", "hämmerli", "hammerli", "walther sp", "morini", "matchpistole"]),
             (.revolver, ["revolver", "357", "38 sp", "44 mag", "gp100", "python", "s&w 686", "korth"]),
             (.airPistol, ["luftpistole", "lp10", "lp 10", "air pistol"]),
             (.serviceCarbine, ["k31", "k 31", "k11", "k 11", "g11", "g 11", "karabiner", "schmidt-rubin", "langgewehr"]),
@@ -136,6 +136,8 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.shotgun, ["flinte", "shotgun", "bock"]),
             (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
             (.airgun, ["luftgewehr", "luft", "air", "lg "]),
+            // After air guns: Anschütz also makes air rifles.
+            (.sportRifle, ["matchgewehr", "sportgewehr", "kleinkaliber", "anschütz", "anschuetz", "grünig", "bleiker"]),
             (.longRange, ["long", "precision", "tikka tac", "accuracy"]),
             (.huntingRifle, ["jagd", "blaser", "sauer"]),
             (.blackPowder, ["vorderlader", "muzzle", "perkussion", "steinschloss"]),
