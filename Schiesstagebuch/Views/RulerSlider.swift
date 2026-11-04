@@ -7,13 +7,14 @@ struct RulerScale: Equatable {
     var step: Double
     /// Units shown left and right of the centre mark (0.5 shows 1 unit across the ruler).
     var halfSpan: Double = 0.5
-    /// Every `majorEvery` steps gets a long tick with a number.
+    /// Every `majorEvery` steps gets a number under its tick.
     var majorEvery: Int = 5
 
     struct Tick: Equatable {
         var value: Double
+        /// Gets a number.
         var isMajor: Bool
-        /// Whole units get the longest tick.
+        /// Whole units get a longer tick.
         var isWhole: Bool
     }
 
@@ -54,17 +55,19 @@ struct RulerScale: Equatable {
             let v = snapped(range.lowerBound + Double(i) * step)
             let n = Int((v / step).rounded())
             let isWhole = abs(v - v.rounded()) < step / 2
-            return Tick(value: v, isMajor: isWhole || n % majorEvery == 0, isWhole: isWhole)
+            return Tick(value: v, isMajor: n % majorEvery == 0, isWhole: isWhole)
         }
     }
 }
 
 /// A horizontal ruler that slides under a fixed centre mark, for values that need finer control
-/// than a slider gives (diopter, iris, ring). Shows ±0.5 units, snaps to 0.1, flicks with momentum.
+/// than a slider gives (diopter, iris, ring, bipod). Snaps to the scale's step, flicks with momentum.
 struct RulerSlider: View {
     let title: String
     @Binding var value: Double
     var scale: RulerScale
+    /// Read out by VoiceOver after the value, e.g. " cm".
+    var unit: String = ""
 
     /// The value shown while the ruler moves; `value` itself only takes snapped values.
     @State private var dragStart: Double?
@@ -97,7 +100,7 @@ struct RulerSlider: View {
         .sensoryFeedback(.selection, trigger: value)
         .accessibilityElement()
         .accessibilityLabel(Text(title.loc))
-        .accessibilityValue(Text(SightSettings.format(value)))
+        .accessibilityValue(Text(SightSettings.format(value) + unit))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: value = scale.snapped(value + scale.step)
@@ -124,7 +127,7 @@ private struct RulerTicks: View, Animatable {
             let ink = GraphicsContext.Shading.color(.secondary)
             for tick in scale.ticks(around: value) {
                 let x = scale.x(of: tick.value, at: value, width: w)
-                let len = tick.isWhole ? h * 0.42 : tick.isMajor ? h * 0.3 : h * 0.18
+                let len = tick.isWhole && tick.isMajor ? h * 0.42 : tick.isWhole || tick.isMajor ? h * 0.3 : h * 0.18
                 var p = Path()
                 p.move(to: CGPoint(x: x, y: 0))
                 p.addLine(to: CGPoint(x: x, y: len))
