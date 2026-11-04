@@ -4837,25 +4837,25 @@
         }
       }
     },
-    "Iris (Brille)": {
+    "Iris": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iris (glasses)"
+            "value": "Iris"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iris (lunettes)"
+            "value": "Iris"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iride (occhiali)"
+            "value": "Iride"
           }
         }
       }
@@ -9023,25 +9023,25 @@
         }
       }
     },
-    "Ring am Gewehr, Iris an der Brille für Pistolen": {
+    "Ring und Iris am Diopter oder Iris an der Brille": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ring on the rifle, iris on the glasses for pistols"
+            "value": "Ring and iris on the diopter, or iris on the glasses"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anneau sur le fusil, iris sur les lunettes pour le pistolet"
+            "value": "Anneau et iris sur le dioptre, ou iris sur les lunettes"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anello sul fucile, iride sugli occhiali per la pistola"
+            "value": "Anello e iride sulla diottra, o iride sugli occhiali"
           }
         }
       }
