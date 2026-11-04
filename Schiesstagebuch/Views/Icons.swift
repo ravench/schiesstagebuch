@@ -105,7 +105,11 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .pistol, .luger, .revolver, .pcc: ["Kurzwaffe", "Randfeuer"]
         case .sportPistol: ["Randfeuer", "Kurzwaffe"]
-        case .shotgun, .pumpShotgun: ["Flinte"]
+        // Over-and-under and side-by-side guns often come with a rifle barrel (Bockbüchsflinte).
+        case .shotgun: ["Flinte", "Langwaffe"]
+        case .pumpShotgun: ["Flinte"]
+        // Combination guns such as the Drilling add shotgun barrels to a hunting rifle.
+        case .huntingRifle: ["Langwaffe", "Flinte", "Randfeuer"]
         case .airgun, .airPistol: ["Luftdruck"]
         case .leverAction: ["Langwaffe", "Kurzwaffe", "Schwarzpulver"]
         case .blackPowder: ["Schwarzpulver"]
@@ -127,6 +131,8 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.leverAction, ["unterhebel", "lever", "marlin", "henry", "winchester 94", "winchester 73"]),
             (.pumpShotgun, ["pump", "vorderschaft", "870", "590", "mossberg 500"]),
             (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
+            // Combination guns (rifle + shotgun barrels) before plain shotguns: "Bockbüchsflinte" contains "flinte".
+            (.huntingRifle, ["drilling", "vierling", "büchsflinte", "buechsflinte", "kipplaufbüchse"]),
             (.shotgun, ["flinte", "shotgun", "bock"]),
             (.airgun, ["luftgewehr", "luft", "air", "lg "]),
             (.longRange, ["long", "precision", "tikka tac", "accuracy"]),
