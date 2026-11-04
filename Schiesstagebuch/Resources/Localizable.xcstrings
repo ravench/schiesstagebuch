@@ -1726,6 +1726,29 @@
         }
       }
     },
+    "Bestes Resultat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best result"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meilleur résultat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miglior risultato"
+          }
+        }
+      }
+    },
     "Bezeichnung": {
       "extractionState": "manual",
       "localizations": {
@@ -4860,25 +4883,25 @@
         }
       }
     },
-    "Iris (Brille)": {
+    "Iris": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iris (glasses)"
+            "value": "Iris"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iris (lunettes)"
+            "value": "Iris"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iride (occhiali)"
+            "value": "Iride"
           }
         }
       }
@@ -6194,29 +6217,6 @@
         }
       }
     },
-    "Lufttemperatur": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Air temperature"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Température de l'air"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temperatura dell'aria"
-          }
-        }
-      }
-    },
     "Länge in cm, nur bei Gewehren": {
       "extractionState": "manual",
       "localizations": {
@@ -6466,6 +6466,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Minor"
+          }
+        }
+      }
+    },
+    "Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With a name, the match shows up in the statistics, e.g. “District match”."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec un nom, la cible apparaît dans les statistiques, p. ex. « Match de district »."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con un nome, il bersaglio appare nelle statistiche, p. es. «Match distrettuale»."
           }
         }
       }
@@ -9092,25 +9115,25 @@
         }
       }
     },
-    "Ring am Gewehr, Iris an der Brille für Pistolen": {
+    "Ring und Iris am Diopter oder Iris an der Brille": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ring on the rifle, iris on the glasses for pistols"
+            "value": "Ring and iris on the diopter, or iris on the glasses"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anneau sur le fusil, iris sur les lunettes pour le pistolet"
+            "value": "Anneau et iris sur le dioptre, ou iris sur les lunettes"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anello sul fucile, iride sugli occhiali per la pistola"
+            "value": "Anello e iride sulla diottra, o iride sugli occhiali"
           }
         }
       }
@@ -13941,6 +13964,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media percentuale"
+          }
+        }
+      }
+    },
+    "Ø Punkte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avg. points"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moy. points"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media punti"
           }
         }
       }

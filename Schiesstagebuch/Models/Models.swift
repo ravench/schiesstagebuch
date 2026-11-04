@@ -333,7 +333,8 @@ final class Entry {
     /// Copy of the event's date so lists and queries can sort entries; change it through
     /// `ShootingEvent.setDate` so all Stiche of an event stay on the same day.
     var date: Date = Date.now
-    /// Name of the Stich, e.g. "Sektionsstich"; empty when the event has only one.
+    /// Name of the Stich, e.g. "Sektionsstich"; empty when none was entered. Named Stiche are
+    /// grouped across events in the statistics (`StichStats`).
     var stich: String = ""
     /// All shots fired, sighters included.
     var shotCount: Int = 0
