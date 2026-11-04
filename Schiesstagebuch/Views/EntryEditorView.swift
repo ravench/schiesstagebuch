@@ -58,14 +58,6 @@ struct EntryEditorView: View {
         var text: String { boxes.text }
         init(text: String) { boxes = ShotBoxes(text: text) }
     }
-
-    /// A Passe entered «Pro Passe»: its shot count and points, both empty until typed.
-    private struct PasseTotalDraft: Identifiable {
-        let id = UUID()
-        var shots: Int?
-        var points: Double?
-        var total: PasseTotal { PasseTotal(shots: shots ?? 0, points: points ?? 0) }
-    }
     @State private var notes = ""
     @State private var photos: [Data] = []
     @State private var pickerItems: [PhotosPickerItem] = []
@@ -324,16 +316,7 @@ struct EntryEditorView: View {
                 LabeledContent("Total", value: (sighters + scored).formatted())
             case .passeTotals:
                 countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
-                ForEach($passeTotals) { $passe in
-                    passeTotalRow(number: (passeTotals.firstIndex { $0.id == passe.id } ?? 0) + 1, passe: $passe)
-                }
-                .onDelete { passeTotals.remove(atOffsets: $0) }
-                Button {
-                    // Passen of a Stich usually have the same number of shots.
-                    passeTotals.append(PasseTotalDraft(shots: passeTotals.last?.shots))
-                } label: {
-                    Label("Passe hinzufügen", systemImage: "plus.circle")
-                }
+                PasseTotalsRows(passen: $passeTotals)
                 LabeledContent("Wertungsschüsse", value: enteredPasseTotals.shotCount.formatted())
                 LabeledContent("Total", value: (sighters + enteredPasseTotals.shotCount).formatted())
             case .shots:
@@ -404,27 +387,6 @@ struct EntryEditorView: View {
                 .buttonStyle(.borderless)
                 .accessibilityLabel(String(localized: "\(title.loc) hinzufügen"))
         }
-    }
-
-    /// One Passe of the «Pro Passe» form: shots and points side by side.
-    private func passeTotalRow(number: Int, passe: Binding<PasseTotalDraft>) -> some View {
-        HStack {
-            Text("Passe \(number)").foregroundStyle(.secondary)
-            Spacer()
-            TextField("Schüsse", value: passe.shots, format: .number)
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 56)
-                .accessibilityLabel(Text("Schüsse"))
-            Text("Schuss").foregroundStyle(.secondary)
-            TextField("Punkte", value: passe.points, format: .number)
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 72)
-                .accessibilityLabel(Text("Punkte"))
-            Text("Punkte").foregroundStyle(.secondary)
-        }
-        .monospacedDigit()
     }
 
     private var enteredPasseTotals: [PasseTotal] { passeTotals.map(\.total).normalized }
