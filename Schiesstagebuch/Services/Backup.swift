@@ -264,6 +264,42 @@ enum Backup {
 
     /// Returns a short German summary for the user.
     @discardableResult
+    /// Ranges of the backup by their id. A range that is already in the app under another id (the same
+    /// catalogue range, the same name, or a range close by with a fitting name, e.g. after the catalogue
+    /// was imported on a new phone) is reused and only gets the values it lacks.
+    private static func restoreRanges(_ dtos: [RangeDTO], into context: ModelContext) throws -> [UUID: ShootingRange] {
+        let existing = try all(ShootingRange.self, context).sorted { $0.createdAt < $1.createdAt }
+        var ranges = Dictionary(existing.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        let places = existing.map { RangeMatcher.Place($0) }
+        for d in dtos where ranges[d.id] == nil {
+            let incoming = RangeMatcher.Place(name: d.name, place: d.place, address: d.address ?? "", distances: d.distances ?? [],
+                                              latitude: d.latitude, longitude: d.longitude, catalogID: d.catalogID ?? "")
+            if let i = RangeMatcher.sameRange(incoming, among: places) {
+                fillMissing(existing[i], from: d)
+                ranges[d.id] = existing[i]
+                continue
+            }
+            let r = ShootingRange(name: d.name, place: d.place); r.id = d.id; r.isArchived = d.isArchived
+            r.address = d.address ?? ""; r.latitude = d.latitude; r.longitude = d.longitude
+            r.shootingBearing = d.shootingBearing.map(Compass.normalized); r.altitude = d.altitude
+            r.catalogID = d.catalogID ?? ""; r.distances = d.distances ?? []
+            if let created = d.createdAt { r.createdAt = created }
+            context.insert(r); ranges[d.id] = r
+        }
+        return ranges
+    }
+
+    private static func fillMissing(_ r: ShootingRange, from d: RangeDTO) {
+        if r.place.isEmpty { r.place = d.place }
+        if r.address.isEmpty { r.address = d.address ?? "" }
+        if r.latitude == nil || r.longitude == nil { r.latitude = d.latitude; r.longitude = d.longitude }
+        if r.shootingBearing == nil { r.shootingBearing = d.shootingBearing.map(Compass.normalized) }
+        if r.altitude == nil { r.altitude = d.altitude }
+        if r.catalogID.isEmpty { r.catalogID = d.catalogID ?? "" }
+        if r.distances.isEmpty { r.distances = d.distances ?? [] }
+        if !d.isArchived { r.isArchived = false }
+    }
+
     static func restore(from data: Data, into context: ModelContext) throws -> String {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -304,15 +340,7 @@ enum Backup {
             lots[d.id] = l
         }
 
-        var ranges = Dictionary(uniqueKeysWithValues: try all(ShootingRange.self, context).map { ($0.id, $0) })
-        for d in file.ranges where ranges[d.id] == nil {
-            let r = ShootingRange(name: d.name, place: d.place); r.id = d.id; r.isArchived = d.isArchived
-            r.address = d.address ?? ""; r.latitude = d.latitude; r.longitude = d.longitude
-            r.shootingBearing = d.shootingBearing.map(Compass.normalized); r.altitude = d.altitude
-            r.catalogID = d.catalogID ?? ""; r.distances = d.distances ?? []
-            if let created = d.createdAt { r.createdAt = created }
-            context.insert(r); ranges[d.id] = r
-        }
+        let ranges = try restoreRanges(file.ranges, into: context)
 
         try restoreMaintenance(file.maintenance, weapons: weapons, into: context)
         try restoreLicenceCards(file.licenceCards ?? [], into: context)

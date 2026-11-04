@@ -82,15 +82,20 @@ enum RangeCatalog {
                 own.remove(at: index)
                 continue
             }
-            let range = ShootingRange(name: item.name, place: item.place)
-            range.latitude = item.lat
-            range.longitude = item.lon
-            fill(range, from: item)
-            context.insert(range)
+            context.insert(makeRange(item))
             added += 1
         }
         try? context.save()
         return added
+    }
+
+    /// A new range with everything the catalogue knows about it; not yet inserted.
+    static func makeRange(_ item: Item) -> ShootingRange {
+        let range = ShootingRange(name: item.name, place: item.place)
+        range.latitude = item.lat
+        range.longitude = item.lon
+        fill(range, from: item)
+        return range
     }
 
     private static func fill(_ range: ShootingRange, from item: Item) {
