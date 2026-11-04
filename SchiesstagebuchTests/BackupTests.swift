@@ -10,7 +10,7 @@ final class BackupTests: ModelTestCase {
     }
 
     func testRoundTripKeepsNewFields() throws {
-        let cal = Caliber(name: "5.6 mm GP 90 (Swiss)", category: "Langwaffe"); context.insert(cal)
+        let cal = Caliber(name: "5.6 mm GP 90", category: "Langwaffe"); context.insert(cal)
         let ammo = Ammunition(name: "GP 90", caliber: cal); context.insert(ammo)
         let lot = AmmoLot(number: "TH-17", notes: "Kiste 3"); context.insert(lot); lot.ammunition = ammo
         let oldLot = AmmoLot(number: "TH-09"); context.insert(oldLot); oldLot.ammunition = ammo; oldLot.isArchived = true
