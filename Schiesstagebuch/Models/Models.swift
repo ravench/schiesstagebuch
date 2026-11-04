@@ -360,6 +360,8 @@ final class Entry {
     /// Optional values of the sighters (Probeschüsse) as entered, on one line, e.g. "9 10 8". They never count
     /// towards the result or averages; when entered, `sighterCount` is their number.
     var sighterValuesText: String = ""
+    /// Passen entered «Pro Passe» as JSON (`[PasseTotal]`): shots and points per Passe; nil otherwise.
+    var passeTotalsData: Data?
     /// IPSC stage as JSON (`IPSCStage`): time and hits; nil for point scoring or when nothing was entered.
     var ipscData: Data?
     var notes: String = ""
