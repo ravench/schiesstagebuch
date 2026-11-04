@@ -40,21 +40,26 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertNil(SightSettings.lastUsed(for: nil, in: entries))
     }
 
-    func testPistolsUseIrisRiflesUseRing() {
+    func testPistolsUseIrisRiflesUseRingAndIris() {
         XCTAssertEqual(SightSettings.aperture(for: .pistol), .iris)
         XCTAssertEqual(SightSettings.aperture(for: .sportPistol), .iris)
         XCTAssertEqual(SightSettings.aperture(for: .airPistol), .iris)
-        XCTAssertEqual(SightSettings.aperture(for: .serviceRifle), .ring)
-        XCTAssertEqual(SightSettings.aperture(for: .sportRifle), .ring)
-        XCTAssertEqual(SightSettings.aperture(for: .airgun), .ring)
+        XCTAssertEqual(SightSettings.aperture(for: .serviceRifle), .both, "iris can sit in the rifle diopter")
+        XCTAssertEqual(SightSettings.aperture(for: .sportRifle), .both, "iris can sit in the rifle diopter")
+        XCTAssertEqual(SightSettings.aperture(for: .airgun), .both, "iris can sit in the rifle diopter")
         XCTAssertEqual(SightSettings.aperture(for: nil), .both)
         XCTAssertEqual(SightSettings.aperture(for: .other), .both)
+    }
+
+    func testRiflesKeepTheIris() {
+        let s = SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
+        XCTAssertEqual(s.fitted(to: SightSettings.aperture(for: .sportRifle)).irisSize, 2.1)
+        XCTAssertEqual(s.fitted(to: SightSettings.aperture(for: .serviceRifle)).ringSize, 3.4)
     }
 
     func testFittingDropsTheApertureTheWeaponDoesNotHave() {
         let s = SightSettings(filter: "Citron", diopter: 1.2, ringSize: 3.4, irisSize: 2.1)
         XCTAssertEqual(s.fitted(to: .iris), SightSettings(filter: "Citron", diopter: 1.2, irisSize: 2.1))
-        XCTAssertEqual(s.fitted(to: .ring), SightSettings(filter: "Citron", diopter: 1.2, ringSize: 3.4))
         XCTAssertEqual(s.fitted(to: .both), s)
     }
 
@@ -63,7 +68,7 @@ final class SightSettingsTests: ModelTestCase {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
             for key in ["Kein Filter", "Einstellungen für Sportschützen", "Für Sportschützen", "Farbfilter",
-                                             "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibeinstütze", "Zweibeinstütze (cm)"] {
+                                             "Diopter", "Ringgrösse", "Iris", "Zweibeinstütze", "Zweibeinstütze (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
@@ -154,7 +159,6 @@ final class SightSettingsTests: ModelTestCase {
     func testBipodIsRifleOnly() {
         let s = SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
         XCTAssertNil(s.fitted(to: .iris).bipodLength)
-        XCTAssertEqual(s.fitted(to: .ring).bipodLength, 30)
         XCTAssertEqual(s.fitted(to: .both).bipodLength, 30)
     }
 

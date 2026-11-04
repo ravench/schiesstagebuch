@@ -19,9 +19,9 @@ struct SightSection: View {
                     if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
                 }
                 if fields.contains(.sight) {
-                    if aperture != .ring { sliderRow("Iris (Brille)", value: $sight.irisSize) }
-                    sliderRow("Diopter", value: $sight.diopter)
-                    if aperture != .iris { sliderRow("Ringgrösse", value: $sight.ringSize) }
+                    rulerRow("Iris", value: $sight.irisSize)
+                    rulerRow("Diopter", value: $sight.diopter)
+                    if aperture != .iris { rulerRow("Ringgrösse", value: $sight.ringSize) }
                 }
                 if fields.contains(.bipod), aperture != .iris {
                     sliderRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm",
@@ -53,7 +53,7 @@ struct SightSection: View {
         let sight = shown
         var parts: [String] = []
         if !sight.filters.isEmpty { parts.append(FilterColor.title(sight.filters)) }
-        if let i = sight.irisSize, aperture != .ring { parts.append("I \(SightSettings.format(i))") }
+        if let i = sight.irisSize { parts.append("I \(SightSettings.format(i))") }
         if let d = sight.diopter { parts.append("D \(SightSettings.format(d))") }
         if let r = sight.ringSize, aperture != .iris { parts.append("R \(SightSettings.format(r))") }
         if let b = sight.bipodLength, aperture != .iris { parts.append("\(SightSettings.format(b)) cm") }
@@ -77,21 +77,37 @@ struct SightSection: View {
         .pickerStyle(.navigationLink)
     }
 
+    /// Toggle plus a sliding ruler (±0.5 on screen, 0.1 steps) for diopter, iris and ring size.
+    private func rulerRow(_ title: String, value: Binding<Double?>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            valueToggle(title, value: value, start: 1.0)
+            if let v = value.wrappedValue {
+                RulerSlider(title: title, value: Binding(get: { v }, set: { value.wrappedValue = SightSettings.clamp($0) }),
+                            scale: SightSettings.rulerScale)
+            }
+        }
+    }
+
+    /// Switches a value on (at `start`, or its old value) or off, and shows it next to the title.
+    private func valueToggle(_ title: String, value: Binding<Double?>, unit: String = "", start: Double) -> some View {
+        Toggle(isOn: Binding(
+            get: { value.wrappedValue != nil },
+            set: { value.wrappedValue = $0 ? (value.wrappedValue ?? start) : nil })) {
+            HStack {
+                Text(title.loc)
+                Spacer()
+                if let v = value.wrappedValue {
+                    Text(SightSettings.format(v) + unit).monospacedDigit().foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
     private func sliderRow(_ title: String, value: Binding<Double?>, unit: String = "",
                            range: ClosedRange<Double> = SightSettings.range, step: Double = SightSettings.step,
                            start: Double = 1.0, clamp: @escaping (Double) -> Double = SightSettings.clamp) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Toggle(isOn: Binding(
-                get: { value.wrappedValue != nil },
-                set: { value.wrappedValue = $0 ? (value.wrappedValue ?? start) : nil })) {
-                HStack {
-                    Text(title.loc)
-                    Spacer()
-                    if let v = value.wrappedValue {
-                        Text(SightSettings.format(v) + unit).monospacedDigit().foregroundStyle(.secondary)
-                    }
-                }
-            }
+            valueToggle(title, value: value, unit: unit, start: start)
             if let v = value.wrappedValue {
                 Slider(value: Binding(get: { v }, set: { value.wrappedValue = clamp($0) }),
                        in: range, step: step) {

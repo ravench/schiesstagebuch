@@ -16,19 +16,18 @@ struct SightSettings: Equatable {
     var diopter: Double?
     /// Ring on the rifle's sight; rifles only.
     var ringSize: Double?
-    /// Iris on the glasses; pistols only (they have no ring on the weapon).
+    /// Iris on the rifle's diopter or on the shooting glasses.
     var irisSize: Double?
     /// Bipod length in cm; rifles only.
     var bipodLength: Double?
 
-    /// Which aperture a weapon category uses.
-    enum Aperture { case ring, iris, both }
+    /// Which apertures a weapon category uses: handguns only an iris on the glasses (no ring, no bipod);
+    /// everything else may have a ring and an iris, since the iris can also sit in a rifle's diopter.
+    enum Aperture { case iris, both }
 
     static func aperture(for category: WeaponCategory?) -> Aperture {
         switch category {
         case .pistol, .sportPistol, .luger, .revolver, .airPistol: .iris
-        case .serviceCarbine, .serviceRifle, .sportRifle, .longRange, .huntingRifle,
-             .leverAction, .airgun, .pcc: .ring
         default: .both
         }
     }
@@ -41,6 +40,9 @@ struct SightSettings: Equatable {
     static func clamp(_ v: Double) -> Double {
         (min(max(v, range.lowerBound), range.upperBound) * 10).rounded() / 10
     }
+
+    /// Sliding ruler for diopter, iris and ring: ±0.5 on screen, 0.1 steps, numbers every 0.5.
+    static let rulerScale = RulerScale(range: range, step: step, halfSpan: 0.5, majorEvery: 5)
 
     /// Bipod slider range in cm, in steps of 0.5.
     static let bipodRange: ClosedRange<Double> = 5...60
@@ -85,7 +87,6 @@ struct SightSettings: Equatable {
     func fitted(to aperture: Aperture) -> SightSettings {
         var s = self
         if aperture == .iris { s.ringSize = nil; s.bipodLength = nil }
-        if aperture == .ring { s.irisSize = nil }
         return s
     }
 
