@@ -59,6 +59,10 @@ struct WeaponRow: View {
             HStack {
                 Text(weapon.name).font(.headline)
                 if weapon.isArchived { Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small) }
+                if weapon.needsMaintenance {
+                    Image(systemName: "bell.badge.fill").foregroundStyle(.red).imageScale(.small)
+                        .accessibilityLabel("Wartung fällig")
+                }
                 Spacer()
                 Text("\((weapon.entries ?? []).totalShots.formatted()) Schuss")
                     .monospacedDigit().foregroundStyle(.secondary)

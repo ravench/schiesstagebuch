@@ -262,6 +262,7 @@ T = {
     "Waffe löschen": ("Delete firearm", "Supprimer l'arme", "Elimina arma"),
     "Waffe löschen?": ("Delete firearm?", "Supprimer l'arme ?", "Eliminare l'arma?"),
     "Waffen": ("Firearms", "Armes", "Armi"),
+    "Wartung fällig": ("Maintenance due", "Entretien à faire", "Manutenzione dovuta"),
     "Wiederherstellen fehlgeschlagen: %@": ("Restore failed: %@", "Échec de la restauration : %@", "Ripristino non riuscito: %@"),
     "Wählen": ("Choose", "Choisir", "Scegli"),
     "Zeitraum": ("Period", "Période", "Periodo"),
