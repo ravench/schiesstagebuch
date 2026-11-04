@@ -72,6 +72,23 @@ final class MaintenanceTests: ModelTestCase {
         XCTAssertEqual(weapon.dueMaintenance.map(\.kind), [.cleaning])
     }
 
+    func testFirearmsListFlagsDueWeapons() throws {
+        // Cleaned yesterday, shot today: the 30-day interval doesn't make it due by itself.
+        log(.cleaning, on: .now - 86_400)
+        addEntry(weapon, on: .now, shots: 50)
+        try context.save()
+        XCTAssertFalse(weapon.needsMaintenance)
+        addEntry(weapon, on: .now, shots: 50)
+        try context.save()
+        XCTAssertTrue(weapon.needsMaintenance, "cleaning due after 100 shots")
+        weapon.isArchived = true
+        XCTAssertFalse(weapon.needsMaintenance, "archived weapons get no reminders")
+        weapon.isArchived = false
+        log(.cleaning, on: .now) // today's entries count as before a cleaning the same day
+        try context.save()
+        XCTAssertFalse(weapon.needsMaintenance, "cleaned again")
+    }
+
     func testDaysFromFirstUseWaitForTheNextEntry() throws {
         weapon.dayCountingRaw = DayCounting.fromFirstUse.rawValue
         log(.cleaning, on: day(2))

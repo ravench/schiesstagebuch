@@ -11599,6 +11599,29 @@
         }
       }
     },
+    "Wartung fällig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenance due"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entretien à faire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manutenzione dovuta"
+          }
+        }
+      }
+    },
     "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": {
       "extractionState": "manual",
       "localizations": {
