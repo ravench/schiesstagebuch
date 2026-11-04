@@ -104,6 +104,50 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(try target.fetchCount(FetchDescriptor<AmmoLot>()), 1)
     }
 
+    func testRestoreReusesRangesAlreadyInTheApp() throws {
+        // Old phone: a catalogue range, an own range and an own range close to a catalogue range.
+        let aarberg = RangeCatalog.makeRange(RangeMatcherTests.aarberg300); context.insert(aarberg)
+        let clubhouse = ShootingRange(name: "Schützenhaus Riedbach", place: "Bern"); context.insert(clubhouse)
+        clubhouse.latitude = 46.9401; clubhouse.longitude = 7.3301
+        let mine = ShootingRange(name: "Mein Keller"); context.insert(mine)
+        mine.address = "Kellergasse 1, 3000 Bern"
+        for (i, range) in [aarberg, clubhouse, mine].enumerated() { addEntry(nil, on: day(i + 1), shots: 10).shootingEvent?.range = range }
+        try context.save()
+        let data = try Backup.export(context)
+
+        // New phone: the catalogue was imported at first launch (other ids) and "Mein Keller" typed in again.
+        let (keep, target) = try freshContext()
+        _ = keep
+        let newAarberg = RangeCatalog.makeRange(RangeMatcherTests.aarberg300); target.insert(newAarberg)
+        let newAarberg50 = RangeCatalog.makeRange(RangeMatcherTests.aarberg50); target.insert(newAarberg50)
+        let newRiedbach = RangeCatalog.makeRange(RangeMatcherTests.riedbach); target.insert(newRiedbach)
+        let newMine = ShootingRange(name: "mein keller"); target.insert(newMine)
+        try target.save()
+
+        try Backup.restore(from: data, into: target)
+        XCTAssertEqual(try target.fetchCount(FetchDescriptor<ShootingRange>()), 4, "no duplicates")
+        let entries = try target.fetch(FetchDescriptor<Entry>())
+        XCTAssertEqual(Set(entries.compactMap(\.range?.id)), [newAarberg.id, newRiedbach.id, newMine.id])
+        XCTAssertEqual(newMine.address, "Kellergasse 1, 3000 Bern", "values the range lacked are filled in")
+        XCTAssertEqual(newMine.name, "mein keller", "its name stays")
+        XCTAssertEqual(newRiedbach.name, "Bern-Riedbach Forst 300/50/25m")
+    }
+
+    func testRestoreKeepsDifferentRangesNearbyApart() throws {
+        let own = ShootingRange(name: "Mühlau 300m"); context.insert(own)
+        own.latitude = 47.0307; own.longitude = 7.2697
+        addEntry(nil, on: day(1), shots: 10).shootingEvent?.range = own
+        try context.save()
+        let data = try Backup.export(context)
+        let (keep, target) = try freshContext()
+        _ = keep
+        let small = RangeCatalog.makeRange(RangeMatcherTests.aarberg50); target.insert(small)
+        try target.save()
+
+        try Backup.restore(from: data, into: target)
+        XCTAssertEqual(try target.fetchCount(FetchDescriptor<ShootingRange>()), 2, "the 50/25 m stand is a different range")
+    }
+
     func testRestoresBackupFromBeforeTheNewFields() throws {
         let json = """
         {"version":1,"exportedAt":"2026-01-01T00:00:00Z","calibers":[],"weapons":[],"ammunition":[],
