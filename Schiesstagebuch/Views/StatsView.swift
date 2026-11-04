@@ -36,6 +36,19 @@ struct StatsView: View {
                     }
                 }
                 }
+                let stiche = StichStats.named(in: filtered)
+                if !stiche.isEmpty {
+                Section("Stiche") {
+                    ForEach(stiche) { item in
+                        NavigationLink {
+                            StichDetailView(name: item.name)
+                        } label: {
+                            StatsLinkRow(name: item.name, subtitle: StichDetailView.subtitle(item.entries),
+                                         archived: false, shots: item.shots)
+                        }
+                    }
+                }
+                }
                 Section {
                     BreakdownChart(title: "Pro Kaliber", entries: filtered, key: \.caliber, label: \.name)
                 }
@@ -265,5 +278,42 @@ struct CaliberDetailView: View {
         .navigationTitle(caliber.name)
         .toolbar { Button("Bearbeiten") { editing = true } }
         .sheet(isPresented: $editing) { CaliberEditorView(caliber: caliber) }
+    }
+}
+
+/// All entries of one Stich name across events, e.g. every "Bezirksmatch".
+struct StichDetailView: View {
+    @Environment(\.term) private var term
+    let name: String
+    @Query(sort: \Entry.date) private var allEntries: [Entry]
+
+    /// "3× geschossen · Ø 92.5 %" for the statistics list.
+    static func subtitle(_ entries: [Entry]) -> String {
+        [String(localized: "\(entries.count)× geschossen"), entries.averagePercentage.map(ScoreFormat.percent)]
+            .compactMap { $0 }.joined(separator: " · ")
+    }
+
+    var body: some View {
+        ItemStatsList(entries: StichStats.entries(named: name, in: allEntries)) {
+            EmptyView()
+        } breakdowns: { entries in
+            // Same Stich, same shot count and maximum: here an average in points is meaningful.
+            if let avg = entries.averagePoints {
+                Section {
+                    LabeledContent("Ø Punkte", value: ScoreFormat.points(avg))
+                    if let best = StichStats.bestPoints(entries) {
+                        LabeledContent("Bestes Resultat", value: ScoreFormat.points(best))
+                    }
+                    if let perShot = entries.averagePerShot {
+                        LabeledContent("Ø pro Schuss", value: ScoreFormat.points(perShot))
+                    }
+                }
+            }
+            Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
+            Section { BreakdownChart(title: "Pro Anlass", entries: entries,
+                                     key: { $0.eventName.isEmpty ? nil : $0.eventName }, label: { $0 }) }
+            Section { BreakdownChart(title: "Pro Schiessanlage", entries: entries, key: \.range, label: \.name) }
+        }
+        .navigationTitle(name)
     }
 }

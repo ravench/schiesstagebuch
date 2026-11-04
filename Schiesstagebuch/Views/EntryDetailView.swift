@@ -103,7 +103,7 @@ struct EntryDetailView: View {
                             }
                         }
                     }
-                    row("Iris (Brille)", sight.irisSize.map(SightSettings.format))
+                    row("Iris", sight.irisSize.map(SightSettings.format))
                     row("Diopter", sight.diopter.map(SightSettings.format))
                     row("Ringgrösse", sight.ringSize.map(SightSettings.format))
                     row("Zweibeinstütze", sight.bipodLength.map { "\(SightSettings.format($0)) cm" })

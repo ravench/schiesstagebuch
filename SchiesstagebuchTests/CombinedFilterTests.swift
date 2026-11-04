@@ -91,7 +91,7 @@ final class CombinedFilterTests: ModelTestCase {
     func testFittingKeepsBothFilters() {
         let s = SightSettings(filter: "Citron", secondFilter: "Saphire", ringSize: 3.4, irisSize: 2.1)
         XCTAssertEqual(s.fitted(to: .iris).filters, ["Citron", "Saphire"])
-        XCTAssertEqual(s.fitted(to: .ring).filters, ["Citron", "Saphire"])
+        XCTAssertEqual(s.fitted(to: .both).filters, ["Citron", "Saphire"])
     }
 
     func testBackupAndCSVKeepBothFilters() throws {
