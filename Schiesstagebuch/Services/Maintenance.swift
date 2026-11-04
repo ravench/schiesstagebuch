@@ -125,9 +125,20 @@ enum MaintenanceNotifier {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers(weapon))
     }
 
+    /// The reminder plan per kind. `previouslyDue` are the kinds that were due before the change
+    /// being saved; left out, the kinds due now count as already told, so only a caller that
+    /// knows the state before (the entry editor) can trigger an immediate "fällig" notification.
+    static func plans(_ weapon: Weapon, previouslyDue: Set<MaintenanceKind>? = nil) -> [MaintenanceKind: ReminderPlan] {
+        let told = previouslyDue ?? Set(weapon.dueMaintenance.map(\.kind))
+        return Dictionary(uniqueKeysWithValues: MaintenanceKind.allCases.map { kind in
+            (kind, plan(weapon.status(kind), archived: weapon.isArchived, previouslyDue: told.contains(kind)))
+        })
+    }
+
     /// Re-schedule all reminders for a weapon. Call after saving an entry, a record or intervals.
-    static func refresh(_ weapon: Weapon, previouslyDue: Set<MaintenanceKind> = []) {
+    static func refresh(_ weapon: Weapon, previouslyDue: Set<MaintenanceKind>? = nil) {
         let center = UNUserNotificationCenter.current()
+        let planned = plans(weapon, previouslyDue: previouslyDue)
         for kind in MaintenanceKind.allCases {
             let id = identifier(weapon, kind)
             center.removePendingNotificationRequests(withIdentifiers: [id])
@@ -140,7 +151,7 @@ enum MaintenanceNotifier {
             content.sound = .default
 
             let trigger: UNNotificationTrigger
-            switch plan(status, archived: weapon.isArchived, previouslyDue: previouslyDue.contains(kind)) {
+            switch planned[kind] ?? ReminderPlan.none {
             case .none:
                 continue
             case .now:
