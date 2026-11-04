@@ -396,7 +396,7 @@ enum Backup {
         let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
                                 "Prozent", "Einzelschüsse", "Punkte pro Passe", "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
-                                "Filter", "Diopter", "Ringgrösse", "Iris (Brille)", "Zweibeinstütze (cm)", "Wetter", "Bemerkungen"]
+                                "Filter", "Diopter", "Ringgrösse", "Iris", "Zweibeinstütze (cm)", "Wetter", "Bemerkungen"]
         var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
         for e in entries {
             let score = e.score

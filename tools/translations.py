@@ -440,10 +440,10 @@ T = {
         "Sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs",
         "Sugli occhiali da tiro o nella diottra, anche lenti correttive"),
     "Diopter, Ring und Iris": ("Diopter, ring and iris", "Dioptre, anneau et iris", "Diottra, anello e iride"),
-    "Ring am Gewehr, Iris an der Brille für Pistolen": (
-        "Ring on the rifle, iris on the glasses for pistols",
-        "Anneau sur le fusil, iris sur les lunettes pour le pistolet",
-        "Anello sul fucile, iride sugli occhiali per la pistola"),
+    "Ring und Iris am Diopter oder Iris an der Brille": (
+        "Ring and iris on the diopter, or iris on the glasses",
+        "Anneau et iris sur le dioptre, ou iris sur les lunettes",
+        "Anello e iride sulla diottra, o iride sugli occhiali"),
     "Länge in cm, nur bei Gewehren": ("Length in cm, rifles only", "Longueur en cm, fusils uniquement", "Lunghezza in cm, solo fucili"),
     "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen": (
         "Light, wind and temperature per event, also for relays",
@@ -480,7 +480,7 @@ T = {
     "Neuer Filter": ("New filter", "Nouveau filtre", "Nuovo filtro"),
     "Filter bearbeiten": ("Edit filter", "Modifier le filtre", "Modifica filtro"),
     "Zweibeinstütze (cm)": ("Bipod (cm)", "Bipied (cm)", "Bipiede (cm)"),
-    "Iris (Brille)": ("Iris (glasses)", "Iris (lunettes)", "Iride (occhiali)"),
+    "Iris": ("Iris", "Iris", "Iride"),
     "Höhe": ("Altitude", "Altitude", "Altitudine"),
     "m ü. M.": ("m a.s.l.", "m d'altitude", "m s.l.m."),
     "Schussrichtung": ("Shooting direction", "Direction de tir", "Direzione di tiro"),
@@ -527,6 +527,12 @@ T = {
         "Per i bersagli tirati più volte a questo evento."),
     "%lld× geschossen": ("Shot %lld×", "Tirée %lld×", "Tirato %lld×"),
     "pro Schuss": ("per shot", "par coup", "per colpo"),
+    "Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».": (
+        "With a name, the match shows up in the statistics, e.g. “District match”.",
+        "Avec un nom, la cible apparaît dans les statistiques, p. ex. « Match de district ».",
+        "Con un nome, il bersaglio appare nelle statistiche, p. es. «Match distrettuale»."),
+    "Ø Punkte": ("Avg. points", "Moy. points", "Media punti"),
+    "Bestes Resultat": ("Best result", "Meilleur résultat", "Miglior risultato"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
     # Barrels (Läufe)
     "%@ von %@ Schuss (%@)": ("%1$@ of %2$@ shots (%3$@)", "%1$@ sur %2$@ coups (%3$@)", "%1$@ di %2$@ colpi (%3$@)"),

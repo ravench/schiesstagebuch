@@ -79,8 +79,8 @@ struct EntryEditorView: View {
         return entry?.shootingEvent?.stichCount ?? 1
     }
 
-    /// The Stich name only matters once an event has more than one.
-    private var showsStich: Bool { stichCount > 1 || !stich.isEmpty }
+    /// Stich names used before, so the same Stich is spelled alike and groups in the statistics.
+    private var recentStiche: [String] { StichStats.recentNames(in: allEntries) }
 
     /// Weapon, sight and weather follow the user's habits only for a brand-new event.
     private var startsNewEvent: Bool { entry == nil && addingTo == nil }
@@ -141,8 +141,13 @@ struct EntryEditorView: View {
                             Label { Text(verbatim: s) } icon: { Image(systemName: "arrow.up.left") }
                         }
                     }
-                    if showsStich {
+                    HStack {
                         TextField(scoring == .ipsc ? "Stage".loc : "Stich".loc, text: $stich)
+                        if scoring != .ipsc, !recentStiche.isEmpty {
+                            Menu {
+                                ForEach(recentStiche, id: \.self) { s in Button(s) { stich = s } }
+                            } label: { Image(systemName: "clock.arrow.circlepath") }
+                        }
                     }
                     ScoringSystemPicker(system: $scoring)
                     if scoring == .ipsc {
@@ -151,6 +156,8 @@ struct EntryEditorView: View {
                 } footer: {
                     if stichCount > 1 {
                         Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
+                    } else if scoring != .ipsc {
+                        Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
                     }
                 }
 
