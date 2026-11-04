@@ -8,8 +8,8 @@ final class WeatherTests: ModelTestCase {
 
     func testFieldKeysMatchTheSpec() {
         let specKeys = ["overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
-                        "wind_strength", "wind_clock", "wind_character", "wind_type", "air_temp_c", "temp_feel",
-                        "stand_temp", "ammo_temp", "precipitation", "rain_during_relay", "ground", "humidity_pct",
+                        "wind_strength", "wind_clock", "wind_character", "air_temp_c", "temp_feel",
+                        "ammo_temp", "precipitation", "rain_during_relay", "ground", "humidity_pct",
                         "haze_rising_moisture", "pressure_hpa", "aids", "weather_impact", "weather_note"]
         XCTAssertEqual(Set(WeatherField.all.map(\.key)), Set(specKeys))
         XCTAssertEqual(WeatherField.all.count, specKeys.count, "no duplicates")
@@ -28,8 +28,19 @@ final class WeatherTests: ModelTestCase {
         }
     }
 
+    func testStandTemperatureAndWindTypeAreGone() {
+        // Raven 2026-11-03: not needed in the form.
+        XCTAssertNil(WeatherField.field("stand_temp"))
+        XCTAssertNil(WeatherField.field("wind_type"))
+        // Values from older builds are dropped when the record is stored again, and never shown.
+        var c = WeatherConditions()
+        c.values = ["stand_temp": .number(18), "wind_type": .option("bise"), "air_temp_c": .number(12)]
+        XCTAssertEqual(c.normalized().values, ["air_temp_c": .number(12)])
+        XCTAssertFalse(c.summary(level: .entry).contains("18"))
+    }
+
     func testLevelsFollowTheSpec() {
-        let entryOnly = ["overall", "wind_type", "stand_temp", "ammo_temp", "ground", "humidity_pct", "pressure_hpa"]
+        let entryOnly = ["overall", "ammo_temp", "ground", "humidity_pct", "pressure_hpa"]
         let relayKeys = Set(WeatherField.fields(for: .relay).map(\.key))
         let entryKeys = Set(WeatherField.fields(for: .entry).map(\.key))
         for key in entryOnly {

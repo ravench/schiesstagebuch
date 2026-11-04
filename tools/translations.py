@@ -665,6 +665,14 @@ T = {
         "Time and A, C, D hits per stage, with hit factor",
         "Temps et impacts A, C, D par stage, avec hit factor",
         "Tempo e colpi A, C, D per stage, con hit factor"),
+    # Import: ranges matched to ones already known
+    "Bekannte Schiessanlagen": ("Known shooting ranges", "Stands de tir connus", "Poligoni conosciuti"),
+    "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.": (
+        "These ranges are already in the app or in the directory of Swiss shooting ranges, recognised by name, town, postcode and distance. Switch off matches that are wrong. Where several ranges fit, pick the right one. Without a match, a new range is created.",
+        "Ces stands sont déjà dans l'app ou dans le répertoire des stands de tir suisses, reconnus par nom, localité, NPA et distance. Désactive les correspondances erronées. Si plusieurs stands conviennent, choisis le bon. Sans correspondance, un nouveau stand est créé.",
+        "Questi poligoni sono già nell'app o nell'elenco dei poligoni svizzeri, riconosciuti da nome, località, NPA e distanza. Disattiva gli abbinamenti errati. Se più poligoni corrispondono, scegli quello giusto. Senza abbinamento viene creato un nuovo poligono."),
+    "Mehrere Anlagen passen": ("Several ranges fit", "Plusieurs stands conviennent", "Più poligoni corrispondono"),
+    "Neue Anlage anlegen": ("Add as new range", "Ajouter comme nouveau stand", "Aggiungi come nuovo poligono"),
     # Used-up ammunition lots
     "Als aufgebraucht markieren": ("Mark as used up", "Marquer comme épuisé", "Segna come esaurito"),
     "Aufgebraucht": ("Used up", "Épuisé", "Esaurito"),
