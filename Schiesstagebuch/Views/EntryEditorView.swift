@@ -44,6 +44,7 @@ struct EntryEditorView: View {
     @State private var result = ""
     @State private var maxPoints: Double?
     @State private var passes: [PassDraft] = []
+    @State private var passeTotals: [PasseTotalDraft] = []
     @AppStorage(ScoringSystem.enabledKey) private var enabledScoring = ""
     /// The event's scoring system; changing it here changes it for all its Stiche.
     @State private var scoring: ScoringSystem = .rings
@@ -280,9 +281,12 @@ struct EntryEditorView: View {
                 guard didLoad else { return }
                 // Carry the count over so switching modes never loses what was typed.
                 let total = shotTotal(in: old)
+                // The automatic total of the Passen stays as the result in the other modes.
+                if old == .passeTotals, !enteredPasseTotals.isEmpty { result = enteredPasseTotals.resultText }
                 switch new {
                 case .total: shotCount = total
                 case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
+                case .passeTotals: if passeTotals.isEmpty { passeTotals = [PasseTotalDraft()] }
                 case .shots: if passes.isEmpty { passes = [PassDraft(text: "")] }
                 }
             }
@@ -317,6 +321,11 @@ struct EntryEditorView: View {
                 countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
                 countRow("Wertungsschüsse", value: $scored, step: Self.CountStep.scored)
                 LabeledContent("Total", value: (sighters + scored).formatted())
+            case .passeTotals:
+                countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
+                PasseTotalsRows(passen: $passeTotals)
+                LabeledContent("Wertungsschüsse", value: enteredPasseTotals.shotCount.formatted())
+                LabeledContent("Total", value: (sighters + enteredPasseTotals.shotCount).formatted())
             case .shots:
                 countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
                 ForEach($passes) { $pass in
@@ -334,7 +343,11 @@ struct EntryEditorView: View {
         }
 
         Section {
-            TextField("Resultat", text: $result)
+            if mode == .passeTotals {
+                LabeledContent("Resultat", value: enteredPasseTotals.isEmpty ? "–" : enteredPasseTotals.resultText)
+            } else {
+                TextField("Resultat", text: $result)
+            }
             HStack {
                 Text("Max. Punkte")
                 Spacer()
@@ -352,7 +365,9 @@ struct EntryEditorView: View {
         } header: {
             Text("Resultat")
         } footer: {
-            if mode == .shots {
+            if mode == .passeTotals {
+                Text("Das Resultat ist die Summe der Passen; mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
+            } else if mode == .shots {
                 Text("Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.")
             } else {
                 Text("Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
@@ -381,8 +396,10 @@ struct EntryEditorView: View {
         }
     }
 
+    private var enteredPasseTotals: [PasseTotal] { passeTotals.map(\.total).normalized }
+
     private var currentScore: Score {
-        Score(result: result, maxPoints: maxPoints,
+        Score(result: mode == .passeTotals ? enteredPasseTotals.resultText : result, maxPoints: maxPoints,
               shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
               scoredShots: scoredShotsForScore)
     }
@@ -392,6 +409,7 @@ struct EntryEditorView: View {
         switch mode {
         case .total: shotCount
         case .split: sighters + scored
+        case .passeTotals: sighters + enteredPasseTotals.shotCount
         case .shots: sighters + passShotCount
         }
     }
@@ -403,6 +421,7 @@ struct EntryEditorView: View {
         switch mode {
         case .total: shotCount
         case .split: scored
+        case .passeTotals: enteredPasseTotals.shotCount
         case .shots: passShotCount
         }
     }
@@ -428,6 +447,7 @@ struct EntryEditorView: View {
             sight = SightSettings(entry: entry)
             weather = entry.weather
             passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
+            passeTotals = entry.passeTotals.map { PasseTotalDraft(shots: $0.shots, points: $0.points) }
             mode = ShotEntryMode(of: entry)
             if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
             notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
@@ -447,6 +467,7 @@ struct EntryEditorView: View {
             sight = last.map { SightSettings(entry: $0) } ?? SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
+            if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
         } else if let last = allEntries.first {
             // New entries start from the most recent weapon and ammo: usually what you shoot next.
             // The range stays empty unless the position picks one (NearbyRanges).
@@ -465,6 +486,7 @@ struct EntryEditorView: View {
             weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: .now) : nil
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
+            if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
             if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges) {
                 here.request()
             }
@@ -564,11 +586,13 @@ struct EntryEditorView: View {
             target.shotCount = max(0, shotCount); target.sighterCount = nil
         case .split:
             target.shotCount = max(0, sighters) + max(0, scored); target.sighterCount = max(0, sighters)
+        case .passeTotals:
+            target.shotCount = max(0, sighters) + enteredPasseTotals.shotCount; target.sighterCount = max(0, sighters)
         case .shots:
             target.shotCount = max(0, sighters) + passShotCount; target.sighterCount = max(0, sighters)
         }
         target.notes = notes
-        if scoring == .rings { target.result = result }
+        if scoring == .rings { target.result = mode == .passeTotals ? enteredPasseTotals.resultText : result }
         // Fields switched off in Settings keep the values already stored.
         sight.fitted(to: SightSettings.aperture(for: weapon?.category))
             .keeping(SightSettings(entry: target), outside: features)
@@ -577,6 +601,7 @@ struct EntryEditorView: View {
         if scoring == .rings {
             target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
             target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
+            target.passeTotals = mode == .passeTotals ? enteredPasseTotals : []
         }
 
         let existing = target.sortedPhotos

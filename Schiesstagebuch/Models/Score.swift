@@ -205,7 +205,7 @@ extension ShootingEvent {
 
 /// How the shots of an entry are recorded. The default is chosen in Settings.
 enum ShotEntryMode: String, CaseIterable, Identifiable {
-    case total, split, shots
+    case total, split, passeTotals, shots
     static let defaultsKey = "defaultShotEntryMode"
     var id: Self { self }
 
@@ -213,12 +213,14 @@ enum ShotEntryMode: String, CaseIterable, Identifiable {
         switch self {
         case .total: "Total".loc
         case .split: "Probe/Wertung".loc
+        case .passeTotals: "Pro Passe".loc
         case .shots: "Einzelschüsse".loc
         }
     }
 
     init(of entry: Entry) {
         if !entry.shotValuesText.isEmpty { self = .shots }
+        else if entry.passeTotalsData != nil { self = .passeTotals }
         else if entry.sighterCount != nil { self = .split }
         else { self = .total }
     }
