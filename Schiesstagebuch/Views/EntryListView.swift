@@ -92,13 +92,8 @@ struct EntryListView: View {
                         }
                     }
                     .onDelete { offsets in
-                        for item in offsets.map({ section.items[$0] }) {
-                            if !item.isSingle, let event = item.event {
-                                try? Deletion.delete(event, in: context)
-                            } else {
-                                try? Deletion.delete(item.entries, in: context)
-                            }
-                        }
+                        // Only the Stiche shown: a filter may hide others of the same event.
+                        try? Deletion.delete(offsets.flatMap { section.items[$0].entries }, in: context)
                     }
                 } header: {
                     HStack {

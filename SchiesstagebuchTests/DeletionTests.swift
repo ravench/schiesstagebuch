@@ -34,6 +34,33 @@ final class DeletionTests: ModelTestCase {
         XCTAssertEqual((weapon.entries ?? []).totalShots, 30)
     }
 
+    func testDeletingAFilteredJournalRowKeepsTheHiddenStiche() throws {
+        let event = ShootingEvent(date: day(1)); context.insert(event)
+        let shown = addStich(to: event, nil, shots: 10, stich: "Kranz")
+        addStich(to: event, nil, shots: 6, stich: "Auszahl")
+        addStich(to: event, nil, shots: 5, stich: "Glück")
+        try context.save()
+
+        // The journal searched for one Stich: the event row holds only that one.
+        let items = JournalItem.group([shown])
+        try Deletion.delete(items.flatMap(\.entries), in: context)
+
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 1, "the event keeps its other Stiche")
+        XCTAssertEqual(try context.fetch(FetchDescriptor<Entry>()).map(\.shotCount).sorted(), [5, 6])
+    }
+
+    func testDeletingAWholeJournalRowDropsTheEvent() throws {
+        let event = ShootingEvent(date: day(1)); context.insert(event)
+        let a = addStich(to: event, nil, shots: 10)
+        let b = addStich(to: event, nil, shots: 6)
+        try context.save()
+
+        try Deletion.delete(JournalItem.group([a, b]).flatMap(\.entries), in: context)
+
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 0)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Entry>()), 0)
+    }
+
     func testDeletingAnEntryWithoutWeaponWorks() throws {
         let e = addEntry(nil, on: day(1), shots: 5)
         try context.save()
