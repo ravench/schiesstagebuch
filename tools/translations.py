@@ -300,6 +300,7 @@ T = {
     "Wertungsschüsse": ("Scored shots", "Coups comptés", "Colpi di gara"),
     "Auswertung": ("Scoring", "Évaluation", "Valutazione"),
     "Einzelschüsse": ("Individual shots", "Coups individuels", "Colpi singoli"),
+    "Probeschüsse einzeln": ("Individual sighters", "Coups d'essai individuels", "Colpi di prova singoli"),
     "Pro Passe": ("Per series", "Par passe", "Per serie"),
     "Punkte pro Passe": ("Points per series", "Points par passe", "Punti per serie"),
     "Das Resultat ist die Summe der Passen; mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.": ("The result is the sum of the series; with max. points the app calculates the percentage and the average per shot.", "Le résultat est la somme des passes ; avec les points max., l'app calcule le pourcentage et la moyenne par coup.", "Il risultato è la somma delle serie; con i punti max. l'app calcola la percentuale e la media per colpo."),

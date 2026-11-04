@@ -96,6 +96,7 @@ enum Backup {
         var sighterCount: Int?
         var maxPoints: Double?
         var shotValuesText: String?
+        var sighterValuesText: String?
         var passeTotals: [PasseTotal]?
         var filterColor: String?; var secondFilterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
         var bipodLength: Double?
@@ -143,6 +144,7 @@ enum Backup {
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, barrelID: $0.barrel?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
+                      sighterValuesText: $0.sighterValuesText.isEmpty ? nil : $0.sighterValuesText,
                       passeTotals: $0.passeTotals.isEmpty ? nil : $0.passeTotals,
                       filterColor: $0.filterColor, secondFilterColor: $0.secondFilterColor,
                       diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
@@ -369,6 +371,7 @@ enum Backup {
             e.sighterCount = d.sighterCount
             e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
+            e.sighterValuesText = d.sighterValuesText ?? ""
             e.passeTotals = d.passeTotals ?? []
             e.ipscStage = d.ipsc
             SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "", diopter: d.diopter,
@@ -395,7 +398,8 @@ enum Backup {
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
         let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
-                                "Prozent", "Einzelschüsse", "Punkte pro Passe", "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
+                                "Prozent", "Einzelschüsse", "Probeschüsse einzeln", "Punkte pro Passe",
+                                "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
                                 "Filter", "Diopter", "Ringgrösse", "Iris", "Zweibeinstütze (cm)", "Wetter", "Bemerkungen"]
         var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
         for e in entries {
@@ -418,6 +422,7 @@ enum Backup {
             cols.append(score.effectiveMax.map { ScoreFormat.points($0) } ?? "")
             cols.append(score.percentage.map { ScoreFormat.percent($0) } ?? "")
             cols.append(e.shotValuesText.replacingOccurrences(of: "\n", with: " | "))
+            cols.append(e.sighterValuesText)
             cols.append(e.passeTotals.map { "\($0.shots): \(ScoreFormat.points($0.points))" }.joined(separator: " | "))
             let stage = e.scoringSystem == .ipsc ? e.ipscStage : nil
             cols.append(e.scoringSystem.title.loc)
