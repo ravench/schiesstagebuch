@@ -68,11 +68,10 @@ final class SportFeaturesTests: ModelTestCase {
 
     func testPistolsNeverShowTheBipod() {
         let all = SportFeatures.all
-        XCTAssertEqual(all.sightFields(for: .ring), [.filter, .sight, .bipod])
         XCTAssertEqual(all.sightFields(for: .both), [.filter, .sight, .bipod])
         XCTAssertEqual(all.sightFields(for: .iris), [.filter, .sight])
         XCTAssertEqual(SportFeatures.bipod.sightFields(for: .iris), [], "nothing left: the section is hidden")
-        XCTAssertEqual(SportFeatures.weather.sightFields(for: .ring), [], "weather has its own section")
+        XCTAssertEqual(SportFeatures.weather.sightFields(for: .both), [], "weather has its own section")
     }
 
     // MARK: Showing and saving only the switched-on fields

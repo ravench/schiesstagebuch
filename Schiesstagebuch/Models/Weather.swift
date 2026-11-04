@@ -140,8 +140,6 @@ extension WeatherField {
             o("rising", "aufkommend", "arrow.up.right"),
             o("falling", "abflauend", "arrow.down.right"),
         ])),
-        .init(key: "air_temp_c", label: "Lufttemperatur", icon: "thermometer.medium", group: .temperature, levels: both,
-              kind: .number(unit: "°C", range: -40...50)),
         .init(key: "temp_feel", label: "Temperaturgefühl", icon: "figure.stand", group: .temperature, levels: both, kind: .select([
             o("icy", "eisig", "snowflake"),
             o("cold", "kalt", "thermometer.snowflake"),
