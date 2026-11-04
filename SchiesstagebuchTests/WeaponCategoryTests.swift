@@ -62,7 +62,7 @@ final class WeaponCategoryTests: XCTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "Krieghoff Drilling"), .huntingRifle)
         XCTAssertEqual(WeaponCategory.guess(from: "Bockbüchsflinte 7x65R / 12/70"), .huntingRifle)
         XCTAssertEqual(WeaponCategory.guess(from: "Blaser Vierling"), .huntingRifle)
-        XCTAssertEqual(WeaponCategory.guess(from: "Bockflinte Beretta 686"), .shotgun, "plain shotguns stay shotguns")
+        XCTAssertEqual(WeaponCategory.guess(from: "Bockflinte Browning B525"), .shotgun, "plain shotguns stay shotguns")
     }
 
     /// The calibre picker lists shotgun gauges near the top for hunting rifles and rifle
