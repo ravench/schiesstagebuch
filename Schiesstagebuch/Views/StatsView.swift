@@ -118,7 +118,7 @@ struct ItemStatsList<Header: View, Extra: View>: View {
     @ViewBuilder var breakdowns: ([Entry]) -> Extra
     @State private var period: StatsPeriod = .all
 
-    private var filtered: [Entry] { entries.filter { period.contains($0.date) }.sorted { $0.date > $1.date } }
+    private var filtered: [Entry] { period.entries(entries) }
 
     var body: some View {
         List {
@@ -131,7 +131,7 @@ struct ItemStatsList<Header: View, Extra: View>: View {
             breakdowns(filtered)
             Section("Einträge") {
                 if filtered.isEmpty { Text("Keine Einträge").foregroundStyle(.secondary) }
-                ForEach(filtered.prefix(50)) { e in
+                ForEach(filtered) { e in
                     NavigationLink { EntryDetailView(entry: e) } label: { EntryRow(entry: e) }
                 }
             }
