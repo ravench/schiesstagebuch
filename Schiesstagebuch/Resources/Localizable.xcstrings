@@ -2071,6 +2071,29 @@
         }
       }
     },
+    "Das Resultat ist die Summe der Passen; mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The result is the sum of the series; with max. points the app calculates the percentage and the average per shot."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le résultat est la somme des passes ; avec les points max., l'app calcule le pourcentage et la moyenne par coup."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il risultato è la somma delle serie; con i punti max. l'app calcola la percentuale e la media per colpo."
+          }
+        }
+      }
+    },
     "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": {
       "extractionState": "manual",
       "localizations": {
@@ -8425,6 +8448,29 @@
         }
       }
     },
+    "Pro Passe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per series"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par passe"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per serie"
+          }
+        }
+      }
+    },
     "Pro Schiessanlage": {
       "extractionState": "manual",
       "localizations": {
@@ -8743,6 +8789,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Punti (anelli)"
+          }
+        }
+      }
+    },
+    "Punkte pro Passe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points per series"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points par passe"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punti per serie"
           }
         }
       }
