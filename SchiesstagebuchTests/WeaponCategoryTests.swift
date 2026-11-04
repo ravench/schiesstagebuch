@@ -57,6 +57,14 @@ final class WeaponCategoryTests: XCTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "Stgw 90"), .serviceRifle)
     }
 
+    /// Shotgun words win over pistol makers: a Beretta Bockflinte is a shotgun, not a pistol.
+    func testGuessesShotguns() {
+        XCTAssertEqual(WeaponCategory.guess(from: "Beretta Bockflinte"), .shotgun)
+        XCTAssertEqual(WeaponCategory.guess(from: "Beretta 92"), .pistol)
+        XCTAssertEqual(WeaponCategory.guess(from: "Remington 870"), .pumpShotgun)
+        XCTAssertEqual(WeaponCategory.guess(from: "Mossberg 590 Pump"), .pumpShotgun)
+    }
+
     /// Combination guns (Drilling, Bockbüchsflinte) are hunting rifles with extra barrels.
     func testGuessesCombinationGunsAsHuntingRifles() {
         XCTAssertEqual(WeaponCategory.guess(from: "Krieghoff Drilling"), .huntingRifle)

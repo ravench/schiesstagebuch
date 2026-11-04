@@ -130,10 +130,11 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.serviceRifle, ["stgw", "pe550", "pe 550", "pe57", "pe 57", "sg550", "sg 550", "sig 550", "ar15", "ar-15"]),
             (.leverAction, ["unterhebel", "lever", "marlin", "henry", "winchester 94", "winchester 73"]),
             (.pumpShotgun, ["pump", "vorderschaft", "870", "590", "mossberg 500"]),
-            (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
             // Combination guns (rifle + shotgun barrels) before plain shotguns: "Bockbüchsflinte" contains "flinte".
             (.huntingRifle, ["drilling", "vierling", "büchsflinte", "buechsflinte", "kipplaufbüchse"]),
+            // Shotguns before pistols, so "Beretta Bockflinte" is not taken for a Beretta pistol.
             (.shotgun, ["flinte", "shotgun", "bock"]),
+            (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
             (.airgun, ["luftgewehr", "luft", "air", "lg "]),
             (.longRange, ["long", "precision", "tikka tac", "accuracy"]),
             (.huntingRifle, ["jagd", "blaser", "sauer"]),
