@@ -1841,29 +1841,6 @@
         }
       }
     },
-    "Bise": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bise"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bise"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bise"
-          }
-        }
-      }
-    },
     "Blende / Irisblende": {
       "extractionState": "manual",
       "localizations": {
@@ -3917,29 +3894,6 @@
         }
       }
     },
-    "Föhn": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Föhn"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Foehn"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Favonio"
-          }
-        }
-      }
-    },
     "Füge die Anlagen hinzu, auf denen du schiesst.": {
       "extractionState": "manual",
       "localizations": {
@@ -4212,29 +4166,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Impressione generale"
-          }
-        }
-      }
-    },
-    "Gewitterwind": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "thunderstorm wind"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vent d'orage"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vento temporalesco"
           }
         }
       }
@@ -10886,29 +10817,6 @@
         }
       }
     },
-    "Temperatur im Stand": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temperature in the stand"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Température dans le stand"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temperatura nel poligono"
-          }
-        }
-      }
-    },
     "Temperaturgefühl": {
       "extractionState": "manual",
       "localizations": {
@@ -11783,29 +11691,6 @@
         }
       }
     },
-    "Westwind": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "west wind"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vent d'ouest"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vento da ovest"
-          }
-        }
-      }
-    },
     "Wetter": {
       "extractionState": "manual",
       "localizations": {
@@ -11986,29 +11871,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vento"
-          }
-        }
-      }
-    },
-    "Windart": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Type of wind"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Type de vent"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipo di vento"
           }
         }
       }
