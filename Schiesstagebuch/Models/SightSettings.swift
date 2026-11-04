@@ -44,9 +44,12 @@ struct SightSettings: Equatable {
     /// Sliding ruler for diopter, iris and ring: ±0.5 on screen, 0.1 steps, numbers every 0.5.
     static let rulerScale = RulerScale(range: range, step: step, halfSpan: 0.5, majorEvery: 5)
 
-    /// Bipod slider range in cm, in steps of 0.5.
+    /// Bipod ruler range in cm, in steps of 0.5.
     static let bipodRange: ClosedRange<Double> = 5...60
     static let bipodStep = 0.5
+
+    /// Bipod ruler: ±5 cm on screen, 0.5 cm steps, numbers every 2 cm.
+    static let bipodRulerScale = RulerScale(range: bipodRange, step: bipodStep, halfSpan: 5, majorEvery: 4)
 
     /// Clamps to 5…60 cm and rounds to the nearest 0.5 cm.
     static func clampBipod(_ v: Double) -> Double {

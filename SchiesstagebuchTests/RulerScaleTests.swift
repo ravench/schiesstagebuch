@@ -52,4 +52,34 @@ final class RulerScaleTests: XCTestCase {
         XCTAssertEqual(scale.ticks(around: 9.9).last?.value, 9.9)
         XCTAssertEqual(scale.ticks(around: 9.9).count, 7, "9.3 … 9.9")
     }
+
+    // MARK: Bipod
+
+    private let bipod = SightSettings.bipodRulerScale
+
+    func testBipodShowsFiveCentimetresEitherSideInHalfCentimetreSteps() {
+        XCTAssertEqual(bipod.halfSpan, 5)
+        XCTAssertEqual(bipod.step, 0.5)
+        // 300 pt wide: 10 cm across, so 30 pt per cm and 15 pt per half centimetre.
+        XCTAssertEqual(bipod.value(from: 20, translation: -15, width: 300), 20.5)
+        XCTAssertEqual(bipod.value(from: 20, translation: -20, width: 300), 20.5, "rounds to the nearest half")
+        XCTAssertEqual(bipod.value(from: 20, translation: 300, width: 300), 10)
+        XCTAssertEqual(bipod.value(from: 6, translation: 3_000, width: 300), 5)
+        XCTAssertEqual(bipod.value(from: 58, translation: -3_000, width: 300), 60)
+    }
+
+    func testBipodTicksEveryHalfLongerEveryCentimetreNumbersEveryTwo() {
+        let ticks = bipod.ticks(around: 21)
+        XCTAssertEqual(ticks.first?.value, 15.5)
+        XCTAssertEqual(ticks.last?.value, 26.5)
+        XCTAssertEqual(ticks.count, 23)
+        XCTAssertEqual(ticks.filter(\.isMajor).map(\.value), [16, 18, 20, 22, 24, 26])
+        XCTAssertEqual(ticks.filter(\.isWhole).count, 11, "16 … 26")
+    }
+
+    func testBipodRulerAgreesWithBipodClamp() {
+        for v in stride(from: 4.0, through: 61.0, by: 0.3) {
+            XCTAssertEqual(bipod.snapped(v), SightSettings.clampBipod(v), "\(v)")
+        }
+    }
 }

@@ -24,9 +24,8 @@ struct SightSection: View {
                     if aperture != .iris { rulerRow("Ringgrösse", value: $sight.ringSize) }
                 }
                 if fields.contains(.bipod), aperture != .iris {
-                    sliderRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm",
-                              range: SightSettings.bipodRange, step: SightSettings.bipodStep,
-                              start: 20, clamp: SightSettings.clampBipod)
+                    rulerRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm", start: 20,
+                             scale: SightSettings.bipodRulerScale, clamp: SightSettings.clampBipod)
                 }
             } label: {
                 HStack {
@@ -77,13 +76,15 @@ struct SightSection: View {
         .pickerStyle(.navigationLink)
     }
 
-    /// Toggle plus a sliding ruler (±0.5 on screen, 0.1 steps) for diopter, iris and ring size.
-    private func rulerRow(_ title: String, value: Binding<Double?>) -> some View {
+    /// Toggle plus a sliding ruler: ±0.5 in 0.1 steps for diopter, iris and ring, ±5 cm for the bipod.
+    private func rulerRow(_ title: String, value: Binding<Double?>, unit: String = "", start: Double = 1.0,
+                          scale: RulerScale = SightSettings.rulerScale,
+                          clamp: @escaping (Double) -> Double = SightSettings.clamp) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            valueToggle(title, value: value, start: 1.0)
+            valueToggle(title, value: value, unit: unit, start: start)
             if let v = value.wrappedValue {
-                RulerSlider(title: title, value: Binding(get: { v }, set: { value.wrappedValue = SightSettings.clamp($0) }),
-                            scale: SightSettings.rulerScale)
+                RulerSlider(title: title, value: Binding(get: { v }, set: { value.wrappedValue = clamp($0) }),
+                            scale: scale, unit: unit)
             }
         }
     }
@@ -98,24 +99,6 @@ struct SightSection: View {
                 Spacer()
                 if let v = value.wrappedValue {
                     Text(SightSettings.format(v) + unit).monospacedDigit().foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-
-    private func sliderRow(_ title: String, value: Binding<Double?>, unit: String = "",
-                           range: ClosedRange<Double> = SightSettings.range, step: Double = SightSettings.step,
-                           start: Double = 1.0, clamp: @escaping (Double) -> Double = SightSettings.clamp) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            valueToggle(title, value: value, unit: unit, start: start)
-            if let v = value.wrappedValue {
-                Slider(value: Binding(get: { v }, set: { value.wrappedValue = clamp($0) }),
-                       in: range, step: step) {
-                    Text(title.loc)
-                } minimumValueLabel: {
-                    Text(SightSettings.format(range.lowerBound)).font(.caption2)
-                } maximumValueLabel: {
-                    Text(SightSettings.format(range.upperBound)).font(.caption2)
                 }
             }
         }
