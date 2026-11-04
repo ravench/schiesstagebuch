@@ -357,6 +357,9 @@ final class Entry {
     var bipodLength: Double?
     /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
     var shotValuesText: String = ""
+    /// Optional values of the sighters (Probeschüsse) as entered, on one line, e.g. "9 10 8". They never count
+    /// towards the result or averages; when entered, `sighterCount` is their number.
+    var sighterValuesText: String = ""
     /// Passen entered «Pro Passe» as JSON (`[PasseTotal]`): shots and points per Passe; nil otherwise.
     var passeTotalsData: Data?
     /// IPSC stage as JSON (`IPSCStage`): time and hits; nil for point scoring or when nothing was entered.

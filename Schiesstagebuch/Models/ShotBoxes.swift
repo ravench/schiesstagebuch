@@ -1,7 +1,8 @@
 import Foundation
 
 /// One Passe edited as a row of boxes, one shot per box, numbered 1, 2, 3 … in the editor.
-/// There is always one empty box at the end to type the next shot into. Stored as before:
+/// There is always one empty box at the end to type the next shot into; the editor shows it only
+/// while the Passe is being edited (see `visibleCount(editing:)`). Stored as before:
 /// `text` is the Passe's line in `Entry.shotValuesText` ("10 9 10 8,5").
 struct ShotBoxes: Equatable {
     private(set) var values: [String]
@@ -37,6 +38,13 @@ struct ShotBoxes: Equatable {
         keepTrailingBox()
         let last = index + max(parts.count, 1) - 1
         return endsShot && !parts.isEmpty ? last + 1 : last
+    }
+
+    /// How many boxes the editor shows. The empty box at the end is for typing the next shot, so it only
+    /// shows while the Passe is being edited, or when the Passe has no shots yet (there must be a box to tap).
+    func visibleCount(editing: Bool) -> Int {
+        guard !editing, values.count > 1, values.last?.isEmpty == true else { return values.count }
+        return values.count - 1
     }
 
     /// Drops boxes the user emptied, keeping the empty box at the end. Used when the cursor leaves the Passe.

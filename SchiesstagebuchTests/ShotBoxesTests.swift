@@ -76,4 +76,25 @@ final class ShotBoxesTests: XCTestCase {
         XCTAssertEqual(Score.parseShots(boxes.text), [10.4, 9.8, 10])
         XCTAssertEqual(Score.joinPasses([boxes.text, ShotBoxes(text: "").text]), "10,4 9.8 10")
     }
+
+    func testEmptyNextShotBoxShowsOnlyWhileEditing() {
+        let boxes = ShotBoxes(text: "5 5 5 5 5")
+        XCTAssertEqual(boxes.visibleCount(editing: true), 6, "the empty box for the next shot shows while editing")
+        XCTAssertEqual(boxes.visibleCount(editing: false), 5, "only the shots show otherwise")
+    }
+
+    func testEmptyPasseKeepsOneBoxToTapInto() {
+        let boxes = ShotBoxes(text: "")
+        XCTAssertEqual(boxes.visibleCount(editing: false), 1)
+        XCTAssertEqual(boxes.visibleCount(editing: true), 1)
+    }
+
+    func testTypedShotStaysVisibleAfterLeavingThePasse() {
+        var boxes = ShotBoxes(text: "10")
+        boxes.set("9", at: 1)
+        XCTAssertEqual(boxes.values, ["10", "9", ""])
+        boxes.removeEmptyBoxes()
+        XCTAssertEqual(boxes.visibleCount(editing: false), 2)
+        XCTAssertEqual(Array(boxes.values.prefix(boxes.visibleCount(editing: false))), ["10", "9"])
+    }
 }
