@@ -23,6 +23,11 @@ enum StatsPeriod: Hashable {
         }
     }
 
+    /// The entries in this period, newest first: all of them, the statistics screens list every one.
+    func entries(_ entries: [Entry]) -> [Entry] {
+        entries.filter { contains($0.date) }.sorted { $0.date > $1.date }
+    }
+
     static func options(for entries: [Entry]) -> [StatsPeriod] {
         [.all, .last12Months] + Set(entries.map(\.year)).sorted(by: >).map { .year($0) }
     }
