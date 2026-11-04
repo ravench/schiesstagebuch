@@ -113,14 +113,14 @@ final class BarrelTests: ModelTestCase {
         let nato = try catalogued("7.62x51 mm NATO")
         let rem = try catalogued(".223 Remington")
         let nato556 = try catalogued("5.56x45 mm NATO")
-        let gp90 = try catalogued("5.6 mm GP 90 (Swiss)")
+        let gp90 = try catalogued("5.6 mm GP 90")
         let gp11 = try catalogued("7.5x55 mm Swiss (GP 11)")
         let custom = Caliber(name: "6.5x55 Wildcat"); context.insert(custom)
         // Alphabetical, as the lists sort them: the twins are spread apart.
         let sorted = [win, rem, nato556, gp90, custom, gp11, nato]
         let grouped = Caliber.keepingGroupsTogether(sorted)
         XCTAssertEqual(grouped.map(\.name), [".308 Winchester", "7.62x51 mm NATO", ".223 Remington", "5.56x45 mm NATO",
-                                             "5.6 mm GP 90 (Swiss)", "6.5x55 Wildcat", "7.5x55 mm Swiss (GP 11)"])
+                                             "5.6 mm GP 90", "6.5x55 Wildcat", "7.5x55 mm Swiss (GP 11)"])
         XCTAssertEqual(grouped.count, sorted.count, "every calibre stays its own entry")
         XCTAssertEqual(Set(grouped.map(\.id)).count, sorted.count)
         XCTAssertEqual(Caliber.keepingGroupsTogether([]), [])
