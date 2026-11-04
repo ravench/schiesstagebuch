@@ -83,10 +83,17 @@ final class CaliberCatalogTests: ModelTestCase {
     func testGP1890DoesNotTakeOverGP90OrGP11() throws {
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
         let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11"))
-        XCTAssertEqual(CaliberCatalog.match("GP90")?.name, "5.6 mm GP 90 (Swiss)", "GP90 is the Stgw 90 round")
+        XCTAssertEqual(CaliberCatalog.match("GP90")?.name, "5.6 mm GP 90", "GP90 is the Stgw 90 round")
         XCTAssertEqual(CaliberCatalog.match("7.5")?.id, gp11.id)
         XCTAssertNotEqual(gp1890.id, gp11.id)
         XCTAssertLessThan(gp1890.outline.height, gp11.outline.height, "shorter case and cartridge than GP 11")
+    }
+
+    func testGP90HasTheShortArmyName() {
+        // Swiss Army: «5,6 mm Gewehrpatrone 90», short «5,6 mm GP 90».
+        XCTAssertNotNil(CaliberCatalog.items.first { $0.name == "5.6 mm GP 90" })
+        XCTAssertNil(CaliberCatalog.items.first { $0.name == "5.6 mm GP 90 (Swiss)" })
+        XCTAssertEqual(CaliberCatalog.match("Gewehrpatrone 90")?.name, "5.6 mm GP 90")
     }
 
     // MARK: De-duplication after iCloud sync
