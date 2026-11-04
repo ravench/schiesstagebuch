@@ -422,4 +422,36 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(Set(ids).count, 3)
         XCTAssertEqual(BarrelSheet.edit(a).id, BarrelSheet.edit(a).id, "stable while the sheet is shown")
     }
+
+    // MARK: - Combination guns
+
+    /// A Drilling is a hunting rifle with a rifled barrel and two shotgun barrels, all fitted at
+    /// once: each entry counts for the barrel of its calibre, the firearm counts everything.
+    func testDrillingCountsRifleAndShotgunBarrelsSeparately() throws {
+        let rifle = Caliber(name: "7x65 R", category: "Langwaffe"); context.insert(rifle)
+        let shot = Caliber(name: "12/70", category: "Flinte"); context.insert(shot)
+        weapon.name = "Drilling"
+        weapon.category = .huntingRifle
+        let rifled = barrel("Kugellauf", rifle)
+        rifled.isDefault = true
+        let left = barrel("Schrotlauf links", shot)
+        let right = barrel("Schrotlauf rechts", shot)
+        shoot(rifle, on: day(1), shots: 5)
+        shoot(shot, on: day(1), shots: 20)
+        let picked = shoot(shot, on: day(2), shots: 8)
+        let auto = try XCTUnwrap(weapon.barrel(for: shot, on: day(2)))
+        let other = auto == left ? right : left
+        picked.barrel = weapon.barrelToStore(picked: other, caliber: shot, on: day(2))
+        try context.save()
+
+        XCTAssertEqual(Set(weapon.calibers), [rifle, shot])
+        XCTAssertTrue(weapon.hasSeveralBarrels)
+        XCTAssertEqual(weapon.barrelChoices(for: shot, on: day(1)).count, 2, "both shotgun barrels are offered")
+        XCTAssertEqual(weapon.barrelChoices(for: rifle, on: day(1)), [rifled])
+        XCTAssertEqual(weapon.preferredBarrel(on: day(3)), rifled)
+        XCTAssertEqual(rifled.loggedShots, 5)
+        XCTAssertEqual(auto.loggedShots, 20, "unpicked shotgun entries go to one shotgun barrel")
+        XCTAssertEqual(other.loggedShots, 8, "an explicitly picked shotgun barrel keeps its entry")
+        XCTAssertEqual((weapon.entries ?? []).totalShots, 33)
+    }
 }
