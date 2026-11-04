@@ -221,6 +221,17 @@ icon("lever_action", "Unterhebelrepetierer", [
     rect(121, 12.5, 1.5, 1.8), rect(70, 12.4, 2.5, 1.8),
 ], ["M40.5 22 L49.5 22 Q49.5 28.5 46 28.5 Q42 28.5 40.5 25.5 Z"])
 
+# Pump-action shotgun: tube magazine and ribbed slide.
+icon("pump_shotgun", "Vorderschaftrepetierflinte", [
+    "M2 19 Q16 16.5 30 14 L34 14 L34 21 Q30 24 27 26 Q14 29 2 34 Z",
+    rect(32, 12, 22, 9.5),
+    rect(54, 12.8, 70, 3),
+    rect(54, 16.2, 56, 3),
+    rect(64, 15.4, 28, 7),
+    rect(122, 11.6, 1.6, 1.4),
+    "M38 21.5 L47 21.5 Q47 27 42 27 L38 25.5 Z",
+], ["M39.8 21.5 L45.2 21.5 Q45.2 25.3 42.2 25.3 L39.8 24.6 Z"] + [rect(67 + i * 5, 16.6, 2, 4.6) for i in range(5)])
+
 # Belt-fed machine gun (e.g. MG 51): stock, feed cover, ventilated barrel jacket,
 # carrying handle, belt box and bipod. Length-to-height ratio about 3.9.
 g_solid, g_hole = guard(48, 22, 12, 8)

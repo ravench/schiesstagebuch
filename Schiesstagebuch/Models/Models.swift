@@ -161,7 +161,7 @@ final class Weapon: ArchivableItem {
     }
 
     var category: WeaponCategory {
-        get { WeaponCategory(stored: categoryRaw) }
+        get { WeaponCategory(rawValue: categoryRaw) ?? .other }
         set { categoryRaw = newValue.rawValue }
     }
 

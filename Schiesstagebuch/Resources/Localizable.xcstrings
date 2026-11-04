@@ -11277,6 +11277,29 @@
         }
       }
     },
+    "Vorderschaftrepetierflinte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pump-action shotgun"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fusil à pompe"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fucile a pompa"
+          }
+        }
+      }
+    },
     "Vorschau": {
       "extractionState": "manual",
       "localizations": {
