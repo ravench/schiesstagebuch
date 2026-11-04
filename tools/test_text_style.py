@@ -2,6 +2,7 @@
 
     python3 -m unittest discover -s tools -p 'test_text_style.py'
 """
+import os
 import re
 import unittest
 
@@ -14,6 +15,9 @@ QUOTED = re.compile(r"“([^”]+)”|«\s?([^»]+?)\s?»")
 # English is British, and the app says "firearm", never "weapon".
 NOT_BRITISH = re.compile(r"\b(calibers?|colors?|programs?|licenses?|catalogs?|centers?|"
                          r"weapons?|ammo|recogniz\w*|organiz\w*)\b", re.I)
+# Schusszähler-Schiesstagebuch is someone else's app and still maintained: name it, never "the old app".
+OLD_APP = re.compile(r"\b(alten?|old|ancienne|vecchia) app\b", re.I)
+README = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "README.md")
 # Words that may be capitalised mid-sentence: names, products and screens they refer to.
 PROPER = {"Albisgüetli", "Edit", "Elmiger", "Equipment", "Files", "Firearms", "Geco", "Log", "Maps",
           "Menu", "My", "On", "Photos", "Settings", "ShootCounter-Export", "Swiss"}
@@ -52,6 +56,19 @@ class TextStyleTests(unittest.TestCase):
                 for rest in re.findall(re.escape(settings) + r" [›→] ([^.,)]+)", text):
                     self.assertIn(rest.strip(), titles, text)
                 self.assertNotIn(settings + " →", text, "use › like the other paths")
+
+    def test_import_texts_do_not_call_schusszaehler_the_old_app(self):
+        texts = [k for k in T] + [v for vs in T.values() for v in vs]
+        self.assertEqual([t for t in texts if OLD_APP.search(t)], [])
+        with open(README, encoding="utf-8") as f:
+            readme = f.read()
+        self.assertIsNone(OLD_APP.search(readme))
+        self.assertIn("«Schusszähler-Schiesstagebuch» by carusoNET", readme)
+
+    def test_old_app_check_catches_all_languages(self):
+        for text in ("Die alte App kannte", "The old app had", "L'ancienne app ne", "La vecchia app non"):
+            self.assertIsNotNone(OLD_APP.search(text), text)
+        self.assertIsNone(OLD_APP.search("Der Export enthält keine Kaliber."))
 
     def test_sentence_case_check_catches_title_case(self):
         words = re.findall(r"[A-Za-zÀ-ÿ][\w’'-]*", "App Icon")
