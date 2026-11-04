@@ -387,6 +387,15 @@ enum Backup {
             : String(localized: "\(added) Einträge wiederhergestellt.")
     }
 
+    /// Fixed Gregorian calendar: a phone set to e.g. the Buddhist calendar would otherwise write 2569 for 2026.
+    static let csvDate: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.calendar = Calendar(identifier: .gregorian)
+        f.dateFormat = "dd.MM.yyyy"
+        return f
+    }()
+
     static func csv(_ context: ModelContext) -> Data {
         let entries = ((try? all(Entry.self, context)) ?? []).sorted { $0.date < $1.date }
         func field(_ s: String) -> String {
@@ -394,7 +403,6 @@ enum Backup {
             s.unicodeScalars.contains(where: { ";\"\n\r".unicodeScalars.contains($0) })
                 ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
         }
-        let df = DateFormatter(); df.dateFormat = "dd.MM.yyyy"
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
         let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
@@ -405,7 +413,7 @@ enum Backup {
         for e in entries {
             let score = e.score
             var cols: [String] = []
-            cols.append(df.string(from: e.date))
+            cols.append(csvDate.string(from: e.date))
             cols.append(e.range?.name ?? "")
             cols.append(e.range?.place ?? "")
             cols.append(e.eventName)
