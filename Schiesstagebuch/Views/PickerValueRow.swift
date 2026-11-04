@@ -3,7 +3,7 @@ import SwiftUI
 /// A form row with a title, a one-line picker value and an optional trailing button.
 ///
 /// A plain `Picker` in a `Form` switches to a two-line layout when its value is too long
-/// (e.g. "GP90 · 5.6 mm GP 90 (Swiss)"): the value drops below the title, a trailing
+/// (e.g. "GP90 · 5.6 mm GP 90"): the value drops below the title, a trailing
 /// button floats out of line and the row gets clipped. This row keeps title, value,
 /// chevrons and button on one line and truncates the value instead.
 struct PickerValueRow<Options: View, Trailing: View>: View {

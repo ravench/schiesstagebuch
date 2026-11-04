@@ -67,7 +67,7 @@ class DimensionGroupTests(unittest.TestCase):
         groups = generate_assets.dimension_groups()
         self.assertEqual(groups[".308 Winchester"], groups["7.62x51 mm NATO"])
         self.assertEqual(groups[".223 Remington"], groups["5.56x45 mm NATO"])
-        self.assertEqual(groups["5.6 mm GP 90 (Swiss)"], groups["5.56x45 mm NATO"])
+        self.assertEqual(groups["5.6 mm GP 90"], groups["5.56x45 mm NATO"])
 
     def test_different_cartridges_are_not_grouped(self):
         groups = generate_assets.dimension_groups()

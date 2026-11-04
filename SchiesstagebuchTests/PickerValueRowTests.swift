@@ -16,8 +16,8 @@ final class PickerValueRowTests: ModelTestCase {
 
     /// Long values are passed on whole; the row truncates them on screen, not in the text.
     func testLongAmmunitionNameIsKeptWhole() {
-        let caliber = Caliber(name: "5.6 mm GP 90 (Swiss)"); context.insert(caliber)
+        let caliber = Caliber(name: "5.6 mm GP 90"); context.insert(caliber)
         let ammo = Ammunition(name: "GP90", caliber: caliber); context.insert(ammo)
-        XCTAssertEqual(PickerValueLabel.text(ammo.displayName), "GP90 · 5.6 mm GP 90 (Swiss)")
+        XCTAssertEqual(PickerValueLabel.text(ammo.displayName), "GP90 · 5.6 mm GP 90")
     }
 }
