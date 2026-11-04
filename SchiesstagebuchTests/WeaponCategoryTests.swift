@@ -56,4 +56,23 @@ final class WeaponCategoryTests: XCTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "Maschinengewehr 42"), .machineGun)
         XCTAssertEqual(WeaponCategory.guess(from: "Stgw 90"), .serviceRifle)
     }
+
+    /// Combination guns (Drilling, Bockbüchsflinte) are hunting rifles with extra barrels.
+    func testGuessesCombinationGunsAsHuntingRifles() {
+        XCTAssertEqual(WeaponCategory.guess(from: "Krieghoff Drilling"), .huntingRifle)
+        XCTAssertEqual(WeaponCategory.guess(from: "Bockbüchsflinte 7x65R / 12/70"), .huntingRifle)
+        XCTAssertEqual(WeaponCategory.guess(from: "Blaser Vierling"), .huntingRifle)
+        XCTAssertEqual(WeaponCategory.guess(from: "Bockflinte Browning B525"), .shotgun, "plain shotguns stay shotguns")
+    }
+
+    /// The calibre picker lists shotgun gauges near the top for hunting rifles and rifle
+    /// calibres for break-action shotguns, so mixed barrels are quick to pick.
+    func testCombinationGunsSuggestBothRifleAndShotgunCalibres() {
+        XCTAssertEqual(WeaponCategory.huntingRifle.preferredCaliberCategories.prefix(2), ["Langwaffe", "Flinte"])
+        XCTAssertEqual(WeaponCategory.shotgun.preferredCaliberCategories, ["Flinte", "Langwaffe"])
+        let known = Set(CaliberCatalog.Category.allCases.map(\.rawValue))
+        for c in WeaponCategory.allCases {
+            XCTAssertTrue(Set(c.preferredCaliberCategories).isSubset(of: known), "\(c) names an unknown calibre group")
+        }
+    }
 }
