@@ -8,7 +8,7 @@ final class WeatherTests: ModelTestCase {
 
     func testFieldKeysMatchTheSpec() {
         let specKeys = ["overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
-                        "wind_strength", "wind_clock", "wind_character", "air_temp_c", "temp_feel",
+                        "wind_strength", "wind_clock", "wind_character", "temp_feel",
                         "ammo_temp", "precipitation", "rain_during_relay", "ground", "humidity_pct",
                         "haze_rising_moisture", "pressure_hpa", "aids", "weather_impact", "weather_note"]
         XCTAssertEqual(Set(WeatherField.all.map(\.key)), Set(specKeys))
@@ -28,15 +28,21 @@ final class WeatherTests: ModelTestCase {
         }
     }
 
-    func testStandTemperatureAndWindTypeAreGone() {
-        // Raven 2026-11-03: not needed in the form.
-        XCTAssertNil(WeatherField.field("stand_temp"))
-        XCTAssertNil(WeatherField.field("wind_type"))
+    func testRemovedFieldsAreGone() {
+        // Raven 2026-11-03/04: no stand temperature, wind type or measured air temperature;
+        // the temperature is only recorded as felt.
+        for key in ["stand_temp", "wind_type", "air_temp_c"] { XCTAssertNil(WeatherField.field(key), key) }
+        XCTAssertNotNil(WeatherField.field("temp_feel"))
+        for field in WeatherField.fields(for: .entry, in: .temperature) {
+            if case .number = field.kind { XCTFail("\(field.key) is a number field") }
+        }
         // Values from older builds are dropped when the record is stored again, and never shown.
         var c = WeatherConditions()
-        c.values = ["stand_temp": .number(18), "wind_type": .option("bise"), "air_temp_c": .number(12)]
-        XCTAssertEqual(c.normalized().values, ["air_temp_c": .number(12)])
-        XCTAssertFalse(c.summary(level: .entry).contains("18"))
+        c.values = ["stand_temp": .number(18), "wind_type": .option("bise"), "air_temp_c": .number(12),
+                    "temp_feel": .option("cool")]
+        XCTAssertEqual(c.normalized().values, ["temp_feel": .option("cool")])
+        let summary = c.summary(level: .entry)
+        XCTAssertFalse(summary.contains("18") || summary.contains("12"), summary)
     }
 
     func testLevelsFollowTheSpec() {
@@ -86,8 +92,8 @@ final class WeatherTests: ModelTestCase {
         c.set("nonsense", .option("x"))
         XCTAssertNil(c["nonsense"])
 
-        c.set("air_temp_c", .number(-80))
-        XCTAssertEqual(c.number("air_temp_c"), -40, "clamped to the field's range")
+        c.set("pressure_hpa", .number(500))
+        XCTAssertEqual(c.number("pressure_hpa"), 800, "clamped to the field's range")
         c.set("humidity_pct", .number(.nan))
         XCTAssertNil(c["humidity_pct"])
 
@@ -116,12 +122,12 @@ final class WeatherTests: ModelTestCase {
         var c = WeatherConditions()
         c.set("overall", .option("good"))
         c.set("wind_clock", .number(9))
-        c.set("air_temp_c", .number(12.5))
+        c.set("humidity_pct", .number(62.5))
         c.set("aids", .options(["cap", "cover"]))
         XCTAssertEqual(c.display(WeatherField.field("overall")!)?.text, "gut".loc)
         XCTAssertEqual(c.display(WeatherField.field("overall")!)?.icon, "hand.thumbsup")
         XCTAssertTrue(c.display(WeatherField.field("wind_clock")!)!.text.contains("von links".loc))
-        XCTAssertTrue(c.display(WeatherField.field("air_temp_c")!)!.text.hasSuffix("°C"))
+        XCTAssertTrue(c.display(WeatherField.field("humidity_pct")!)!.text.hasSuffix("%"))
         XCTAssertEqual(c.display(WeatherField.field("aids")!)?.icon, "person.fill")
         XCTAssertNil(c.display(WeatherField.field("sky")!))
 

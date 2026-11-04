@@ -42,7 +42,6 @@ W = {
     "Windstärke am Stand": ("Wind strength at the range", "Force du vent au stand", "Forza del vento al poligono"),
     "Windrichtung (Uhr)": ("Wind direction (clock)", "Direction du vent (heure)", "Direzione del vento (ore)"),
     "Windcharakter": ("Wind character", "Caractère du vent", "Carattere del vento"),
-    "Lufttemperatur": ("Air temperature", "Température de l'air", "Temperatura dell'aria"),
     "Temperaturgefühl": ("Felt temperature", "Température ressentie", "Temperatura percepita"),
     "Niederschlag": ("Precipitation", "Précipitations", "Precipitazioni"),
     "Niederschlag in der eigenen Ablösung": ("Precipitation during my relay", "Précipitations pendant ma relève", "Precipitazioni durante il mio turno"),
