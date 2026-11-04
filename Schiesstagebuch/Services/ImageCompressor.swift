@@ -13,4 +13,12 @@ enum ImageCompressor {
         }
         return resized.jpegData(compressionQuality: quality)
     }
+
+    /// Adds picked photos, compressed, up to `limit`. `failed` says that at least one could not be loaded
+    /// (nil in `loaded`), so the editor can tell instead of skipping it silently.
+    static func adding(_ loaded: [Data?], to photos: [Data], limit: Int = Limits.maxPhotos) -> (photos: [Data], failed: Bool) {
+        let room = max(0, limit - photos.count)
+        let added = loaded.compactMap { $0 }.prefix(room).map { jpeg(from: $0) ?? $0 }
+        return (photos + added, loaded.contains(nil))
+    }
 }
