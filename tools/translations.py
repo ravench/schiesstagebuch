@@ -524,6 +524,12 @@ T = {
         "Per i bersagli tirati più volte a questo evento."),
     "%lld× geschossen": ("Shot %lld×", "Tirée %lld×", "Tirato %lld×"),
     "pro Schuss": ("per shot", "par coup", "per colpo"),
+    "Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».": (
+        "With a name, the match shows up in the statistics, e.g. “District match”.",
+        "Avec un nom, la cible apparaît dans les statistiques, p. ex. « Match de district ».",
+        "Con un nome, il bersaglio appare nelle statistiche, p. es. «Match distrettuale»."),
+    "Ø Punkte": ("Avg. points", "Moy. points", "Media punti"),
+    "Bestes Resultat": ("Best result", "Meilleur résultat", "Miglior risultato"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
     # Barrels (Läufe)
     "%@ von %@ Schuss (%@)": ("%1$@ of %2$@ shots (%3$@)", "%1$@ sur %2$@ coups (%3$@)", "%1$@ di %2$@ colpi (%3$@)"),
