@@ -101,7 +101,7 @@ enum Backup {
         /// IPSC stage: time and hits.
         var ipsc: IPSCStage?
         var photos: [Data]
-        /// Marker of entries imported from the old app, so a re-import after a restore skips them.
+        /// Marker of entries imported from Schusszähler, so a re-import after a restore skips them.
         var importKey: String?
         var createdAt: Date?
     }
