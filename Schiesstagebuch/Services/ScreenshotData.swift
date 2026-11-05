@@ -17,7 +17,9 @@ enum ScreenshotData {
 
         let range = ShootingRange(name: "Schiessanlage Ostermundigen", place: "Ostermundigen")
         let gp11 = Caliber(name: "7.5x55 Swiss")
+        gp11.catalogID = "7.5x55 mm Swiss (GP 11)"  // catalogue calibres show their cartridge drawing
         let luger = Caliber(name: "9mm Luger")
+        luger.catalogID = "9x19 mm"
         let rifle = Weapon(name: "Stgw 90")
         rifle.category = .serviceRifle
         rifle.serialNumber = "A 123456"

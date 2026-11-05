@@ -23,6 +23,7 @@ final class PRScreensTests: XCTestCase {
         }
         if open(app.buttons["Neuer Eintrag"].firstMatch) {
             snap("03-Neuer-Eintrag")
+            pickerStops()
             scroll()
             snap("04-Neuer-Eintrag-unten")
             app.buttons["Abbrechen"].firstMatch.tap()
@@ -33,20 +34,64 @@ final class PRScreensTests: XCTestCase {
 
         tab("Waffen")
         snap("06-Waffen")
+        if open(app.buttons["Waffe hinzufügen"].firstMatch) {
+            reveal(app.textFields.matching(NSPredicate(format: "placeholderValue ENDSWITH %@", "Lauf (optional)")).firstMatch)
+            snap("06b-Neue-Waffe-Lauf")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        }
         if open(app.staticTexts["Stgw 90"].firstMatch) {
             snap("07-Waffe")
+            if open(app.buttons["Bearbeiten"].firstMatch) {
+                if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Kaliber")).firstMatch) {
+                    snap("07b-Lauf-bearbeiten")
+                    app.buttons["Abbrechen"].firstMatch.tap()
+                }
+                app.buttons["Abbrechen"].firstMatch.tap()
+            }
             back()
         }
 
         tab("Einstellungen")
         snap("08-Einstellungen")
-        // Catalogue calibres with their cartridge icons (bullet and case materials).
-        if open(app.buttons["Kaliber"].firstMatch) {
-            snap("08b-Kaliber")
+        // Cartridge drawings: the calibre list and one calibre at true scale (1 mm = 2 pt).
+        if open(app.staticTexts["Kaliber"].firstMatch) {
+            snap("10-Kaliber")
+            if open(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "7.5x55")).firstMatch) {
+                snap("11-Kaliber-GP11")
+                back()
+            }
             back()
         }
         scroll()
         snap("09-Einstellungen-unten")
+    }
+
+    /// The firearm menu and the range list, both ending with «… hinzufügen».
+    private func pickerStops() {
+        if open(app.buttons["Waffe"].firstMatch) {
+            snap("03a-Waffe-Auswahl")
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
+        }
+        if open(app.staticTexts["Schiessanlage"].firstMatch) {
+            let search = app.searchFields.firstMatch
+            if search.waitForExistence(timeout: 5) {
+                search.tap()
+                search.typeText("Keine solche Anlage")
+                snap("03b-Schiessanlage-ohne-Treffer")
+            }
+            // While searching, the first bar button clears or closes the search instead of
+            // going back, so tap until the entry form's «Abbrechen» is there again.
+            for _ in 0..<3 where !app.buttons["Abbrechen"].exists {
+                let button = app.navigationBars.buttons.firstMatch
+                if button.exists {
+                    button.tap()
+                } else { // no bar while searching: swipe back from the left edge
+                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
+                        .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)))
+                }
+                sleep(1)
+            }
+        }
     }
 
     private func tab(_ name: String) {
@@ -73,6 +118,13 @@ final class PRScreensTests: XCTestCase {
     private func scroll(up: Bool = true) {
         for _ in 0..<6 {
             if up { app.swipeUp(velocity: .fast) } else { app.swipeDown(velocity: .fast) }
+        }
+    }
+
+    /// Swipes up a little at a time until `element` can be tapped (at most six swipes).
+    private func reveal(_ element: XCUIElement) {
+        for _ in 0..<6 where !(element.exists && element.isHittable) {
+            app.swipeUp(velocity: .slow)
         }
     }
 

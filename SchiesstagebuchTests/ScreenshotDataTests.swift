@@ -29,6 +29,15 @@ final class ScreenshotDataTests: ModelTestCase {
         }
     }
 
+    func testSeedCalibersHaveCartridgeDrawings() throws {
+        ScreenshotData.seed(context)
+        let calibers = try context.fetch(FetchDescriptor<Caliber>())
+        XCTAssertFalse(calibers.isEmpty)
+        for caliber in calibers {
+            XCTAssertNotNil(CaliberCatalog.item(id: caliber.catalogID), caliber.name)
+        }
+    }
+
     func testSeedLeavesExistingDiaryAlone() throws {
         addEntry(nil, on: day(1), shots: 5)
         ScreenshotData.seed(context)

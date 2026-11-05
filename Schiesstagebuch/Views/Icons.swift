@@ -5,8 +5,6 @@ import SwiftUI
 /// Side view of a calibre's cartridge, from the catalogue. Custom calibres get a generic glyph.
 struct CartridgeView: View {
     let caliber: Caliber?
-    /// When set, draws at true scale (points per millimetre) instead of fitting the frame.
-    var pointsPerMillimetre: CGFloat?
 
     private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let patch: Path?
         let tip: Path?; let bulletFill: Color; let hullFill: Color; let headFill: Color; let tipFill: Color }
@@ -54,11 +52,7 @@ struct CartridgeView: View {
     var body: some View {
         if let parts {
             Canvas { ctx, size in
-                var rect = CGRect(origin: .zero, size: size)
-                if let ppm = pointsPerMillimetre {
-                    let w = parts.box.width * ppm, h = parts.box.height * ppm
-                    rect = CGRect(x: (size.width - w) / 2, y: size.height - h, width: w, height: h)
-                }
+                let rect = CGRect(origin: .zero, size: size)
                 let stroke = StrokeStyle(lineWidth: max(0.5, min(size.width, size.height) / 60))
                 func draw(_ p: Path?, _ fill: Color) {
                     guard let p else { return }
