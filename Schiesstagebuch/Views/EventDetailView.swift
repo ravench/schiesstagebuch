@@ -185,7 +185,6 @@ struct EventEditorView: View {
     @State private var range: ShootingRange?
     @State private var name = ""
     @State private var weather: WeatherRecord?
-    @State private var addingRange = false
     @State private var scoring: ScoringSystem = .rings
     @State private var division = ""
     @State private var powerFactor: IPSCPowerFactor = .minor
@@ -195,7 +194,7 @@ struct EventEditorView: View {
             Form {
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    RangePickerRow(selection: $range, ranges: ranges) { addingRange = true }
+                    RangePickerRow(selection: $range, ranges: ranges)
                     TextField("Anlass", text: $name)
                     ScoringSystemPicker(system: $scoring)
                     if scoring == .ipsc {
@@ -218,7 +217,6 @@ struct EventEditorView: View {
                 date = event.date; range = event.range; name = event.name; weather = event.weather
                 scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
             }
-            .sheet(isPresented: $addingRange) { RangeEditorView(range: nil) { range = $0 } }
         }
     }
 
