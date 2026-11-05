@@ -246,6 +246,7 @@ struct WeaponEditorView: View {
     @State private var choosingCalibers = false
     @State private var editingBarrel: Barrel?
     @State private var addingBarrel = false
+    @State private var swipedBarrel: Barrel?
     @State private var confirmDelete = false
     @State private var didLoad = false
 
@@ -330,6 +331,7 @@ struct WeaponEditorView: View {
             .sheet(isPresented: $addingBarrel) {
                 if let weapon { BarrelEditorView(weapon: weapon, barrel: nil) }
             }
+            .barrelDeleteConfirmation($swipedBarrel) { try? Deletion.delete($0, in: context) }
             .confirmationDialog(term("Waffe löschen?").loc, isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
                     dismiss()
@@ -348,13 +350,8 @@ struct WeaponEditorView: View {
             Button { choosingCalibers = true } label: {
                 LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
             }
-            ForEach(sortedSelection) { c in
-                HStack {
-                    CartridgeView(caliber: c).frame(width: 18, height: 30)
-                    Text(c.name)
-                }
-            }
-            SerialField(title: "Nummer Lauf (optional)", text: $barrelSerial)
+            SelectedCaliberRows(selection: $calibers)
+            SerialField(title: "Seriennummer Lauf (optional)", text: $barrelSerial)
         } header: {
             Text("Kaliber")
         } footer: {
@@ -388,6 +385,7 @@ struct WeaponEditorView: View {
             ForEach(weapon.sortedBarrels) { b in
                 Button { editingBarrel = b } label: { BarrelRow(barrel: b) }
                     .foregroundStyle(.primary)
+                    .barrelSwipeToDelete(b, of: weapon) { swipedBarrel = $0 }
             }
             Button { addingBarrel = true } label: { Label("Lauf hinzufügen", systemImage: "plus") }
         } header: {
@@ -508,7 +506,7 @@ struct SerialNumbersSection: View {
         } header: {
             Text("Nummern")
         } footer: {
-            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.")
+            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.")
         }
     }
 }

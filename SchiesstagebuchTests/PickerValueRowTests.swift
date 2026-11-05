@@ -2,7 +2,7 @@ import XCTest
 @testable import Schiesstagebuch
 
 /// The entry editor's firearm and ammunition rows show their value on one line (truncated
-/// if too long) next to the title and the + button.
+/// if too long) next to the title; «… hinzufügen» is the last item of their menu.
 final class PickerValueRowTests: ModelTestCase {
     func testNoSelectionShowsDash() {
         XCTAssertEqual(PickerValueLabel.text(nil), "–")
