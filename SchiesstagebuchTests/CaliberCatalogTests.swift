@@ -99,6 +99,20 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CartridgeView.caseFill(nil), .brass)
     }
 
+    func testAirGunBallsAndPelletsAreLeadSteelOrPlastic() throws {
+        // calibre-data #47: steel BB and white airsoft BBs; plain balls and pellets stay lead.
+        func fill(_ id: String) throws -> Color {
+            let o = try XCTUnwrap(CaliberCatalog.item(id: id), id).outline
+            return CartridgeView.bulletFill(o.bulletMaterial, hasCase: o.case != nil)
+        }
+        XCTAssertEqual(try fill("4.4 mm Stahl-BB (.177 BB)"), .steel)
+        XCTAssertEqual(try fill("6 mm Airsoft-BB"), .plastic)
+        XCTAssertEqual(try fill("8 mm Airsoft-BB"), .plastic)
+        XCTAssertEqual(try fill("4.5 mm Diabolo (.177)"), .lead)
+        XCTAssertEqual(try fill(".45 Rundkugel (.440)"), .lead)
+        XCTAssertEqual(try fill("9x19 mm"), .copper)
+    }
+
     func testPolymerTipsAndTheFuryHeadAreDrawn() throws {
         let hmr = try XCTUnwrap(CaliberCatalog.item(id: ".17 HMR"))
         XCTAssertEqual(CartridgeView.tipFill(hmr.outline.tipMaterial), .polymer)
