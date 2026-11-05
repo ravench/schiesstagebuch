@@ -136,7 +136,7 @@ T = {
         "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre correcteur +0.25 ou -0.25.",
         "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente correttiva +0.25 o -0.25."),
     "Filter zurücksetzen": ("Reset filters", "Réinitialiser les filtres", "Reimposta filtri"),
-    "Flinte": ("Shotgun", "Fusil à canon lisse", "Fucile a canna liscia"),
+    "Flinte": ("Shotgun", "Fusil de chasse", "Fucile a canna liscia"),
     "Fotos": ("Photos", "Photos", "Foto"),
     "Fotos (%lld/%lld)": ("Photos (%1$lld/%2$lld)", "Photos (%1$lld/%2$lld)", "Foto (%1$lld/%2$lld)"),
     "Fotos aus der Fotomediathek übernehmen": (
@@ -170,7 +170,7 @@ T = {
     "Keine Waffen": ("No firearms", "Aucune arme", "Nessuna arma"),
     "Kumuliert": ("Cumulative", "Cumulé", "Cumulato"),
     "Kurzwaffe": ("Handgun", "Arme de poing", "Arma corta"),
-    "Langwaffe": ("Rifle", "Arme d'épaule", "Arma lunga"),
+    "Langwaffe": ("Rifle", "Arme longue", "Arma lunga"),
     "Lege deine Waffen mit ihren Kalibern an.": (
         "Add your firearms with their calibres.", "Ajoutez vos armes avec leurs calibres.", "Aggiungi le tue armi con i loro calibri."),
     "Letzte 12 Monate": ("Last 12 months", "12 derniers mois", "Ultimi 12 mesi"),
