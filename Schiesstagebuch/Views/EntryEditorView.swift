@@ -166,7 +166,7 @@ struct EntryEditorView: View {
 
                 Section {
                     pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
-                              addTitle: term("Waffe hinzufügen").loc, subtitle: { $0.pickerSerial(show: showSerial) })
+                              subtitle: { $0.pickerSerial(show: showSerial) })
                     if barrelChoices.count > 1 {
                         Picker("Lauf", selection: $barrel) {
                             ForEach(barrelChoices) { Text($0.displayName).tag(Optional($0)) }
@@ -179,7 +179,7 @@ struct EntryEditorView: View {
                         }
                     }
                     pickerRow("Munition", selection: $ammunition, items: fittingAmmunition,
-                              label: \.displayName, add: .ammunition, addTitle: "Munition hinzufügen".loc)
+                              label: \.displayName, add: .ammunition)
                     if let ammunition, !ammunition.sortedLots().isEmpty || lot != nil {
                         Picker("Los", selection: $lot) {
                             Text("–").tag(AmmoLot?.none)
@@ -380,10 +380,11 @@ struct EntryEditorView: View {
     }
 
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
-                                               label: KeyPath<T, String>, add: QuickAdd, addTitle: String,
+                                               label: KeyPath<T, String>, add: QuickAdd,
                                                subtitle: @escaping (T) -> String? = { _ in nil }) -> some View {
         PickerValueRow(title: title.loc, value: selection.wrappedValue?[keyPath: label],
-                       addTitle: addTitle, add: { quickAdd = add }) {
+                       addTitle: add == .weapon ? term("Waffe hinzufügen").loc : "Munition hinzufügen".loc,
+                       add: { quickAdd = add }, options: {
             Picker(title.loc, selection: selection) {
                 Text("–").tag(T?.none)
                 ForEach(items) { item in
@@ -394,7 +395,7 @@ struct EntryEditorView: View {
                     Text(current[keyPath: label]).tag(Optional(current))
                 }
             }
-        }
+        })
     }
 
     private var enteredPasseTotals: [PasseTotal] { passeTotals.map(\.total).normalized }
