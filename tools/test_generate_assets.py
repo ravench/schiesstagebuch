@@ -37,10 +37,28 @@ class PatchedBulletTests(unittest.TestCase):
         self.assertTrue(all(b[1] >= a[1] for a, b in zip(pts, pts[1:])), "profile runs from base to tip")
 
     def test_jacketed_bullets_have_no_patch(self):
-        for name in ("7.5x55 mm Swiss (GP 11)", "9x19 mm", ".22 LR"):
+        for name in ("7.5x55 mm Swiss (GP 11)", "9x19 mm"):
             o = self.outline(name)[1]
             self.assertNotIn("patch", o, name)
             self.assertNotIn("bulletMaterial", o, name)
+
+    def test_original_bullets_and_cases(self):
+        # Raven 2026-11-05: draw each calibre's original bullet and case (calibre-data #46).
+        self.assertEqual(self.outline(".22 LR")[1]["bulletMaterial"], "lead")
+        gras = self.outline("11x59 mm R Gras")[1]
+        self.assertEqual(gras["bulletMaterial"], "lead")
+        self.assertIn("patch", gras)
+        self.assertIn("tip", self.outline("9.3x62 mm")[1])
+        self.assertNotIn("tip", self.outline("7.62x51 mm NATO")[1])
+        self.assertEqual(self.outline(".17 HMR")[1]["tipMaterial"], "polymer")
+        self.assertEqual(self.outline(".277 SIG Fury")[1]["headMaterial"], "steel")
+        calibers = generate_assets.build()[0]
+        materials = {c["outline"]["caseMaterial"] for c in calibers if "caseMaterial" in c["outline"]}
+        self.assertTrue(materials)
+        self.assertLessEqual(materials, set(generate_assets.CASE_COLOURS))
+        by_name = {c["name"]: c["outline"] for c in calibers}
+        self.assertEqual(by_name[".45-70 Government"]["currentCaseMaterials"], ["brass"])
+        self.assertEqual(by_name["9x19 mm"]["currentCaseMaterials"], ["steel"])
 
 
 class BlankTests(unittest.TestCase):
