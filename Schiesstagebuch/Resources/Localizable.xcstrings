@@ -7551,29 +7551,6 @@
         }
       }
     },
-    "Nummer Lauf (optional)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Barrel number (optional)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numéro du canon (facultatif)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numero della canna (facoltativo)"
-          }
-        }
-      }
-    },
     "Nummer fehlt.": {
       "extractionState": "manual",
       "localizations": {
@@ -9939,6 +9916,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Numero di serie (facoltativo)"
+          }
+        }
+      }
+    },
+    "Seriennummer Lauf (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barrel serial number (optional)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de série du canon (facultatif)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di serie della canna (facoltativo)"
           }
         }
       }

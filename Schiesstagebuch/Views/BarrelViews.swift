@@ -143,7 +143,7 @@ struct BarrelEditorView: View {
 
                 Section {
                     TextField("Bezeichnung (optional)", text: $name)
-                    SerialField(title: "Nummer Lauf (optional)", text: $serialNumber)
+                    SerialField(title: "Seriennummer (optional)", text: $serialNumber)
                     if weapon.hasSeveralBarrels || barrel == nil {
                         Toggle("Standardlauf", isOn: $isDefault)
                     }

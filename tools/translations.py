@@ -605,7 +605,7 @@ T = {
         "N'ajoute des canons que pour des canons interchangeables ou après un changement de canon. L'app compte alors aussi les coups par canon.",
         "Aggiungi canne solo se intercambiabili o dopo una sostituzione. L'app conta allora anche i colpi per canna."),
     "Nummer": ("Number", "Numéro", "Numero"),
-    "Nummer Lauf (optional)": ("Barrel number (optional)", "Numéro du canon (facultatif)", "Numero della canna (facoltativo)"),
+    "Seriennummer Lauf (optional)": ("Barrel serial number (optional)", "Numéro de série du canon (facultatif)", "Numero di serie della canna (facoltativo)"),
     "Nummer fehlt.": ("Number missing.", "Numéro manquant.", "Numero mancante."),
     "Nummern": ("Serial numbers", "Numéros", "Numeri"),
     "Schlitten": ("Slide", "Culasse mobile", "Carrello"),
