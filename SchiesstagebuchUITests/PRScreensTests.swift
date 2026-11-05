@@ -58,7 +58,13 @@ final class PRScreensTests: XCTestCase {
                 search.typeText("Keine solche Anlage")
                 snap("03b-Schiessanlage-ohne-Treffer")
             }
-            back()
+            // While searching, the first bar button clears or closes the search instead of
+            // going back, so tap until the entry form's «Abbrechen» is there again.
+            for _ in 0..<3 where !app.buttons["Abbrechen"].exists {
+                let button = app.navigationBars.buttons.firstMatch
+                if button.exists { button.tap() }
+                sleep(1)
+            }
         }
     }
 
