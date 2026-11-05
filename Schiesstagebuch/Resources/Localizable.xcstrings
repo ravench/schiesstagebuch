@@ -7528,29 +7528,6 @@
         }
       }
     },
-    "Nummer Lauf (optional)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Barrel number (optional)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numéro du canon (facultatif)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numero della canna (facoltativo)"
-          }
-        }
-      }
-    },
     "Nummer fehlt.": {
       "extractionState": "manual",
       "localizations": {
@@ -9943,6 +9920,29 @@
         }
       }
     },
+    "Seriennummer Lauf (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barrel serial number (optional)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numéro de série du canon (facultatif)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Numero di serie della canna (facoltativo)"
+          }
+        }
+      }
+    },
     "Seriennummer in der Sportgeräteauswahl": {
       "extractionState": "manual",
       "localizations": {
@@ -12174,25 +12174,25 @@
         }
       }
     },
-    "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.": {
+    "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "E.g. for parts numbered differently from the main number. A barrel's number is entered with the barrel."
+            "value": "E.g. for parts numbered differently from the main number. A barrel's serial number is entered with the barrel."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro d'un canon se saisit avec le canon."
+            "value": "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro de série d'un canon se saisit avec le canon."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "P. es. per parti con un numero diverso da quello principale. Il numero di una canna si inserisce con la canna."
+            "value": "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna."
           }
         }
       }
