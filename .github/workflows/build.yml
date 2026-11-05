@@ -70,32 +70,43 @@ jobs:
           echo "Testing on $UDID"
           echo "UDID=$UDID" >> "$GITHUB_ENV"
           echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
-      - name: Build app and tests
-        # Compiled once here; the unit and UI tests below run on this build (test-without-building).
-        # The unit test scheme goes last: building the app for SchiesstagebuchScreens drops the unit
-        # test bundle from the app's PlugIns, and the unit tests then fail to load it.
+      # Compiled once in the two build steps; the unit and UI tests below run on that build
+      # (test-without-building). The unit test scheme goes last: building the app for
+      # SchiesstagebuchScreens drops the unit test bundle from the app's PlugIns, and the unit
+      # tests then fail to load it.
+      - name: Build UI tests
         run: |
-          for SCHEME in SchiesstagebuchScreens Schiesstagebuch; do
-            xcodebuild build-for-testing \
-              -project Schiesstagebuch.xcodeproj \
-              -scheme "$SCHEME" \
-              -destination "id=$UDID" \
-              -derivedDataPath "$DERIVED_DATA" \
-              CODE_SIGNING_ALLOWED=NO | xcpretty
-          done
+          xcodebuild build-for-testing \
+            -project Schiesstagebuch.xcodeproj \
+            -scheme SchiesstagebuchScreens \
+            -destination "id=$UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
+      - name: Build app and unit tests
+        run: |
+          xcodebuild build-for-testing \
+            -project Schiesstagebuch.xcodeproj \
+            -scheme Schiesstagebuch \
+            -destination "id=$UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: Check orientations in the built app
         # The same rule App Store Connect applies on upload (iPad multitasking).
         run: python3 tools/check_orientations.py "$DERIVED_DATA/Build/Products/Debug-iphonesimulator/Schiesstagebuch.app/Info.plist"
       - name: Unit tests
+        id: unit-tests
         run: |
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
             -scheme Schiesstagebuch \
             -destination "id=$UDID" \
             -derivedDataPath "$DERIVED_DATA" \
+            -resultBundlePath "$RUNNER_TEMP/UnitTests.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: UI tests
         # Flows that unit tests can't reach, such as presenting sheets from the entry editor.
+        # Also after failed unit tests, so one run shows both.
+        if: success() || steps.unit-tests.conclusion == 'failure'
         run: |
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
@@ -103,4 +114,15 @@ jobs:
             -destination "id=$UDID" \
             -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/WeatherRelayUITests \
+            -resultBundlePath "$RUNNER_TEMP/UITests.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
+      - name: Test summary
+        # Passed, failed and skipped counts and the failed tests by name, on the run's summary page.
+        if: always()
+        run: |
+          for NAME in UnitTests UITests; do
+            [ -d "$RUNNER_TEMP/$NAME.xcresult" ] || continue
+            xcrun xcresulttool get test-results summary --path "$RUNNER_TEMP/$NAME.xcresult" \
+              > "$RUNNER_TEMP/$NAME.json" || true
+          done
+          python3 tools/test_summary.py "Unit tests=$RUNNER_TEMP/UnitTests.json" "UI tests=$RUNNER_TEMP/UITests.json"
