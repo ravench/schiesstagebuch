@@ -246,6 +246,7 @@ struct WeaponEditorView: View {
     @State private var choosingCalibers = false
     @State private var editingBarrel: Barrel?
     @State private var addingBarrel = false
+    @State private var swipedBarrel: Barrel?
     @State private var confirmDelete = false
     @State private var didLoad = false
 
@@ -330,6 +331,7 @@ struct WeaponEditorView: View {
             .sheet(isPresented: $addingBarrel) {
                 if let weapon { BarrelEditorView(weapon: weapon, barrel: nil) }
             }
+            .barrelDeleteConfirmation($swipedBarrel) { try? Deletion.delete($0, in: context) }
             .confirmationDialog(term("Waffe löschen?").loc, isPresented: $confirmDelete, titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
                     dismiss()
@@ -383,6 +385,7 @@ struct WeaponEditorView: View {
             ForEach(weapon.sortedBarrels) { b in
                 Button { editingBarrel = b } label: { BarrelRow(barrel: b) }
                     .foregroundStyle(.primary)
+                    .barrelSwipeToDelete(b, of: weapon) { swipedBarrel = $0 }
             }
             Button { addingBarrel = true } label: { Label("Lauf hinzufügen", systemImage: "plus") }
         } header: {
