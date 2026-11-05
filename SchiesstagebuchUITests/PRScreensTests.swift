@@ -43,7 +43,7 @@ final class PRScreensTests: XCTestCase {
         // Cartridge drawings: the calibre list and one calibre at true scale (1 mm = 2 pt).
         if open(app.staticTexts["Kaliber"].firstMatch) {
             snap("10-Kaliber")
-            if open(app.staticTexts["7.5x55 Swiss"].firstMatch) {
+            if open(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "7.5x55")).firstMatch) {
                 snap("11-Kaliber-GP11")
                 back()
             }
