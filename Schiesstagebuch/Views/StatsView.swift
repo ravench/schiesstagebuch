@@ -263,14 +263,6 @@ struct CaliberDetailView: View {
 
     var body: some View {
         ItemStatsList(entries: caliber.entries ?? []) {
-            if !caliber.catalogID.isEmpty {
-                Section {
-                    // True scale: 1 mm = 2 pt, so cartridges compare by size.
-                    CartridgeView(caliber: caliber, pointsPerMillimetre: 2)
-                        .frame(maxWidth: .infinity).frame(height: 290)
-                        .listRowBackground(Color.clear)
-                }
-            }
         } breakdowns: { entries in
             Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.name) }
