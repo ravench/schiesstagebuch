@@ -43,6 +43,20 @@ class PatchedBulletTests(unittest.TestCase):
             self.assertNotIn("bulletMaterial", o, name)
 
 
+class BlankTests(unittest.TestCase):
+    """Alarm and starter blanks (calibre-data #45): no bullet; the app draws only the case."""
+
+    def test_crimped_blanks_have_no_bullet(self):
+        calibers = {c["name"]: c for c in generate_assets.build()[0]}
+        for name in (".22 Blank (6.8/11)", "9 mm R Knall", ".320 Knall", ".45 Knall", ".22 Long Knall",
+                     "6 mm Flobert Knall", "8 mm Knall", ".315 Knall"):
+            o = calibers[name]["outline"]
+            self.assertNotIn("bullet", o, name)
+            self.assertIn("case", o, name)
+        self.assertEqual(calibers["9 mm R Knall"]["kind"], "rimmed")
+        self.assertIn("9 mm R.K.", calibers["9 mm R Knall"]["displayAliases"])
+
+
 class CalibreDataSubmoduleTests(unittest.TestCase):
     """The catalogue comes from the shared calibre-data submodule (github.com/ravench/calibre-data)."""
 
