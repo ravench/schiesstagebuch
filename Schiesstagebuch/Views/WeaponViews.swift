@@ -348,12 +348,7 @@ struct WeaponEditorView: View {
             Button { choosingCalibers = true } label: {
                 LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
             }
-            ForEach(sortedSelection) { c in
-                HStack {
-                    CartridgeView(caliber: c).frame(width: 18, height: 30)
-                    Text(c.name)
-                }
-            }
+            SelectedCaliberRows(selection: $calibers)
             SerialField(title: "Nummer Lauf (optional)", text: $barrelSerial)
         } header: {
             Text("Kaliber")
