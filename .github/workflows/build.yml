@@ -24,55 +24,81 @@ jobs:
       - name: SwiftLint
         # --strict turns every warning into a failure; the reporter adds annotations to the PR.
         run: swiftlint lint --strict --reporter github-actions-logging
-  build:
-    runs-on: macos-26
+  changes:
+    # Pull requests that change only docs, tools or other workflows skip the Mac job (see
+    # tools/ci_changes.py); lint and the tools job still check them. Pushes to main always build.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      mac: ${{ steps.check.outputs.mac }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != pull_request ]; then echo mac=true >> "$GITHUB_OUTPUT"; exit 0; fi
+          gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate \
+            --jq '.[] | .filename, (.previous_filename // empty)' | python3 tools/ci_changes.py | tee -a "$GITHUB_OUTPUT"
+  tools:
+    # The Python checks need no Mac.
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
         with:
           # tools/generate_assets.py reads the calibre data from the calibre-data submodule.
           submodules: true
-      - run: brew install xcodegen
-      - run: xcodegen generate
       - name: Check translations
         run: python3 tools/localize.py && git diff --exit-code Schiesstagebuch/Resources/Localizable.xcstrings
       - name: Tool tests
         run: python3 -m unittest discover -s tools -p 'test_*.py'
-      - name: Build for simulator
+  build:
+    needs: changes
+    if: needs.changes.outputs.mac == 'true'
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+      - run: brew install xcodegen
+      - run: xcodegen generate
+      - name: Pick an iPhone simulator and a build folder
         run: |
-          xcodebuild build \
-            -project Schiesstagebuch.xcodeproj \
-            -scheme Schiesstagebuch \
-            -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO | xcpretty
+          UDID=$(xcrun simctl list devices available -j | python3 tools/pr_screens.py pick-iphone)
+          echo "Testing on $UDID"
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+          echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
+      - name: Build app and tests
+        # Compiled once here; the unit and UI tests below run on this build (test-without-building).
+        run: |
+          for SCHEME in Schiesstagebuch SchiesstagebuchScreens; do
+            xcodebuild build-for-testing \
+              -project Schiesstagebuch.xcodeproj \
+              -scheme "$SCHEME" \
+              -destination "id=$UDID" \
+              -derivedDataPath "$DERIVED_DATA" \
+              CODE_SIGNING_ALLOWED=NO | xcpretty
+          done
       - name: Check orientations in the built app
         # The same rule App Store Connect applies on upload (iPad multitasking).
-        run: |
-          PLIST=$(find ~/Library/Developer/Xcode/DerivedData -path '*/Debug-iphonesimulator/Schiesstagebuch.app/Info.plist' | head -1)
-          python3 tools/check_orientations.py "$PLIST"
+        run: python3 tools/check_orientations.py "$DERIVED_DATA/Build/Products/Debug-iphonesimulator/Schiesstagebuch.app/Info.plist"
       - name: Unit tests
         run: |
-          UDID=$(xcrun simctl list devices available -j | python3 -c "
-          import json, sys
-          devices = json.load(sys.stdin)['devices']
-          ios = sorted((k for k in devices if 'iOS' in k), reverse=True)
-          print(next(d['udid'] for k in ios for d in devices[k] if d['name'].startswith('iPhone')))")
-          echo "Testing on $UDID"
-          xcodebuild test \
+          xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
             -scheme Schiesstagebuch \
             -destination "id=$UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: UI tests
         # Flows that unit tests can't reach, such as presenting sheets from the entry editor.
         run: |
-          UDID=$(xcrun simctl list devices available -j | python3 -c "
-          import json, sys
-          devices = json.load(sys.stdin)['devices']
-          ios = sorted((k for k in devices if 'iOS' in k), reverse=True)
-          print(next(d['udid'] for k in ios for d in devices[k] if d['name'].startswith('iPhone')))")
-          xcodebuild test \
+          xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
             -scheme SchiesstagebuchScreens \
             -destination "id=$UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/WeatherRelayUITests \
             CODE_SIGNING_ALLOWED=NO | xcpretty
