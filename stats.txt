@@ -1,0 +1,23 @@
+shooting houses: 2991
+target rows: 2883
+trajectory lines: 0
+lanes: 2702
+lanes from trajectories: 0
+lanes with nominal distance: 2390
+swisstopo place names: 34254
+ranges from swisstopo: 1876
+  name from swisstopo: 1876
+  name generated (Schiessanlage <place>): 0
+  with place: 1876
+  without direction (no target row found): 54
+indoor ranges from the hand-made list: 19
+swisstopo ranges with the shooting house's address: 1842
+swisstopo ranges with the nearest address: 34
+swisstopo ranges without address: 0
+  median metres to the address: 8
+  ranges with the address over 500 m away: 1
+ranges with 300 m: 1281
+ranges with 100 m: 43
+ranges with 50 m: 647
+ranges with 25 m: 346
+ranges with 10 m: 3
