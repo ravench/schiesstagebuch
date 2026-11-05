@@ -23,6 +23,7 @@ final class PRScreensTests: XCTestCase {
         }
         if open(app.buttons["Neuer Eintrag"].firstMatch) {
             snap("03-Neuer-Eintrag")
+            pickerStops()
             scroll()
             snap("04-Neuer-Eintrag-unten")
             app.buttons["Abbrechen"].firstMatch.tap()
@@ -63,6 +64,34 @@ final class PRScreensTests: XCTestCase {
         }
         scroll()
         snap("09-Einstellungen-unten")
+    }
+
+    /// The firearm menu and the range list, both ending with «… hinzufügen».
+    private func pickerStops() {
+        if open(app.buttons["Waffe"].firstMatch) {
+            snap("03a-Waffe-Auswahl")
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
+        }
+        if open(app.staticTexts["Schiessanlage"].firstMatch) {
+            let search = app.searchFields.firstMatch
+            if search.waitForExistence(timeout: 5) {
+                search.tap()
+                search.typeText("Keine solche Anlage")
+                snap("03b-Schiessanlage-ohne-Treffer")
+            }
+            // While searching, the first bar button clears or closes the search instead of
+            // going back, so tap until the entry form's «Abbrechen» is there again.
+            for _ in 0..<3 where !app.buttons["Abbrechen"].exists {
+                let button = app.navigationBars.buttons.firstMatch
+                if button.exists {
+                    button.tap()
+                } else { // no bar while searching: swipe back from the left edge
+                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
+                        .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)))
+                }
+                sleep(1)
+            }
+        }
     }
 
     private func tab(_ name: String) {

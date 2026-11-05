@@ -31,6 +31,24 @@ final class LocalizationTests: XCTestCase {
         XCTAssertNotNil(Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription"))
     }
 
+    /// The entry editor's pickers end with an «add new» item instead of a + button beside them.
+    func testPickerAddItemsInAllLanguages() throws {
+        let expected = [
+            "Waffe hinzufügen": "Add firearm",
+            "Sportgerät hinzufügen": "Add equipment",
+            "Munition hinzufügen": "Add ammunition",
+            "Schiessanlage hinzufügen": "Add range",
+        ]
+        for (key, en) in expected {
+            XCTAssertEqual(try localized(key, "en"), en)
+            for lang in ["fr", "it"] {
+                XCTAssertNotEqual(try localized(key, lang), "<missing>", "\(key) has no \(lang) translation")
+            }
+        }
+        XCTAssertEqual(Terms(sportsEquipment: true)("Waffe hinzufügen"), "Sportgerät hinzufügen")
+        XCTAssertEqual(Terms()("Waffe hinzufügen"), "Waffe hinzufügen")
+    }
+
     func testRangeByLocationHintKeepsDistancePlaceholder() throws {
         for lang in ["en", "fr", "it"] {
             XCTAssertTrue(try localized("Nach Standort gewählt · %@", lang).contains("%@"), lang)
