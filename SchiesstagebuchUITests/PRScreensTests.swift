@@ -62,7 +62,12 @@ final class PRScreensTests: XCTestCase {
             // going back, so tap until the entry form's «Abbrechen» is there again.
             for _ in 0..<3 where !app.buttons["Abbrechen"].exists {
                 let button = app.navigationBars.buttons.firstMatch
-                if button.exists { button.tap() }
+                if button.exists {
+                    button.tap()
+                } else { // no bar while searching: swipe back from the left edge
+                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
+                        .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)))
+                }
                 sleep(1)
             }
         }
