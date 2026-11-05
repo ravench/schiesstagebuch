@@ -88,4 +88,32 @@ final class LocalizationTests: XCTestCase {
         }
         XCTAssertEqual(try localized("Hitfaktor", "en"), "Hit factor")
     }
+
+    /// The barrel's number is its serial number: «Seriennummer» in the barrel editor, where the
+    /// barrel is obvious, and «Seriennummer Lauf» next to the firearm's own numbers.
+    func testBarrelNumberIsCalledSerialNumber() throws {
+        let expected: [String: [String: String]] = [
+            "Seriennummer (optional)": [
+                "en": "Serial number (optional)",
+                "fr": "Numéro de série (facultatif)",
+                "it": "Numero di serie (facoltativo)",
+            ],
+            "Seriennummer Lauf (optional)": [
+                "en": "Barrel serial number (optional)",
+                "fr": "Numéro de série du canon (facultatif)",
+                "it": "Numero di serie della canna (facoltativo)",
+            ],
+            "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": [
+                "en": "E.g. for parts numbered differently from the main number. A barrel's serial number is entered with the barrel.",
+                "fr": "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro de série d'un canon se saisit avec le canon.",
+                "it": "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna.",
+            ],
+        ]
+        for (key, byLang) in expected {
+            for (lang, text) in byLang {
+                XCTAssertEqual(try localized(key, lang), text, "\(key) in \(lang)")
+            }
+        }
+        XCTAssertEqual(try localized("Nummer Lauf (optional)", "en"), "<missing>", "old label still translated")
+    }
 }

@@ -349,7 +349,7 @@ struct WeaponEditorView: View {
                 LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
             }
             SelectedCaliberRows(selection: $calibers)
-            SerialField(title: "Nummer Lauf (optional)", text: $barrelSerial)
+            SerialField(title: "Seriennummer Lauf (optional)", text: $barrelSerial)
         } header: {
             Text("Kaliber")
         } footer: {
@@ -503,7 +503,7 @@ struct SerialNumbersSection: View {
         } header: {
             Text("Nummern")
         } footer: {
-            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.")
+            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.")
         }
     }
 }
