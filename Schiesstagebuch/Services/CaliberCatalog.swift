@@ -22,8 +22,12 @@ enum CaliberCatalog {
         let bullet: String?
         /// Paper band drawn over the bullet (paper-patched GP 1890 bullet); nil for jacketed bullets.
         let patch: String?
-        /// "steel" for a steel-capped nose; nil means a copper-coloured jacket.
+        /// Bare lead tip of a soft point, drawn over the bullet.
+        let tip: String?
+        /// "steel" for a steel-capped nose, "lead" for a bare lead bullet; nil means a copper-coloured jacket.
         let bulletMaterial: String?
+        /// "copper", "steel" (lacquered), "nickel" or "paper" where the case is not brass.
+        let caseMaterial: String?
     }
 
     struct Item: Decodable, Identifiable {
