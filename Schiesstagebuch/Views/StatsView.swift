@@ -150,6 +150,8 @@ struct WeaponDetailView: View {
     @State private var barrelSheet: BarrelSheet?
     /// Deleted once the barrel sheet is gone, so no view still reads the deleted barrel.
     @State private var pendingBarrelDelete: Barrel?
+    /// Barrel swiped away in the list, waiting for confirmation.
+    @State private var swipedBarrel: Barrel?
     /// Set when the user chose to delete: the screen pops first and deletes in `onDisappear`,
     /// so no view still shows the weapon when its record disappears from the store.
     @State private var deleting = false
@@ -173,7 +175,9 @@ struct WeaponDetailView: View {
                 }
             }
             // A single (e.g. fixed) barrel adds nothing to the firearm's own figures.
-            if weapon.hasSeveralBarrels { BarrelSection(weapon: weapon) { barrelSheet = $0 } }
+            if weapon.hasSeveralBarrels {
+                BarrelSection(weapon: weapon, present: { barrelSheet = $0 }, delete: { swipedBarrel = $0 })
+            }
             MaintenanceSection(weapon: weapon) { maintenanceSheet = $0 }
         } breakdowns: { entries in
             if weapon.hasSeveralBarrels {
@@ -200,6 +204,7 @@ struct WeaponDetailView: View {
             case .add: BarrelEditorView(weapon: weapon, barrel: nil)
             }
         }
+        .barrelDeleteConfirmation($swipedBarrel) { try? Deletion.delete($0, in: context) }
         .onChange(of: editing) { _, shown in
             // Pop once the editor sheet is gone, not while it is still animating away.
             if !shown, deleting { dismiss() }
