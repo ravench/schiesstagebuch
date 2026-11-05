@@ -99,6 +99,15 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CartridgeView.caseFill(nil), .brass)
     }
 
+    func testPolymerTipsAndTheFuryHeadAreDrawn() throws {
+        let hmr = try XCTUnwrap(CaliberCatalog.item(id: ".17 HMR"))
+        XCTAssertEqual(CartridgeView.tipFill(hmr.outline.tipMaterial), .polymer)
+        XCTAssertEqual(CartridgeView.tipFill(nil), .lead)
+        let fury = try XCTUnwrap(CaliberCatalog.item(id: ".277 SIG Fury"))
+        XCTAssertEqual(fury.outline.headMaterial, "steel")
+        XCTAssertNotNil(fury.outline.head)
+    }
+
     func testGP1890DoesNotTakeOverGP90OrGP11() throws {
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
         let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11"))
