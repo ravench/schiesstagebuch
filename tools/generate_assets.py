@@ -55,6 +55,10 @@ def build():
     return calibers, icons
 
 
+# Fills of cases that are not brass (Icons.swift uses the same colours).
+CASE_COLOURS = {"copper": "#b87333", "steel": "#6b6a55", "nickel": "#c8cbce", "paper": "#f2ede0", "hybrid": "#e3c16f"}
+
+
 def preview(calibers, icons, path):
     scale = 3.0
     cells = []
@@ -63,14 +67,16 @@ def preview(calibers, icons, path):
         w, h = o["width"] * scale, o["height"] * scale
         parts = ""
         if "case" in o:
-            parts += f'<path d="{o["case"]}" fill="{"#c0392b" if c["kind"] == "shot" else "#e3c16f"}" stroke="#333" stroke-width="0.25"/>'
+            parts += f'<path d="{o["case"]}" fill="{"#c0392b" if c["kind"] == "shot" else CASE_COLOURS.get(o.get("caseMaterial"), "#e3c16f")}" stroke="#333" stroke-width="0.25"/>'
         if "head" in o:
-            parts += f'<path d="{o["head"]}" fill="#e3c16f" stroke="#333" stroke-width="0.25"/>'
+            parts += f'<path d="{o["head"]}" fill="{"#a7adb4" if o.get("headMaterial") == "steel" else "#e3c16f"}" stroke="#333" stroke-width="0.25"/>'
         if "bullet" in o:
-            fill = "#a7adb4" if o.get("bulletMaterial") == "steel" else "#b87333"
+            fill = {"steel": "#a7adb4", "lead": "#8a8c91"}.get(o.get("bulletMaterial"), "#b87333")
             parts += f'<path d="{o["bullet"]}" fill="{fill}" stroke="#333" stroke-width="0.25"/>'
         if "patch" in o:
             parts += f'<path d="{o["patch"]}" fill="#f2ede0" stroke="#333" stroke-width="0.25"/>'
+        if "tip" in o:
+            parts += f'<path d="{o["tip"]}" fill="{"#cc1a24" if o.get("tipMaterial") == "polymer" else "#8a8c91"}" stroke="#333" stroke-width="0.25"/>'
         cells.append(f'<div class=c><svg width="{w}" height="{h}" viewBox="0 0 {o["width"]} {o["height"]}">{parts}</svg><span>{c["name"]}</span></div>')
     icon_cells = []
     for i in icons:

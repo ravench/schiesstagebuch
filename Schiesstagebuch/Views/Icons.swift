@@ -7,7 +7,7 @@ struct CartridgeView: View {
     let caliber: Caliber?
 
     private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let patch: Path?
-        let bulletFill: Color; let isShot: Bool }
+        let tip: Path?; let bulletFill: Color; let hullFill: Color; let headFill: Color; let tipFill: Color }
 
     private static var cache: [String: Parts] = [:]
 
@@ -18,9 +18,35 @@ struct CartridgeView: View {
         let p = Parts(box: CGSize(width: o.width, height: o.height),
                       hull: o.case.map(SVGPath.parse), head: o.head.map(SVGPath.parse),
                       bullet: o.bullet.map(SVGPath.parse), patch: o.patch.map(SVGPath.parse),
-                      bulletFill: o.bulletMaterial == "steel" ? .steel : .copper, isShot: item.kind == "shot")
+                      tip: o.tip.map(SVGPath.parse), bulletFill: Self.bulletFill(o.bulletMaterial),
+                      hullFill: item.kind == "shot" ? .shotShell : Self.caseFill(o.caseMaterial),
+                      headFill: o.headMaterial == "steel" ? .steel : .brass,
+                      tipFill: Self.tipFill(o.tipMaterial))
         Self.cache[id] = p
         return p
+    }
+
+    /// Steel cap (GP 1890), bare lead, or a copper jacket.
+    static func bulletFill(_ material: String?) -> Color {
+        switch material {
+        case "steel": .steel
+        case "lead": .lead
+        default: .copper
+        }
+    }
+
+    /// Red plastic tip, otherwise a soft point's bare lead.
+    static func tipFill(_ material: String?) -> Color { material == "polymer" ? .polymer : .lead }
+
+    /// Brass unless the catalogue names the original case's material.
+    static func caseFill(_ material: String?) -> Color {
+        switch material {
+        case "copper": .copper
+        case "steel": .lacqueredSteel
+        case "nickel": .nickel
+        case "paper": .paper
+        default: .brass
+        }
     }
 
     var body: some View {
@@ -34,10 +60,11 @@ struct CartridgeView: View {
                     ctx.fill(f, with: .color(fill))
                     ctx.stroke(f, with: .color(.primary.opacity(0.55)), style: stroke)
                 }
-                draw(parts.hull, parts.isShot ? Color(red: 0.75, green: 0.22, blue: 0.17) : .brass)
-                draw(parts.head, .brass)
+                draw(parts.hull, parts.hullFill)
+                draw(parts.head, parts.headFill)
                 draw(parts.bullet, parts.bulletFill)
                 draw(parts.patch, .paper)
+                draw(parts.tip, parts.tipFill)
             }
             .accessibilityLabel(caliber?.name ?? "")
         } else {
@@ -51,8 +78,15 @@ extension Color {
     static let copper = Color(red: 0.72, green: 0.45, blue: 0.20)
     /// Steel bullet cap (GP 1890).
     static let steel = Color(red: 0.65, green: 0.68, blue: 0.71)
-    /// Paper patch around a lead bullet (GP 1890).
+    /// Paper patch around a lead bullet (GP 1890, Gras), paper-covered Snider case.
     static let paper = Color(red: 0.95, green: 0.93, blue: 0.88)
+    /// Bare lead bullet or a soft point's tip.
+    static let lead = Color(red: 0.54, green: 0.55, blue: 0.57)
+    static let lacqueredSteel = Color(red: 0.42, green: 0.42, blue: 0.33)
+    static let nickel = Color(red: 0.78, green: 0.80, blue: 0.81)
+    /// Plastic tip of a polymer-tipped bullet (V-Max, ELD).
+    static let polymer = Color(red: 0.80, green: 0.10, blue: 0.14)
+    static let shotShell = Color(red: 0.75, green: 0.22, blue: 0.17)
 }
 
 // MARK: - Weapon categories
