@@ -266,6 +266,9 @@ extension View {
         } message: { _ in
             Text("Einträge bleiben erhalten und zählen wieder nach Kaliber und Datum.")
         }
+    }
+}
+
 /// The chosen calibres under the «Kaliber» button. Swipe left to remove one; the last one stays.
 struct SelectedCaliberRows: View {
     @Binding var selection: Set<Caliber>
