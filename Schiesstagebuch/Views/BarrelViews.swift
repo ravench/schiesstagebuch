@@ -134,12 +134,7 @@ struct BarrelEditorView: View {
                     Button { choosingCalibers = true } label: {
                         LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
                     }
-                    ForEach(sortedSelection) { c in
-                        HStack {
-                            CartridgeView(caliber: c).frame(width: 18, height: 30)
-                            Text(c.name)
-                        }
-                    }
+                    SelectedCaliberRows(selection: $calibers)
                 } footer: {
                     Text("Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.")
                 }
@@ -271,5 +266,20 @@ extension View {
         } message: { _ in
             Text("Einträge bleiben erhalten und zählen wieder nach Kaliber und Datum.")
         }
+/// The chosen calibres under the «Kaliber» button. Swipe left to remove one; the last one stays.
+struct SelectedCaliberRows: View {
+    @Binding var selection: Set<Caliber>
+
+    private var rows: [Caliber] { selection.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending } }
+
+    var body: some View {
+        ForEach(rows) { c in
+            HStack {
+                CartridgeView(caliber: c).frame(width: 18, height: 30)
+                Text(c.name)
+            }
+            .deleteDisabled(selection.count == 1)
+        }
+        .onDelete { selection = selection.removingRows($0, of: rows) }
     }
 }
