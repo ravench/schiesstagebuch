@@ -8,7 +8,6 @@ T = {
     "%@ Schuss überfällig": ("%@ shots overdue", "%@ coups de retard", "%@ colpi in ritardo"),
     "%@ erfassen": ("Log %@", "Enregistrer : %@", "Registra: %@"),
     "%@ fällig: %@": ("%1$@ due: %2$@", "%1$@ à faire : %2$@", "%1$@ da fare: %2$@"),
-    "%@ hinzufügen": ("Add %@", "Ajouter : %@", "Aggiungi: %@"),
     "Nach Standort gewählt · %@": ("Picked by location · %@", "Choisi selon la position · %@", "Scelto in base alla posizione · %@"),
     "Schiessanlage nach Standort wählen": ("Pick range by location", "Choisir le stand selon la position", "Scegliere il poligono in base alla posizione"),
     "Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.": (
@@ -246,6 +245,7 @@ T = {
     "Standard": ("Default", "Par défaut", "Predefinito"),
     "Statistik": ("Statistics", "Statistiques", "Statistiche"),
     "Schiessanlage suchen": ("Search ranges", "Rechercher un stand de tir", "Cerca poligono"),
+    "Schiessanlage hinzufügen": ("Add range", "Ajouter un stand de tir", "Aggiungi poligono"),
     "Keine passende Schiessanlage": ("No matching range", "Aucun stand de tir correspondant", "Nessun poligono corrispondente"),
     "Suche löschen": ("Clear search", "Effacer la recherche", "Cancella ricerca"),
     "Ordonnanzgewehr": ("Service rifle", "Fusil d'ordonnance", "Fucile d'ordinanza"),

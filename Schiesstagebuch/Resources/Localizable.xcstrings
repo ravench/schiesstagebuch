@@ -116,29 +116,6 @@
         }
       }
     },
-    "%@ hinzufügen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajouter : %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi: %@"
-          }
-        }
-      }
-    },
     "%@ von %@ Schuss (%@)": {
       "extractionState": "manual",
       "localizations": {
@@ -9410,6 +9387,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifica poligono"
+          }
+        }
+      }
+    },
+    "Schiessanlage hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add range"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un stand de tir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi poligono"
           }
         }
       }
