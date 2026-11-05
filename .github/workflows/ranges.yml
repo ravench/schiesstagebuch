@@ -11,6 +11,11 @@ on:
       - tools/range_catalogue.py
       - data/indoor-ranges.json
       - .github/workflows/ranges.yml
+# A newer push to the same pull request cancels this run. On main a running build
+# finishes; a newer merge only replaces a run that is still waiting for a runner.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 defaults:
   run:
     shell: bash -eo pipefail {0}
