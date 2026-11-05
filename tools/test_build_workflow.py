@@ -11,7 +11,10 @@ class BuildWorkflowTests(unittest.TestCase):
         # Building the app for the Screens scheme after the unit test scheme removes
         # SchiesstagebuchTests.xctest from the app, and test-without-building can't load it
         # (main, 2026-11-05).
-        schemes = re.findall(r"xcodebuild build-for-testing \\\s+-project \S+ \\\s+-scheme (\S+)", BUILD.read_text())
+        # The PR screens rebuild the Screens scheme for the base branch, after the unit tests.
+        text = BUILD.read_text()
+        before_unit_tests = text[:text.index('"$RUNNER_TEMP/UnitTests.xcresult"')]
+        schemes = re.findall(r"xcodebuild build-for-testing \\\s+-project \S+ \\\s+-scheme (\S+)", before_unit_tests)
         self.assertEqual(schemes, ["SchiesstagebuchScreens", "Schiesstagebuch"])
 
     def test_tests_write_results_for_the_summary(self):
