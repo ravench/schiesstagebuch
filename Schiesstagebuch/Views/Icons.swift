@@ -9,7 +9,7 @@ struct CartridgeView: View {
     var pointsPerMillimetre: CGFloat?
 
     private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let patch: Path?
-        let tip: Path?; let bulletFill: Color; let hullFill: Color }
+        let tip: Path?; let bulletFill: Color; let hullFill: Color; let headFill: Color; let tipFill: Color }
 
     private static var cache: [String: Parts] = [:]
 
@@ -21,7 +21,9 @@ struct CartridgeView: View {
                       hull: o.case.map(SVGPath.parse), head: o.head.map(SVGPath.parse),
                       bullet: o.bullet.map(SVGPath.parse), patch: o.patch.map(SVGPath.parse),
                       tip: o.tip.map(SVGPath.parse), bulletFill: Self.bulletFill(o.bulletMaterial),
-                      hullFill: item.kind == "shot" ? .shotShell : Self.caseFill(o.caseMaterial))
+                      hullFill: item.kind == "shot" ? .shotShell : Self.caseFill(o.caseMaterial),
+                      headFill: o.headMaterial == "steel" ? .steel : .brass,
+                      tipFill: Self.tipFill(o.tipMaterial))
         Self.cache[id] = p
         return p
     }
@@ -34,6 +36,9 @@ struct CartridgeView: View {
         default: .copper
         }
     }
+
+    /// Red plastic tip, otherwise a soft point's bare lead.
+    static func tipFill(_ material: String?) -> Color { material == "polymer" ? .polymer : .lead }
 
     /// Brass unless the catalogue names the original case's material.
     static func caseFill(_ material: String?) -> Color {
@@ -62,10 +67,10 @@ struct CartridgeView: View {
                     ctx.stroke(f, with: .color(.primary.opacity(0.55)), style: stroke)
                 }
                 draw(parts.hull, parts.hullFill)
-                draw(parts.head, .brass)
+                draw(parts.head, parts.headFill)
                 draw(parts.bullet, parts.bulletFill)
                 draw(parts.patch, .paper)
-                draw(parts.tip, .lead)
+                draw(parts.tip, parts.tipFill)
             }
             .accessibilityLabel(caliber?.name ?? "")
         } else {
@@ -85,6 +90,8 @@ extension Color {
     static let lead = Color(red: 0.54, green: 0.55, blue: 0.57)
     static let lacqueredSteel = Color(red: 0.42, green: 0.42, blue: 0.33)
     static let nickel = Color(red: 0.78, green: 0.80, blue: 0.81)
+    /// Plastic tip of a polymer-tipped bullet (V-Max, ELD).
+    static let polymer = Color(red: 0.80, green: 0.10, blue: 0.14)
     static let shotShell = Color(red: 0.75, green: 0.22, blue: 0.17)
 }
 

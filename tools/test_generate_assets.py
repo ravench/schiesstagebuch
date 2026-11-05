@@ -50,10 +50,15 @@ class PatchedBulletTests(unittest.TestCase):
         self.assertIn("patch", gras)
         self.assertIn("tip", self.outline("9.3x62 mm")[1])
         self.assertNotIn("tip", self.outline("7.62x51 mm NATO")[1])
+        self.assertEqual(self.outline(".17 HMR")[1]["tipMaterial"], "polymer")
+        self.assertEqual(self.outline(".277 SIG Fury")[1]["headMaterial"], "steel")
         calibers = generate_assets.build()[0]
         materials = {c["outline"]["caseMaterial"] for c in calibers if "caseMaterial" in c["outline"]}
         self.assertTrue(materials)
         self.assertLessEqual(materials, set(generate_assets.CASE_COLOURS))
+        by_name = {c["name"]: c["outline"] for c in calibers}
+        self.assertEqual(by_name[".45-70 Government"]["currentCaseMaterials"], ["brass"])
+        self.assertEqual(by_name["9x19 mm"]["currentCaseMaterials"], ["steel"])
 
 
 class BlankTests(unittest.TestCase):

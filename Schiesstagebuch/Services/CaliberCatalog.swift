@@ -24,9 +24,13 @@ enum CaliberCatalog {
         let patch: String?
         /// Bare lead tip of a soft point, drawn over the bullet.
         let tip: String?
+        /// "polymer" for a plastic tip; nil for bare lead.
+        let tipMaterial: String?
+        /// "steel" for the steel head of a hybrid case (.277 SIG Fury); nil for brass.
+        let headMaterial: String?
         /// "steel" for a steel-capped nose, "lead" for a bare lead bullet; nil means a copper-coloured jacket.
         let bulletMaterial: String?
-        /// "copper", "steel" (lacquered), "nickel" or "paper" where the case is not brass.
+        /// "copper", "steel" (lacquered), "nickel", "paper" or "hybrid" (brass body, steel head) where the case is not brass.
         let caseMaterial: String?
     }
 
