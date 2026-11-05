@@ -71,7 +71,7 @@ def preview(calibers, icons, path):
         if "head" in o:
             parts += f'<path d="{o["head"]}" fill="{"#a7adb4" if o.get("headMaterial") == "steel" else "#e3c16f"}" stroke="#333" stroke-width="0.25"/>'
         if "bullet" in o:
-            fill = {"steel": "#a7adb4", "lead": "#8a8c91"}.get(o.get("bulletMaterial"), "#b87333")
+            fill = {"steel": "#a7adb4", "plastic": "#edede6", "lead": "#8a8c91"}.get(o.get("bulletMaterial"), "#b87333" if "case" in o else "#8a8c91")
             parts += f'<path d="{o["bullet"]}" fill="{fill}" stroke="#333" stroke-width="0.25"/>'
         if "patch" in o:
             parts += f'<path d="{o["patch"]}" fill="#f2ede0" stroke="#333" stroke-width="0.25"/>'
