@@ -354,7 +354,7 @@ struct WeaponEditorView: View {
                     Text(c.name)
                 }
             }
-            SerialField(title: "Nummer Lauf (optional)", text: $barrelSerial)
+            SerialField(title: "Seriennummer Lauf (optional)", text: $barrelSerial)
         } header: {
             Text("Kaliber")
         } footer: {
