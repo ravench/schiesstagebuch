@@ -69,7 +69,7 @@ struct EntryEditorView: View {
     @State private var didLoad = false
     @FocusState private var eventFocused: Bool
 
-    enum QuickAdd: Identifiable { case weapon, range, ammunition; var id: Self { self } }
+    enum QuickAdd: Identifiable { case weapon, ammunition; var id: Self { self } }
 
     private var recentEvents: [String] {
         var seen = Set<String>()
@@ -122,7 +122,7 @@ struct EntryEditorView: View {
 
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    RangePickerRow(selection: $range, ranges: ranges, location: here.location) { quickAdd = .range }
+                    RangePickerRow(selection: $range, ranges: ranges, location: here.location)
                     if let autoRange, autoRange.range == range {
                         Label { Text("Nach Standort gewählt · \(formattedAutoDistance)") } icon: {
                             Image(systemName: "location.fill")
@@ -304,7 +304,6 @@ struct EntryEditorView: View {
             .sheet(item: $quickAdd) { kind in
                 switch kind {
                 case .weapon: WeaponEditorView(weapon: nil) { weapon = $0 }
-                case .range: RangeEditorView(range: nil) { range = $0 }
                 case .ammunition: AmmunitionEditorView(ammunition: nil, suggestedCaliber: caliber) { ammunition = $0 }
                 }
             }
@@ -383,7 +382,9 @@ struct EntryEditorView: View {
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
                                                label: KeyPath<T, String>, add: QuickAdd,
                                                subtitle: @escaping (T) -> String? = { _ in nil }) -> some View {
-        PickerValueRow(title: title.loc, value: selection.wrappedValue?[keyPath: label]) {
+        PickerValueRow(title: title.loc, value: selection.wrappedValue?[keyPath: label],
+                       addTitle: add == .weapon ? term("Waffe hinzufügen").loc : "Munition hinzufügen".loc,
+                       add: { quickAdd = add }, options: {
             Picker(title.loc, selection: selection) {
                 Text("–").tag(T?.none)
                 ForEach(items) { item in
@@ -394,11 +395,7 @@ struct EntryEditorView: View {
                     Text(current[keyPath: label]).tag(Optional(current))
                 }
             }
-        } trailing: {
-            Button { quickAdd = add } label: { Image(systemName: "plus.circle") }
-                .buttonStyle(.borderless)
-                .accessibilityLabel(String(localized: "\(title.loc) hinzufügen"))
-        }
+        })
     }
 
     private var enteredPasseTotals: [PasseTotal] { passeTotals.map(\.total).normalized }
