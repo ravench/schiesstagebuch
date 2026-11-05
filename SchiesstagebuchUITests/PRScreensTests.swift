@@ -40,6 +40,11 @@ final class PRScreensTests: XCTestCase {
 
         tab("Einstellungen")
         snap("08-Einstellungen")
+        // Catalogue calibres with their cartridge icons (bullet and case materials).
+        if open(app.buttons["Kaliber"].firstMatch) {
+            snap("08b-Kaliber")
+            back()
+        }
         scroll()
         snap("09-Einstellungen-unten")
     }
