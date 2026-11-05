@@ -72,8 +72,10 @@ jobs:
           echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
       - name: Build app and tests
         # Compiled once here; the unit and UI tests below run on this build (test-without-building).
+        # The unit test scheme goes last: building the app for SchiesstagebuchScreens drops the unit
+        # test bundle from the app's PlugIns, and the unit tests then fail to load it.
         run: |
-          for SCHEME in Schiesstagebuch SchiesstagebuchScreens; do
+          for SCHEME in SchiesstagebuchScreens Schiesstagebuch; do
             xcodebuild build-for-testing \
               -project Schiesstagebuch.xcodeproj \
               -scheme "$SCHEME" \
