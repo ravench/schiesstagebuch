@@ -178,3 +178,12 @@ extension Entry {
         return weapon?.barrel(for: caliber, on: date)
     }
 }
+
+extension Set {
+    /// Removes the rows at `offsets` of `rows` (the list on screen), but never the last element:
+    /// a barrel keeps at least one calibre.
+    func removingRows(_ offsets: IndexSet, of rows: [Element]) -> Set {
+        let remaining = subtracting(offsets.filter(rows.indices.contains).map { rows[$0] })
+        return remaining.isEmpty ? self : remaining
+    }
+}
