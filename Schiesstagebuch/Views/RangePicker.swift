@@ -40,13 +40,18 @@ struct RangePickerList: View {
             // Last row, so it shows when nothing matches or at the end of the list.
             Button { adding = true } label: { Label("Schiessanlage hinzufügen", systemImage: "plus") }
         }
-        .sheet(isPresented: $adding, onDismiss: { if added { dismiss() } }) {
+        .sheet(isPresented: $adding, onDismiss: closeIfAdded) {
             RangeEditorView(range: nil) { selection = $0; added = true }
         }
         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Schiessanlage suchen")
         .autocorrectionDisabled()
         .navigationTitle("Schiessanlage")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    /// Back to the form once a new range was saved; it is already the selection.
+    private func closeIfAdded() {
+        if added { dismiss() }
     }
 
     private func row(_ range: ShootingRange?) -> some View {
