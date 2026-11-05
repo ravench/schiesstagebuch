@@ -23,7 +23,7 @@ final class PRScreensTests: XCTestCase {
         }
         if open(app.buttons["Neuer Eintrag"].firstMatch) {
             snap("03-Neuer-Eintrag")
-            app.swipeUp()
+            scroll()
             snap("04-Neuer-Eintrag-unten")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
@@ -40,7 +40,7 @@ final class PRScreensTests: XCTestCase {
 
         tab("Einstellungen")
         snap("08-Einstellungen")
-        app.swipeUp()
+        scroll()
         snap("09-Einstellungen-unten")
     }
 
@@ -63,8 +63,18 @@ final class PRScreensTests: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
     }
 
+    /// Drags the screen by a fixed distance and holds before letting go, so there is no momentum
+    /// and both runs end on the same scroll position (a swipe's distance varies).
+    private func scroll(up: Bool = true) {
+        let window = app.windows.firstMatch
+        let low = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+        let high = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3))
+        let (from, to) = up ? (low, high) : (high, low)
+        from.press(forDuration: 0.2, thenDragTo: to, withVelocity: .slow, thenHoldForDuration: 0.5)
+    }
+
     private func snap(_ name: String) {
-        sleep(1) // let animations and scroll indicators settle
+        sleep(2) // let animations settle and scroll indicators fade
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name
         attachment.lifetime = .keepAlways
