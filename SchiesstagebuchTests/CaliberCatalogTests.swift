@@ -80,6 +80,25 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertNil(gp11.outline.bulletMaterial)
     }
 
+    func testOriginalBulletsAndCasesAreDrawn() throws {
+        // Raven 2026-11-05: lead, paper-patched lead, soft point tips; copper, steel and paper cases.
+        let lr = try XCTUnwrap(CaliberCatalog.item(id: ".22 LR"))
+        XCTAssertEqual(lr.outline.bulletMaterial, "lead")
+        XCTAssertEqual(CartridgeView.bulletFill(lr.outline.bulletMaterial), .lead)
+        XCTAssertEqual(CartridgeView.bulletFill(nil), .copper)
+        XCTAssertEqual(CartridgeView.bulletFill("steel"), .steel)
+        let soft = try XCTUnwrap(CaliberCatalog.item(id: "9.3x62 mm"))
+        let tip = SVGPath.parse(try XCTUnwrap(soft.outline.tip, "soft point tip")).boundingRect
+        let bullet = SVGPath.parse(try XCTUnwrap(soft.outline.bullet)).boundingRect
+        XCTAssertEqual(tip.minY, bullet.minY, accuracy: 0.01, "the lead tip is the front of the bullet")
+        XCTAssertLessThan(tip.height, bullet.height / 4)
+        XCTAssertNil(try XCTUnwrap(CaliberCatalog.item(id: "7.62x51 mm NATO")).outline.tip)
+        let henry = try XCTUnwrap(CaliberCatalog.item(id: ".44 Henry"))
+        XCTAssertEqual(CartridgeView.caseFill(henry.outline.caseMaterial), .copper)
+        XCTAssertEqual(CartridgeView.caseFill("steel"), .lacqueredSteel)
+        XCTAssertEqual(CartridgeView.caseFill(nil), .brass)
+    }
+
     func testGP1890DoesNotTakeOverGP90OrGP11() throws {
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
         let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11"))
