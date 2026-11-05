@@ -18,7 +18,7 @@ struct CartridgeView: View {
         let p = Parts(box: CGSize(width: o.width, height: o.height),
                       hull: o.case.map(SVGPath.parse), head: o.head.map(SVGPath.parse),
                       bullet: o.bullet.map(SVGPath.parse), patch: o.patch.map(SVGPath.parse),
-                      tip: o.tip.map(SVGPath.parse), bulletFill: Self.bulletFill(o.bulletMaterial),
+                      tip: o.tip.map(SVGPath.parse), bulletFill: Self.bulletFill(o.bulletMaterial, hasCase: o.case != nil),
                       hullFill: item.kind == "shot" ? .shotShell : Self.caseFill(o.caseMaterial),
                       headFill: o.headMaterial == "steel" ? .steel : .brass,
                       tipFill: Self.tipFill(o.tipMaterial))
@@ -26,12 +26,14 @@ struct CartridgeView: View {
         return p
     }
 
-    /// Steel cap (GP 1890), bare lead, or a copper jacket.
-    static func bulletFill(_ material: String?) -> Color {
+    /// Steel cap (GP 1890) or steel BB, plastic airsoft BB, bare lead, or a copper jacket;
+    /// loose balls, Minié bullets and pellets without a material are lead.
+    static func bulletFill(_ material: String?, hasCase: Bool = true) -> Color {
         switch material {
         case "steel": .steel
+        case "plastic": .plastic
         case "lead": .lead
-        default: .copper
+        default: hasCase ? .copper : .lead
         }
     }
 
@@ -86,6 +88,8 @@ extension Color {
     static let nickel = Color(red: 0.78, green: 0.80, blue: 0.81)
     /// Plastic tip of a polymer-tipped bullet (V-Max, ELD).
     static let polymer = Color(red: 0.80, green: 0.10, blue: 0.14)
+    /// Airsoft BB: most are white.
+    static let plastic = Color(red: 0.93, green: 0.93, blue: 0.90)
     static let shotShell = Color(red: 0.75, green: 0.22, blue: 0.17)
 }
 
