@@ -508,7 +508,7 @@ struct SerialNumbersSection: View {
         } header: {
             Text("Nummern")
         } footer: {
-            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.")
+            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.")
         }
     }
 }

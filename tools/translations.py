@@ -612,10 +612,10 @@ T = {
     "Standardlauf": ("Default barrel", "Canon par défaut", "Canna predefinita"),
     "Trommel": ("Cylinder", "Barillet", "Tamburo"),
     "Weitere Nummer": ("Add number", "Ajouter un numéro", "Aggiungi numero"),
-    "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.": (
-        "E.g. for parts numbered differently from the main number. A barrel's number is entered with the barrel.",
-        "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro d'un canon se saisit avec le canon.",
-        "P. es. per parti con un numero diverso da quello principale. Il numero di una canna si inserisce con la canna."),
+    "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": (
+        "E.g. for parts numbered differently from the main number. A barrel's serial number is entered with the barrel.",
+        "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro de série d'un canon se saisit avec le canon.",
+        "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna."),
     "Pro Lauf": ("By barrel", "Par canon", "Per canna"),
     "Schüsse vor der Erfassung": ("Shots before logging", "Coups avant l'enregistrement", "Colpi prima della registrazione"),
     "ausgebaut am %@": ("removed %@", "démonté le %@", "smontata il %@"),

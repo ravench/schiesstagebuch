@@ -103,6 +103,11 @@ final class LocalizationTests: XCTestCase {
                 "fr": "Numéro de série du canon (facultatif)",
                 "it": "Numero di serie della canna (facoltativo)",
             ],
+            "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": [
+                "en": "E.g. for parts numbered differently from the main number. A barrel's serial number is entered with the barrel.",
+                "fr": "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro de série d'un canon se saisit avec le canon.",
+                "it": "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna.",
+            ],
         ]
         for (key, byLang) in expected {
             for (lang, text) in byLang {
