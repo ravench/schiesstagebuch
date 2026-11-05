@@ -33,8 +33,20 @@ final class PRScreensTests: XCTestCase {
 
         tab("Waffen")
         snap("06-Waffen")
+        if open(app.buttons["Waffe hinzufügen"].firstMatch) {
+            reveal(app.textFields.matching(NSPredicate(format: "placeholderValue ENDSWITH %@", "Lauf (optional)")).firstMatch)
+            snap("06b-Neue-Waffe-Lauf")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        }
         if open(app.staticTexts["Stgw 90"].firstMatch) {
             snap("07-Waffe")
+            if open(app.buttons["Bearbeiten"].firstMatch) {
+                if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Kaliber")).firstMatch) {
+                    snap("07b-Lauf-bearbeiten")
+                    app.buttons["Abbrechen"].firstMatch.tap()
+                }
+                app.buttons["Abbrechen"].firstMatch.tap()
+            }
             back()
         }
 
@@ -68,6 +80,13 @@ final class PRScreensTests: XCTestCase {
     private func scroll(up: Bool = true) {
         for _ in 0..<6 {
             if up { app.swipeUp(velocity: .fast) } else { app.swipeDown(velocity: .fast) }
+        }
+    }
+
+    /// Swipes up a little at a time until `element` can be tapped (at most six swipes).
+    private func reveal(_ element: XCUIElement) {
+        for _ in 0..<6 where !(element.exists && element.isHittable) {
+            app.swipeUp(velocity: .slow)
         }
     }
 
