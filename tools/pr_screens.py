@@ -1,0 +1,120 @@
+"""Helpers for .github/workflows/pr-screens.yml: before/after screenshots on pull requests.
+
+    xcrun simctl list devices available -j | python3 tools/pr_screens.py pick-iphone
+    python3 tools/pr_screens.py rename <xcresulttool export dir> <out dir>
+    python3 tools/pr_screens.py changes <before dir> <after dir> <out dir>
+    python3 tools/pr_screens.py comment <out dir> <image base url> <run url>
+"""
+import filecmp
+import json
+import os
+import shutil
+import sys
+
+from ipad_screens import _ios_version, rename
+
+MARKER = "<!-- pr-screens -->"
+TOUR = "SchiesstagebuchUITests/PRScreensTests.swift"
+
+
+def pick_iphone(simctl):
+    """UDID of an iPhone on the newest iOS runtime, preferring the plain Pro (the most common size)."""
+    best = None
+    for runtime, devices in simctl.get("devices", {}).items():
+        version = _ios_version(runtime)
+        if version is None:
+            continue
+        for d in devices:
+            name = d.get("name", "")
+            if not name.startswith("iPhone") or not d.get("isAvailable", True):
+                continue
+            size = 2 if "Pro" in name and "Max" not in name else 1 if "Max" not in name else 0
+            key = (version, size, name)
+            if best is None or key > best[0]:
+                best = (key, d["udid"])
+    if best is None:
+        raise ValueError("no iPhone simulator available")
+    return best[1]
+
+
+def _pngs(folder):
+    return set(n for n in os.listdir(folder) if n.endswith(".png")) if os.path.isdir(folder) else set()
+
+
+def changes(before_dir, after_dir):
+    """[(name, status)] for screens that are new, changed or gone, by name.
+
+    Both runs use the same simulator, status bar and sample data minutes apart, so an
+    unchanged screen gives the same bytes.
+    """
+    before, after = _pngs(before_dir), _pngs(after_dir)
+    result = []
+    for name in sorted(before | after):
+        if name not in before:
+            result.append((name, "new"))
+        elif name not in after:
+            result.append((name, "gone"))
+        elif not filecmp.cmp(os.path.join(before_dir, name), os.path.join(after_dir, name), shallow=False):
+            result.append((name, "changed"))
+    return result
+
+
+def collect(before_dir, after_dir, out_dir):
+    """Copies the changed screens to out_dir/before and out_dir/after and writes out_dir/changes.json."""
+    found = changes(before_dir, after_dir)
+    for side, folder in (("before", before_dir), ("after", after_dir)):
+        os.makedirs(os.path.join(out_dir, side), exist_ok=True)
+        for name, _ in found:
+            src = os.path.join(folder, name)
+            if os.path.exists(src):
+                shutil.copyfile(src, os.path.join(out_dir, side, name))
+    summary = {"changes": found, "total": len(_pngs(after_dir)), "base": len(_pngs(before_dir))}
+    with open(os.path.join(out_dir, "changes.json"), "w") as f:
+        json.dump(summary, f)
+    return summary
+
+
+def _img(url):
+    return f'<img src="{url}" width="250">'
+
+
+def comment(summary, base_url, run_url):
+    """Markdown for the pull request comment; base_url is where out_dir/before and /after are served."""
+    found, total = summary["changes"], summary["total"]
+    lines = [MARKER, "### Screenshots", ""]
+    if summary.get("base", 1) == 0:
+        lines += ["The screens of the base branch could not be taken, so every screen is shown as new.", ""]
+    if not found:
+        lines += [f"No visible change on the {total} screens of the tour.",
+                  f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`."]
+    else:
+        lines += [f"{len(found)} of {total} screens look different (iPhone, German, sample data).", "",
+                  "| Screen | Before | After |", "| --- | --- | --- |"]
+        for name, status in found:
+            before = "—" if status == "new" else _img(f"{base_url}/before/{name}")
+            after = "—" if status == "gone" else _img(f"{base_url}/after/{name}")
+            label = os.path.splitext(name)[0] + ("" if status == "changed" else f" ({status})")
+            lines.append(f"| {label} | {before} | {after} |")
+    lines += ["", f"All screens of this run: [workflow artifacts]({run_url})."]
+    return "\n".join(lines) + "\n"
+
+
+def main(argv):
+    if argv[1:2] == ["pick-iphone"]:
+        print(pick_iphone(json.load(sys.stdin)))
+    elif argv[1:2] == ["rename"] and len(argv) == 4:
+        for name in rename(argv[2], argv[3]):
+            print(name)
+    elif argv[1:2] == ["changes"] and len(argv) == 5:
+        summary = collect(argv[2], argv[3], argv[4])
+        for name, status in summary["changes"]:
+            print(f"{status}: {name}")
+    elif argv[1:2] == ["comment"] and len(argv) == 5:
+        with open(os.path.join(argv[2], "changes.json")) as f:
+            sys.stdout.write(comment(json.load(f), argv[3], argv[4]))
+    else:
+        sys.exit(__doc__)
+
+
+if __name__ == "__main__":
+    main(sys.argv)
