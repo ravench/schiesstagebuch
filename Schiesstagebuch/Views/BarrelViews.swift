@@ -22,12 +22,15 @@ struct BarrelSection: View {
     @Environment(\.term) private var term
     @Bindable var weapon: Weapon
     let present: (BarrelSheet) -> Void
+    /// Swipe to delete; the caller asks first (see `barrelDeleteConfirmation`).
+    var delete: ((Barrel) -> Void)?
 
     var body: some View {
         Section {
             ForEach(weapon.sortedBarrels) { b in
                 Button { present(.edit(b)) } label: { BarrelRow(barrel: b, showsDefault: weapon.hasSeveralBarrels) }
                     .foregroundStyle(.primary)
+                    .barrelSwipeToDelete(b, of: weapon, delete: delete)
             }
             Button { present(.add) } label: { Label("Lauf hinzufügen", systemImage: "plus") }
         } header: {
@@ -131,19 +134,14 @@ struct BarrelEditorView: View {
                     Button { choosingCalibers = true } label: {
                         LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
                     }
-                    ForEach(sortedSelection) { c in
-                        HStack {
-                            CartridgeView(caliber: c).frame(width: 18, height: 30)
-                            Text(c.name)
-                        }
-                    }
+                    SelectedCaliberRows(selection: $calibers)
                 } footer: {
                     Text("Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.")
                 }
 
                 Section {
                     TextField("Bezeichnung (optional)", text: $name)
-                    SerialField(title: "Nummer Lauf (optional)", text: $serialNumber)
+                    SerialField(title: "Seriennummer (optional)", text: $serialNumber)
                     if weapon.hasSeveralBarrels || barrel == nil {
                         Toggle("Standardlauf", isOn: $isDefault)
                     }
@@ -242,5 +240,49 @@ struct BarrelEditorView: View {
         if isDefault { weapon.makeDefault(target) } else { target.isDefault = false }
         try? context.save()
         dismiss()
+    }
+}
+
+extension View {
+    /// Swipe left on a barrel row to delete it, while the firearm keeps another barrel.
+    /// Not `role: .destructive`: that removes the row at once, before the user confirms.
+    @ViewBuilder
+    func barrelSwipeToDelete(_ barrel: Barrel, of weapon: Weapon, delete: ((Barrel) -> Void)?) -> some View {
+        if let delete, weapon.hasSeveralBarrels {
+            swipeActions(allowsFullSwipe: false) {
+                Button { delete(barrel) } label: { Label("Löschen", systemImage: "trash") }.tint(.red)
+            }
+        } else {
+            self
+        }
+    }
+
+    /// Asks before deleting a barrel picked by swiping; attach outside the List (see `BarrelSection`).
+    func barrelDeleteConfirmation(_ pending: Binding<Barrel?>, perform: @escaping (Barrel) -> Void) -> some View {
+        confirmationDialog("Lauf löschen?", isPresented: Binding(get: { pending.wrappedValue != nil },
+                                                                 set: { if !$0 { pending.wrappedValue = nil } }),
+                           titleVisibility: .visible, presenting: pending.wrappedValue) { barrel in
+            Button("Löschen", role: .destructive) { perform(barrel) }
+        } message: { _ in
+            Text("Einträge bleiben erhalten und zählen wieder nach Kaliber und Datum.")
+        }
+    }
+}
+
+/// The chosen calibres under the «Kaliber» button. Swipe left to remove one; the last one stays.
+struct SelectedCaliberRows: View {
+    @Binding var selection: Set<Caliber>
+
+    private var rows: [Caliber] { selection.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending } }
+
+    var body: some View {
+        ForEach(rows) { c in
+            HStack {
+                CartridgeView(caliber: c).frame(width: 18, height: 30)
+                Text(c.name)
+            }
+            .deleteDisabled(selection.count == 1)
+        }
+        .onDelete { selection = selection.removingRows($0, of: rows) }
     }
 }
