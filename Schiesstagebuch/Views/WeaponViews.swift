@@ -348,13 +348,8 @@ struct WeaponEditorView: View {
             Button { choosingCalibers = true } label: {
                 LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
             }
-            ForEach(sortedSelection) { c in
-                HStack {
-                    CartridgeView(caliber: c).frame(width: 18, height: 30)
-                    Text(c.name)
-                }
-            }
-            SerialField(title: "Nummer Lauf (optional)", text: $barrelSerial)
+            SelectedCaliberRows(selection: $calibers)
+            SerialField(title: "Seriennummer Lauf (optional)", text: $barrelSerial)
         } header: {
             Text("Kaliber")
         } footer: {
@@ -508,7 +503,7 @@ struct SerialNumbersSection: View {
         } header: {
             Text("Nummern")
         } footer: {
-            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Nummer eines Laufs erfasst du beim Lauf.")
+            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.")
         }
     }
 }
