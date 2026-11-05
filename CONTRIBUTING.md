@@ -37,3 +37,6 @@ See the [README](README.md#building). In short: `brew install xcodegen`,
   `python3 tools/generate_assets.py` and commit the generated JSON.
 - Every change comes with unit tests; CI runs them and SwiftLint on every push.
 - Keep pull requests small and focused, and describe what you changed and how you tested it.
+- A pull request that changes the GUI shows screenshots. CI comments with the screens that
+  changed, before and after; if your screen is missing, add it to the tour in
+  `SchiesstagebuchUITests/PRScreensTests.swift`.
