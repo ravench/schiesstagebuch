@@ -16,7 +16,10 @@ match (Stich).
   your position, or left empty.
 - **Events** (Anlässe): an event holds one entry per match (Stich) shot that day, even
   with different firearms. Date, shooting range, event name and weather are shared by
-  all its matches. Earlier event names are suggested while typing.
+  all its matches. Earlier event names are suggested while typing. Each match can
+  record its position (Stellung): prone, kneeling, standing or rested; new matches
+  start with the usual one for the firearm type (handguns and air rifles standing,
+  ordnance and small-bore rifles prone).
 - **Scoring**: three ways to record the shots: a total, sighters (Probeschüsse) and
   scored shots (Wertungsschüsse) apart, or every shot in its own box, one row per
   Passe. With a maximum the app shows a percentage; a per-shot mean needs the scored
