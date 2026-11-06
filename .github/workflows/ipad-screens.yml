@@ -1,6 +1,6 @@
 name: iPad screens
 # Screenshots of every main screen on an iPad simulator, portrait and landscape, with sample data.
-# See them on the ipad-screens branch, or download the run's "ipad-screens" artifact. Runs by hand (Actions › iPad screens ›
+# See them in ravench/app-screens on its schiesstagebuch/ipad-screens branch, or download the run's "ipad-screens" artifact. Runs by hand (Actions › iPad screens ›
 # Run workflow) and on pull requests that touch the screenshot run itself.
 on:
   workflow_dispatch:
@@ -21,8 +21,8 @@ jobs:
   screens:
     runs-on: macos-26
     permissions:
-      # Pushes the screenshots to the ipad-screens branch.
-      contents: write
+      # The screenshots go to ravench/app-screens with a deploy key, not to this repo.
+      contents: read
     steps:
       - uses: actions/checkout@v5
         with:
@@ -54,17 +54,26 @@ jobs:
         with:
           name: ipad-screens
           path: ipad-screens
-      - name: Publish to the ipad-screens branch
+      - name: Publish to app-screens
         # Browsable on GitHub without downloading the zip; only the latest set is kept.
-        # Pull requests from forks get a read-only token, so they only get the artifact.
+        # Pull requests from forks get no secrets, so they only get the artifact.
         if: always() && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository)
+        env:
+          SCREENS_REPO: ravench/app-screens
+          SCREENS_BRANCH: schiesstagebuch/ipad-screens
+          SCREENS_DEPLOY_KEY: ${{ secrets.SCREENS_DEPLOY_KEY }}
         run: |
           [ -n "$(ls ipad-screens 2>/dev/null)" ] || exit 0
+          # ravench/app-screens accepts this repo's deploy key; the host key is GitHub's published one.
+          [ -n "$SCREENS_DEPLOY_KEY" ] || { echo "::error::The SCREENS_DEPLOY_KEY secret is missing"; exit 1; }
+          mkdir -p ~/.ssh && printf '%s\n' "$SCREENS_DEPLOY_KEY" > ~/.ssh/app-screens && chmod 600 ~/.ssh/app-screens
+          echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> ~/.ssh/known_hosts
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/app-screens -o IdentitiesOnly=yes"
           cd ipad-screens
-          git init -q -b ipad-screens
+          git init -q -b screens
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -q -m "iPad screens for ${{ github.event.pull_request.head.sha || github.sha }}"
-          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ipad-screens
-          echo "Screenshots: https://github.com/${{ github.repository }}/tree/ipad-screens" >> "$GITHUB_STEP_SUMMARY"
+          git push -q -f "git@github.com:${SCREENS_REPO}.git" "HEAD:refs/heads/$SCREENS_BRANCH"
+          echo "Screenshots: https://github.com/${SCREENS_REPO}/tree/${SCREENS_BRANCH}" >> "$GITHUB_STEP_SUMMARY"
