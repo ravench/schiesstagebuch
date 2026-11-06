@@ -190,12 +190,7 @@ struct EntryEditorView: View {
                             }
                         }
                     }
-                    if scoring != .ipsc {
-                        Picker("Stellung", selection: $position) {
-                            Text("–").tag(ShootingPosition?.none)
-                            ForEach(ShootingPosition.allCases) { Text($0.title).tag(Optional($0)) }
-                        }
-                    }
+                    if scoring != .ipsc { positionPicker }
                 }
 
                 if scoring == .ipsc {
@@ -243,21 +238,7 @@ struct EntryEditorView: View {
                 guard let autoRange, autoRange.range == range, !Calendar.current.isDateInToday(new) else { return }
                 range = nil; self.autoRange = nil
             }
-            .onChange(of: weapon) { old, new in
-                guard didLoad else { return }
-                // A new Stich keeps the position the user picked, else it follows the weapon type.
-                if entry == nil { position = ShootingPosition.following(position, from: old?.category, to: new?.category) }
-                // New entries take the sight settings and weather switch of the last entry with this
-                // weapon, but never throw away values the user has typed already.
-                if startsNewEvent {
-                    sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
-                    weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
-                }
-                // The weapon's default barrel (or the one for the current calibre) with its calibre.
-                if let barrel, barrel.weapon == new { return }
-                barrel = caliber.flatMap { new?.barrel(for: $0, on: date) } ?? new?.preferredBarrel(on: date)
-                if barrel == nil { caliber = nil }
-            }
+            .onChange(of: weapon) { old, new in weaponChanged(from: old, to: new) }
             .onChange(of: barrel) { _, new in
                 guard didLoad, let new else { return }
                 if let caliber, new.fits(caliber) { return }
@@ -386,6 +367,29 @@ struct EntryEditorView: View {
                 Text("Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
             }
         }
+    }
+
+    private var positionPicker: some View {
+        Picker("Stellung", selection: $position) {
+            Text("–").tag(ShootingPosition?.none)
+            ForEach(ShootingPosition.allCases) { Text($0.title).tag(Optional($0)) }
+        }
+    }
+
+    private func weaponChanged(from old: Weapon?, to new: Weapon?) {
+        guard didLoad else { return }
+        // A new Stich keeps the position the user picked, else it follows the weapon type.
+        if entry == nil { position = ShootingPosition.following(position, from: old?.category, to: new?.category) }
+        // New entries take the sight settings and weather switch of the last entry with this
+        // weapon, but never throw away values the user has typed already.
+        if startsNewEvent {
+            sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
+            weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
+        }
+        // The weapon's default barrel (or the one for the current calibre) with its calibre.
+        if let barrel, barrel.weapon == new { return }
+        barrel = caliber.flatMap { new?.barrel(for: $0, on: date) } ?? new?.preferredBarrel(on: date)
+        if barrel == nil { caliber = nil }
     }
 
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
