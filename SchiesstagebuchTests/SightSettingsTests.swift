@@ -169,7 +169,7 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertEqual(SightSettings(entry: e).bipodLength, 41.5)
     }
 
-    // MARK: Filter catalog (Settings → Filter)
+    // MARK: Filter catalog (Settings › Farbfilter)
 
     func testCatalogStartsWithNoOwnedFilters() {
         let c = FilterCatalog(data: Data())
