@@ -51,11 +51,11 @@ final class ScreenshotDataTests: ModelTestCase {
         ScreenshotData.seed(context)
         let entries = try context.fetch(FetchDescriptor<Entry>())
         let groups = entries.lotComparisons
-        let prone = ShootingPosition.prone.title, kneeling = ShootingPosition.kneeling.title
-        XCTAssertEqual(groups.map { LotResultsChart.title($0, among: groups, term: Terms()) },
-                       ["Stgw 90 · \(prone)", "K31 · \(prone)", "Stgw 90 · \(kneeling)"])
+        XCTAssertEqual(groups.map { $0.weapon?.name }, ["Stgw 90", "K31"])
+        XCTAssertEqual(groups.map { $0.positions.map(\.position) }, [[.prone, .kneeling], [.prone]])
         // Each lot is best in a different rifle: the screenshot shows why lots are split by firearm.
-        XCTAssertEqual(groups.map { $0.lots.map(\.lot.number) }, [["21-07", "23-02"], ["23-02", "21-07"], ["21-07"]])
+        XCTAssertEqual(groups.map { $0.lots.map(\.number) }, [["21-07", "23-02"], ["23-02", "21-07"]])
+        XCTAssertEqual(groups[0].results(groups[0].lots[0]).map { $0.position }, [.prone, .kneeling], "21-07 liegend and kniend in one row")
         XCTAssertEqual(entries.percentageByPosition.map(\.position), [.prone, .kneeling])
         XCTAssertEqual(entries.positionComparisons.map { $0.weapon?.name }, ["Stgw 90"], "the K31 was only shot liegend")
     }

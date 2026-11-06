@@ -79,10 +79,10 @@ final class LotResultTests: ModelTestCase {
         let groups = entries.lotComparisons
         XCTAssertEqual(groups.map { $0.weapon?.name }, ["Stgw 57", "K31"], "most results first")
         XCTAssertEqual(groups.map(\.count), [3, 2])
-        XCTAssertEqual(groups[0].lots.map(\.lot.number), ["A", "B"])
-        XCTAssertEqual(groups[1].lots.map(\.lot.number), ["B", "A"])
-        XCTAssertEqual(groups[1].lots[0].stats.median, 0.94, accuracy: 1e-9)
-        XCTAssertEqual(groups[0].lots[0].values, [0.93, 0.95], "only this firearm's results")
+        XCTAssertEqual(groups[0].lots.map(\.number), ["A", "B"])
+        XCTAssertEqual(groups[1].lots.map(\.number), ["B", "A"])
+        XCTAssertEqual(groups[1].results(b)[0].result.stats.median, 0.94, accuracy: 1e-9)
+        XCTAssertEqual(groups[0].results(a)[0].result.values, [0.93, 0.95], "only this firearm's results")
     }
 
     func testEntriesWithoutFirearmFormTheirOwnGroupLast() {
@@ -102,9 +102,9 @@ final class LotResultTests: ModelTestCase {
         let rifle = Weapon(name: "K31"); context.insert(rifle)
         let oneAmmo = [entry(lot("1", gp11), result: "90 %", weapon: rifle), entry(lot("2", gp11), result: "80 %", weapon: rifle)]
         let single = oneAmmo.lotComparisons[0]
-        XCTAssertEqual(single.lots.map { single.label($0.lot) }, ["1", "2"])
+        XCTAssertEqual(single.lots.map(single.label), ["1", "2"])
         let mixed = (oneAmmo + [entry(lot("1", match), result: "85 %", weapon: rifle)]).lotComparisons[0]
-        XCTAssertEqual(mixed.lots.map { mixed.label($0.lot) }, ["GP 11 · 1", "RUAG Target · 1", "GP 11 · 2"],
+        XCTAssertEqual(mixed.lots.map(mixed.label), ["GP 11 · 1", "RUAG Target · 1", "GP 11 · 2"],
                        "lot 1 of two ammunitions told apart")
     }
 
@@ -121,48 +121,38 @@ final class LotResultTests: ModelTestCase {
         context.insert(stgw); context.insert(k31)
         let first = entry(a, result: "90 %", weapon: stgw), second = entry(a, result: "80 %", weapon: stgw)
         XCTAssertFalse(LotResultsChart.shows([first, second]), "one lot in one firearm: nothing to compare")
+        first.position = .prone; second.position = .kneeling
+        XCTAssertFalse(LotResultsChart.shows([first, second]), "one lot in two positions is «Resultat pro Stellung»")
         second.weapon = k31
         XCTAssertTrue(LotResultsChart.shows([first, second]))
     }
 
-    func testLotsAreComparedPerPosition() {
+    func testEachLotsPositionsShareItsRow() {
         // Pooled, B looks better only because more of its results are liegend; liegend alone, A is ahead.
         let ammo = Ammunition(name: "GP 11"); context.insert(ammo)
-        let a = lot("A", ammo), b = lot("B", ammo)
+        let a = lot("A", ammo), b = lot("B", ammo), c = lot("C", ammo)
         let rifle = Weapon(name: "Stgw 57"); context.insert(rifle)
         let entries = [entry(a, result: "80 %", weapon: rifle, position: .kneeling), entry(b, result: "81 %", weapon: rifle, position: .kneeling),
                        entry(a, result: "95 %", weapon: rifle, position: .prone), entry(b, result: "93 %", weapon: rifle, position: .prone),
-                       entry(b, result: "95 %", weapon: rifle, position: .prone), entry(a, result: "90 %", weapon: rifle)]
+                       entry(b, result: "95 %", weapon: rifle, position: .prone), entry(a, result: "90 %", weapon: rifle),
+                       entry(c, result: "99 %", weapon: rifle, position: .kneeling)]
         let groups = entries.lotComparisons
-        XCTAssertEqual(groups.map(\.position), [.prone, .kneeling, nil], "most results first, then the picker's order, none last")
-        XCTAssertEqual(groups[0].lots.map(\.lot.number), ["A", "B"])
-        XCTAssertEqual(groups[1].lots.map(\.lot.number), ["B", "A"])
-        XCTAssertEqual(groups[0].lots[0].values, [0.95], "only this position's results")
+        XCTAssertEqual(groups.count, 1, "one plot per firearm")
+        XCTAssertEqual(groups[0].positions.map(\.position), [.prone, .kneeling, nil], "bands in the picker's order, none last")
+        XCTAssertEqual(groups[0].lots.map(\.number), ["A", "B", "C"],
+                       "ranked liegend (as many results as kniend, first in the picker), then C, only shot kniend")
+        let rowA = groups[0].results(a), rowB = groups[0].results(b)
+        XCTAssertEqual(rowA.map { $0.band }, [0, 1, 2])
+        XCTAssertEqual(rowA.map { $0.position }, [.prone, .kneeling, nil])
+        XCTAssertEqual(rowA[0].result.values, [0.95], "only this position's results")
+        XCTAssertEqual(rowB.map { $0.band }, [0, 1], "B has no box without a position")
+        XCTAssertEqual(rowB[0].result.values, [0.93, 0.95])
     }
 
-    func testPlotTitlesNameOnlyWhatDiffers() {
-        let ammo = Ammunition(name: "GP 11"); context.insert(ammo)
-        let a = lot("A", ammo), b = lot("B", ammo)
-        let stgw = Weapon(name: "Stgw 57"), k31 = Weapon(name: "K31")
-        context.insert(stgw); context.insert(k31)
-        func titles(_ entries: [Entry]) -> [String?] {
-            let groups = entries.lotComparisons
-            return groups.map { LotResultsChart.title($0, among: groups, term: Terms()) }
-        }
-        let prone = ShootingPosition.prone.title, standing = ShootingPosition.standing.title
-        XCTAssertEqual(titles([entry(a, result: "90 %", weapon: stgw), entry(b, result: "80 %", weapon: stgw)]), [nil], "a firearm's page")
-        XCTAssertEqual(titles([entry(a, result: "90 %", weapon: stgw, position: .prone), entry(a, result: "80 %", weapon: k31, position: .prone)]),
-                       ["K31", "Stgw 57"])
-        XCTAssertEqual(titles([entry(a, result: "90 %", weapon: stgw, position: .prone),
-                               entry(a, result: "80 %", weapon: stgw, position: .standing)]), [prone, standing])
-        XCTAssertEqual(titles([entry(a, result: "90 %", weapon: stgw, position: .prone), entry(b, result: "80 %", weapon: stgw, position: .prone),
-                               entry(a, result: "70 %", position: .standing)]),
-                       ["Stgw 57 · \(prone)", "\("Ohne Waffe".loc) · \(standing)"])
-        XCTAssertEqual(titles([entry(a, result: "90 %", weapon: stgw, position: .prone), entry(a, result: "80 %", weapon: stgw)]),
-                       [prone, "Ohne Stellung".loc])
-        let none = LotComparison(weapon: nil, position: nil, lots: []), withStgw = LotComparison(weapon: stgw, position: nil, lots: [])
-        XCTAssertEqual(LotResultsChart.title(none, among: [withStgw, none], term: Terms(sportsEquipment: true)), "Ohne Sportgerät".loc,
-                       "the wording switch")
+    func testEveryPositionHasItsOwnColour() {
+        let colours = ([nil] + ShootingPosition.allCases.map(Optional.some)).map(ShootingPosition.color)
+        XCTAssertEqual(Set(colours).count, ShootingPosition.allCases.count + 1)
+        XCTAssertFalse(colours.contains(.red), "red marks outliers")
     }
 
     func testResultsPerPositionInPickerOrder() {
@@ -190,8 +180,8 @@ final class LotResultTests: ModelTestCase {
         XCTAssertEqual(entries.map(\.statsPosition), [.prone, .prone, nil], "a hunting rifle has no usual position")
         XCTAssertNil(entries[0].position, "nothing is written to the entry")
         let groups = entries.lotComparisons
-        XCTAssertEqual(groups.map(\.position), [.prone, nil])
-        XCTAssertEqual(groups[0].lots.map(\.lot.number), ["A", "B"])
+        XCTAssertEqual(groups.map { $0.positions.map(\.position) }, [[.prone], [nil]])
+        XCTAssertEqual(groups[0].lots.map(\.number), ["A", "B"])
     }
 
     func testPositionsAreComparedPerFirearm() {

@@ -99,11 +99,11 @@ struct ScoreSummary: View {
 struct ResultTrendChart: View {
     let entries: [Entry]
 
-    private struct Point: Identifiable { let id: UUID; let date: Date; let percent: Double; let position: String }
+    private struct Point: Identifiable { let id: UUID; let date: Date; let percent: Double; let position: ShootingPosition? }
 
     private var points: [Point] {
         entries.compactMap { e in
-            e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0, position: e.statsPosition?.title ?? "Ohne Stellung".loc) }
+            e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0, position: e.statsPosition) }
         }
         .sorted { $0.date < $1.date }
     }
@@ -111,13 +111,14 @@ struct ResultTrendChart: View {
     var body: some View {
         let data = points
         if data.count >= 2 {
-            let split = Set(data.map(\.position)).count > 1
+            let positions = Set(data.map(\.position)).sorted { ShootingPosition.order($0) < ShootingPosition.order($1) }
+            let split = positions.count > 1
             VStack(alignment: .leading, spacing: 8) {
                 Text("Resultat in Prozent").font(.headline)
                 Chart(data) { p in
                     if split {
                         LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
-                            .foregroundStyle(by: .value("Stellung", p.position))
+                            .foregroundStyle(by: .value("Stellung", p.position?.title ?? "Ohne Stellung".loc))
                             .symbol(.circle)
                             .interpolationMethod(.monotone)
                     } else {
@@ -133,6 +134,8 @@ struct ResultTrendChart: View {
                     }
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
+                // The same colour per position as in the box plots.
+                .chartForegroundStyleScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map(ShootingPosition.color))
                 .frame(height: 180)
             }
         }
@@ -239,18 +242,31 @@ struct BreakdownChart<Key: Hashable>: View {
 
 /// Result percentages as box plots, one row per group: box = Q1–Q3, bar = median, whiskers to
 /// 1.5 × IQR, every single result as a dot (outliers red); above each row its name, median and n.
+/// A row can hold several boxes, one per band (e.g. one per shooting position), each in its colour.
 struct BoxPlot: View {
-    struct Row {
-        var label: String
+    struct Box {
+        /// The band of the row it is drawn in, counted from the top.
+        var band = 0
+        /// nil: the tint.
+        var color: Color?
+        /// What VoiceOver reads after the row's name, e.g. the position.
+        var name: String?
         /// Percentages (0...1).
         var values: [Double]
         var stats: BoxStats
     }
 
+    struct Row {
+        var label: String
+        var boxes: [Box]
+    }
+
     let rows: [Row]
+    /// Bands per row.
+    var bands = 1
     let domain: ClosedRange<Double>
 
-    private struct Dot: Identifiable { let id: Int; let row: String; let value: Double; let outlier: Bool }
+    private struct Dot: Identifiable { let id: Int; let y: Double; let value: Double; let outlier: Bool }
 
     /// A scale that fits all values, so several plots line up: whole 5 % steps, within 0–100 %.
     static func domain(_ values: [Double]) -> ClosedRange<Double> {
@@ -259,41 +275,61 @@ struct BoxPlot: View {
         return low < high ? low...high : max(0, high - 0.05)...max(high, 0.05)
     }
 
+    // Vertical layout in points, from the top of each row: gap, name, bands, gap.
+    private static let top = 20.0, bottom = 10.0
+    private var band: Double { bands > 1 ? 14 : 22 }
+    private var rowHeight: Double { Self.top + Double(bands) * band + Self.bottom }
+    private var height: Double { Double(rows.count) * rowHeight }
+    /// The y value (counted upwards, as the chart does) of a band's middle.
+    private func y(row: Int, band b: Int) -> Double { height - (Double(row) * rowHeight + Self.top + (Double(b) + 0.5) * band) }
+
+    private var dots: [Dot] {
+        var dots: [Dot] = []
+        for (i, row) in rows.enumerated() {
+            for box in row.boxes {
+                for v in box.values {
+                    dots.append(Dot(id: dots.count, y: y(row: i, band: box.band), value: v, outlier: box.stats.outliers.contains(v)))
+                }
+            }
+        }
+        return dots
+    }
+
     var body: some View {
-        let dots = rows.flatMap { r in r.values.map { v in (r.label, v, r.stats.outliers.contains(v)) } }
-            .enumerated().map { Dot(id: $0.offset, row: $0.element.0, value: $0.element.1, outlier: $0.element.2) }
         Chart {
-            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                let s = row.stats
-                RuleMark(xStart: .value("Prozent", s.lowerWhisker), xEnd: .value("Prozent", s.upperWhisker),
-                         y: .value("Gruppe", row.label))
-                    .foregroundStyle(.secondary)
-                BarMark(xStart: .value("Q1", s.q1), xEnd: .value("Q3", s.q3), y: .value("Gruppe", row.label), height: 18)
-                    .foregroundStyle(.tint.opacity(0.3))
-                RectangleMark(x: .value("Median", s.median), y: .value("Gruppe", row.label), width: 3, height: 22)
-                    .foregroundStyle(.tint)
-                // The row's name sits above it instead of on the y axis, whose width would differ per
-                // plot and shift it against the others.
-                BarMark(xStart: .value("Prozent", domain.lowerBound), xEnd: .value("Prozent", domain.upperBound),
-                        y: .value("Gruppe", row.label), height: 22)
+            ForEach(Array(rows.enumerated()), id: \.offset) { i, row in
+                ForEach(Array(row.boxes.enumerated()), id: \.offset) { _, box in
+                    let s = box.stats
+                    let mid = y(row: i, band: box.band)
+                    let style = box.color.map { AnyShapeStyle($0) } ?? AnyShapeStyle(.tint)
+                    RuleMark(xStart: .value("Prozent", s.lowerWhisker), xEnd: .value("Prozent", s.upperWhisker), y: .value("Zeile", mid))
+                        .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
+                    RectangleMark(xStart: .value("Q1", s.q1), xEnd: .value("Q3", s.q3), y: .value("Zeile", mid), height: .fixed(band - 4))
+                        .foregroundStyle(style.opacity(0.3))
+                        .accessibilityHidden(true)
+                    RectangleMark(x: .value("Median", s.median), y: .value("Zeile", mid), width: 3, height: .fixed(band))
+                        .foregroundStyle(style)
+                        .accessibilityLabel(Text(verbatim: [row.label, box.name].compactMap { $0 }.joined(separator: ", ")))
+                        .accessibilityValue(Text(verbatim: "\(ScoreFormat.percent(s.median)), n = \(s.count)"))
+                }
+                // The row's name sits above its bands instead of on the y axis, whose width would
+                // differ per plot and shift it against the others.
+                RectangleMark(xStart: .value("Prozent", domain.lowerBound), xEnd: .value("Prozent", domain.upperBound),
+                              yStart: .value("Zeile", y(row: i, band: 0) + band / 2), yEnd: .value("Zeile", y(row: i, band: bands - 1) - band / 2))
                     .foregroundStyle(.clear)
-                    .accessibilityHidden(true) // only carries the label; VoiceOver reads the row from the other marks
-                    .annotation(position: .top, alignment: .leading, spacing: 2) {
-                        HStack(spacing: 0) {
-                            Text(row.label).bold()
-                            Text(verbatim: " · \(ScoreFormat.percent(s.median)) · n = \(s.count)").foregroundStyle(.secondary)
-                        }
-                        .font(.caption2.monospacedDigit())
-                        .lineLimit(1)
-                    }
+                    .accessibilityHidden(true)
+                    .annotation(position: .top, alignment: .leading, spacing: 2) { label(row) }
             }
             ForEach(dots) { d in
-                PointMark(x: .value("Prozent", d.value), y: .value("Gruppe", d.row))
+                PointMark(x: .value("Prozent", d.value), y: .value("Zeile", d.y))
                     .symbolSize(d.outlier ? 30 : 14)
                     .foregroundStyle(d.outlier ? AnyShapeStyle(.red) : AnyShapeStyle(.primary.opacity(0.45)))
+                    .accessibilityHidden(true)
             }
         }
         .chartXScale(domain: domain)
+        .chartYScale(domain: 0...height)
         .chartYAxis(.hidden)
         .chartXAxis {
             AxisMarks { value in
@@ -301,58 +337,109 @@ struct BoxPlot: View {
                 AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
             }
         }
-        .frame(height: CGFloat(rows.count) * 52 + 30)
+        .frame(height: height + 30)
+    }
+
+    /// The row's name with each box's median and n; with several bands, a dot in the box's colour
+    /// tells which band the numbers belong to.
+    private func label(_ row: Row) -> some View {
+        HStack(spacing: 0) {
+            Text(row.label).bold()
+            ForEach(Array(row.boxes.enumerated()), id: \.offset) { _, box in
+                if bands > 1, let color = box.color {
+                    Text(verbatim: "  ● ").foregroundStyle(color)
+                } else {
+                    Text(verbatim: " · ").foregroundStyle(.secondary)
+                }
+                Text(verbatim: "\(ScoreFormat.percent(box.stats.median)) · n = \(box.stats.count)").foregroundStyle(.secondary)
+            }
+        }
+        .font(.caption2.monospacedDigit())
+        .lineLimit(1)
+    }
+}
+
+extension ShootingPosition {
+    /// The same colour for a position in every statistics chart; grey for none.
+    static func color(_ position: ShootingPosition?) -> Color {
+        switch position {
+        case .prone?: .blue
+        case .rested?: .teal
+        case .kneeling?: .orange
+        case .standing?: .purple
+        case nil: .gray
+        }
+    }
+}
+
+/// Which colour stands for which shooting position.
+struct PositionLegend: View {
+    let positions: [ShootingPosition?]
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ForEach(Array(positions.enumerated()), id: \.offset) { _, position in
+                HStack(spacing: 4) {
+                    Circle().fill(ShootingPosition.color(position)).frame(width: 8, height: 8)
+                    Text(position?.title ?? "Ohne Stellung".loc)
+                }
+            }
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
     }
 }
 
 /// Box plots of result percentages per ammunition lot, so lots can be compared however each entry
-/// was scored (points of a maximum or a result in percent). One plot per firearm and shooting
-/// position, never pooled: a lot can shoot well in one firearm and badly in another, and liegend or
-/// aufgelegt scores clearly higher than kniend or stehend.
+/// was scored (points of a maximum or a result in percent). One plot per firearm, never pooled: a
+/// lot can shoot well in one firearm and badly in another. Within a lot's row, each shooting
+/// position gets its own box in its colour, since liegend or aufgelegt scores clearly higher than
+/// kniend or stehend.
 struct LotResultsChart: View {
     @Environment(\.term) private var term
     let entries: [Entry]
 
-    /// Something to compare: two lots, or one lot in two firearms or positions.
+    /// Something to compare: two lots, or one lot in two firearms. One lot in two positions is
+    /// what «Resultat pro Stellung» shows.
     static func shows(_ entries: [Entry]) -> Bool {
         entries.lotComparisons.reduce(0) { $0 + $1.lots.count } >= 2
-    }
-
-    /// What tells this plot apart from the others: the firearm and/or the position, whichever differ.
-    /// nil for a single plot (e.g. on a firearm's page, where the name would only repeat the title).
-    static func title(_ group: LotComparison, among groups: [LotComparison], term: Terms) -> String? {
-        let weapons = Set(groups.map { $0.weapon?.persistentModelID }).count > 1
-        let positions = Set(groups.map(\.position)).count > 1
-        let parts: [String?] = [weapons ? group.weapon?.name ?? term("Ohne Waffe").loc : nil,
-                                positions ? group.position?.title ?? "Ohne Stellung".loc : nil]
-        let shown = parts.compactMap { $0 }
-        return shown.isEmpty ? nil : shown.joined(separator: " · ")
     }
 
     var body: some View {
         let groups = entries.lotComparisons
         if groups.reduce(0, { $0 + $1.lots.count }) >= 2 {
-            let domain = BoxPlot.domain(groups.flatMap { $0.lots.flatMap(\.values) })
+            let results = groups.flatMap { $0.positions.flatMap(\.lots) }
+            let domain = BoxPlot.domain(results.flatMap(\.values))
+            let positions = Set(groups.flatMap { $0.positions.map(\.position) }).sorted { ShootingPosition.order($0) < ShootingPosition.order($1) }
+            let colored = positions.count > 1
+            // A firearm's own page needs no name above the plot.
+            let named = Set(groups.map { $0.weapon?.persistentModelID }).count > 1
             VStack(alignment: .leading, spacing: 8) {
                 Text("Resultat pro Los").font(.headline)
+                if colored { PositionLegend(positions: positions) }
                 ForEach(Array(groups.enumerated()), id: \.offset) { _, group in
-                    if let title = Self.title(group, among: groups, term: term) {
-                        Text(title).font(.subheadline.weight(.semibold))
+                    if named {
+                        Text(group.weapon?.name ?? term("Ohne Waffe").loc).font(.subheadline.weight(.semibold))
                     }
-                    BoxPlot(rows: group.lots.map { .init(label: group.label($0.lot), values: $0.values, stats: $0.stats) },
-                            domain: domain)
+                    BoxPlot(rows: group.lots.map { lot in
+                                BoxPlot.Row(label: group.label(lot), boxes: group.results(lot).map {
+                                    BoxPlot.Box(band: $0.band, color: colored ? ShootingPosition.color($0.position) : nil,
+                                                name: $0.position?.title, values: $0.result.values, stats: $0.result.stats)
+                                })
+                            },
+                            bands: group.positions.count, domain: domain)
                 }
                 Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
                     .font(.caption).foregroundStyle(.secondary)
-                if Set(groups.map { $0.weapon?.persistentModelID }).count > 1 {
+                if named {
                     Text(term("Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.").loc)
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                if Set(groups.map(\.position)).count > 1 {
+                if colored {
                     Text("Getrennt pro Stellung: Liegend oder aufgelegt gibt es meist deutlich mehr Punkte als kniend oder stehend.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                if groups.contains(where: { $0.lots.contains { $0.count < BoxStats.reliableCount } }) {
+                if results.contains(where: { $0.count < BoxStats.reliableCount }) {
                     Text("Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
@@ -382,7 +469,10 @@ struct PositionResultsChart: View {
                     if named {
                         Text(group.weapon?.name ?? term("Ohne Waffe").loc).font(.subheadline.weight(.semibold))
                     }
-                    BoxPlot(rows: group.positions.map { .init(label: $0.position?.title ?? "Ohne Stellung".loc, values: $0.values, stats: $0.stats) },
+                    BoxPlot(rows: group.positions.map {
+                                BoxPlot.Row(label: $0.position?.title ?? "Ohne Stellung".loc,
+                                            boxes: [BoxPlot.Box(color: ShootingPosition.color($0.position), values: $0.values, stats: $0.stats)])
+                            },
                             domain: domain)
                 }
                 Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
