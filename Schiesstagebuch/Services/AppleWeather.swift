@@ -106,10 +106,11 @@ extension WeatherReading {
 
 extension WeatherConditions {
     /// Takes fetched values into the fields that still show what the last fetch put there (nothing, the
-    /// first time): a value the user entered, changed or cleared stays as it is.
+    /// first time): a value the user entered, changed or cleared stays as it is. Measured values have no
+    /// input, so they always follow the newest fetch, also one in a later editing session.
     mutating func fill(from new: WeatherConditions, after last: WeatherConditions?) {
         let keys = Set(new.values.keys).union(last.map { Array($0.values.keys) } ?? [])
-        for key in keys where values[key] == last?[key] {
+        for key in keys where values[key] == last?[key] || WeatherField.field(key)?.levels.isEmpty == true {
             values[key] = new[key]
         }
     }

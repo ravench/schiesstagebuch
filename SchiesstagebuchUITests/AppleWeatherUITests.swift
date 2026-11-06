@@ -55,8 +55,8 @@ final class AppleWeatherUITests: XCTestCase {
         edit.tap()
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         XCTAssertTrue(scroll(to: weatherSwitch), "No «Wetter erfassen» switch in the entry editor")
-        // Up to the top of the screen, so the rows that appear under it stay in view: cells scrolled
-        // out of view leave the accessibility tree, and a missing row would prove nothing.
+        // Up the screen, so the rows that appear under it stay in view: cells scrolled out of view leave
+        // the accessibility tree, and a missing row would prove nothing.
         weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5))
             .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2)),
                    withVelocity: .slow, thenHoldForDuration: 0.5)
@@ -66,7 +66,12 @@ final class AppleWeatherUITests: XCTestCase {
         }
         // The first weather group sits under the Apple Weather row: with both on screen, so is the row's place.
         let firstGroup = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Gesamteindruck")).firstMatch
-        XCTAssertTrue(firstGroup.waitForExistence(timeout: 5) && firstGroup.isHittable && weatherSwitch.isHittable,
+        _ = firstGroup.waitForExistence(timeout: 5)
+        for _ in 0..<4 where !(firstGroup.exists && firstGroup.isHittable) { // a little at a time, keeping the switch in view
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)))
+        }
+        XCTAssertTrue(firstGroup.isHittable && weatherSwitch.isHittable,
                       "The weather rows are not on screen")
     }
 

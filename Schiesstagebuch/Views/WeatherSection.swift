@@ -171,11 +171,14 @@ struct MeasuredWeatherLine: View {
     var body: some View {
         let shown = WeatherField.measured.compactMap { f in conditions.display(f).map { (field: f, text: $0.text) } }
         if !shown.isEmpty {
-            HStack(spacing: 20) {
-                ForEach(shown, id: \.field.key) { item in
-                    Label(item.text, systemImage: item.field.icon)
-                        .accessibilityLabel(Text(verbatim: "\(item.field.label.loc): \(item.text)"))
-                }
+            let labels = ForEach(shown, id: \.field.key) { item in
+                Label(item.text, systemImage: item.field.icon)
+                    .accessibilityLabel(Text(verbatim: "\(item.field.label.loc): \(item.text)"))
+            }
+            // One line; below each other with large text.
+            ViewThatFits {
+                HStack(spacing: 20) { labels }
+                VStack(alignment: .leading, spacing: 6) { labels }
             }
             .foregroundStyle(.secondary)
             .monospacedDigit()

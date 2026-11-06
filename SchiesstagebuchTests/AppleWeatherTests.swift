@@ -143,6 +143,22 @@ final class AppleWeatherTests: XCTestCase {
         XCTAssertNil(c["sky"], "a cleared field stays empty")
     }
 
+    func testMeasuredValuesFollowEachFetch() {
+        // Saved from an earlier editing session: the editor no longer knows what the last fetch put in.
+        var c = WeatherConditions()
+        c.set("air_temp_c", .number(21))
+        c.set("pressure_hpa", .number(1020))
+        c.set("sky", .option("overcast"))
+        var new = WeatherConditions()
+        new.set("air_temp_c", .number(9))
+        new.set("pressure_hpa", .number(1008))
+        new.set("sky", .option("sunny"))
+        c.fill(from: new, after: nil)
+        XCTAssertEqual(c.number("air_temp_c"), 9, "no input, so nothing of the user's to keep")
+        XCTAssertEqual(c.number("pressure_hpa"), 1008)
+        XCTAssertEqual(c.option("sky"), "overcast", "a field with an input keeps its value")
+    }
+
     func testHistoryFromAugust2021AndTenDaysAhead() {
         let now = Date(timeIntervalSince1970: 1_793_000_000) // November 2026
         XCTAssertFalse(AppleWeather.covers(AppleWeather.firstHour.addingTimeInterval(-3_600), now: now))
