@@ -1,7 +1,7 @@
 import XCTest
 
-/// A tour of the main screens with the sample data, one screenshot per stop. The PR screens
-/// workflow runs it on the pull request and on its base branch and posts the screens that
+/// A tour of the main screens with the sample data, one screenshot per stop. The Build job's
+/// PR screens run it on the pull request and on its base branch and post the screens that
 /// changed as a comment. A pull request that changes a screen the tour does not reach adds a stop.
 final class PRScreensTests: XCTestCase {
     private var app: XCUIApplication!
