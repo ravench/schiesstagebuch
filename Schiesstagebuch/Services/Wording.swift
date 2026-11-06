@@ -21,6 +21,9 @@ enum Wording {
         "Neue Waffe": "Neues Sportgerät",
         "Neue Waffen": "Neue Sportgeräte",
         "Pro Waffe": "Pro Sportgerät",
+        "Ohne Waffe": "Ohne Sportgerät",
+        "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.":
+            "Getrennt pro Sportgerät: Dasselbe Los kann in einem anderen Sportgerät anders schiessen.",
         "Waffe bearbeiten": "Sportgerät bearbeiten",
         "Waffe hinzufügen": "Sportgerät hinzufügen",
         "Waffe löschen": "Sportgerät löschen",

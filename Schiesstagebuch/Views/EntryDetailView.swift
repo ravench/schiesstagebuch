@@ -97,6 +97,7 @@ struct EntryDetailView: View {
                 if entry.weapon?.hasSeveralBarrels == true { row("Lauf", entry.effectiveBarrel?.displayName) }
                 row("Munition", entry.ammunition?.name)
                 if let lot = entry.lot { row("Los", lot.number) }
+                row("Stellung", entry.position?.title)
             }
 
             let sight = SightSettings(entry: entry).only(features)

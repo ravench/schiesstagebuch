@@ -288,6 +288,11 @@ T = {
         "Box: middle half of the results (1st to 3rd quartile), bar: median, line: up to 1.5 × interquartile range, dots: single results, red: outliers. Counts entries with a percentage (points with a maximum, or a result in %).",
         "Boîte : moitié centrale des résultats (1er au 3e quartile), trait : médiane, ligne : jusqu'à 1,5 × l'écart interquartile, points : résultats individuels, rouge : valeurs aberrantes. Compte les entrées avec pourcentage (points avec maximum ou résultat en %).",
         "Box: metà centrale dei risultati (dal 1° al 3° quartile), tratto: mediana, linea: fino a 1,5 × lo scarto interquartile, punti: singoli risultati, rosso: valori anomali. Conta le voci con percentuale (punti con massimo o risultato in %)."),
+    "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.": (
+        "Split by firearm: the same lot can shoot differently in another firearm.",
+        "Séparé par arme : le même lot peut tirer différemment dans une autre arme.",
+        "Separato per arma: lo stesso lotto può rendere diversamente in un’altra arma."),
+    "Ohne Waffe": ("No firearm", "Sans arme", "Senza arma"),
     "Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.": (
         "With fewer than 5 results per lot, quartiles say little.",
         "Avec moins de 5 résultats par lot, les quartiles sont peu significatifs.",
@@ -503,6 +508,12 @@ T = {
     "%lld Stiche": ("%lld matches", "%lld cibles", "%lld bersagli"),
     "%lld Schuss": ("%lld shots", "%lld coups", "%lld colpi"),
     "Stich hinzufügen": ("Add match", "Ajouter une cible", "Aggiungi bersaglio"),
+    # Shooting position per Stich, ISSF terms (FR/IT as used by FST/FTST).
+    "Stellung": ("Position", "Position", "Posizione"),
+    "Liegend": ("Prone", "Couché", "A terra"),
+    "Kniend": ("Kneeling", "À genou", "In ginocchio"),
+    "Stehend": ("Standing", "Debout", "In piedi"),
+    "Aufgelegt": ("Rested", "Appuyé", "Appoggiato"),
     "Weiteren Stich hinzufügen": ("Add another match", "Ajouter une autre cible", "Aggiungi un altro bersaglio"),
     "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
     "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": (

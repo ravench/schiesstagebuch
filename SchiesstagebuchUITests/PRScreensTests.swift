@@ -24,6 +24,7 @@ final class PRScreensTests: XCTestCase {
         if open(app.buttons["Neuer Eintrag"].firstMatch) {
             snap("03-Neuer-Eintrag")
             pickerStops()
+            positionStop()
             scroll()
             snap("04-Neuer-Eintrag-unten")
             app.buttons["Abbrechen"].firstMatch.tap()
@@ -48,6 +49,7 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
+            lotResultsStop("07c-Waffe-Resultat-pro-Los")
             back()
         }
 
@@ -58,6 +60,14 @@ final class PRScreensTests: XCTestCase {
             snap("10-Kaliber")
             if open(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "7.5x55")).firstMatch) {
                 snap("11-Kaliber-GP11")
+                back()
+            }
+            back()
+        }
+        // The GP 11 lots, split by firearm.
+        if open(app.staticTexts["Munition"].firstMatch) {
+            if open(app.staticTexts["GP 11"].firstMatch) {
+                lotResultsStop("12-Munition-Resultat-pro-Los")
                 back()
             }
             back()
@@ -81,10 +91,23 @@ final class PRScreensTests: XCTestCase {
         let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
         reveal(wind)
         if wind.exists { wind.tap() }
-        snap("12-Wetter-Apple-Wetter")
+        snap("13-Wetter-Apple-Wetter")
         app.buttons["Sichern"].firstMatch.tap()
         scroll()
-        snap("13-Eintrag-Wetter")
+        snap("14-Eintrag-Wetter")
+    }
+
+    /// Scrolls the «Resultat pro Los» chart to the top of the screen, so all of it shows.
+    private func lotResultsStop(_ name: String) {
+        let title = app.staticTexts["Resultat pro Los"].firstMatch
+        reveal(title, swipes: 10)
+        if title.exists && title.isHittable {
+            // Held at the end, so the list does not glide on past the chart.
+            title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                       withVelocity: .slow, thenHoldForDuration: 0.5)
+        }
+        snap(name)
     }
 
     /// The firearm menu and the range list, both ending with «… hinzufügen».
@@ -111,6 +134,19 @@ final class PRScreensTests: XCTestCase {
                         .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)))
                 }
                 sleep(1)
+            }
+        }
+    }
+
+    /// The shooting position menu; a new entry with the Stgw 90 starts on «Liegend».
+    private func positionStop() {
+        let picker = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Stellung")).firstMatch
+        reveal(picker)
+        if open(picker) {
+            snap("03c-Stellung-Auswahl")
+            // Close the menu even when the item is not found, so the next screens are not covered.
+            if !open(app.buttons["Liegend"].firstMatch) {
+                app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
             }
         }
     }
@@ -142,9 +178,9 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Swipes up a little at a time until `element` can be tapped (at most six swipes).
-    private func reveal(_ element: XCUIElement) {
-        for _ in 0..<6 where !(element.exists && element.isHittable) {
+    /// Swipes up a little at a time until `element` can be tapped (at most `swipes` times).
+    private func reveal(_ element: XCUIElement, swipes: Int = 6) {
+        for _ in 0..<swipes where !(element.exists && element.isHittable) {
             app.swipeUp(velocity: .slow)
         }
     }

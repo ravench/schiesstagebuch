@@ -16,7 +16,10 @@ match (Stich).
   your position, or left empty.
 - **Events** (Anlässe): an event holds one entry per match (Stich) shot that day, even
   with different firearms. Date, shooting range, event name and weather are shared by
-  all its matches. Earlier event names are suggested while typing.
+  all its matches. Earlier event names are suggested while typing. Each match can
+  record its position (Stellung): prone, kneeling, standing or rested; new matches
+  start with the usual one for the firearm type (handguns and air rifles standing,
+  ordnance and small-bore rifles prone).
 - **Scoring**: three ways to record the shots: a total, sighters (Probeschüsse) and
   scored shots (Wertungsschüsse) apart, or every shot in its own box, one row per
   Passe. With a maximum the app shows a percentage; a per-shot mean needs the scored
@@ -43,7 +46,9 @@ match (Stich).
 - **Statistics** (Statistik): totals, shots over time (monthly or cumulative), result
   trend, shots per firearm, calibre and shooting range, with a period filter. Every
   firearm, calibre, shooting range and ammunition has its own statistics page; the
-  ammunition page also shows shots per lot.
+  ammunition page also shows shots per lot. Lots are compared by result percentage
+  (box plots), separately for each firearm, since a lot can shoot well in one firearm
+  and badly in another; a firearm's page compares the lots shot in it.
 - **Maintenance** (Pflege): log cleaning and service per firearm. Optional reminders
   after N shots and/or N days, as local notifications and a badge on the Firearms tab.
 - **For sport shooters** (Für Sportschützen): optional fields, each switched on by

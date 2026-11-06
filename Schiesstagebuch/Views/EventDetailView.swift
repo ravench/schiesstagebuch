@@ -122,7 +122,7 @@ struct StichRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.stich.isEmpty ? (entry.weapon?.name ?? "Stich".loc) : entry.stich)
                     .font(.headline).lineLimit(1)
-                let details = [entry.stich.isEmpty ? nil : entry.weapon?.name, entry.caliber?.name, entry.ammunition?.name]
+                let details = [entry.position?.title, entry.stich.isEmpty ? nil : entry.weapon?.name, entry.caliber?.name, entry.ammunition?.name]
                     .compactMap { $0 }
                 if !details.isEmpty {
                     Text(details.joined(separator: " · "))

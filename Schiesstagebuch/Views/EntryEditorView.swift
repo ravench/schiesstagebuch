@@ -32,6 +32,7 @@ struct EntryEditorView: View {
     @State private var lot: AmmoLot?
     /// Barrel used; saved only when it differs from the automatic match (see Weapon.barrelToStore).
     @State private var barrel: Barrel?
+    @State private var position: ShootingPosition?
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
     @State private var sight = SightSettings()
@@ -189,6 +190,7 @@ struct EntryEditorView: View {
                             }
                         }
                     }
+                    if scoring != .ipsc { positionPicker }
                 }
 
                 if scoring == .ipsc {
@@ -236,19 +238,7 @@ struct EntryEditorView: View {
                 guard let autoRange, autoRange.range == range, !Calendar.current.isDateInToday(new) else { return }
                 range = nil; self.autoRange = nil
             }
-            .onChange(of: weapon) { _, new in
-                guard didLoad else { return }
-                // New entries take the sight settings and weather switch of the last entry with this
-                // weapon, but never throw away values the user has typed already.
-                if startsNewEvent {
-                    sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
-                    weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
-                }
-                // The weapon's default barrel (or the one for the current calibre) with its calibre.
-                if let barrel, barrel.weapon == new { return }
-                barrel = caliber.flatMap { new?.barrel(for: $0, on: date) } ?? new?.preferredBarrel(on: date)
-                if barrel == nil { caliber = nil }
-            }
+            .onChange(of: weapon) { old, new in weaponChanged(from: old, to: new) }
             .onChange(of: barrel) { _, new in
                 guard didLoad, let new else { return }
                 if let caliber, new.fits(caliber) { return }
@@ -379,6 +369,29 @@ struct EntryEditorView: View {
         }
     }
 
+    private var positionPicker: some View {
+        Picker("Stellung", selection: $position) {
+            Text("–").tag(ShootingPosition?.none)
+            ForEach(ShootingPosition.allCases) { Text($0.title).tag(Optional($0)) }
+        }
+    }
+
+    private func weaponChanged(from old: Weapon?, to new: Weapon?) {
+        guard didLoad else { return }
+        // A new Stich keeps the position the user picked, else it follows the weapon type.
+        if entry == nil { position = ShootingPosition.following(position, from: old?.category, to: new?.category) }
+        // New entries take the sight settings and weather switch of the last entry with this
+        // weapon, but never throw away values the user has typed already.
+        if startsNewEvent {
+            sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
+            weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
+        }
+        // The weapon's default barrel (or the one for the current calibre) with its calibre.
+        if let barrel, barrel.weapon == new { return }
+        barrel = caliber.flatMap { new?.barrel(for: $0, on: date) } ?? new?.preferredBarrel(on: date)
+        if barrel == nil { caliber = nil }
+    }
+
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
                                                label: KeyPath<T, String>, add: QuickAdd,
                                                subtitle: @escaping (T) -> String? = { _ in nil }) -> some View {
@@ -447,7 +460,7 @@ struct EntryEditorView: View {
         if let entry {
             date = entry.date; range = entry.range; event = entry.eventName; stich = entry.stich; weapon = entry.weapon
             caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; barrel = entry.effectiveBarrel; shotCount = entry.shotCount; result = entry.result
-            maxPoints = entry.maxPoints
+            maxPoints = entry.maxPoints; position = entry.position
             sight = SightSettings(entry: entry)
             weather = entry.weather
             passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
@@ -482,6 +495,7 @@ struct EntryEditorView: View {
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
             lot = suggestedLot(for: ammunition)
         }
+        if entry == nil { position = weapon?.category.defaultPosition }
         if startsNewEvent {
             // A new match starts with the division and power factor of the last one.
             if let last = ShootingEvent.lastIPSC(in: allEvents) { loadScoring(of: last) }
@@ -602,6 +616,7 @@ struct EntryEditorView: View {
             .apply(to: target)
         if features.contains(.weather) { shootingEvent.weather = weather?.normalized() }
         if scoring == .rings {
+            target.position = position
             target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
             target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
             target.sighterValuesText = mode == .shots ? sighterBoxes.text : ""
@@ -623,67 +638,5 @@ struct EntryEditorView: View {
                 .forEach { MaintenanceNotifier.refresh($0) }
         }
         dismiss()
-    }
-}
-
-struct PhotoGrid: View {
-    @Binding var photos: [Data]
-    var editable = true
-    @State private var preview: Int?
-
-    var body: some View {
-        if !photos.isEmpty {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 90), spacing: 8)], spacing: 8) {
-                ForEach(photos.indices, id: \.self) { i in
-                    if let img = UIImage(data: photos[i]) {
-                        Image(uiImage: img)
-                            .resizable().scaledToFill()
-                            .frame(minWidth: 0, maxWidth: .infinity).frame(height: 90)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .contentShape(Rectangle())
-                            .onTapGesture { preview = i }
-                            .overlay(alignment: .topTrailing) {
-                                if editable {
-                                    Button { photos.remove(at: i) } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .symbolRenderingMode(.palette)
-                                            .foregroundStyle(.white, .black.opacity(0.6))
-                                    }
-                                    .buttonStyle(.plain).padding(4)
-                                }
-                            }
-                    }
-                }
-            }
-            .padding(.vertical, 4)
-            .fullScreenCover(item: Binding(get: { preview.map(IdentifiedIndex.init) },
-                                           set: { preview = $0?.id })) { idx in
-                PhotoViewer(photos: photos, start: idx.id)
-            }
-        }
-    }
-}
-
-private struct IdentifiedIndex: Identifiable { let id: Int }
-
-struct PhotoViewer: View {
-    let photos: [Data]
-    @State var start: Int
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            TabView(selection: $start) {
-                ForEach(photos.indices, id: \.self) { i in
-                    if let img = UIImage(data: photos[i]) {
-                        Image(uiImage: img).resizable().scaledToFit().tag(i)
-                    }
-                }
-            }
-            .tabViewStyle(.page)
-            .background(.black)
-            .toolbar { Button("Fertig") { dismiss() } }
-            .toolbarBackground(.visible, for: .navigationBar)
-        }
     }
 }

@@ -1335,6 +1335,29 @@
         }
       }
     },
+    "Aufgelegt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rested"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appoggiato"
+          }
+        }
+      }
+    },
     "Aus": {
       "extractionState": "manual",
       "localizations": {
@@ -4239,6 +4262,52 @@
         }
       }
     },
+    "Getrennt pro Sportgerät: Dasselbe Los kann in einem anderen Sportgerät anders schiessen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split by equipment: the same lot can shoot differently in other equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Séparé par équipement : le même lot peut tirer différemment dans un autre équipement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separato per attrezzo: lo stesso lotto può rendere diversamente in un altro attrezzo."
+          }
+        }
+      }
+    },
+    "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split by firearm: the same lot can shoot differently in another firearm."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Séparé par arme : le même lot peut tirer différemment dans une autre arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separato per arma: lo stesso lotto può rendere diversamente in un’altra arma."
+          }
+        }
+      }
+    },
     "Gilt für alle %lld Stiche dieses Anlasses.": {
       "extractionState": "manual",
       "localizations": {
@@ -5481,6 +5550,29 @@
         }
       }
     },
+    "Kniend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kneeling"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À genou"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In ginocchio"
+          }
+        }
+      }
+    },
     "Kontrolle": {
       "extractionState": "manual",
       "localizations": {
@@ -5868,6 +5960,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Luce"
+          }
+        }
+      }
+    },
+    "Liegend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prone"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couché"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A terra"
           }
         }
       }
@@ -7754,6 +7869,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Senza calibro"
+          }
+        }
+      }
+    },
+    "Ohne Sportgerät": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza attrezzo"
+          }
+        }
+      }
+    },
+    "Ohne Waffe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No firearm"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans arme"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza arma"
           }
         }
       }
@@ -10652,6 +10813,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statistiche"
+          }
+        }
+      }
+    },
+    "Stehend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standing"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Debout"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In piedi"
+          }
+        }
+      }
+    },
+    "Stellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Position"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posizione"
           }
         }
       }
