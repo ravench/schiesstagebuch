@@ -132,6 +132,20 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// The .577 Snider: a paper case standing in a brass cup.
+    func testPaperCase() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        let search = app.searchFields.firstMatch
+        if search.waitForExistence(timeout: 5) {
+            search.tap()
+            search.typeText("Snider\n") // return hides the keyboard
+        }
+        if open(app.staticTexts[".577 Snider"].firstMatch) {
+            snap("11b-Kaliber-Snider")
+        }
+    }
+
     private func tab(_ name: String) {
         let button = app.tabBars.buttons[name]
         XCTAssertTrue(button.waitForExistence(timeout: 10), "No tab \(name)")
