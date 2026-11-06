@@ -76,7 +76,7 @@ jobs:
           fetch-depth: 2
       - run: brew install xcodegen
       - run: xcodegen generate
-      - name: Pick the simulators and a build folder
+      - name: Pick an iPhone simulator and a build folder
         run: |
           UDID=$(xcrun simctl list devices available -j | python3 tools/pr_screens.py pick-iphone)
           echo "Testing on $UDID"
@@ -86,13 +86,6 @@ jobs:
           echo "SCREENS=$RUNNER_TEMP/screens" >> "$GITHUB_ENV"
           # A fresh simulator takes minutes to boot; it boots while the app compiles.
           xcrun simctl boot "$UDID"
-          # The PR screens also take the iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift).
-          if [ "$SCREENS_TOUR" = true ]; then
-            IPAD=$(xcrun simctl list devices available -j | python3 tools/ipad_screens.py pick-ipad)
-            echo "iPad screens on $IPAD"
-            echo "IPAD=$IPAD" >> "$GITHUB_ENV"
-            xcrun simctl boot "$IPAD"
-          fi
       # Compiled once in the two build steps; the unit and UI tests below run on that build
       # (test-without-building). The unit test scheme goes last: building the app for
       # SchiesstagebuchScreens drops the unit test bundle from the app's PlugIns, and the unit
@@ -156,7 +149,6 @@ jobs:
       # its schiesstagebuch/pr-screens branch, outside this repo's history; all screens of a run are
       # in its "pr-screens" artifact.
       # In this job rather than its own, so it reuses this build and needs no second Mac runner.
-      # The iPhone build runs on the iPad as well: the app is universal and its images are too.
       - name: Screens of this pull request
         id: screens
         if: "!cancelled() && env.SCREENS_TOUR == 'true' && steps.build-ui.outcome == 'success'"
@@ -166,16 +158,11 @@ jobs:
           cp SchiesstagebuchUITests/PRScreensTests.swift SchiesstagebuchUITests/IPadScreensTests.swift \
             tools/pr_screens.py tools/ipad_screens.py "$SCREENS/"
           xcrun simctl bootstatus "$UDID" >/dev/null
-          xcrun simctl bootstatus "$IPAD" >/dev/null
           # Same clock and bars in both tours, so unchanged screens give the same image.
           xcrun simctl status_bar "$UDID" override --time 9:41 --dataNetwork wifi --wifiBars 3 \
             --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
-          xcrun simctl status_bar "$IPAD" override --time 9:41 --dataNetwork wifi --wifiBars 3 \
-            --batteryState charged --batteryLevel 100
           # Without what the tests above left in the app's container.
           xcrun simctl uninstall "$UDID" ch.giotta.schiesstagebuch
-          # A failed tour still lets the other one take its screens; the step fails after both.
-          FAILED=0
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
             -scheme SchiesstagebuchScreens \
@@ -183,17 +170,9 @@ jobs:
             -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/PRScreensTests \
             -resultBundlePath "$SCREENS/after.xcresult" \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
-          xcodebuild test-without-building \
-            -project Schiesstagebuch.xcodeproj \
-            -scheme SchiesstagebuchScreens \
-            -destination "id=$IPAD" \
-            -derivedDataPath "$DERIVED_DATA" \
-            -only-testing:SchiesstagebuchUITests/IPadScreensTests \
-            -resultBundlePath "$SCREENS/after-ipad.xcresult" \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
-          exit $FAILED
+            CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: Screens of the base branch
+        id: base
         # A base without some of the screens still gives the others.
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
         continue-on-error: true
@@ -209,7 +188,8 @@ jobs:
             -destination "id=$UDID" \
             -derivedDataPath "$DERIVED_DATA" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
-          FAILED=0
+          # The iPad screens below start with this build.
+          echo "built=true" >> "$GITHUB_OUTPUT"
           xcrun simctl uninstall "$UDID" ch.giotta.schiesstagebuch
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
@@ -218,17 +198,51 @@ jobs:
             -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/PRScreensTests \
             -resultBundlePath "$SCREENS/before.xcresult" \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
-          xcrun simctl uninstall "$IPAD" ch.giotta.schiesstagebuch
+            CODE_SIGNING_ALLOWED=NO | xcpretty
+      - name: iPad screens
+        # The base branch first, while its build is in the build folder, then this pull request.
+        # One simulator at a time: an iPad booted next to the iPhone overloaded the runner and
+        # changed the iPhone's screens. The iPhone build runs on the iPad too: the app is
+        # universal, and so are its images.
+        if: "!cancelled() && steps.screens.outcome != 'skipped'"
+        run: |
+          xcrun simctl shutdown "$UDID"
+          IPAD=$(xcrun simctl list devices available -j | python3 "$SCREENS/ipad_screens.py" pick-ipad)
+          echo "iPad screens on $IPAD"
+          xcrun simctl boot "$IPAD"
+          xcrun simctl bootstatus "$IPAD" >/dev/null
+          xcrun simctl status_bar "$IPAD" override --time 9:41 --dataNetwork wifi --wifiBars 3 \
+            --batteryState charged --batteryLevel 100
+          if [ "${{ steps.base.outputs.built }}" = true ]; then
+            # A failed base tour only costs the base its screens.
+            xcodebuild test-without-building \
+              -project Schiesstagebuch.xcodeproj \
+              -scheme SchiesstagebuchScreens \
+              -destination "id=$IPAD" \
+              -derivedDataPath "$DERIVED_DATA" \
+              -only-testing:SchiesstagebuchUITests/IPadScreensTests \
+              -resultBundlePath "$SCREENS/before-ipad.xcresult" \
+              CODE_SIGNING_ALLOWED=NO | xcpretty || true
+          fi
+          # Back to this pull request; only what it changed compiles again.
+          git checkout -q -f ${{ github.sha }}
+          git submodule update -q
+          xcodegen generate
+          xcodebuild build-for-testing \
+            -project Schiesstagebuch.xcodeproj \
+            -scheme SchiesstagebuchScreens \
+            -destination "id=$UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
+          xcrun simctl uninstall "$IPAD" ch.giotta.schiesstagebuch || true # not there if the base was not toured
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
             -scheme SchiesstagebuchScreens \
             -destination "id=$IPAD" \
             -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/IPadScreensTests \
-            -resultBundlePath "$SCREENS/before-ipad.xcresult" \
-            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
-          exit $FAILED
+            -resultBundlePath "$SCREENS/after-ipad.xcresult" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: Compare
         id: compare
         if: "!cancelled() && steps.screens.outcome != 'skipped'"

@@ -54,7 +54,7 @@ final class IPadScreensTests: XCTestCase {
     }
 
     private func snap(_ name: String) {
-        sleep(1) // let animations settle
+        sleep(2) // let animations (the glass tab bar, charts) settle, so before and after compare
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name
         attachment.lifetime = .keepAlways

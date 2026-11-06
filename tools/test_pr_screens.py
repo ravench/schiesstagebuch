@@ -212,22 +212,25 @@ class WorkflowTests(unittest.TestCase):
                       self.workflow)
         self.assertIn("status_bar", self.workflow)
 
-    def test_ipad_screens_on_head_and_base(self):
-        # The iPad screens run on the same build, on an iPad booted while the app compiles.
-        pick = self.workflow.split("name: Pick the simulators")[1].split("- name:")[0]
-        self.assertIn('if [ "$SCREENS_TOUR" = true ]', pick)
-        self.assertIn('xcrun simctl boot "$IPAD"', pick)
-        self.assertEqual(self.workflow.count("-only-testing:SchiesstagebuchUITests/IPadScreensTests"), 2)
-        self.assertEqual(self.workflow.count('-destination "id=$IPAD"'), 2)
-        for side in ("after", "before"):
-            step = self.workflow.split("name: Screens of " + ("this pull request" if side == "after" else "the base branch"))[1]
-            step = step.split("- name:")[0]
-            with self.subTest(side=side):
-                self.assertIn(f'-resultBundlePath "$SCREENS/{side}-ipad.xcresult"', step)
-                # One failed tour does not cost the other its screens.
-                self.assertEqual(step.count("| xcpretty || FAILED=1"), 2)
-                self.assertIn("exit $FAILED", step)
-        self.assertIn('xcrun simctl uninstall "$IPAD" ch.giotta.schiesstagebuch', self.workflow)
+    def test_ipad_screens_on_base_and_head_one_simulator_at_a_time(self):
+        # An iPad booted next to the iPhone overloaded the runner and changed the iPhone's screens.
+        self.assertNotIn("IPAD", self.workflow.split("name: iPad screens")[0])
+        ipad = self.workflow.split("name: iPad screens")[1].split("- name:")[0]
+        self.assertLess(ipad.index('xcrun simctl shutdown "$UDID"'), ipad.index('xcrun simctl boot "$IPAD"'))
+        self.assertIn('"$SCREENS/ipad_screens.py" pick-ipad', ipad)
+        self.assertIn("status_bar", ipad)
+        # The base build from the step before, then this pull request built again on top of it.
+        self.assertIn("steps.base.outputs.built", ipad)
+        self.assertIn('echo "built=true" >> "$GITHUB_OUTPUT"', self.workflow.split("name: Screens of the base branch")[1])
+        before, after = ipad.index("before-ipad.xcresult"), ipad.index("after-ipad.xcresult")
+        between = ipad[before:after]
+        self.assertIn("git checkout -q -f ${{ github.sha }}", between)
+        self.assertIn("xcodebuild build-for-testing", between)
+        self.assertIn('xcrun simctl uninstall "$IPAD" ch.giotta.schiesstagebuch', between)
+        self.assertEqual(ipad.count("-only-testing:SchiesstagebuchUITests/IPadScreensTests"), 2)
+        # A failed base tour costs only its screens; a failed tour of this pull request fails the job.
+        self.assertIn('"$SCREENS/before-ipad.xcresult" \\\n              CODE_SIGNING_ALLOWED=NO | xcpretty || true', ipad)
+        self.assertTrue(ipad.rstrip().endswith("CODE_SIGNING_ALLOWED=NO | xcpretty"))
 
     def test_ipad_screens_compared_and_commented(self):
         compare = self.workflow.split("name: Compare")[1].split("- uses:")[0]
