@@ -79,20 +79,20 @@ final class PRScreensTests: XCTestCase {
         filterStops()
     }
 
-    /// «Zusätzliche Felder» with one «Farbfilter» row, and the filter page it opens: the switch
+    /// «Zusätzliche Felder» with one «Filter» row, and the filter page it opens: the switch
     /// on top, the filters below once it is on. Comes from the end of Settings, so it scrolls back up.
     private func filterStops() {
         let extra = app.staticTexts["Zusätzliche Felder"].firstMatch
         reveal(extra, up: false)
         holdAtTop(extra)
         snap("09a-Zusaetzliche-Felder")
-        if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Farbfilter")).firstMatch) {
-            snap("09b-Farbfilter")
-            let record = app.switches["Farbfilter erfassen"].firstMatch
+        if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Filter")).firstMatch) {
+            snap("09b-Filter")
+            let record = app.switches["Filter erfassen"].firstMatch
             if record.waitForExistence(timeout: 5) {
                 // Tap the switch itself, not the label.
                 record.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
-                snap("09c-Farbfilter-ein")
+                snap("09c-Filter-ein")
             }
             back()
         }

@@ -38,7 +38,7 @@ struct SightSection: View {
             }
         } footer: {
             if fields.contains(.filter), FilterCatalog(data: catalogData).visible.isEmpty {
-                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Farbfilter.").loc)
+                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.").loc)
             } else {
                 Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.").loc)
             }

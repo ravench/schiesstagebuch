@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Settings › Farbfilter: the switch for recording colour filters, and while it is on, the colour filters and
+/// Settings › Filter: the switch for recording colour filters, and while it is on, the colour filters and
 /// adjustment lenses you own (only those appear in entries) and your own ones.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
@@ -35,10 +35,10 @@ struct FilterSettingsView: View {
         List {
             Section {
                 Toggle(isOn: Binding(get: { features.contains(.filter) }, set: { features.set(.filter, $0) })) {
-                    Label { Text("Farbfilter erfassen") } icon: { FilterHolderIcon() }
+                    Label { Text("Filter erfassen") } icon: { FilterHolderIcon() }
                 }
             } footer: {
-                Text("Pro Eintrag bis zu zwei Filter, an der Schiessbrille oder im Diopter, auch Korrekturgläser.")
+                Text("Bis zu zwei pro Eintrag.")
             }
 
             // Like Wi-Fi in iOS Settings: the filters show while the switch is on.
@@ -91,7 +91,7 @@ struct FilterSettingsView: View {
                 }
             }
         }
-        .navigationTitle("Farbfilter")
+        .navigationTitle("Filter (Mehrzahl)")
         .sheet(item: $editing) { target in
             FilterEditorView(original: target.original, catalog: catalog) { saved in
                 update { $0.save(saved, replacing: target.original?.name) }

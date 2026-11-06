@@ -135,14 +135,13 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(try localized("Nummer Lauf (optional)", "en"), "<missing>", "old label still translated")
     }
 
-    /// Settings shows colour filters as one row with «Ein»/«Aus»; its switch sits on the filter page.
-    func testColourFilterRowAndPageAreTranslated() throws {
+    /// Settings shows filters as one row with «Ein»/«Aus»; its switch sits on the filter page.
+    func testFilterRowAndPageAreTranslated() throws {
         let expected = [
             "Ein": ["en": "On", "fr": "Activé", "it": "Attivato"],
             "Aus": ["en": "Off", "fr": "Désactivé", "it": "Disattivato"],
-            "Farbfilter erfassen": ["en": "Record colour filters", "fr": "Saisir les filtres de couleur",
-                                    "it": "Registra i filtri colorati"],
-            "Farbfilter": ["en": "Colour filters", "fr": "Filtres de couleur", "it": "Filtri colorati"],
+            "Filter erfassen": ["en": "Record filters", "fr": "Saisir les filtres", "it": "Registra i filtri"],
+            SportFeatures.filter.title: ["de": "Filter", "en": "Filters", "fr": "Filtres", "it": "Filtri"],
         ]
         for (key, byLang) in expected {
             for (lang, text) in byLang {
@@ -150,18 +149,19 @@ final class LocalizationTests: XCTestCase {
             }
         }
         for lang in ["en", "fr", "it"] {
-            XCTAssertNotEqual(try localized("Pro Eintrag bis zu zwei Filter, an der Schiessbrille oder im Diopter, auch Korrekturgläser.", lang),
-                              "<missing>", lang)
+            XCTAssertNotEqual(try localized("Bis zu zwei pro Eintrag.", lang), "<missing>", lang)
         }
         XCTAssertEqual(try localized("Brillenfilter und Filterräder, die du besitzt", "en"), "<missing>", "old row subtitle still translated")
+        XCTAssertEqual(try localized("Farbfilter", "en"), "<missing>", "the row is called «Filter» now")
     }
 
     /// The entry's filter hint points to the row that opens the filters, in both wordings and every language.
-    func testFilterHintNamesTheColourFiltersRow() throws {
-        let key = "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Farbfilter."
+    func testFilterHintNamesTheFiltersRow() throws {
+        let key = "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter."
         XCTAssertNotEqual(Terms(sportsEquipment: true)(key), key, "no Sportgerät variant")
+        let germanRow = try localized(SportFeatures.filter.title, "de")
         for terms in [Terms(), Terms(sportsEquipment: true)] {
-            XCTAssertTrue(terms(key).hasSuffix("› \(SportFeatures.filter.title)."), terms(key))
+            XCTAssertTrue(terms(key).hasSuffix("› \(germanRow)."), terms(key))
             for lang in ["en", "fr", "it"] {
                 let text = try localized(terms(key), lang)
                 let row = try localized(SportFeatures.filter.title, lang)

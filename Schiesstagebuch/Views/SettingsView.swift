@@ -83,7 +83,7 @@ struct SettingsView: View {
                 Section {
                     ForEach(SportFeatures.each, id: \.rawValue) { feature in
                         if feature.hasFilterList {
-                            // One row for colour filters: its switch sits on the filter page, above the filters.
+                            // One row for filters: its switch sits on the filter page, above the filters.
                             NavigationLink { FilterSettingsView() } label: {
                                 LabeledContent {
                                     Text(features.contains(feature) ? "Ein".loc : "Aus".loc)

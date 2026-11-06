@@ -1864,6 +1864,29 @@
         }
       }
     },
+    "Bis zu zwei pro Eintrag.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up to two per entry."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jusqu'à deux par entrée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fino a due per voce."
+          }
+        }
+      }
+    },
     "Blende / Irisblende": {
       "extractionState": "manual",
       "localizations": {
@@ -3474,52 +3497,6 @@
         }
       }
     },
-    "Farbfilter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Colour filters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtres de couleur"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filtri colorati"
-          }
-        }
-      }
-    },
-    "Farbfilter erfassen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Record colour filters"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saisir les filtres de couleur"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registra i filtri colorati"
-          }
-        }
-      }
-    },
     "Fehlende Schüsse: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -3660,6 +3637,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifica filtro"
+          }
+        }
+      }
+    },
+    "Filter erfassen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record filters"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir les filtres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra i filtri"
           }
         }
       }
@@ -8057,25 +8057,25 @@
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen › Farbfilter.": {
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen › Filter.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings › Colour filters."
+            "value": "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres de couleur."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri colorati."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
@@ -8103,25 +8103,25 @@
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Farbfilter.": {
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this firearm. Choose your filters under Settings › Colour filters."
+            "value": "Optional. New entries take the values of the last entry with this firearm. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres de couleur."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri colorati."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
@@ -8536,29 +8536,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per evento"
-          }
-        }
-      }
-    },
-    "Pro Eintrag bis zu zwei Filter, an der Schiessbrille oder im Diopter, auch Korrekturgläser.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Up to two filters per entry, on the shooting glasses or in the diopter, also correction lenses."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jusqu'à deux filtres par entrée, sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fino a due filtri per voce, sugli occhiali da tiro o nella diottra, anche lenti correttive."
           }
         }
       }

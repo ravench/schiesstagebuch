@@ -1,12 +1,13 @@
 import Foundation
 
 /// Optional fields for sport shooters. Each one is switched on by itself, on the welcome screen or in
-/// Settings › Zusätzliche Felder (colour filters on their own page there); all are off by default. Switching one off only hides it: values
+/// Settings › Zusätzliche Felder (filters on their own page there); all are off by default. Switching one off only hides it: values
 /// already recorded stay saved and show up again when it is switched back on.
 struct SportFeatures: OptionSet, Hashable {
     let rawValue: Int
 
-    /// Colour filters (up to two per entry), on the glasses or built into a rifle's diopter, and the filter list in Settings.
+    /// Filters (up to two per entry: colour, polarising or correction), on the glasses or built into a rifle's diopter,
+    /// and the filter list in Settings.
     static let filter = SportFeatures(rawValue: 1 << 0)
     /// Diopter, plus the ring on a rifle's sight or the iris on the glasses for pistols.
     static let sight = SportFeatures(rawValue: 1 << 1)
@@ -31,7 +32,7 @@ struct SportFeatures: OptionSet, Hashable {
 
     var title: String {
         switch self {
-        case .filter: "Farbfilter"
+        case .filter: "Filter (Mehrzahl)"
         case .sight: "Diopter, Ring und Iris"
         case .bipod: "Zweibeinstütze"
         case .weather: "Wetter"
