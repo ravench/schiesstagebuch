@@ -294,10 +294,6 @@ T = {
         "Separato per arma: lo stesso lotto può rendere diversamente in un’altra arma."),
     "Ohne Waffe": ("No firearm", "Sans arme", "Senza arma"),
     "Ohne Stellung": ("No position", "Sans position", "Senza posizione"),
-    "Getrennt pro Stellung: Liegend oder aufgelegt gibt es meist deutlich mehr Punkte als kniend oder stehend.": (
-        "Split by position: prone or rested usually scores clearly more points than kneeling or standing.",
-        "Séparé par position : couché ou appuyé donne généralement nettement plus de points qu’à genou ou debout.",
-        "Separato per posizione: a terra o appoggiato si fanno di solito molti più punti che in ginocchio o in piedi."),
     "Resultat pro Stellung": ("Result by position", "Résultat par position", "Risultato per posizione"),
     "Mit weniger als 5 Resultaten pro Stellung sind Quartile wenig aussagekräftig.": (
         "With fewer than 5 results per position, quartiles say little.",

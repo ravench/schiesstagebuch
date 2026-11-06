@@ -435,10 +435,6 @@ struct LotResultsChart: View {
                     Text(term("Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.").loc)
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                if colored {
-                    Text("Getrennt pro Stellung: Liegend oder aufgelegt gibt es meist deutlich mehr Punkte als kniend oder stehend.")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
                 if results.contains(where: { $0.count < BoxStats.reliableCount }) {
                     Text("Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.")
                         .font(.caption).foregroundStyle(.secondary)
