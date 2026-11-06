@@ -136,7 +136,9 @@ final class PRScreensTests: XCTestCase {
     func testPaperCase() {
         tab("Einstellungen")
         guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        // The search field hides above the list until the list is pulled down.
         let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
         if search.waitForExistence(timeout: 5) {
             search.tap()
             search.typeText("Snider\n") // return hides the keyboard
