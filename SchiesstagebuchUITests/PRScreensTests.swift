@@ -66,6 +66,27 @@ final class PRScreensTests: XCTestCase {
         snap("09-Einstellungen-unten")
     }
 
+    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
+    func testWeatherStops() {
+        app.terminate()
+        app.launchArguments += ["-sportFeatures.v1", "8"] // only the weather switch of the sport shooter fields
+        app.launch()
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
+        reveal(weatherSwitch)
+        if (weatherSwitch.value as? String) != "1" {
+            weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        }
+        let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
+        reveal(wind)
+        if wind.exists { wind.tap() }
+        snap("12-Wetter-Apple-Wetter")
+        app.buttons["Sichern"].firstMatch.tap()
+        scroll()
+        snap("13-Eintrag-Wetter")
+    }
+
     /// The firearm menu and the range list, both ending with «… hinzufügen».
     private func pickerStops() {
         if open(app.buttons["Waffe"].firstMatch) {

@@ -333,6 +333,8 @@ struct WeatherRecord: Codable, Hashable {
     var time: Date?
     var conditions = WeatherConditions()
     var relays: [WeatherRelay] = []
+    /// Some values came from Apple Weather, which then has to be credited wherever they show.
+    var fromAppleWeather: Bool?
 
     var sortedRelays: [WeatherRelay] { relays.sorted { $0.time < $1.time } }
 

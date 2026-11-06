@@ -12,10 +12,17 @@ W = {
         "Off when shooting indoors; the entry then shows no weather.",
         "Désactivé pour le tir en salle ; l'entrée n'affiche alors pas de météo.",
         "Disattivato quando si tira al coperto; la voce non mostra allora alcun meteo."),
-    "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.": (
-        "Everything is optional. With the range's location and shooting direction, the app suggests the sun.",
-        "Tout est facultatif. Avec le lieu et la direction de tir du stand, l'app propose le soleil.",
-        "Tutto è facoltativo. Con il luogo e la direzione di tiro del poligono, l'app propone il sole."),
+    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit dem Wetter von Apple Wetter; mit der Schussrichtung auch Windrichtung und Sonne.": (
+        "Everything is optional. With the range's location, the app fills empty fields with the weather from Apple Weather; with its shooting direction also the wind direction and the sun.",
+        "Tout est facultatif. Avec le lieu du stand, l'app remplit les champs vides avec la météo d'Apple ; avec la direction de tir aussi la direction du vent et le soleil.",
+        "Tutto è facoltativo. Con il luogo del poligono, l'app compila i campi vuoti con il meteo di Apple; con la direzione di tiro anche la direzione del vento e il sole."),
+    # Apple Weather (WeatherKit)
+    "Wetter von Apple Wetter übernehmen": ("Fill in from Apple Weather", "Reprendre la météo d'Apple", "Riprendi il meteo di Apple"),
+    "Wetter wird abgerufen …": ("Getting the weather …", "Récupération de la météo …", "Recupero del meteo …"),
+    "Von Apple Wetter übernommen (%@)": ("Filled in from Apple Weather (%@)", "Reprise de la météo d'Apple (%@)", "Ripreso dal meteo di Apple (%@)"),
+    "Apple Wetter nicht erreichbar, nochmals versuchen": (
+        "Apple Weather not reachable, try again", "Météo d'Apple injoignable, réessayer", "Meteo di Apple non raggiungibile, riprova"),
+    "Datenquellen": ("Data sources", "Sources des données", "Fonti dei dati"),
     "Optional: Wetter pro Ablösung oder Serie, mit Uhrzeit, um Wechsel festzuhalten.": (
         "Optional: weather per relay or series, with the time, to record changes.",
         "Facultatif : météo par relève ou série, avec l'heure, pour noter les changements.",
