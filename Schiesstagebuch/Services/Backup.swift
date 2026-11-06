@@ -88,6 +88,8 @@ enum Backup {
     struct EntryDTO: Codable {
         var id: UUID; var date: Date; var shotCount: Int; var result: String; var notes: String
         var eventID: UUID?; var stich: String?
+        /// `ShootingPosition` raw value; nil when none was entered.
+        var position: String?
         /// Version 1 only: what the event holds now.
         var event: String?; var rangeID: UUID?; var weather: WeatherRecord?
         var weaponID: UUID?; var caliberID: UUID?; var ammunitionID: UUID?
@@ -140,7 +142,7 @@ enum Backup {
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
-                      eventID: $0.shootingEvent?.id, stich: $0.stich,
+                      eventID: $0.shootingEvent?.id, stich: $0.stich, position: $0.position?.rawValue,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, barrelID: $0.barrel?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
@@ -362,6 +364,7 @@ enum Backup {
                           result: d.result, notes: d.notes)
             e.id = d.id
             e.stich = d.stich ?? ""
+            e.position = d.position.flatMap(ShootingPosition.init(rawValue:))
             e.importKey = d.importKey ?? ""
             if let created = d.createdAt { e.createdAt = created }
             context.insert(e)
@@ -404,7 +407,7 @@ enum Backup {
                 ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
         }
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
+        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Stellung", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
                                 "Prozent", "Einzelschüsse", "Probeschüsse einzeln", "Punkte pro Passe",
                                 "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
@@ -418,6 +421,7 @@ enum Backup {
             cols.append(e.range?.place ?? "")
             cols.append(e.eventName)
             cols.append(e.stich)
+            cols.append(e.position?.title ?? "")
             cols.append(e.weapon?.name ?? "")
             cols.append(e.caliber?.name ?? "")
             cols.append(e.weapon?.hasSeveralBarrels == true ? e.effectiveBarrel?.displayName ?? "" : "")

@@ -24,6 +24,7 @@ final class PRScreensTests: XCTestCase {
         if open(app.buttons["Neuer Eintrag"].firstMatch) {
             snap("03-Neuer-Eintrag")
             pickerStops()
+            positionStop()
             scroll()
             snap("04-Neuer-Eintrag-unten")
             app.buttons["Abbrechen"].firstMatch.tap()
@@ -106,6 +107,16 @@ final class PRScreensTests: XCTestCase {
                 }
                 sleep(1)
             }
+        }
+    }
+
+    /// The shooting position menu; a new entry with the Stgw 90 starts on «Liegend».
+    private func positionStop() {
+        let picker = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Stellung")).firstMatch
+        reveal(picker)
+        if open(picker) {
+            snap("03c-Stellung-Auswahl")
+            _ = open(app.buttons["Liegend"].firstMatch)
         }
     }
 

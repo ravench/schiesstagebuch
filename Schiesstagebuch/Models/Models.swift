@@ -336,6 +336,8 @@ final class Entry {
     /// Name of the Stich, e.g. "Sektionsstich"; empty when none was entered. Named Stiche are
     /// grouped across events in the statistics (`StichStats`).
     var stich: String = ""
+    /// `ShootingPosition` raw value, e.g. "prone"; empty when none was entered. See `position`.
+    var positionRaw: String = ""
     /// All shots fired, sighters included.
     var shotCount: Int = 0
     /// Probeschüsse, when the user splits the count; nil = only a total was entered.
@@ -410,7 +412,7 @@ final class Entry {
 
     func matches(_ query: String) -> Bool {
         guard !query.isEmpty else { return true }
-        return [range?.name ?? "", range?.place ?? "", eventName, stich, weapon?.name ?? "",
+        return [range?.name ?? "", range?.place ?? "", eventName, stich, position?.title ?? "", weapon?.name ?? "",
                 ammunition?.name ?? "", lot?.number ?? "", caliber?.name ?? "", result, notes]
             .contains { $0.localizedCaseInsensitiveContains(query) }
     }
