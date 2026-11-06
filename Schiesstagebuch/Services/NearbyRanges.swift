@@ -95,6 +95,8 @@ final class OneShotLocation: NSObject, CLLocationManagerDelegate {
     }
 
     func request() {
+        // Screenshot runs: the sample range has a position, and the permission alert would cover the screen.
+        guard !ScreenshotData.isActive else { return }
         wanted = true
         switch manager.authorizationStatus {
         case .notDetermined: manager.requestWhenInUseAuthorization()
