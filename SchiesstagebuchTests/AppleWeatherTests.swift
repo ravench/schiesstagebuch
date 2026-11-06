@@ -121,14 +121,17 @@ final class AppleWeatherTests: XCTestCase {
         last.set("humidity_pct", .number(70))
         last.set("wind_clock", .number(3))
         last.set("wind_strength", .option("light"))
+        last.set("sky", .option("overcast"))
         var c = last
         c.set("wind_strength", .option("strong")) // changed by the user
         c.set("overall", .option("good"))
+        c.set("sky", nil) // cleared by the user
 
         var new = WeatherConditions()
         new.set("humidity_pct", .number(60))
         new.set("wind_strength", .option("calm"))
         new.set("pressure_hpa", .number(1015))
+        new.set("sky", .option("sunny"))
         c.fill(from: new, after: last)
 
         XCTAssertEqual(c.number("humidity_pct"), 60)
@@ -136,6 +139,7 @@ final class AppleWeatherTests: XCTestCase {
         XCTAssertNil(c["wind_clock"], "gone with the calm air")
         XCTAssertEqual(c.option("wind_strength"), "strong")
         XCTAssertEqual(c.option("overall"), "good")
+        XCTAssertNil(c["sky"], "a cleared field stays empty")
     }
 
     func testHistoryFromAugust2021AndTenDaysAhead() {

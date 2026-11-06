@@ -100,10 +100,11 @@ extension WeatherReading {
 }
 
 extension WeatherConditions {
-    /// Takes fetched values: a field the user left empty, or that still shows the last fetch, gets the new value.
+    /// Takes fetched values into the fields that still show what the last fetch put there (nothing, the
+    /// first time): a value the user entered, changed or cleared stays as it is.
     mutating func fill(from new: WeatherConditions, after last: WeatherConditions?) {
         let keys = Set(new.values.keys).union(last.map { Array($0.values.keys) } ?? [])
-        for key in keys where values[key] == nil || values[key] == last?[key] {
+        for key in keys where values[key] == last?[key] {
             values[key] = new[key]
         }
     }

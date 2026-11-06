@@ -97,8 +97,8 @@ private struct AppleWeatherRow: View {
                     try? await Task.sleep(for: .seconds(0.5))
                     if !Task.isCancelled { await load(request) }
                 }
-            if weather?.fromAppleWeather == true { AppleWeatherAttribution() }
         }
+        if weather?.fromAppleWeather == true { AppleWeatherAttribution() }
     }
 
     @ViewBuilder private var label: some View {
@@ -122,9 +122,15 @@ private struct AppleWeatherRow: View {
                 phase = .failed
                 return
             }
+            // A fetch for an hour or range the editor has since left must not land.
+            guard request == self.request else {
+                phase = .idle
+                return
+            }
             let new = reading.conditions(facing: request.bearing)
+            let before = weather?.conditions
             weather?.conditions.fill(from: new, after: last)
-            weather?.fromAppleWeather = true
+            if weather?.conditions != before { weather?.fromAppleWeather = true }
             last = new
             loaded = request
             phase = .done
