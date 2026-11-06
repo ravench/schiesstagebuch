@@ -277,7 +277,7 @@ struct BoxPlot: View {
                 BarMark(xStart: .value("Prozent", domain.lowerBound), xEnd: .value("Prozent", domain.upperBound),
                         y: .value("Gruppe", row.label), height: 22)
                     .foregroundStyle(.clear)
-                    .accessibilityHidden(true) // only carries the label; VoiceOver reads the lot from the other marks
+                    .accessibilityHidden(true) // only carries the label; VoiceOver reads the row from the other marks
                     .annotation(position: .top, alignment: .leading, spacing: 2) {
                         HStack(spacing: 0) {
                             Text(row.label).bold()
