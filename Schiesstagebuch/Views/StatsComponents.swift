@@ -134,8 +134,9 @@ struct ResultTrendChart: View {
                     }
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
-                // The same colour per position as in the box plots.
+                // The same colour per position as in the box plots; one line needs no legend.
                 .chartForegroundStyleScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map(ShootingPosition.color))
+                .chartLegend(split ? .automatic : .hidden)
                 .frame(height: 180)
             }
         }
@@ -275,7 +276,8 @@ struct BoxPlot: View {
         return low < high ? low...high : max(0, high - 0.05)...max(high, 0.05)
     }
 
-    // Vertical layout in points, from the top of each row: gap, name, bands, gap.
+    // Vertical layout in points (the plot area is as high as the y scale), from the top of each row:
+    // gap, name, bands, gap.
     private static let top = 20.0, bottom = 10.0
     private var band: Double { bands > 1 ? 14 : 22 }
     private var rowHeight: Double { Self.top + Double(bands) * band + Self.bottom }
@@ -316,7 +318,7 @@ struct BoxPlot: View {
                 // The row's name sits above its bands instead of on the y axis, whose width would
                 // differ per plot and shift it against the others.
                 RectangleMark(xStart: .value("Prozent", domain.lowerBound), xEnd: .value("Prozent", domain.upperBound),
-                              yStart: .value("Zeile", y(row: i, band: 0) + band / 2), yEnd: .value("Zeile", y(row: i, band: bands - 1) - band / 2))
+                              yStart: .value("Zeile", y(row: i, band: bands - 1) - band / 2), yEnd: .value("Zeile", y(row: i, band: 0) + band / 2))
                     .foregroundStyle(.clear)
                     .accessibilityHidden(true)
                     .annotation(position: .top, alignment: .leading, spacing: 2) { label(row) }
@@ -330,6 +332,7 @@ struct BoxPlot: View {
         }
         .chartXScale(domain: domain)
         .chartYScale(domain: 0...height)
+        .chartPlotStyle { $0.frame(height: height) }
         .chartYAxis(.hidden)
         .chartXAxis {
             AxisMarks { value in
@@ -337,7 +340,6 @@ struct BoxPlot: View {
                 AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
             }
         }
-        .frame(height: height + 30)
     }
 
     /// The row's name with each box's median and n; with several bands, a dot in the box's colour
