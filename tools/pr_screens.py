@@ -4,6 +4,9 @@
     python3 tools/pr_screens.py rename <xcresulttool export dir> <out dir>
     python3 tools/pr_screens.py changes <before dir> <after dir> <out dir>
     python3 tools/pr_screens.py comment <out dir> <image base url> <run url>
+
+The iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift) go through `changes` into
+<out dir>/ipad, and `comment` adds them below the iPhone ones.
 """
 import filecmp
 import json
@@ -98,29 +101,48 @@ def collect(before_dir, after_dir, out_dir):
     return summary
 
 
-def _img(url):
-    return f'<img src="{url}" width="250">'
+def _img(url, width):
+    return f'<img src="{url}" width="{width}">'
 
 
-def comment(summary, base_url, run_url):
-    """Markdown for the pull request comment; base_url is where out_dir/before and /after are served."""
+def _section(summary, base_url, device, note, width):
+    """Lines for one device's screens: how many changed, and a before/after table of them."""
     found, total = summary["changes"], summary["total"]
-    lines = [MARKER, "### Screenshots", ""]
+    lines = []
     if summary.get("base", 1) == 0:
-        lines += ["The screens of the base branch could not be taken, so every screen is shown as new.", ""]
+        lines += [f"The {device} screens of the base branch could not be taken, so every one is shown as new.", ""]
     if not found:
-        lines += [f"No visible change on the {total} screens of the tour.",
-                  f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`."]
-    else:
-        lines += [f"{len(found)} of {total} screens look different (iPhone, German, sample data).", "",
-                  "| Screen | Before | After |", "| --- | --- | --- |"]
-        for name, status in found:
-            before = "—" if status == "new" else _img(f"{base_url}/before/{name}")
-            after = "—" if status == "gone" else _img(f"{base_url}/after/{name}")
-            label = os.path.splitext(name)[0] + ("" if status == "changed" else f" ({status})")
-            lines.append(f"| {label} | {before} | {after} |")
+        return lines + [f"No visible change on the {total} {device} screens." if total else
+                        f"No {device} screens could be taken; see the run's log."]
+    lines += [f"{len(found)} of {total} {device} screens look different ({note}).", "",
+              "| Screen | Before | After |", "| --- | --- | --- |"]
+    for name, status in found:
+        before = "—" if status == "new" else _img(f"{base_url}/before/{name}", width)
+        after = "—" if status == "gone" else _img(f"{base_url}/after/{name}", width)
+        label = os.path.splitext(name)[0] + ("" if status == "changed" else f" ({status})")
+        lines.append(f"| {label} | {before} | {after} |")
+    return lines
+
+
+def comment(summary, base_url, run_url, ipad=None):
+    """Markdown for the pull request comment; base_url is where out_dir/before and /after are served.
+
+    ipad is the iPad screens' summary, served from base_url/ipad.
+    """
+    lines = [MARKER, "### Screenshots", ""] + _section(summary, base_url, "iPhone", "German, sample data", 250)
+    if not summary["changes"]:
+        lines.append(f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`.")
+    if ipad is not None:
+        lines += ["", "#### iPad", ""] + _section(ipad, f"{base_url}/ipad", "iPad", "portrait and landscape", 320)
     lines += ["", f"All screens of this run: [workflow artifacts]({run_url})."]
     return "\n".join(lines) + "\n"
+
+
+def _summary(path):
+    if not os.path.exists(path):
+        return None
+    with open(path) as f:
+        return json.load(f)
 
 
 def main(argv):
@@ -134,8 +156,8 @@ def main(argv):
         for name, status in summary["changes"]:
             print(f"{status}: {name}")
     elif argv[1:2] == ["comment"] and len(argv) == 5:
-        with open(os.path.join(argv[2], "changes.json")) as f:
-            sys.stdout.write(comment(json.load(f), argv[3], argv[4]))
+        ipad = _summary(os.path.join(argv[2], "ipad", "changes.json"))
+        sys.stdout.write(comment(_summary(os.path.join(argv[2], "changes.json")), argv[3], argv[4], ipad))
     else:
         sys.exit(__doc__)
 

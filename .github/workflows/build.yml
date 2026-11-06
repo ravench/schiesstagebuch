@@ -76,7 +76,7 @@ jobs:
           fetch-depth: 2
       - run: brew install xcodegen
       - run: xcodegen generate
-      - name: Pick an iPhone simulator and a build folder
+      - name: Pick the simulators and a build folder
         run: |
           UDID=$(xcrun simctl list devices available -j | python3 tools/pr_screens.py pick-iphone)
           echo "Testing on $UDID"
@@ -86,6 +86,13 @@ jobs:
           echo "SCREENS=$RUNNER_TEMP/screens" >> "$GITHUB_ENV"
           # A fresh simulator takes minutes to boot; it boots while the app compiles.
           xcrun simctl boot "$UDID"
+          # The PR screens also take the iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift).
+          if [ "$SCREENS_TOUR" = true ]; then
+            IPAD=$(xcrun simctl list devices available -j | python3 tools/ipad_screens.py pick-ipad)
+            echo "iPad screens on $IPAD"
+            echo "IPAD=$IPAD" >> "$GITHUB_ENV"
+            xcrun simctl boot "$IPAD"
+          fi
       # Compiled once in the two build steps; the unit and UI tests below run on that build
       # (test-without-building). The unit test scheme goes last: building the app for
       # SchiesstagebuchScreens drops the unit test bundle from the app's PlugIns, and the unit
@@ -143,25 +150,32 @@ jobs:
               > "$RUNNER_TEMP/$NAME.json" || true
           done
           python3 tools/test_summary.py "Unit tests=$RUNNER_TEMP/UnitTests.json" "UI tests=$RUNNER_TEMP/UITests.json"
-      # PR screens: the screen tour (SchiesstagebuchUITests/PRScreensTests.swift) on this pull request
-      # and on its base branch, and one comment with the screens that look different. The images
-      # are kept in ravench/app-screens on its schiesstagebuch/pr-screens branch, outside this repo's history;
-      # all screens of a run are in its "pr-screens" artifact.
-      # In this job rather than its own, so it reuses this build and simulator and needs no
-      # second Mac runner.
+      # PR screens: the screen tour (SchiesstagebuchUITests/PRScreensTests.swift) on an iPhone and
+      # the iPad screens (IPadScreensTests.swift) on this pull request and on its base branch, and one
+      # comment with the screens that look different. The images are kept in ravench/app-screens on
+      # its schiesstagebuch/pr-screens branch, outside this repo's history; all screens of a run are
+      # in its "pr-screens" artifact.
+      # In this job rather than its own, so it reuses this build and needs no second Mac runner.
+      # The iPhone build runs on the iPad as well: the app is universal and its images are too.
       - name: Screens of this pull request
         id: screens
         if: "!cancelled() && env.SCREENS_TOUR == 'true' && steps.build-ui.outcome == 'success'"
         run: |
           mkdir -p "$SCREENS"
-          # The base branch is toured with this pull request's tour and tools.
-          cp SchiesstagebuchUITests/PRScreensTests.swift tools/pr_screens.py tools/ipad_screens.py "$SCREENS/"
+          # The base branch is toured with this pull request's tours and tools.
+          cp SchiesstagebuchUITests/PRScreensTests.swift SchiesstagebuchUITests/IPadScreensTests.swift \
+            tools/pr_screens.py tools/ipad_screens.py "$SCREENS/"
           xcrun simctl bootstatus "$UDID" >/dev/null
+          xcrun simctl bootstatus "$IPAD" >/dev/null
           # Same clock and bars in both tours, so unchanged screens give the same image.
           xcrun simctl status_bar "$UDID" override --time 9:41 --dataNetwork wifi --wifiBars 3 \
             --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
+          xcrun simctl status_bar "$IPAD" override --time 9:41 --dataNetwork wifi --wifiBars 3 \
+            --batteryState charged --batteryLevel 100
           # Without what the tests above left in the app's container.
           xcrun simctl uninstall "$UDID" ch.giotta.schiesstagebuch
+          # A failed tour still lets the other one take its screens; the step fails after both.
+          FAILED=0
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
             -scheme SchiesstagebuchScreens \
@@ -169,7 +183,16 @@ jobs:
             -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/PRScreensTests \
             -resultBundlePath "$SCREENS/after.xcresult" \
-            CODE_SIGNING_ALLOWED=NO | xcpretty
+            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
+          xcodebuild test-without-building \
+            -project Schiesstagebuch.xcodeproj \
+            -scheme SchiesstagebuchScreens \
+            -destination "id=$IPAD" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -only-testing:SchiesstagebuchUITests/IPadScreensTests \
+            -resultBundlePath "$SCREENS/after-ipad.xcresult" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
+          exit $FAILED
       - name: Screens of the base branch
         # A base without some of the screens still gives the others.
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
@@ -177,7 +200,7 @@ jobs:
         run: |
           git checkout -q HEAD^1
           git submodule update -q
-          cp "$SCREENS/PRScreensTests.swift" SchiesstagebuchUITests/
+          cp "$SCREENS/PRScreensTests.swift" "$SCREENS/IPadScreensTests.swift" SchiesstagebuchUITests/
           xcodegen generate
           # Same build folder: only what the pull request changed compiles again.
           xcodebuild build-for-testing \
@@ -186,6 +209,7 @@ jobs:
             -destination "id=$UDID" \
             -derivedDataPath "$DERIVED_DATA" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
+          FAILED=0
           xcrun simctl uninstall "$UDID" ch.giotta.schiesstagebuch
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
@@ -194,7 +218,17 @@ jobs:
             -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/PRScreensTests \
             -resultBundlePath "$SCREENS/before.xcresult" \
-            CODE_SIGNING_ALLOWED=NO | xcpretty
+            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
+          xcrun simctl uninstall "$IPAD" ch.giotta.schiesstagebuch
+          xcodebuild test-without-building \
+            -project Schiesstagebuch.xcodeproj \
+            -scheme SchiesstagebuchScreens \
+            -destination "id=$IPAD" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -only-testing:SchiesstagebuchUITests/IPadScreensTests \
+            -resultBundlePath "$SCREENS/before-ipad.xcresult" \
+            CODE_SIGNING_ALLOWED=NO | xcpretty || FAILED=1
+          exit $FAILED
       - name: Compare
         id: compare
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
@@ -202,14 +236,17 @@ jobs:
           cd "$SCREENS"
           # Pillow lets the comparison ignore faint rendering noise.
           python3 -m venv venv && venv/bin/pip install -q pillow
-          for side in after before; do
+          for side in after before after-ipad before-ipad; do
             mkdir -p "$side"
             [ -d "$side.xcresult" ] || continue
             # A run that broke off early leaves no readable result: that side just has no screens.
             xcrun xcresulttool export attachments --path "$side.xcresult" --output-path "raw-$side" || continue
             python3 pr_screens.py rename "raw-$side" "$side"
           done
+          # The iPad screens come in the device's portrait buffer; turn landscape ones upright.
+          for f in after-ipad/landscape-*.png before-ipad/landscape-*.png; do [ -e "$f" ] && sips -r 270 "$f" >/dev/null; done
           venv/bin/python pr_screens.py changes before after changed
+          venv/bin/python pr_screens.py changes before-ipad after-ipad changed/ipad
           # Smaller copies for the comment; the artifact keeps the full size.
           find changed -name '*.png' -exec sips -Z 1200 {} \; >/dev/null
       - uses: actions/upload-artifact@v5
@@ -219,6 +256,8 @@ jobs:
           path: |
             ${{ env.SCREENS }}/after
             ${{ env.SCREENS }}/before
+            ${{ env.SCREENS }}/after-ipad
+            ${{ env.SCREENS }}/before-ipad
       - name: Comment on the pull request
         # Pull requests from forks get a read-only token, so they only get the artifact.
         if: "!cancelled() && steps.compare.outcome == 'success' && github.event.pull_request.head.repo.full_name == github.repository"
@@ -245,7 +284,7 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git remote add origin "git@github.com:${SCREENS_REPO}.git"
             if git fetch -q --depth 1 origin "$SCREENS_BRANCH"; then git checkout -q -b screens FETCH_HEAD; else git checkout -q --orphan screens; fi
-            rm -rf "$PR" && mkdir "$PR" && cp -R ../changed/before ../changed/after "$PR/"
+            rm -rf "$PR" && mkdir "$PR" && cp -R ../changed/before ../changed/after ../changed/ipad "$PR/"
             git add -A
             git commit -q --allow-empty -m "Screens for #$PR at ${{ github.event.pull_request.head.sha }}"
             git push -q origin "HEAD:refs/heads/$SCREENS_BRANCH" && break

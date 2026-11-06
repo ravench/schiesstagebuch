@@ -85,6 +85,12 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("workflow_dispatch:", self.workflow)
         self.assertRegex(self.workflow, r"runs-on: macos-2[6-9]")
 
+    def test_pull_requests_get_them_in_the_build_job(self):
+        # No second Mac runner per pull request: the Build job's PR screens take the iPad screens.
+        self.assertNotIn("pull_request", self.workflow)
+        with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
+            self.assertIn("-only-testing:SchiesstagebuchUITests/IPadScreensTests", f.read())
+
     def test_uses_screens_scheme_on_an_ipad(self):
         self.assertIn("-scheme SchiesstagebuchScreens", self.workflow)
         self.assertIn("ipad_screens.py pick-ipad", self.workflow)
@@ -95,7 +101,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("if: always()", upload)
         self.assertIn("name: ipad-screens", upload)
 
-    def test_publishes_to_app_screens_except_from_forks(self):
+    def test_publishes_to_app_screens(self):
         # The images stay out of this repo's history: they go to ravench/app-screens with a deploy key.
         self.assertIn("contents: read", self.workflow)
         self.assertNotIn("contents: write", self.workflow)
@@ -105,7 +111,6 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("SCREENS_BRANCH: schiesstagebuch/ipad-screens", publish)
         self.assertIn("secrets.SCREENS_DEPLOY_KEY", publish)
         self.assertNotIn("github.com/${{ github.repository }}.git", publish)
-        self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", publish)
 
     def test_landscape_screenshots_turned_upright(self):
         self.assertIn('sips -r 270 "$f"', self.workflow)

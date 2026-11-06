@@ -79,10 +79,19 @@ class ChangesTests(unittest.TestCase):
     def test_cli_writes_comment(self):
         out = os.path.join(self.tmp.name, "out")
         script = os.path.join(ROOT, "tools", "pr_screens.py")
-        subprocess.run([sys.executable, script, "changes", self.before, self.after, out], check=True, capture_output=True)
-        body = subprocess.run([sys.executable, script, "comment", out, "https://img", "https://run"],
-                              check=True, capture_output=True, text=True).stdout
+        run = lambda *args: subprocess.run([sys.executable, script, *args], check=True, capture_output=True, text=True).stdout
+        run("changes", self.before, self.after, out)
+        body = run("comment", out, "https://img", "https://run")
         self.assertIn('<img src="https://img/after/02-Eintrag.png"', body)
+        self.assertNotIn("iPad", body)
+        # The iPad screens, as the Build job compares them, go below the iPhone ones.
+        write(os.path.join(self.tmp.name, "before-ipad"), "landscape-2-Statistik.png", b"old")
+        write(os.path.join(self.tmp.name, "after-ipad"), "landscape-2-Statistik.png", b"new")
+        run("changes", os.path.join(self.tmp.name, "before-ipad"), os.path.join(self.tmp.name, "after-ipad"),
+            os.path.join(out, "ipad"))
+        body = run("comment", out, "https://img", "https://run")
+        self.assertLess(body.index("02-Eintrag"), body.index("#### iPad"))
+        self.assertIn('<img src="https://img/ipad/after/landscape-2-Statistik.png" width="320">', body)
 
 
 try:
@@ -125,7 +134,7 @@ class CommentTests(unittest.TestCase):
                    "total": 9, "base": 9}
         body = pr_screens.comment(summary, "https://raw/x/12", "https://run/1")
         self.assertTrue(body.startswith(pr_screens.MARKER))
-        self.assertIn("3 of 9 screens", body)
+        self.assertIn("3 of 9 iPhone screens look different", body)
         self.assertIn('| 02-Eintrag | <img src="https://raw/x/12/before/02-Eintrag.png" width="250"> | '
                       '<img src="https://raw/x/12/after/02-Eintrag.png" width="250"> |', body)
         self.assertIn('| 04-Neu (new) | — | <img src="https://raw/x/12/after/04-Neu.png"', body)
@@ -134,13 +143,36 @@ class CommentTests(unittest.TestCase):
 
     def test_no_change_points_to_the_tour(self):
         body = pr_screens.comment({"changes": [], "total": 9, "base": 9}, "u", "r")
-        self.assertIn("No visible change on the 9 screens", body)
+        self.assertIn("No visible change on the 9 iPhone screens", body)
         self.assertIn(pr_screens.TOUR, body)
         self.assertNotIn("<img", body)
 
     def test_says_when_base_failed(self):
         body = pr_screens.comment({"changes": [["01-Tagebuch.png", "new"]], "total": 1, "base": 0}, "u", "r")
-        self.assertIn("base branch could not be taken", body)
+        self.assertIn("iPhone screens of the base branch could not be taken", body)
+
+    def test_ipad_screens_below_the_iphone_ones(self):
+        iphone = {"changes": [], "total": 15, "base": 15}
+        ipad = {"changes": [["landscape-2-Statistik.png", "changed"], ["portrait-5-Neu.png", "new"]],
+                "total": 11, "base": 10}
+        body = pr_screens.comment(iphone, "https://raw/x/12", "https://run/1", ipad)
+        iphone_part, ipad_part = body.split("#### iPad")
+        self.assertIn("No visible change on the 15 iPhone screens", iphone_part)
+        self.assertIn(pr_screens.TOUR, iphone_part)
+        self.assertIn("2 of 11 iPad screens look different", ipad_part)
+        self.assertIn('| landscape-2-Statistik | <img src="https://raw/x/12/ipad/before/landscape-2-Statistik.png" '
+                      'width="320"> | <img src="https://raw/x/12/ipad/after/landscape-2-Statistik.png" width="320"> |',
+                      ipad_part)
+        self.assertIn("| portrait-5-Neu (new) | — |", ipad_part)
+        self.assertIn("(https://run/1)", ipad_part)
+
+    def test_ipad_without_change_or_screens(self):
+        iphone = {"changes": [["01-Tagebuch.png", "changed"]], "total": 15, "base": 15}
+        body = pr_screens.comment(iphone, "u", "r", {"changes": [], "total": 10, "base": 10})
+        self.assertIn("No visible change on the 10 iPad screens.", body)
+        self.assertNotIn(pr_screens.TOUR, body)  # the hint is for a tour without changes
+        body = pr_screens.comment(iphone, "u", "r", {"changes": [], "total": 0, "base": 0})
+        self.assertIn("No iPad screens could be taken", body)
 
 
 class WorkflowTests(unittest.TestCase):
@@ -168,8 +200,34 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(self.workflow.count("-only-testing:SchiesstagebuchUITests/PRScreensTests"), 2)
         self.assertIn("fetch-depth: 2", self.workflow)
         self.assertIn("git checkout -q HEAD^1", self.workflow)
-        self.assertIn('cp "$SCREENS/PRScreensTests.swift" SchiesstagebuchUITests/', self.workflow)
+        self.assertIn('cp "$SCREENS/PRScreensTests.swift" "$SCREENS/IPadScreensTests.swift" SchiesstagebuchUITests/',
+                      self.workflow)
         self.assertIn("status_bar", self.workflow)
+
+    def test_ipad_screens_on_head_and_base(self):
+        # The iPad screens run on the same build, on an iPad booted while the app compiles.
+        pick = self.workflow.split("name: Pick the simulators")[1].split("- name:")[0]
+        self.assertIn('if [ "$SCREENS_TOUR" = true ]', pick)
+        self.assertIn('xcrun simctl boot "$IPAD"', pick)
+        self.assertEqual(self.workflow.count("-only-testing:SchiesstagebuchUITests/IPadScreensTests"), 2)
+        self.assertEqual(self.workflow.count('-destination "id=$IPAD"'), 2)
+        for side in ("after", "before"):
+            step = self.workflow.split("name: Screens of " + ("this pull request" if side == "after" else "the base branch"))[1]
+            step = step.split("- name:")[0]
+            with self.subTest(side=side):
+                self.assertIn(f'-resultBundlePath "$SCREENS/{side}-ipad.xcresult"', step)
+                # One failed tour does not cost the other its screens.
+                self.assertEqual(step.count("| xcpretty || FAILED=1"), 2)
+                self.assertIn("exit $FAILED", step)
+        self.assertIn('xcrun simctl uninstall "$IPAD" ch.giotta.schiesstagebuch', self.workflow)
+
+    def test_ipad_screens_compared_and_commented(self):
+        compare = self.workflow.split("name: Compare")[1].split("- uses:")[0]
+        self.assertIn("for side in after before after-ipad before-ipad", compare)
+        self.assertIn('sips -r 270 "$f"', compare)  # landscape screens upright, as in ipad-screens.yml
+        self.assertIn("pr_screens.py changes before-ipad after-ipad changed/ipad", compare)
+        self.assertIn("${{ env.SCREENS }}/after-ipad", self.workflow)
+        self.assertIn("cp -R ../changed/before ../changed/after ../changed/ipad", self.workflow)
 
     def test_comments_once_per_pull_request(self):
         self.assertIn("pull-requests: write", self.workflow)
