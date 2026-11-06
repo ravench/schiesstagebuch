@@ -24,8 +24,8 @@ W = {
     # Settings, under the location switch: what the weather lookup sends.
     "Für das Wetter von Apple Wetter schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.": (
         "For the weather from Apple Weather, the app sends the range's coordinates and the time to Apple, not your location. As you usually shoot there, it is nearly the same place though.",
-        "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et le moment, pas ta position. Comme tu tires en général sur place, c'est pourtant presque le même endroit.",
-        "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e il momento, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso luogo."),
+        "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et l'heure, pas ta position. Comme tu y tires le plus souvent, c'est tout de même presque le même endroit.",
+        "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e l'ora, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso posto."),
     # Apple Weather (WeatherKit)
     "Wetter von Apple Wetter übernehmen": ("Fill in from Apple Weather", "Reprendre la météo d'Apple", "Riprendi il meteo di Apple"),
     "Wetter wird abgerufen …": ("Getting the weather …", "Récupération de la météo …", "Recupero del meteo …"),

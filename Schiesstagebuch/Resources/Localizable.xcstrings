@@ -4113,13 +4113,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et le moment, pas ta position. Comme tu tires en général sur place, c'est pourtant presque le même endroit."
+            "value": "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et l'heure, pas ta position. Comme tu y tires le plus souvent, c'est tout de même presque le même endroit."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e il momento, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso luogo."
+            "value": "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e l'ora, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso posto."
           }
         }
       }

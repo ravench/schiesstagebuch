@@ -18,13 +18,13 @@ final class AppleWeatherUITests: XCTestCase {
         app.launch()
         XCTAssertEqual(settingsSwitch().value as? String, "1", "Apple Weather should be on until switched off")
         openWeatherOfSampleEntry()
-        XCTAssertTrue(appleWeatherRow.waitForExistence(timeout: 10), "No Apple Weather row in the entry editor")
+        XCTAssertTrue(appleWeatherRow.waitForExistence(timeout: 10) && appleWeatherRow.isHittable, "No Apple Weather row in the entry editor")
         let filled = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Von Apple Wetter übernommen")).firstMatch
         XCTAssertTrue(filled.waitForExistence(timeout: 10), "The weather was not filled in")
     }
 
     func testSwitchedOffTheEditorFetchesNothing() {
-        // As a launch argument, so the switch stays on for the screen tour that runs on this simulator later.
+        // As a launch argument: the test only reads the switch and never changes the stored setting.
         app.launchArguments += ["-appleWeather.enabled", "0"]
         app.launch()
         XCTAssertEqual(settingsSwitch().value as? String, "0")
@@ -55,13 +55,19 @@ final class AppleWeatherUITests: XCTestCase {
         edit.tap()
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         XCTAssertTrue(scroll(to: weatherSwitch), "No «Wetter erfassen» switch in the entry editor")
+        // Up to the top of the screen, so the rows that appear under it stay in view: cells scrolled
+        // out of view leave the accessibility tree, and a missing row would prove nothing.
+        weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2)),
+                   withVelocity: .slow, thenHoldForDuration: 0.5)
         if (weatherSwitch.value as? String) != "1" {
             // Tap the switch itself, not the label.
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
-        // The first weather group sits right under the Apple Weather row: with it on screen, so is the row.
+        // The first weather group sits under the Apple Weather row: with both on screen, so is the row's place.
         let firstGroup = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Gesamteindruck")).firstMatch
-        XCTAssertTrue(scroll(to: firstGroup), "No weather fields in the entry editor")
+        XCTAssertTrue(firstGroup.waitForExistence(timeout: 5) && firstGroup.isHittable && weatherSwitch.isHittable,
+                      "The weather rows are not on screen")
     }
 
     /// The editor's fill button in any of its states.
