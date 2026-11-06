@@ -32,6 +32,7 @@ struct EntryEditorView: View {
     @State private var lot: AmmoLot?
     /// Barrel used; saved only when it differs from the automatic match (see Weapon.barrelToStore).
     @State private var barrel: Barrel?
+    @State private var position: ShootingPosition?
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
     @State private var sight = SightSettings()
@@ -189,6 +190,12 @@ struct EntryEditorView: View {
                             }
                         }
                     }
+                    if scoring != .ipsc {
+                        Picker("Stellung", selection: $position) {
+                            Text("–").tag(ShootingPosition?.none)
+                            ForEach(ShootingPosition.allCases) { Text($0.title).tag(Optional($0)) }
+                        }
+                    }
                 }
 
                 if scoring == .ipsc {
@@ -236,8 +243,10 @@ struct EntryEditorView: View {
                 guard let autoRange, autoRange.range == range, !Calendar.current.isDateInToday(new) else { return }
                 range = nil; self.autoRange = nil
             }
-            .onChange(of: weapon) { _, new in
+            .onChange(of: weapon) { old, new in
                 guard didLoad else { return }
+                // A new Stich keeps the position the user picked, else it follows the weapon type.
+                if entry == nil { position = ShootingPosition.following(position, from: old?.category, to: new?.category) }
                 // New entries take the sight settings and weather switch of the last entry with this
                 // weapon, but never throw away values the user has typed already.
                 if startsNewEvent {
@@ -447,7 +456,7 @@ struct EntryEditorView: View {
         if let entry {
             date = entry.date; range = entry.range; event = entry.eventName; stich = entry.stich; weapon = entry.weapon
             caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; barrel = entry.effectiveBarrel; shotCount = entry.shotCount; result = entry.result
-            maxPoints = entry.maxPoints
+            maxPoints = entry.maxPoints; position = entry.position
             sight = SightSettings(entry: entry)
             weather = entry.weather
             passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
@@ -482,6 +491,7 @@ struct EntryEditorView: View {
             ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
             lot = suggestedLot(for: ammunition)
         }
+        if entry == nil { position = weapon?.category.defaultPosition }
         if startsNewEvent {
             // A new match starts with the division and power factor of the last one.
             if let last = ShootingEvent.lastIPSC(in: allEvents) { loadScoring(of: last) }
@@ -602,6 +612,7 @@ struct EntryEditorView: View {
             .apply(to: target)
         if features.contains(.weather) { shootingEvent.weather = weather?.normalized() }
         if scoring == .rings {
+            target.position = position
             target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
             target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
             target.sighterValuesText = mode == .shots ? sighterBoxes.text : ""

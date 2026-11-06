@@ -503,6 +503,12 @@ T = {
     "%lld Stiche": ("%lld matches", "%lld cibles", "%lld bersagli"),
     "%lld Schuss": ("%lld shots", "%lld coups", "%lld colpi"),
     "Stich hinzufügen": ("Add match", "Ajouter une cible", "Aggiungi bersaglio"),
+    # Shooting position per Stich, ISSF terms (FR/IT as used by FST/FTST).
+    "Stellung": ("Position", "Position", "Posizione"),
+    "Liegend": ("Prone", "Couché", "A terra"),
+    "Kniend": ("Kneeling", "À genou", "In ginocchio"),
+    "Stehend": ("Standing", "Debout", "In piedi"),
+    "Aufgelegt": ("Rested", "Appuyé", "Appoggiato"),
     "Weiteren Stich hinzufügen": ("Add another match", "Ajouter une autre cible", "Aggiungi un altro bersaglio"),
     "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
     "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": (

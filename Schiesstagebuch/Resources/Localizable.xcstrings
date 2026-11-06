@@ -1312,6 +1312,29 @@
         }
       }
     },
+    "Aufgelegt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rested"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appoggiato"
+          }
+        }
+      }
+    },
     "Aus": {
       "extractionState": "manual",
       "localizations": {
@@ -5435,6 +5458,29 @@
         }
       }
     },
+    "Kniend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kneeling"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À genou"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In ginocchio"
+          }
+        }
+      }
+    },
     "Kontrolle": {
       "extractionState": "manual",
       "localizations": {
@@ -5822,6 +5868,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Luce"
+          }
+        }
+      }
+    },
+    "Liegend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prone"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couché"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A terra"
           }
         }
       }
@@ -10606,6 +10675,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Statistiche"
+          }
+        }
+      }
+    },
+    "Stehend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standing"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Debout"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In piedi"
+          }
+        }
+      }
+    },
+    "Stellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Position"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posizione"
           }
         }
       }
