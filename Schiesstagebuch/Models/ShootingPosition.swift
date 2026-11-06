@@ -19,7 +19,7 @@ enum ShootingPosition: String, CaseIterable, Identifiable {
     }
 
     /// The position after the weapon changed: one still at the old weapon type's default follows
-    /// the new weapon; one the user picked, «–» included, stays.
+    /// the new weapon; any other one, e.g. picked by the user, stays.
     static func following(_ current: ShootingPosition?, from old: WeaponCategory?, to new: WeaponCategory?) -> ShootingPosition? {
         current == old?.defaultPosition ? new?.defaultPosition : current
     }
