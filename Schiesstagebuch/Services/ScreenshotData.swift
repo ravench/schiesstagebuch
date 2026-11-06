@@ -39,7 +39,8 @@ enum ScreenshotData {
         rifle.ensureBarrel(for: gp11, in: context)
         pistol.ensureBarrel(for: luger, in: context)
         carbine.ensureBarrel(for: gp11, in: context)
-        // Two GP 11 lots, each better in a different rifle, for «Resultat pro Los».
+        // Two GP 11 lots, each better in a different rifle, and one Stich kniend, for «Resultat pro Los»
+        // and «Resultat pro Stellung».
         let lotA = AmmoLot(number: "21-07"), lotB = AmmoLot(number: "23-02")
         for lot in [lotA, lotB] { context.insert(lot); lot.ammunition = ammo }
 
@@ -53,6 +54,7 @@ enum ScreenshotData {
             Sample(daysAgo: 75, event: "Training", weapon: carbine, shots: 20, result: "74", max: 100, lot: lotA),
             Sample(daysAgo: 90, event: "Vereinsstich", weapon: carbine, shots: 10, result: "88", max: 100, lot: lotB),
             Sample(daysAgo: 105, event: "Training", weapon: carbine, shots: 20, result: "85", max: 100, lot: lotB),
+            Sample(daysAgo: 120, event: "Training", weapon: rifle, shots: 20, result: "71", max: 100, lot: lotA, position: .kneeling),
         ]
         for s in samples {
             let date = Calendar.current.date(byAdding: .day, value: -s.daysAgo, to: now) ?? now
@@ -61,7 +63,7 @@ enum ScreenshotData {
             context.insert(event)
             let entry = Entry(date: date, weapon: s.weapon, caliber: caliber,
                               shotCount: s.shots, ammunition: caliber === gp11 ? ammo : nil, result: s.result)
-            entry.position = s.weapon.category.defaultPosition
+            entry.position = s.position ?? s.weapon.category.defaultPosition
             context.insert(entry)
             entry.maxPoints = s.max
             entry.lot = s.lot
@@ -89,5 +91,7 @@ enum ScreenshotData {
         let result: String
         var max: Double?
         var lot: AmmoLot?
+        /// nil: the weapon type's usual position.
+        var position: ShootingPosition?
     }
 }

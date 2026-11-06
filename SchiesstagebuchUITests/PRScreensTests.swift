@@ -32,6 +32,7 @@ final class PRScreensTests: XCTestCase {
 
         tab("Statistik")
         snap("05-Statistik")
+        stop("05b-Statistik-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
 
         tab("Waffen")
         snap("06-Waffen")
@@ -49,7 +50,8 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
-            lotResultsStop("07c-Waffe-Resultat-pro-Los")
+            stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
+            stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
             back()
         }
 
@@ -64,10 +66,10 @@ final class PRScreensTests: XCTestCase {
             }
             back()
         }
-        // The GP 11 lots, split by firearm.
+        // The GP 11 lots, split by firearm and position.
         if open(app.staticTexts["Munition"].firstMatch) {
             if open(app.staticTexts["GP 11"].firstMatch) {
-                lotResultsStop("12-Munition-Resultat-pro-Los")
+                stop("12-Munition-Resultat-pro-Los", chart: "Resultat pro Los")
                 back()
             }
             back()
@@ -100,9 +102,9 @@ final class PRScreensTests: XCTestCase {
         topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
     }
 
-    /// Scrolls the «Resultat pro Los» chart to the top of the screen, so all of it shows.
-    private func lotResultsStop(_ name: String) {
-        topStop(app.staticTexts["Resultat pro Los"].firstMatch, name)
+    /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
+    private func stop(_ name: String, chart title: String) {
+        topStop(app.staticTexts[title].firstMatch, name)
     }
 
     /// Scrolls `element` to the top of the screen, so what follows it shows, and takes the screen.
