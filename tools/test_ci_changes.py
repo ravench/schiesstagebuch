@@ -4,7 +4,7 @@ import sys
 import unittest
 from pathlib import Path
 
-from ci_changes import NEEDS_MAC, needs_mac
+from ci_changes import NEEDS_MAC, SCREENS, needs_mac, needs_screens
 
 APP_PATHS = ["Schiesstagebuch/Views/EntryEditorView.swift", "SchiesstagebuchTests/ModelsTests.swift",
              "SchiesstagebuchUITests/PRScreensTests.swift", "calibre-data", "project.yml", "data/indoor-ranges.json"]
@@ -36,5 +36,29 @@ class NeedsMacTests(unittest.TestCase):
     def test_prints_a_github_output_line(self):
         run = lambda text: subprocess.run(
             [sys.executable, str(TOOL)], input=text, capture_output=True, text=True, check=True).stdout
-        self.assertEqual(run("README.md\ntools/localize.py\n"), "mac=false\n")
-        self.assertEqual(run(f"README.md\n{APP_PATHS[0]}\n"), "mac=true\n")
+        self.assertEqual(run("README.md\ntools/localize.py\n"), "mac=false\nscreens=false\n")
+        self.assertEqual(run(f"README.md\n{APP_PATHS[0]}\n"), "mac=true\nscreens=true\n")
+        self.assertEqual(run("SchiesstagebuchTests/ModelsTests.swift\n"), "mac=true\nscreens=false\n")
+
+
+class NeedsScreensTests(unittest.TestCase):
+    def test_gui_changes_get_the_screens(self):
+        for path in ["Schiesstagebuch/Views/EntryEditorView.swift", "SchiesstagebuchUITests/PRScreensTests.swift",
+                     "calibre-data", "project.yml", "tools/pr_screens.py", "tools/ipad_screens.py",
+                     ".github/workflows/build.yml"]:
+            with self.subTest(path=path):
+                self.assertTrue(needs_screens(["README.md", path]))
+
+    def test_unit_tests_and_docs_skip_the_screens(self):
+        self.assertFalse(needs_screens(["SchiesstagebuchTests/ModelsTests.swift", "README.md",
+                                        "tools/localize.py", ".github/workflows/testflight.yml"]))
+
+    def test_screens_always_come_with_the_mac_job(self):
+        # They run in the Mac job, so every path that takes them must also start it.
+        for pattern in SCREENS:
+            path = pattern.replace("*", "Some.swift")
+            with self.subTest(path=path):
+                self.assertTrue(needs_mac([path]))
+
+    def test_no_files_takes_the_screens_to_be_safe(self):
+        self.assertTrue(needs_screens([]))
