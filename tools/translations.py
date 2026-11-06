@@ -294,6 +294,12 @@ T = {
         "Séparé par arme : le même lot peut tirer différemment dans une autre arme.",
         "Separato per arma: lo stesso lotto può rendere diversamente in un’altra arma."),
     "Ohne Waffe": ("No firearm", "Sans arme", "Senza arma"),
+    "Ohne Stellung": ("No position", "Sans position", "Senza posizione"),
+    "Resultat pro Stellung": ("Result by position", "Résultat par position", "Risultato per posizione"),
+    "Mit weniger als 5 Resultaten pro Stellung sind Quartile wenig aussagekräftig.": (
+        "With fewer than 5 results per position, quartiles say little.",
+        "Avec moins de 5 résultats par position, les quartiles sont peu significatifs.",
+        "Con meno di 5 risultati per posizione, i quartili sono poco significativi."),
     "Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.": (
         "With fewer than 5 results per lot, quartiles say little.",
         "Avec moins de 5 résultats par lot, les quartiles sont peu significatifs.",
