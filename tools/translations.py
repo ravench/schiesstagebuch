@@ -288,10 +288,7 @@ T = {
         "Box: middle half of the results (1st to 3rd quartile), bar: median, line: up to 1.5 × interquartile range, dots: single results, red: outliers. Counts entries with a percentage (points with a maximum, or a result in %).",
         "Boîte : moitié centrale des résultats (1er au 3e quartile), trait : médiane, ligne : jusqu'à 1,5 × l'écart interquartile, points : résultats individuels, rouge : valeurs aberrantes. Compte les entrées avec pourcentage (points avec maximum ou résultat en %).",
         "Box: metà centrale dei risultati (dal 1° al 3° quartile), tratto: mediana, linea: fino a 1,5 × lo scarto interquartile, punti: singoli risultati, rosso: valori anomali. Conta le voci con percentuale (punti con massimo o risultato in %)."),
-    "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.": (
-        "Split by firearm: the same lot can shoot differently in another firearm.",
-        "Séparé par arme : le même lot peut tirer différemment dans une autre arme.",
-        "Separato per arma: lo stesso lotto può rendere diversamente in un’altra arma."),
+    "Getrennt pro Waffe.": ("Split by firearm.", "Séparé par arme.", "Separato per arma."),
     "Ohne Waffe": ("No firearm", "Sans arme", "Senza arma"),
     "Ohne Stellung": ("No position", "Sans position", "Senza posizione"),
     "Resultat pro Stellung": ("Result by position", "Résultat par position", "Risultato per posizione"),
@@ -449,15 +446,7 @@ T = {
         "Filtres de lunettes et roues à filtres que tu possèdes",
         "Filtri per occhiali e ruote filtri che possiedi"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
-    "An der Schiessbrille oder im Diopter, auch Korrekturgläser": (
-        "On the shooting glasses or in the diopter, also correction lenses",
-        "Sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs",
-        "Sugli occhiali da tiro o nella diottra, anche lenti correttive"),
     "Diopter, Ring und Iris": ("Diopter, ring and iris", "Dioptre, anneau et iris", "Diottra, anello e iride"),
-    "Ring und Iris am Diopter oder Iris an der Brille": (
-        "Ring and iris on the diopter, or iris on the glasses",
-        "Anneau et iris sur le dioptre, ou iris sur les lunettes",
-        "Anello e iride sulla diottra, o iride sugli occhiali"),
     "Länge in cm, nur bei Gewehren": ("Length in cm, rifles only", "Longueur en cm, fusils uniquement", "Lunghezza in cm, solo fucili"),
     "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen": (
         "Light, wind and temperature per event, also for relays",
@@ -609,10 +598,7 @@ T = {
     "Hauptnummer": ("Main serial number", "Numéro principal", "Numero principale"),
     "Hauptnummer (optional)": ("Main serial number (optional)", "Numéro principal (facultatif)", "Numero principale (facoltativo)"),
     "Jede Nummer braucht eine Bezeichnung.": ("Every number needs a name.", "Chaque numéro a besoin d'une désignation.", "Ogni numero ha bisogno di una denominazione."),
-    "Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.": (
-        "At least one calibre. Several when the chamber takes them all, e.g. .308 Win and 7.62 NATO.",
-        "Au moins un calibre. Plusieurs si la chambre les accepte tous, p. ex. .308 Win et 7.62 OTAN.",
-        "Almeno un calibro. Più di uno se la camera li accetta tutti, p. es. .308 Win e 7.62 NATO."),
+    "Mindestens ein Kaliber, auch mehrere.": ("At least one calibre, or several.", "Au moins un calibre, ou plusieurs.", "Almeno un calibro, o più di uno."),
     "Mindestens ein Kaliber. Wechselläufe fügst du nach dem Sichern hinzu.": (
         "At least one calibre. Add swappable barrels after saving.",
         "Au moins un calibre. Ajoute les canons interchangeables après l'enregistrement.",
@@ -652,10 +638,7 @@ T = {
     "Anteil A": ("A share", "Part de A", "Quota A"),
     "Division": ("Division", "Division", "Divisione"),
     "Fehlschüsse (Miss)": ("Misses", "Manqués (miss)", "Mancati (miss)"),
-    "Gefallene Stahlziele zählen als A. Fehlschüsse, No-Shoots und Verfahrensfehler kosten je 10 Punkte.": (
-        "Steel targets that fell count as A. Misses, no-shoots and procedurals cost 10 points each.",
-        "Les cibles métalliques tombées comptent comme A. Manqués, no-shoots et pénalités de procédure coûtent 10 points chacun.",
-        "I bersagli metallici abbattuti contano come A. Mancati, no-shoot e penalità procedurali costano 10 punti ciascuno."),
+    "Gefallene Stahlziele erfasst du als A-Treffer.": ("Enter fallen steel targets as A hits.", "Saisis les cibles métalliques tombées comme impacts A.", "Registra i bersagli metallici abbattuti come colpi A."),
     "Hitfaktor": ("Hit factor", "Hit factor", "Hit factor"),
     "IPSC": ("IPSC", "IPSC", "IPSC"),
     "Major": ("Major", "Major", "Major"),
@@ -668,10 +651,6 @@ T = {
         "Result, single shots and max. points per match",
         "Résultat, coups individuels et points max. par cible",
         "Risultato, colpi singoli e punti max. per bersaglio"),
-    "Schusszahl: alle abgegebenen Schüsse, auch Nachschüsse. Zeit vom Startsignal bis zum letzten Schuss.": (
-        "Shots: every round fired, make-up shots included. Time from the start signal to the last shot.",
-        "Nombre de coups : tous les coups tirés, rattrapages compris. Temps du signal de départ au dernier coup.",
-        "Numero di colpi: tutti i colpi sparati, compresi quelli di recupero. Tempo dal segnale di partenza all'ultimo colpo."),
     "Sekunden": ("Seconds", "Secondes", "Secondi"),
     "Stage": ("Stage", "Stage", "Stage"),
     "Stage hinzufügen": ("Add stage", "Ajouter un stage", "Aggiungi stage"),

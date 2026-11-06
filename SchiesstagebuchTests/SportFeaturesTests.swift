@@ -55,9 +55,17 @@ final class SportFeaturesTests: ModelTestCase {
         for feature in SportFeatures.each {
             XCTAssertEqual(feature.rawValue.nonzeroBitCount, 1)
             XCTAssertFalse(feature.title.isEmpty)
-            XCTAssertFalse(feature.detail.isEmpty)
+            XCTAssertNotEqual(feature.detail, "", "nil instead of an empty subtitle")
             XCTAssertNotEqual(feature.systemImage, "questionmark")
         }
+    }
+
+    /// Subtitles explain the app, not shooting (Raven 2026-11-06): shooters know filters, diopters and irises.
+    func testSubtitlesOnlyWhereTheAppHandlesTheFieldItsOwnWay() {
+        XCTAssertNil(SportFeatures.filter.detail)
+        XCTAssertNil(SportFeatures.sight.detail)
+        XCTAssertNotNil(SportFeatures.bipod.detail, "the field shows for rifles only")
+        XCTAssertNotNil(SportFeatures.weather.detail, "recorded per event and per relay")
     }
 
     func testOnlyColourFiltersUseTheFilterHolderAndListTheFilters() {

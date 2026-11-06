@@ -434,7 +434,7 @@ struct LotResultsChart: View {
                 Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
                     .font(.caption).foregroundStyle(.secondary)
                 if named {
-                    Text(term("Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.").loc)
+                    Text(term("Getrennt pro Waffe.").loc)
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 if results.contains(where: { $0.count < BoxStats.reliableCount }) {

@@ -168,7 +168,9 @@ struct SportFeatureToggle: View {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(feature.title.loc)
-                    Text(feature.detail.loc).font(.caption).foregroundStyle(.secondary)
+                    if let detail = feature.detail {
+                        Text(detail.loc).font(.caption).foregroundStyle(.secondary)
+                    }
                 }
             } icon: {
                 if let symbol = feature.systemImage {

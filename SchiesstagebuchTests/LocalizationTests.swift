@@ -134,4 +134,34 @@ final class LocalizationTests: XCTestCase {
         }
         XCTAssertEqual(try localized("Nummer Lauf (optional)", "en"), "<missing>", "old label still translated")
     }
+
+    /// Descriptions explain the app, not shooting (Raven 2026-11-06).
+    func testDescriptionsExplainTheAppNotShooting() throws {
+        let expected = [
+            "Mindestens ein Kaliber, auch mehrere.": ["en": "At least one calibre, or several.", "fr": "Au moins un calibre, ou plusieurs.",
+                                                      "it": "Almeno un calibro, o più di uno."],
+            "Gefallene Stahlziele erfasst du als A-Treffer.": ["en": "Enter fallen steel targets as A hits.",
+                                                               "fr": "Saisis les cibles métalliques tombées comme impacts A.",
+                                                               "it": "Registra i bersagli metallici abbattuti come colpi A."],
+            "Getrennt pro Waffe.": ["en": "Split by firearm.", "fr": "Séparé par arme.", "it": "Separato per arma."],
+            "Getrennt pro Sportgerät.": ["en": "Split by equipment.", "fr": "Séparé par équipement.", "it": "Separato per attrezzo."],
+        ]
+        for (key, byLang) in expected {
+            for (lang, text) in byLang {
+                XCTAssertEqual(try localized(key, lang), text, "\(key) in \(lang)")
+            }
+        }
+        XCTAssertEqual(Terms(sportsEquipment: true)("Getrennt pro Waffe."), "Getrennt pro Sportgerät.")
+        let gone = [
+            "Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.",
+            "Schusszahl: alle abgegebenen Schüsse, auch Nachschüsse. Zeit vom Startsignal bis zum letzten Schuss.",
+            "Gefallene Stahlziele zählen als A. Fehlschüsse, No-Shoots und Verfahrensfehler kosten je 10 Punkte.",
+            "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.",
+            "An der Schiessbrille oder im Diopter, auch Korrekturgläser",
+            "Ring und Iris am Diopter oder Iris an der Brille",
+        ]
+        for key in gone {
+            XCTAssertEqual(try localized(key, "en"), "<missing>", key)
+        }
+    }
 }

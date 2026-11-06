@@ -136,7 +136,7 @@ struct BarrelEditorView: View {
                     }
                     SelectedCaliberRows(selection: $calibers)
                 } footer: {
-                    Text("Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.")
+                    Text("Mindestens ein Kaliber, auch mehrere.")
                 }
 
                 Section {

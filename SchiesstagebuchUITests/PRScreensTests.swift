@@ -78,17 +78,51 @@ final class PRScreensTests: XCTestCase {
         snap("09-Einstellungen-unten")
     }
 
+    /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
+    func testWelcome() {
+        relaunch(adding: ["-welcome"])
+        let fields = app.staticTexts["Für Sportschützen"].firstMatch
+        if fields.waitForExistence(timeout: 10) {
+            reveal(fields)
+            holdAtTop(fields)
+        }
+        snap("00-Willkommen")
+    }
+
+    /// A new entry with only IPSC scoring switched on: the stage and the hits with their footer.
+    func testIPSCEntry() {
+        relaunch(adding: ["-scoringSystems.v1", "ipsc"])
+        if open(app.buttons["Neuer Eintrag"].firstMatch) {
+            let time = app.staticTexts["Zeit"].firstMatch
+            reveal(time)
+            holdAtTop(time)
+            snap("03d-IPSC-Eintrag")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        }
+    }
+
+    /// Starts the app again with `arguments` on top of the usual ones.
+    private func relaunch(adding arguments: [String]) {
+        app.terminate()
+        app.launchArguments += arguments
+        app.launch()
+    }
+
     /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
     private func stop(_ name: String, chart title: String) {
         let headline = app.staticTexts[title].firstMatch
         reveal(headline, swipes: 10)
-        if headline.exists && headline.isHittable {
-            // Held at the end, so the list does not glide on past the chart.
-            headline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
-                       withVelocity: .slow, thenHoldForDuration: 0.5)
-        }
+        holdAtTop(headline)
         snap(name)
+    }
+
+    /// Drags `element` near the top of the screen, so what follows it shows.
+    private func holdAtTop(_ element: XCUIElement) {
+        guard element.exists && element.isHittable else { return }
+        // Held at the end, so the list does not glide on past it.
+        element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                   withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
     /// The firearm menu and the range list, both ending with «… hinzufügen».
