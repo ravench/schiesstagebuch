@@ -4,7 +4,8 @@ import Foundation
 // («Der Stadtschütz» 2015–2026). Field and option keys are the ones in that file;
 // labels are the German source strings, localised with `.loc`.
 
-/// Where a field can be recorded: once per entry, or per Ablösung / Serie.
+/// Where a field can be recorded: once per entry, or per Ablösung / Serie. A field without a level
+/// is never entered by hand: only Apple Weather fills it (see `WeatherField.measured`).
 enum WeatherLevel: Hashable { case entry, relay }
 
 /// Groups that fold the many fields into a few sections in the editor.
@@ -177,9 +178,13 @@ extension WeatherField {
                 o("snow", "Schnee", "snowflake"),
                 o("straw", "Stroh", "leaf"),
               ])),
-        .init(key: "humidity_pct", label: "Luftfeuchtigkeit", icon: "humidity", group: .precipitation, levels: [.entry],
+        // Measured values (the spec's source "weather_api"): stored when Apple Weather fills the record and
+        // shown read-only in one line, but no input by hand for now (Raven 2026-11-06).
+        .init(key: "air_temp_c", label: "Lufttemperatur", icon: "thermometer.medium", group: .temperature, levels: [],
+              kind: .number(unit: "°C", range: -60...60)),
+        .init(key: "humidity_pct", label: "Luftfeuchtigkeit", icon: "humidity", group: .precipitation, levels: [],
               kind: .number(unit: "%", range: 0...100)),
-        .init(key: "pressure_hpa", label: "Luftdruck (Wetter)", icon: "barometer", group: .precipitation, levels: [.entry],
+        .init(key: "pressure_hpa", label: "Luftdruck (Wetter)", icon: "barometer", group: .precipitation, levels: [],
               kind: .number(unit: "hPa", range: 800...1100)),
         .init(key: "aids", label: "Hilfsmittel", icon: "backpack", group: .aids, levels: both, kind: .multi([
             o("cap", "Schiessmütze", "person.fill"),
@@ -202,6 +207,9 @@ extension WeatherField {
     ]
 
     static func field(_ key: String) -> WeatherField? { all.first { $0.key == key } }
+
+    /// Air temperature, humidity and pressure, in the order of their read-only line.
+    static let measured = all.filter(\.levels.isEmpty)
 
     static func fields(for level: WeatherLevel, in group: WeatherGroup? = nil) -> [WeatherField] {
         all.filter { $0.levels.contains(level) && (group == nil || $0.group == group) }

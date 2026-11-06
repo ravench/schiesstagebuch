@@ -7,7 +7,7 @@ final class AppleWeatherTests: XCTestCase {
     /// A mild, dry, calm afternoon; each test changes what it looks at.
     private func reading(_ change: (inout WeatherReading) -> Void = { _ in }) -> WeatherReading {
         var r = WeatherReading(condition: .mostlyClear, cloudCover: 0.1, isDaylight: true, visibility: 30_000,
-                               windSpeed: 4, windGust: nil, windFrom: 0, apparentTemperature: 20, dewPoint: 8,
+                               windSpeed: 4, windGust: nil, windFrom: 0, temperature: 21.4, apparentTemperature: 20, dewPoint: 8,
                                precipitation: 0, humidity: 0.554, pressure: 1021.6)
         change(&r)
         return r
@@ -24,7 +24,8 @@ final class AppleWeatherTests: XCTestCase {
         XCTAssertEqual(c.option("precipitation"), "none")
         XCTAssertEqual(c.number("humidity_pct"), 55)
         XCTAssertEqual(c.number("pressure_hpa"), 1022)
-        XCTAssertEqual(c.values.count, 7)
+        XCTAssertEqual(c.number("air_temp_c"), 21)
+        XCTAssertEqual(c.values.count, 8)
         // How it felt at the stand stays with the shooter.
         for key in ["overall", "light", "sun_direction", "target_light", "glare", "ammo_temp", "ground", "aids", "weather_impact"] {
             XCTAssertNil(c[key], key)
@@ -168,5 +169,6 @@ final class AppleWeatherTests: XCTestCase {
         XCTAssertEqual(c.number("wind_clock"), 6)
         XCTAssertEqual(c.option("wind_character"), "gusty")
         XCTAssertEqual(c.option("sky"), "partly_cloudy")
+        XCTAssertEqual(c.number("air_temp_c"), 18)
     }
 }

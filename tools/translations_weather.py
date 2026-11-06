@@ -63,6 +63,7 @@ W = {
     "Niederschlag": ("Precipitation", "Précipitations", "Precipitazioni"),
     "Niederschlag in der eigenen Ablösung": ("Precipitation during my relay", "Précipitations pendant ma relève", "Precipitazioni durante il mio turno"),
     "Unterlage / Boden": ("Ground / mat", "Sol / support", "Terreno / appoggio"),
+    "Lufttemperatur": ("Air temperature", "Température de l'air", "Temperatura dell'aria"),
     "Luftfeuchtigkeit": ("Humidity", "Humidité", "Umidità"),
     "Luftdruck (Wetter)": ("Air pressure", "Pression atmosphérique", "Pressione atmosferica"),
     "Hilfsmittel": ("Aids", "Accessoires", "Ausili"),

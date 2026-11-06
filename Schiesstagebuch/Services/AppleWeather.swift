@@ -16,6 +16,8 @@ struct WeatherReading: Equatable {
     var windGust: Double?
     /// Degrees clockwise from north the wind comes from.
     var windFrom: Double
+    /// Air temperature, °C.
+    var temperature: Double
     /// «Feels like», °C.
     var apparentTemperature: Double
     var dewPoint: Double
@@ -34,6 +36,7 @@ extension WeatherReading {
                   windSpeed: hour.wind.speed.converted(to: .kilometersPerHour).value,
                   windGust: hour.wind.gust?.converted(to: .kilometersPerHour).value,
                   windFrom: hour.wind.direction.converted(to: .degrees).value,
+                  temperature: hour.temperature.converted(to: .celsius).value,
                   apparentTemperature: hour.apparentTemperature.converted(to: .celsius).value,
                   dewPoint: hour.dewPoint.converted(to: .celsius).value,
                   precipitation: hour.precipitationAmount.converted(to: .millimeters).value,
@@ -43,11 +46,12 @@ extension WeatherReading {
 
     /// What screenshot runs show instead of asking Apple Weather.
     static let sample = WeatherReading(condition: .partlyCloudy, cloudCover: 0.45, isDaylight: true, visibility: 25_000,
-                                       windSpeed: 14, windGust: 38, windFrom: 250, apparentTemperature: 17, dewPoint: 9,
+                                       windSpeed: 14, windGust: 38, windFrom: 250, temperature: 18, apparentTemperature: 17, dewPoint: 9,
                                        precipitation: 0, humidity: 0.62, pressure: 1018.4)
 
     /// Values for the fields this data can tell; the wind clock needs the range's shooting direction.
-    /// How it felt, the light at the stand, the ground and the aids stay for the shooter.
+    /// How it felt, the light at the stand, the ground and the aids stay for the shooter. Air temperature,
+    /// humidity and pressure are measured values without an input (see `WeatherField.measured`).
     func conditions(facing bearing: Double?) -> WeatherConditions {
         var c = WeatherConditions()
         c.set("sky", sky.map(WeatherValue.option))
@@ -64,6 +68,7 @@ extension WeatherReading {
         if let gust = windGust, gust - windSpeed >= 18 { c.set("wind_character", .option("gusty")) }
         c.set("temp_feel", .option(feel))
         c.set("precipitation", precipitationKind.map(WeatherValue.option))
+        c.set("air_temp_c", .number(temperature.rounded()))
         c.set("humidity_pct", .number((humidity * 100).rounded()))
         c.set("pressure_hpa", .number(pressure.rounded()))
         return c

@@ -6401,6 +6401,29 @@
         }
       }
     },
+    "Lufttemperatur": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Air temperature"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Température de l'air"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura dell'aria"
+          }
+        }
+      }
+    },
     "Länge in cm, nur bei Gewehren": {
       "extractionState": "manual",
       "localizations": {

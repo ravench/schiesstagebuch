@@ -101,6 +101,7 @@ private struct AppleWeatherRow: View {
                     if !Task.isCancelled { await load(request) }
                 }
         }
+        if let weather { MeasuredWeatherLine(conditions: weather.conditions) }
         if weather?.fromAppleWeather == true { AppleWeatherAttribution() }
     }
 
@@ -160,6 +161,25 @@ struct AppleWeatherAttribution: View {
         }
         .font(.footnote)
         .task { if !ScreenshotData.isActive { attribution = try? await WeatherService.shared.attribution } }
+    }
+}
+
+/// Air temperature, humidity and pressure from Apple Weather in one line, read-only; nothing when none is stored.
+struct MeasuredWeatherLine: View {
+    let conditions: WeatherConditions
+
+    var body: some View {
+        let shown = WeatherField.measured.compactMap { f in conditions.display(f).map { (field: f, text: $0.text) } }
+        if !shown.isEmpty {
+            HStack(spacing: 20) {
+                ForEach(shown, id: \.field.key) { item in
+                    Label(item.text, systemImage: item.field.icon)
+                        .accessibilityLabel(Text(verbatim: "\(item.field.label.loc): \(item.text)"))
+                }
+            }
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
+        }
     }
 }
 
@@ -347,6 +367,7 @@ struct WeatherDetailSections: View {
             if let time = record.time {
                 row(label: "Uhrzeit".loc, icon: "clock", value: time.formatted(date: .omitted, time: .shortened), valueIcon: nil)
             }
+            MeasuredWeatherLine(conditions: record.conditions)
             values(record.conditions, level: .entry)
         } header: {
             Text("Wetter")
