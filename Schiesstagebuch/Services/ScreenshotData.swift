@@ -24,21 +24,31 @@ enum ScreenshotData {
         rifle.serialNumber = "A 123456"
         let pistol = Weapon(name: "SIG P226")
         pistol.category = .pistol
+        let carbine = Weapon(name: "K31")
+        carbine.category = .serviceCarbine
         let ammo = Ammunition(name: "GP 11", caliber: gp11)
         context.insert(range)
         context.insert(rifle)
         context.insert(pistol)
+        context.insert(carbine)
         context.insert(ammo)
         rifle.ensureBarrel(for: gp11, in: context)
         pistol.ensureBarrel(for: luger, in: context)
+        carbine.ensureBarrel(for: gp11, in: context)
+        // Two GP 11 lots, each better in a different rifle, for «Resultat pro Los».
+        let lotA = AmmoLot(number: "21-07"), lotB = AmmoLot(number: "23-02")
+        for lot in [lotA, lotB] { context.insert(lot); lot.ammunition = ammo }
 
         let samples = [
-            Sample(daysAgo: 2, event: "Obligatorisch", weapon: rifle, shots: 20, result: "78"),
-            Sample(daysAgo: 9, event: "Feldschiessen", weapon: rifle, shots: 18, result: "62"),
+            Sample(daysAgo: 2, event: "Obligatorisch", weapon: rifle, shots: 20, result: "78", max: 100, lot: lotB),
+            Sample(daysAgo: 9, event: "Feldschiessen", weapon: rifle, shots: 18, result: "62", max: 72, lot: lotA),
             Sample(daysAgo: 16, event: "Training", weapon: pistol, shots: 50, result: "441"),
-            Sample(daysAgo: 30, event: "Bundesprogramm", weapon: rifle, shots: 20, result: "81"),
+            Sample(daysAgo: 30, event: "Bundesprogramm", weapon: rifle, shots: 20, result: "81", max: 100, lot: lotB),
             Sample(daysAgo: 44, event: "Training", weapon: pistol, shots: 60, result: "512"),
-            Sample(daysAgo: 61, event: "Vereinsstich", weapon: rifle, shots: 10, result: "92"),
+            Sample(daysAgo: 61, event: "Vereinsstich", weapon: rifle, shots: 10, result: "92", max: 100, lot: lotA),
+            Sample(daysAgo: 75, event: "Training", weapon: carbine, shots: 20, result: "74", max: 100, lot: lotA),
+            Sample(daysAgo: 90, event: "Vereinsstich", weapon: carbine, shots: 10, result: "88", max: 100, lot: lotB),
+            Sample(daysAgo: 105, event: "Training", weapon: carbine, shots: 20, result: "85", max: 100, lot: lotB),
         ]
         for s in samples {
             let date = Calendar.current.date(byAdding: .day, value: -s.daysAgo, to: now) ?? now
@@ -48,6 +58,8 @@ enum ScreenshotData {
             let entry = Entry(date: date, weapon: s.weapon, caliber: caliber,
                               shotCount: s.shots, ammunition: caliber === gp11 ? ammo : nil, result: s.result)
             context.insert(entry)
+            entry.maxPoints = s.max
+            entry.lot = s.lot
             event.add(entry)
         }
         try? context.save()
@@ -70,5 +82,7 @@ enum ScreenshotData {
         let weapon: Weapon
         let shots: Int
         let result: String
+        var max: Double?
+        var lot: AmmoLot?
     }
 }

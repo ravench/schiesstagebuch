@@ -48,6 +48,7 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
+            lotResultsStop("07c-Waffe-Resultat-pro-Los")
             back()
         }
 
@@ -62,8 +63,22 @@ final class PRScreensTests: XCTestCase {
             }
             back()
         }
+        // The GP 11 lots, split by firearm.
+        if open(app.staticTexts["Munition"].firstMatch) {
+            if open(app.staticTexts["GP 11"].firstMatch) {
+                lotResultsStop("12-Munition-Resultat-pro-Los")
+                back()
+            }
+            back()
+        }
         scroll()
         snap("09-Einstellungen-unten")
+    }
+
+    /// Scrolls down to the whole «Resultat pro Los» chart, whose explanation is right below it.
+    private func lotResultsStop(_ name: String) {
+        reveal(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Box: mittlere Hälfte")).firstMatch)
+        snap(name)
     }
 
     /// The firearm menu and the range list, both ending with «… hinzufügen».

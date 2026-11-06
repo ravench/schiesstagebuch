@@ -158,6 +158,21 @@ extension Sequence where Element == Entry {
             }
     }
 
+    /// `percentageByLot` per firearm, most results first: a lot can shoot well in one firearm and
+    /// badly in another, so lots are only compared within the same firearm.
+    var percentageByWeaponAndLot: [WeaponLotResults] {
+        Dictionary(grouping: self, by: { $0.weapon?.persistentModelID })
+            .compactMap { _, entries -> WeaponLotResults? in
+                let lots = entries.percentageByLot
+                return lots.isEmpty ? nil : WeaponLotResults(weapon: entries[0].weapon, lots: lots)
+            }
+            .sorted {
+                if $0.count != $1.count { return $0.count > $1.count }
+                if ($0.weapon == nil) != ($1.weapon == nil) { return $1.weapon == nil }
+                return ($0.weapon?.name ?? "").localizedStandardCompare($1.weapon?.name ?? "") == .orderedAscending
+            }
+    }
+
     /// Mean points per entry over the entries with a numeric result.
     var averagePoints: Double? {
         let p = compactMap(\.score.points)
@@ -172,6 +187,22 @@ struct LotResult {
     var values: [Double]
     var stats: BoxStats
     var count: Int { values.count }
+}
+
+/// One firearm's lot results, see `percentageByWeaponAndLot`.
+struct WeaponLotResults {
+    /// nil for entries without a firearm.
+    var weapon: Weapon?
+    var lots: [LotResult]
+    var count: Int { lots.reduce(0) { $0 + $1.count } }
+
+    /// The lot number, with the ammunition's name in front when lots of several ammunitions are
+    /// compared (on a firearm's page), since lot numbers only tell lots of one ammunition apart.
+    func label(_ lot: AmmoLot) -> String {
+        let ammunitions = Set(lots.map { $0.lot.ammunition?.persistentModelID })
+        guard ammunitions.count > 1, let name = lot.ammunition?.name else { return lot.number }
+        return "\(name) · \(lot.number)"
+    }
 }
 
 /// A Stich shot more than once at the same event, e.g. bought twice ("nachgedoppelt").
