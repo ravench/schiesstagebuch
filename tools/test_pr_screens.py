@@ -171,8 +171,16 @@ class CommentTests(unittest.TestCase):
         body = pr_screens.comment(iphone, "u", "r", {"changes": [], "total": 10, "base": 10})
         self.assertIn("No visible change on the 10 iPad screens.", body)
         self.assertNotIn(pr_screens.TOUR, body)  # the hint is for a tour without changes
-        body = pr_screens.comment(iphone, "u", "r", {"changes": [], "total": 0, "base": 0})
-        self.assertIn("No iPad screens could be taken", body)
+        # A tour that took nothing says so, whatever the base branch gave.
+        for ipad in ({"changes": [], "total": 0, "base": 0}, {"changes": [["portrait-1-Tagebuch.png", "gone"]],
+                                                             "total": 0, "base": 1}):
+            body = pr_screens.comment(iphone, "u", "r", ipad).split("#### iPad")[1]
+            self.assertIn("No iPad screens could be taken on this pull request", body)
+            self.assertNotIn("base branch", body)
+            self.assertNotIn("<img", body)
+        body = pr_screens.comment({"changes": [], "total": 0, "base": 0}, "u", "r")
+        self.assertIn("No iPhone screens could be taken", body)
+        self.assertNotIn(pr_screens.TOUR, body)
 
 
 class WorkflowTests(unittest.TestCase):

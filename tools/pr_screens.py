@@ -108,12 +108,13 @@ def _img(url, width):
 def _section(summary, base_url, device, note, width):
     """Lines for one device's screens: how many changed, and a before/after table of them."""
     found, total = summary["changes"], summary["total"]
+    if not total:
+        return [f"No {device} screens could be taken on this pull request; see the run's log."]
     lines = []
     if summary.get("base", 1) == 0:
         lines += [f"The {device} screens of the base branch could not be taken, so every one is shown as new.", ""]
     if not found:
-        return lines + [f"No visible change on the {total} {device} screens." if total else
-                        f"No {device} screens could be taken; see the run's log."]
+        return lines + [f"No visible change on the {total} {device} screens."]
     lines += [f"{len(found)} of {total} {device} screens look different ({note}).", "",
               "| Screen | Before | After |", "| --- | --- | --- |"]
     for name, status in found:
@@ -130,7 +131,7 @@ def comment(summary, base_url, run_url, ipad=None):
     ipad is the iPad screens' summary, served from base_url/ipad.
     """
     lines = [MARKER, "### Screenshots", ""] + _section(summary, base_url, "iPhone", "German, sample data", 250)
-    if not summary["changes"]:
+    if summary["total"] and not summary["changes"]:
         lines.append(f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`.")
     if ipad is not None:
         lines += ["", "#### iPad", ""] + _section(ipad, f"{base_url}/ipad", "iPad", "portrait and landscape", 320)
