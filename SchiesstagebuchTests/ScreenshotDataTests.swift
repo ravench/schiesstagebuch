@@ -7,7 +7,7 @@ final class ScreenshotDataTests: ModelTestCase {
     func testSeedFillsEmptyStore() throws {
         ScreenshotData.seed(context, now: day(15))
         let entries = try context.fetch(FetchDescriptor<Entry>())
-        XCTAssertEqual(entries.count, 9)
+        XCTAssertEqual(entries.count, 10)
         XCTAssertTrue(entries.allSatisfy { $0.weapon != nil && $0.range != nil && !$0.result.isEmpty })
         XCTAssertTrue(entries.allSatisfy { $0.date < day(15) })
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Weapon>()), 3)
@@ -16,7 +16,7 @@ final class ScreenshotDataTests: ModelTestCase {
     func testSeedPutsEachEntryInItsOwnEvent() throws {
         ScreenshotData.seed(context, now: day(15))
         let events = try context.fetch(FetchDescriptor<ShootingEvent>())
-        XCTAssertEqual(events.count, 9)
+        XCTAssertEqual(events.count, 10)
         XCTAssertTrue(events.allSatisfy { $0.stichCount == 1 && !$0.name.isEmpty && $0.range != nil })
         XCTAssertTrue(try context.fetch(FetchDescriptor<Entry>()).allSatisfy { $0.date == $0.shootingEvent?.date })
     }
@@ -47,12 +47,17 @@ final class ScreenshotDataTests: ModelTestCase {
         XCTAssertEqual(Set(weapons.flatMap { $0.calibers.map(\.name) }), ["9x19 mm", "7.5x55 mm Swiss (GP 11)"])
     }
 
-    func testSeedComparesLotsPerFirearm() throws {
+    func testSeedComparesLotsPerFirearmAndPosition() throws {
         ScreenshotData.seed(context)
-        let groups = try context.fetch(FetchDescriptor<Entry>()).percentageByWeaponAndLot
-        XCTAssertEqual(groups.map { $0.weapon?.name }, ["Stgw 90", "K31"])
+        let entries = try context.fetch(FetchDescriptor<Entry>())
+        let groups = entries.lotComparisons
+        let prone = ShootingPosition.prone.title, kneeling = ShootingPosition.kneeling.title
+        XCTAssertEqual(groups.map { LotResultsChart.title($0, among: groups, term: Terms()) },
+                       ["Stgw 90 · \(prone)", "K31 · \(prone)", "Stgw 90 · \(kneeling)"])
         // Each lot is best in a different rifle: the screenshot shows why lots are split by firearm.
-        XCTAssertEqual(groups.map { $0.lots.map(\.lot.number) }, [["21-07", "23-02"], ["23-02", "21-07"]])
+        XCTAssertEqual(groups.map { $0.lots.map(\.lot.number) }, [["21-07", "23-02"], ["23-02", "21-07"], ["21-07"]])
+        XCTAssertEqual(entries.percentageByPosition.map(\.position), [.prone, .kneeling])
+        XCTAssertTrue(PositionResultsChart.shows(entries))
     }
 
     func testSeedLeavesExistingDiaryAlone() throws {

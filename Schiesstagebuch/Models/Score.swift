@@ -158,19 +158,36 @@ extension Sequence where Element == Entry {
             }
     }
 
-    /// `percentageByLot` per firearm, most results first: a lot can shoot well in one firearm and
-    /// badly in another, so lots are only compared within the same firearm.
-    var percentageByWeaponAndLot: [WeaponLotResults] {
-        Dictionary(grouping: self, by: { $0.weapon?.persistentModelID })
-            .compactMap { _, entries -> WeaponLotResults? in
-                let lots = entries.percentageByLot
-                return lots.isEmpty ? nil : WeaponLotResults(weapon: entries[0].weapon, lots: lots)
+    /// `percentageByLot` per firearm and shooting position, most results first: a lot can shoot well
+    /// in one firearm and badly in another, and liegend or aufgelegt scores clearly higher than
+    /// kniend or stehend, so lots are only compared under the same firearm and position.
+    var lotComparisons: [LotComparison] {
+        Dictionary(grouping: self, by: { $0.weapon?.persistentModelID }).values
+            .flatMap { byWeapon in
+                Dictionary(grouping: byWeapon, by: \.position).values.compactMap { entries -> LotComparison? in
+                    let lots = entries.percentageByLot
+                    return lots.isEmpty ? nil : LotComparison(weapon: entries[0].weapon, position: entries[0].position, lots: lots)
+                }
             }
             .sorted {
                 if $0.count != $1.count { return $0.count > $1.count }
                 if ($0.weapon == nil) != ($1.weapon == nil) { return $1.weapon == nil }
-                return ($0.weapon?.name ?? "").localizedStandardCompare($1.weapon?.name ?? "") == .orderedAscending
+                let names = ($0.weapon?.name ?? "").localizedStandardCompare($1.weapon?.name ?? "")
+                if names != .orderedSame { return names == .orderedAscending }
+                return ShootingPosition.order($0.position) < ShootingPosition.order($1.position)
             }
+    }
+
+    /// Result percentages per shooting position in the picker's order, entries without a position
+    /// last. Only entries with a percentage count, as for lots.
+    var percentageByPosition: [PositionResult] {
+        var groups: [ShootingPosition?: [Double]] = [:]
+        for entry in self {
+            if let p = entry.score.percentage { groups[entry.position, default: []].append(p) }
+        }
+        return groups
+            .compactMap { position, values in BoxStats(values).map { PositionResult(position: position, values: values.sorted(), stats: $0) } }
+            .sorted { ShootingPosition.order($0.position) < ShootingPosition.order($1.position) }
     }
 
     /// Mean points per entry over the entries with a numeric result.
@@ -189,10 +206,12 @@ struct LotResult {
     var count: Int { values.count }
 }
 
-/// One firearm's lot results, see `percentageByWeaponAndLot`.
-struct WeaponLotResults {
+/// Lots shot in one firearm and position, see `lotComparisons`.
+struct LotComparison {
     /// nil for entries without a firearm.
     var weapon: Weapon?
+    /// nil for entries without a position.
+    var position: ShootingPosition?
     var lots: [LotResult]
     var count: Int { lots.reduce(0) { $0 + $1.count } }
 
@@ -203,6 +222,22 @@ struct WeaponLotResults {
         guard ammunitions.count > 1, let name = lot.ammunition?.name else { return lot.number }
         return "\(name) · \(lot.number)"
     }
+}
+
+extension ShootingPosition {
+    /// Sort key for statistics: the picker's order, no position last.
+    static func order(_ position: ShootingPosition?) -> Int {
+        position.flatMap { allCases.firstIndex(of: $0) } ?? allCases.count
+    }
+}
+
+/// One shooting position's results, see `percentageByPosition`.
+struct PositionResult {
+    /// nil for entries without a position.
+    var position: ShootingPosition?
+    /// Percentages (0...1), ascending.
+    var values: [Double]
+    var stats: BoxStats
 }
 
 /// A Stich shot more than once at the same event, e.g. bought twice ("nachgedoppelt").

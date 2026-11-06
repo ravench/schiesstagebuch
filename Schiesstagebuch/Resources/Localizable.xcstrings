@@ -4239,6 +4239,29 @@
         }
       }
     },
+    "Getrennt pro Stellung: Liegend oder aufgelegt gibt es meist deutlich mehr Punkte als kniend oder stehend.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split by position: prone or rested usually scores clearly more points than kneeling or standing."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Séparé par position : couché ou appuyé donne généralement nettement plus de points qu’à genou ou debout."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separato per posizione: a terra o appoggiato si fanno di solito molti più punti che in ginocchio o in piedi."
+          }
+        }
+      }
+    },
     "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.": {
       "extractionState": "manual",
       "localizations": {
@@ -6654,6 +6677,29 @@
         }
       }
     },
+    "Mit weniger als 5 Resultaten pro Stellung sind Quartile wenig aussagekräftig.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With fewer than 5 results per position, quartiles say little."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec moins de 5 résultats par position, les quartiles sont peu significatifs."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con meno di 5 risultati per posizione, i quartili sono poco significativi."
+          }
+        }
+      }
+    },
     "Monat": {
       "extractionState": "manual",
       "localizations": {
@@ -7846,6 +7892,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Senza attrezzo"
+          }
+        }
+      }
+    },
+    "Ohne Stellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No position"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza posizione"
           }
         }
       }
@@ -9180,6 +9249,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato per lotto"
+          }
+        }
+      }
+    },
+    "Resultat pro Stellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result by position"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat par position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato per posizione"
           }
         }
       }

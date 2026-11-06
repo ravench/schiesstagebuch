@@ -94,26 +94,37 @@ struct ScoreSummary: View {
     }
 }
 
-/// Result percentage per entry over time; shown once two entries have one.
+/// Result percentage per entry over time; shown once two entries have one. Entries shot in
+/// different positions get a line each, since liegend scores clearly higher than stehend.
 struct ResultTrendChart: View {
     let entries: [Entry]
 
-    private struct Point: Identifiable { let id: UUID; let date: Date; let percent: Double }
+    private struct Point: Identifiable { let id: UUID; let date: Date; let percent: Double; let position: String }
 
     private var points: [Point] {
-        entries.compactMap { e in e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0) } }
-            .sorted { $0.date < $1.date }
+        entries.compactMap { e in
+            e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0, position: e.position?.title ?? "Ohne Stellung".loc) }
+        }
+        .sorted { $0.date < $1.date }
     }
 
     var body: some View {
         let data = points
         if data.count >= 2 {
+            let split = Set(data.map(\.position)).count > 1
             VStack(alignment: .leading, spacing: 8) {
                 Text("Resultat in Prozent").font(.headline)
                 Chart(data) { p in
-                    LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
-                        .symbol(.circle)
-                        .interpolationMethod(.monotone)
+                    if split {
+                        LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
+                            .foregroundStyle(by: .value("Stellung", p.position))
+                            .symbol(.circle)
+                            .interpolationMethod(.monotone)
+                    } else {
+                        LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
+                            .symbol(.circle)
+                            .interpolationMethod(.monotone)
+                    }
                 }
                 .chartYAxis {
                     AxisMarks { value in
@@ -226,22 +237,22 @@ struct BreakdownChart<Key: Hashable>: View {
     }
 }
 
-/// Box plots of result percentages per ammunition lot, one per firearm, so lots can be compared however
-/// each entry was scored (points of a maximum or a result in percent): box = Q1–Q3, bar = median,
-/// whiskers to 1.5 × IQR, every single result as a dot (outliers filled). A lot can shoot well in one
-/// firearm and badly in another, so results of different firearms are never pooled.
-struct LotResultsChart: View {
-    @Environment(\.term) private var term
-    let entries: [Entry]
-
-    private struct Dot: Identifiable { let id: Int; let lot: String; let value: Double; let outlier: Bool }
-
-    /// Something to compare: two lots, or one lot in two firearms.
-    static func shows(_ entries: [Entry]) -> Bool {
-        entries.percentageByWeaponAndLot.reduce(0) { $0 + $1.lots.count } >= 2
+/// Result percentages as box plots, one row per group: box = Q1–Q3, bar = median with «median · n»,
+/// whiskers to 1.5 × IQR, every single result as a dot (outliers red).
+struct BoxPlot: View {
+    struct Row {
+        var label: String
+        /// Percentages (0...1).
+        var values: [Double]
+        var stats: BoxStats
     }
 
-    /// One scale for all firearms so their boxes line up: whole 5 % steps around the results, within 0–100 %.
+    let rows: [Row]
+    let domain: ClosedRange<Double>
+
+    private struct Dot: Identifiable { let id: Int; let row: String; let value: Double; let outlier: Bool }
+
+    /// A scale that fits all values, so several plots line up: whole 5 % steps, within 0–100 %.
     static func domain(_ values: [Double]) -> ClosedRange<Double> {
         let low = max(0, ((values.min() ?? 0) * 20).rounded(.down) / 20)
         let high = min(1, ((values.max() ?? 1) * 20).rounded(.up) / 20)
@@ -249,45 +260,17 @@ struct LotResultsChart: View {
     }
 
     var body: some View {
-        let groups = entries.percentageByWeaponAndLot
-        if groups.reduce(0, { $0 + $1.lots.count }) >= 2 {
-            let domain = Self.domain(groups.flatMap { $0.lots.flatMap(\.values) })
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Resultat pro Los").font(.headline)
-                ForEach(groups, id: \.weapon?.persistentModelID) { group in
-                    // A firearm's own page has a single group: its name would only repeat the title.
-                    if groups.count > 1 {
-                        Text(group.weapon?.name ?? term("Ohne Waffe").loc).font(.subheadline.weight(.semibold))
-                    }
-                    chart(group, domain: domain)
-                }
-                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
-                    .font(.caption).foregroundStyle(.secondary)
-                if groups.count > 1 {
-                    Text(term("Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.").loc)
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-                if groups.contains(where: { $0.lots.contains { $0.count < BoxStats.reliableCount } }) {
-                    Text("Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-
-    private func chart(_ group: WeaponLotResults, domain: ClosedRange<Double>) -> some View {
-        let rows = group.lots
-        let dots = rows.flatMap { r in r.values.map { v in (group.label(r.lot), v, r.stats.outliers.contains(v)) } }
-            .enumerated().map { Dot(id: $0.offset, lot: $0.element.0, value: $0.element.1, outlier: $0.element.2) }
-        return Chart {
-            ForEach(rows, id: \.lot.persistentModelID) { row in
-                let s = row.stats, lot = group.label(row.lot)
+        let dots = rows.flatMap { r in r.values.map { v in (r.label, v, r.stats.outliers.contains(v)) } }
+            .enumerated().map { Dot(id: $0.offset, row: $0.element.0, value: $0.element.1, outlier: $0.element.2) }
+        Chart {
+            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                let s = row.stats
                 RuleMark(xStart: .value("Prozent", s.lowerWhisker), xEnd: .value("Prozent", s.upperWhisker),
-                         y: .value("Los", lot))
+                         y: .value("Gruppe", row.label))
                     .foregroundStyle(.secondary)
-                BarMark(xStart: .value("Q1", s.q1), xEnd: .value("Q3", s.q3), y: .value("Los", lot), height: 18)
+                BarMark(xStart: .value("Q1", s.q1), xEnd: .value("Q3", s.q3), y: .value("Gruppe", row.label), height: 18)
                     .foregroundStyle(.tint.opacity(0.3))
-                RectangleMark(x: .value("Median", s.median), y: .value("Los", lot), width: 3, height: 22)
+                RectangleMark(x: .value("Median", s.median), y: .value("Gruppe", row.label), width: 3, height: 22)
                     .foregroundStyle(.tint)
                     .annotation(position: .top, alignment: .leading, spacing: 2) {
                         Text(verbatim: "\(ScoreFormat.percent(s.median)) · n = \(s.count)")
@@ -295,7 +278,7 @@ struct LotResultsChart: View {
                     }
             }
             ForEach(dots) { d in
-                PointMark(x: .value("Prozent", d.value), y: .value("Los", d.lot))
+                PointMark(x: .value("Prozent", d.value), y: .value("Gruppe", d.row))
                     .symbolSize(d.outlier ? 30 : 14)
                     .foregroundStyle(d.outlier ? AnyShapeStyle(.red) : AnyShapeStyle(.primary.opacity(0.45)))
             }
@@ -308,5 +291,89 @@ struct LotResultsChart: View {
             }
         }
         .frame(height: CGFloat(rows.count) * 52 + 30)
+    }
+}
+
+/// Box plots of result percentages per ammunition lot, so lots can be compared however each entry
+/// was scored (points of a maximum or a result in percent). One plot per firearm and shooting
+/// position, never pooled: a lot can shoot well in one firearm and badly in another, and liegend or
+/// aufgelegt scores clearly higher than kniend or stehend.
+struct LotResultsChart: View {
+    @Environment(\.term) private var term
+    let entries: [Entry]
+
+    /// Something to compare: two lots, or one lot in two firearms or positions.
+    static func shows(_ entries: [Entry]) -> Bool {
+        entries.lotComparisons.reduce(0) { $0 + $1.lots.count } >= 2
+    }
+
+    /// What tells this plot apart from the others: the firearm and/or the position, whichever differ.
+    /// nil for a single plot (e.g. on a firearm's page, where the name would only repeat the title).
+    static func title(_ group: LotComparison, among groups: [LotComparison], term: Terms) -> String? {
+        let weapons = Set(groups.map { $0.weapon?.persistentModelID }).count > 1
+        let positions = Set(groups.map(\.position)).count > 1
+        let parts: [String?] = [weapons ? group.weapon?.name ?? term("Ohne Waffe").loc : nil,
+                                positions ? group.position?.title ?? "Ohne Stellung".loc : nil]
+        let shown = parts.compactMap { $0 }
+        return shown.isEmpty ? nil : shown.joined(separator: " · ")
+    }
+
+    var body: some View {
+        let groups = entries.lotComparisons
+        if groups.reduce(0, { $0 + $1.lots.count }) >= 2 {
+            let domain = BoxPlot.domain(groups.flatMap { $0.lots.flatMap(\.values) })
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Resultat pro Los").font(.headline)
+                ForEach(Array(groups.enumerated()), id: \.offset) { _, group in
+                    if let title = Self.title(group, among: groups, term: term) {
+                        Text(title).font(.subheadline.weight(.semibold))
+                    }
+                    BoxPlot(rows: group.lots.map { .init(label: group.label($0.lot), values: $0.values, stats: $0.stats) },
+                            domain: domain)
+                }
+                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
+                    .font(.caption).foregroundStyle(.secondary)
+                if Set(groups.map { $0.weapon?.persistentModelID }).count > 1 {
+                    Text(term("Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.").loc)
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                if Set(groups.map(\.position)).count > 1 {
+                    Text("Getrennt pro Stellung: Liegend oder aufgelegt gibt es meist deutlich mehr Punkte als kniend oder stehend.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                if groups.contains(where: { $0.lots.contains { $0.count < BoxStats.reliableCount } }) {
+                    Text("Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+}
+
+/// Box plot of result percentages per shooting position: liegend or aufgelegt usually scores clearly
+/// higher than kniend or stehend, so a single average over all positions says little.
+struct PositionResultsChart: View {
+    let entries: [Entry]
+
+    /// Shown once two positions have a percentage; entries without a position alone do not count.
+    static func shows(_ entries: [Entry]) -> Bool {
+        entries.percentageByPosition.filter { $0.position != nil }.count >= 2
+    }
+
+    var body: some View {
+        let rows = entries.percentageByPosition
+        if rows.filter({ $0.position != nil }).count >= 2 {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Resultat pro Stellung").font(.headline)
+                BoxPlot(rows: rows.map { .init(label: $0.position?.title ?? "Ohne Stellung".loc, values: $0.values, stats: $0.stats) },
+                        domain: BoxPlot.domain(rows.flatMap(\.values)))
+                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
+                    .font(.caption).foregroundStyle(.secondary)
+                if rows.contains(where: { $0.stats.count < BoxStats.reliableCount }) {
+                    Text("Mit weniger als 5 Resultaten pro Stellung sind Quartile wenig aussagekräftig.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+        }
     }
 }

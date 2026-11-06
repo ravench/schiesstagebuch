@@ -32,6 +32,7 @@ final class PRScreensTests: XCTestCase {
 
         tab("Statistik")
         snap("05-Statistik")
+        stop("05b-Statistik-Resultat-pro-Stellung", below: "Box: mittlere Hälfte")
 
         tab("Waffen")
         snap("06-Waffen")
@@ -49,7 +50,8 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
-            lotResultsStop("07c-Waffe-Resultat-pro-Los")
+            stop("07c-Waffe-Resultat-pro-Stellung", below: "Box: mittlere Hälfte")
+            stop("07d-Waffe-Resultat-pro-Los", below: "Getrennt pro Stellung")
             back()
         }
 
@@ -64,10 +66,10 @@ final class PRScreensTests: XCTestCase {
             }
             back()
         }
-        // The GP 11 lots, split by firearm.
+        // The GP 11 lots, split by firearm and position.
         if open(app.staticTexts["Munition"].firstMatch) {
             if open(app.staticTexts["GP 11"].firstMatch) {
-                lotResultsStop("12-Munition-Resultat-pro-Los")
+                stop("12-Munition-Resultat-pro-Los", below: "Getrennt pro Waffe")
                 back()
             }
             back()
@@ -76,9 +78,9 @@ final class PRScreensTests: XCTestCase {
         snap("09-Einstellungen-unten")
     }
 
-    /// Scrolls down to the whole «Resultat pro Los» chart, whose explanation is right below it.
-    private func lotResultsStop(_ name: String) {
-        reveal(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Box: mittlere Hälfte")).firstMatch)
+    /// Scrolls down to a whole chart through the first text below it that starts with `prefix`.
+    private func stop(_ name: String, below prefix: String) {
+        reveal(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", prefix)).firstMatch, swipes: 10)
         snap(name)
     }
 
@@ -147,9 +149,9 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Swipes up a little at a time until `element` can be tapped (at most six swipes).
-    private func reveal(_ element: XCUIElement) {
-        for _ in 0..<6 where !(element.exists && element.isHittable) {
+    /// Swipes up a little at a time until `element` can be tapped (at most `swipes` times).
+    private func reveal(_ element: XCUIElement, swipes: Int = 6) {
+        for _ in 0..<swipes where !(element.exists && element.isHittable) {
             app.swipeUp(velocity: .slow)
         }
     }

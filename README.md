@@ -47,8 +47,10 @@ match (Stich).
   trend, shots per firearm, calibre and shooting range, with a period filter. Every
   firearm, calibre, shooting range and ammunition has its own statistics page; the
   ammunition page also shows shots per lot. Lots are compared by result percentage
-  (box plots), separately for each firearm, since a lot can shoot well in one firearm
-  and badly in another; a firearm's page compares the lots shot in it.
+  (box plots), separately for each firearm and shooting position, since a lot can shoot
+  well in one firearm and badly in another, and prone or rested scores clearly higher
+  than kneeling or standing; a firearm's page compares the lots shot in it. Results per
+  position get their own box plot, and the result trend draws one line per position.
 - **Maintenance** (Pflege): log cleaning and service per firearm. Optional reminders
   after N shots and/or N days, as local notifications and a badge on the Firearms tab.
 - **For sport shooters** (Für Sportschützen): optional fields, each switched on by
