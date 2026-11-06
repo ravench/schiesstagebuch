@@ -1,9 +1,11 @@
 import SwiftUI
 import UIKit
 
-/// Settings → Filters: tick the colour filters and adjustment lenses you own (only those appear in entries) and manage your own.
+/// Settings › Farbfilter: the switch for recording colour filters, and while it is on, the colour filters and
+/// adjustment lenses you own (only those appear in entries) and your own ones.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var editing: EditTarget?
 
     private struct EditTarget: Identifiable {
@@ -32,53 +34,64 @@ struct FilterSettingsView: View {
     var body: some View {
         List {
             Section {
-                ForEach(catalog.custom, id: \.name) { f in
-                    Button { editing = EditTarget(original: f) } label: {
-                        Label { Text(f.name).foregroundStyle(Color.primary) } icon: { FilterSwatch(filter: f) }
+                Toggle(isOn: Binding(get: { features.contains(.filter) }, set: { features.set(.filter, $0) })) {
+                    Label { Text("Farbfilter erfassen") } icon: { FilterHolderIcon() }
+                }
+            } footer: {
+                Text("Pro Eintrag bis zu zwei Filter, an der Schiessbrille oder im Diopter, auch Korrekturgläser.")
+            }
+
+            // Like Wi-Fi in iOS Settings: the filters show while the switch is on.
+            if features.contains(.filter) {
+                Section {
+                    ForEach(catalog.custom, id: \.name) { f in
+                        Button { editing = EditTarget(original: f) } label: {
+                            Label { Text(f.name).foregroundStyle(Color.primary) } icon: { FilterSwatch(filter: f) }
+                        }
                     }
+                    .onDelete { idx in
+                        let names = idx.map { catalog.custom[$0].name }
+                        update { c in names.forEach { c.remove($0) } }
+                    }
+                    Button { editing = EditTarget(original: nil) } label: {
+                        Label("Filter hinzufügen", systemImage: "plus")
+                    }
+                } header: {
+                    Text("Eigene Filter")
                 }
-                .onDelete { idx in
-                    let names = idx.map { catalog.custom[$0].name }
-                    update { c in names.forEach { c.remove($0) } }
+
+                Section {
+                    ownToggles(FilterColor.filters)
+                } header: {
+                    Text("Brillenfilter (AXIA)")
+                } footer: {
+                    Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
                 }
-                Button { editing = EditTarget(original: nil) } label: {
-                    Label("Filter hinzufügen", systemImage: "plus")
+
+                Section {
+                    ownToggles(FilterColor.wyss)
+                } header: {
+                    Text("Filterrad Wyss (Stgw 90)")
                 }
-            } header: {
-                Text("Eigene Filter")
-            }
 
-            Section {
-                ownToggles(FilterColor.filters)
-            } header: {
-                Text("Brillenfilter (AXIA)")
-            } footer: {
-                Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
-            }
+                Section {
+                    ownToggles(FilterColor.gruenigElmiger)
+                } header: {
+                    Text("Filterräder Grünig + Elmiger (Stgw 90)")
+                } footer: {
+                    Text("Zwei Räder im Diopter mit je sechs Farben.")
+                }
 
-            Section {
-                ownToggles(FilterColor.wyss)
-            } header: {
-                Text("Filterrad Wyss (Stgw 90)")
-            }
-
-            Section {
-                ownToggles(FilterColor.gruenigElmiger)
-            } header: {
-                Text("Filterräder Grünig + Elmiger (Stgw 90)")
-            } footer: {
-                Text("Zwei Räder im Diopter mit je sechs Farben.")
-            }
-
-            Section {
-                ownToggles(FilterColor.dioptre)
-            } header: {
-                Text("Korrekturlinsen")
-            } footer: {
-                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.")
+                Section {
+                    ownToggles(FilterColor.dioptre)
+                } header: {
+                    Text("Korrekturlinsen")
+                } footer: {
+                    Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.")
+                }
             }
         }
-        .navigationTitle("Filter (Mehrzahl)")
+        .navigationTitle("Farbfilter")
         .sheet(item: $editing) { target in
             FilterEditorView(original: target.original, catalog: catalog) { saved in
                 update { $0.save(saved, replacing: target.original?.name) }

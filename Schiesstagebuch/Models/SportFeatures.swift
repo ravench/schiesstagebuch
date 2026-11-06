@@ -1,7 +1,7 @@
 import Foundation
 
 /// Optional fields for sport shooters. Each one is switched on by itself, on the welcome screen or in
-/// Settings › Für Sportschützen; all are off by default. Switching one off only hides it: values
+/// Settings › Zusätzliche Felder (colour filters on their own page there); all are off by default. Switching one off only hides it: values
 /// already recorded stay saved and show up again when it is switched back on.
 struct SportFeatures: OptionSet, Hashable {
     let rawValue: Int
@@ -60,7 +60,7 @@ struct SportFeatures: OptionSet, Hashable {
         }
     }
 
-    /// Settings lists the filter list right under this feature's switch.
+    /// Settings shows this feature as one row that opens the filter page, with its switch above the filter list.
     var hasFilterList: Bool { self == .filter }
 
     /// Sight-section fields an entry shows for this kind of weapon: pistols have no bipod.

@@ -74,19 +74,43 @@ final class PRScreensTests: XCTestCase {
         }
         scroll()
         snap("09-Einstellungen-unten")
+        filterStops()
+    }
+
+    /// «Zusätzliche Felder» with one «Farbfilter» row, and the filter page it opens: the switch
+    /// on top, the filters below once it is on. Comes from the end of Settings, so it scrolls back up.
+    private func filterStops() {
+        let extra = app.staticTexts["Zusätzliche Felder"].firstMatch
+        reveal(extra, up: false)
+        holdAtTop(extra)
+        snap("09a-Zusaetzliche-Felder")
+        if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Farbfilter")).firstMatch) {
+            snap("09b-Farbfilter")
+            let record = app.switches["Farbfilter erfassen"].firstMatch
+            if record.waitForExistence(timeout: 5) {
+                // Tap the switch itself, not the label.
+                record.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+                snap("09c-Farbfilter-ein")
+            }
+            back()
+        }
     }
 
     /// Scrolls the «Resultat pro Los» chart to the top of the screen, so all of it shows.
     private func lotResultsStop(_ name: String) {
         let title = app.staticTexts["Resultat pro Los"].firstMatch
         reveal(title, swipes: 10)
-        if title.exists && title.isHittable {
-            // Held at the end, so the list does not glide on past the chart.
-            title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
-                       withVelocity: .slow, thenHoldForDuration: 0.5)
-        }
+        holdAtTop(title)
         snap(name)
+    }
+
+    /// Drags `element` near the top of the screen, so what follows it shows.
+    private func holdAtTop(_ element: XCUIElement) {
+        guard element.exists && element.isHittable else { return }
+        // Held at the end, so the list does not glide on past it.
+        element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                   withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
     /// The firearm menu and the range list, both ending with «… hinzufügen».
@@ -157,10 +181,10 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Swipes up a little at a time until `element` can be tapped (at most `swipes` times).
-    private func reveal(_ element: XCUIElement, swipes: Int = 6) {
+    /// Swipes a little at a time until `element` can be tapped (at most `swipes` times).
+    private func reveal(_ element: XCUIElement, swipes: Int = 6, up: Bool = true) {
         for _ in 0..<swipes where !(element.exists && element.isHittable) {
-            app.swipeUp(velocity: .slow)
+            if up { app.swipeUp(velocity: .slow) } else { app.swipeDown(velocity: .slow) }
         }
     }
 

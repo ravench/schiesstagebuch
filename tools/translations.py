@@ -62,6 +62,7 @@ T = {
         "Le armi archiviate non vengono più proposte per le nuove voci, ma restano nel diario e nelle statistiche."),
     "Archivierte zeigen": ("Show archived", "Afficher les archivées", "Mostra archiviate"),
     "Aus": ("Off", "Désactivé", "Disattivato"),
+    "Ein": ("On", "Activé", "Attivato"),
     "Ausgewählt": ("Selected", "Sélectionnés", "Selezionati"),
     "Ausrüstung": ("Equipment", "Équipement", "Equipaggiamento"),
     "Backup exportieren": ("Export backup", "Exporter une sauvegarde", "Esporta backup"),
@@ -438,10 +439,6 @@ T = {
     "Filterräder Grünig + Elmiger (Stgw 90)": ("Grünig + Elmiger filter wheels (Stgw 90)", "Roues à filtres Grünig + Elmiger (Fass 90)", "Ruote filtri Grünig + Elmiger (Fass 90)"),
     "Zwei Räder im Diopter mit je sechs Farben.": ("Two wheels in the diopter with six colours each.", "Deux roues dans le dioptre, six couleurs chacune.", "Due ruote nella diottra con sei colori ciascuna."),
     "Zusätzliche Felder": ("Extra fields", "Champs supplémentaires", "Campi aggiuntivi"),
-    "Brillenfilter und Filterräder, die du besitzt": (
-        "Glasses filters and filter wheels you own",
-        "Filtres de lunettes et roues à filtres que tu possèdes",
-        "Filtri per occhiali e ruote filtri che possiedi"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
     "An der Schiessbrille oder im Diopter, auch Korrekturgläser": (
         "On the shooting glasses or in the diopter, also correction lenses",
@@ -479,8 +476,13 @@ T = {
     "Eigene Filter": ("My filters", "Mes filtres", "I miei filtri"),
     "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
     "Farbfilter": ("Colour filters", "Filtres de couleur", "Filtri colorati"),
+    "Farbfilter erfassen": ("Record colour filters", "Saisir les filtres de couleur", "Registra i filtri colorati"),
+    "Pro Eintrag bis zu zwei Filter, an der Schiessbrille oder im Diopter, auch Korrekturgläser.": (
+        "Up to two filters per entry, on the shooting glasses or in the diopter, also correction lenses.",
+        "Jusqu'à deux filtres par entrée, sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs.",
+        "Fino a due filtri per voce, sugli occhiali da tiro o nella diottra, anche lenti correttive."),
     "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.": ("Select the filters you own. Only these appear in the picker. Existing entries keep their filter.", "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre.", "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro."),
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.": ("Optional. New entries take the values of the last entry with this firearm. Choose your filters under Settings › Filters.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri."),
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Farbfilter.": ("Optional. New entries take the values of the last entry with this firearm. Choose your filters under Settings › Colour filters.", "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres de couleur.", "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri colorati."),
     "Name": ("Name", "Nom", "Nome"),
     "Farbe": ("Colour", "Couleur", "Colore"),
     "Polarisiert": ("Polarised", "Polarisé", "Polarizzato"),

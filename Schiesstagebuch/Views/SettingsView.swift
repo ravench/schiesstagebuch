@@ -82,20 +82,17 @@ struct SettingsView: View {
 
                 Section {
                     ForEach(SportFeatures.each, id: \.rawValue) { feature in
-                        SportFeatureToggle(feature: feature, features: $features)
-                        // The filter list sits right under its switch, while colour filters are recorded.
-                        if feature.hasFilterList, features.contains(.filter) {
+                        if feature.hasFilterList {
+                            // One row for colour filters: its switch sits on the filter page, above the filters.
                             NavigationLink { FilterSettingsView() } label: {
-                                Label {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Filter (Mehrzahl)")
-                                        Text("Brillenfilter und Filterräder, die du besitzt").font(.caption).foregroundStyle(.secondary)
-                                    }
-                                } icon: {
-                                    // Same width as the switch's icon above, so the texts line up; drawn only once.
-                                    FilterHolderIcon().hidden()
+                                LabeledContent {
+                                    Text(features.contains(feature) ? "Ein".loc : "Aus".loc)
+                                } label: {
+                                    Label { Text(feature.title.loc) } icon: { SportFeatureIcon(feature: feature) }
                                 }
                             }
+                        } else {
+                            SportFeatureToggle(feature: feature, features: $features, showsDetail: false)
                         }
                     }
                 } header: {

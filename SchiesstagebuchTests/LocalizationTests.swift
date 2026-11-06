@@ -134,4 +134,39 @@ final class LocalizationTests: XCTestCase {
         }
         XCTAssertEqual(try localized("Nummer Lauf (optional)", "en"), "<missing>", "old label still translated")
     }
+
+    /// Settings shows colour filters as one row with «Ein»/«Aus»; its switch sits on the filter page.
+    func testColourFilterRowAndPageAreTranslated() throws {
+        let expected = [
+            "Ein": ["en": "On", "fr": "Activé", "it": "Attivato"],
+            "Aus": ["en": "Off", "fr": "Désactivé", "it": "Disattivato"],
+            "Farbfilter erfassen": ["en": "Record colour filters", "fr": "Saisir les filtres de couleur",
+                                    "it": "Registra i filtri colorati"],
+            "Farbfilter": ["en": "Colour filters", "fr": "Filtres de couleur", "it": "Filtri colorati"],
+        ]
+        for (key, byLang) in expected {
+            for (lang, text) in byLang {
+                XCTAssertEqual(try localized(key, lang), text, "\(key) in \(lang)")
+            }
+        }
+        for lang in ["en", "fr", "it"] {
+            XCTAssertNotEqual(try localized("Pro Eintrag bis zu zwei Filter, an der Schiessbrille oder im Diopter, auch Korrekturgläser.", lang),
+                              "<missing>", lang)
+        }
+        XCTAssertEqual(try localized("Brillenfilter und Filterräder, die du besitzt", "en"), "<missing>", "old row subtitle still translated")
+    }
+
+    /// The entry's filter hint points to the row that opens the filters, in both wordings and every language.
+    func testFilterHintNamesTheColourFiltersRow() throws {
+        let key = "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Farbfilter."
+        XCTAssertNotEqual(Terms(sportsEquipment: true)(key), key, "no Sportgerät variant")
+        for terms in [Terms(), Terms(sportsEquipment: true)] {
+            XCTAssertTrue(terms(key).hasSuffix("› \(SportFeatures.filter.title)."), terms(key))
+            for lang in ["en", "fr", "it"] {
+                let text = try localized(terms(key), lang)
+                let row = try localized(SportFeatures.filter.title, lang)
+                XCTAssertTrue(text.hasSuffix("› \(row)."), "\(lang): \(text)")
+            }
+        }
+    }
 }
