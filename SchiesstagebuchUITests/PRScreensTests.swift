@@ -75,9 +75,16 @@ final class PRScreensTests: XCTestCase {
         snap("09-Einstellungen-unten")
     }
 
-    /// Scrolls down to the whole «Resultat pro Los» chart, whose explanation is right below it.
+    /// Scrolls the «Resultat pro Los» chart to the top of the screen, so all of it shows.
     private func lotResultsStop(_ name: String) {
-        reveal(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Box: mittlere Hälfte")).firstMatch)
+        let title = app.staticTexts["Resultat pro Los"].firstMatch
+        reveal(title, swipes: 10)
+        if title.exists && title.isHittable {
+            // Held at the end, so the list does not glide on past the chart.
+            title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                       withVelocity: .slow, thenHoldForDuration: 0.5)
+        }
         snap(name)
     }
 
@@ -136,9 +143,9 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Swipes up a little at a time until `element` can be tapped (at most six swipes).
-    private func reveal(_ element: XCUIElement) {
-        for _ in 0..<6 where !(element.exists && element.isHittable) {
+    /// Swipes up a little at a time until `element` can be tapped (at most `swipes` times).
+    private func reveal(_ element: XCUIElement, swipes: Int = 6) {
+        for _ in 0..<swipes where !(element.exists && element.isHittable) {
             app.swipeUp(velocity: .slow)
         }
     }

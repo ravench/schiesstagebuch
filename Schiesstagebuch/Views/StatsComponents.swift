@@ -289,9 +289,17 @@ struct LotResultsChart: View {
                     .foregroundStyle(.tint.opacity(0.3))
                 RectangleMark(x: .value("Median", s.median), y: .value("Los", lot), width: 3, height: 22)
                     .foregroundStyle(.tint)
+                // The lot's name sits above its row instead of on the y axis, whose width would differ
+                // per firearm and shift its plot against the others.
+                BarMark(xStart: .value("Prozent", domain.lowerBound), xEnd: .value("Prozent", domain.upperBound),
+                        y: .value("Los", lot), height: 22)
+                    .foregroundStyle(.clear)
                     .annotation(position: .top, alignment: .leading, spacing: 2) {
-                        Text(verbatim: "\(ScoreFormat.percent(s.median)) · n = \(s.count)")
-                            .font(.caption2.monospacedDigit()).foregroundStyle(.secondary)
+                        HStack(spacing: 0) {
+                            Text(lot).bold()
+                            Text(verbatim: " · \(ScoreFormat.percent(s.median)) · n = \(s.count)").foregroundStyle(.secondary)
+                        }
+                        .font(.caption2.monospacedDigit())
                     }
             }
             ForEach(dots) { d in
@@ -301,6 +309,7 @@ struct LotResultsChart: View {
             }
         }
         .chartXScale(domain: domain)
+        .chartYAxis(.hidden)
         .chartXAxis {
             AxisMarks { value in
                 AxisGridLine()
