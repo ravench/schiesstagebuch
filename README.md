@@ -133,7 +133,8 @@ Admin role (Users and Access, Integrations, Team Keys): `ASC_KEY_ID` (Key ID),
 
 The **iPad screens** workflow (Actions › iPad screens › Run workflow) starts the app on an
 iPad simulator with sample data (launch argument `-screenshotData`, kept in memory only) and
-screenshots every tab in portrait and landscape. Browse them on the `ipad-screens` branch
+screenshots every tab in portrait and landscape. Browse them on the `schiesstagebuch/ipad-screens` branch of
+[ravench/app-screens](https://github.com/ravench/app-screens/tree/schiesstagebuch/ipad-screens)
 (latest run only) or download the run's `ipad-screens` artifact. The UI test lives in
 `SchiesstagebuchUITests` and has its own scheme, `SchiesstagebuchScreens`, so the normal
 test run skips it.
