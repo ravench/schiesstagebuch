@@ -9,6 +9,7 @@ struct WeatherSection: View {
     let day: Date
     let range: ShootingRange?
     @State private var editingRelay: WeatherRelay?
+    @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
 
     var body: some View {
         Section {
@@ -29,7 +30,8 @@ struct WeatherSection: View {
             Text("Wetter")
         } footer: {
             Text(weather == nil ? "Aus, wenn drinnen geschossen wird; dann erscheint auch im Eintrag kein Wetter.".loc
-                                : "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit dem Wetter von Apple Wetter; mit der Schussrichtung auch Windrichtung und Sonne.".loc)
+                 : appleWeather ? "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit dem Wetter von Apple Wetter (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.".loc
+                 : "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.".loc)
         }
 
         if let record = weather {
@@ -74,6 +76,7 @@ private struct AppleWeatherRow: View {
     @State private var last: WeatherConditions?
     @State private var loaded: Request?
     @State private var phase = Phase.idle
+    @AppStorage(AppleWeather.enabledKey) private var enabled = true
 
     private enum Phase { case idle, loading, done, failed }
 
@@ -82,7 +85,7 @@ private struct AppleWeatherRow: View {
     }
 
     private var request: Request? {
-        guard let lat = range?.latitude, let lon = range?.longitude,
+        guard enabled, let lat = range?.latitude, let lon = range?.longitude,
               let hour = Calendar.current.dateInterval(of: .hour, for: date)?.start, AppleWeather.covers(hour) else { return nil }
         return Request(latitude: lat, longitude: lon, hour: hour, bearing: range?.shootingBearing)
     }

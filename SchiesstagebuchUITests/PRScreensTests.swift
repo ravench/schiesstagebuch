@@ -95,15 +95,22 @@ final class PRScreensTests: XCTestCase {
         app.buttons["Sichern"].firstMatch.tap()
         scroll()
         snap("14-Eintrag-Wetter")
+        // The switch for it in Settings, with what it sends to Apple.
+        tab("Einstellungen")
+        topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
     }
 
     /// Scrolls the «Resultat pro Los» chart to the top of the screen, so all of it shows.
     private func lotResultsStop(_ name: String) {
-        let title = app.staticTexts["Resultat pro Los"].firstMatch
-        reveal(title, swipes: 10)
-        if title.exists && title.isHittable {
-            // Held at the end, so the list does not glide on past the chart.
-            title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        topStop(app.staticTexts["Resultat pro Los"].firstMatch, name)
+    }
+
+    /// Scrolls `element` to the top of the screen, so what follows it shows, and takes the screen.
+    private func topStop(_ element: XCUIElement, _ name: String) {
+        reveal(element, swipes: 10)
+        if element.exists && element.isHittable {
+            // Held at the end, so the list does not glide on past it.
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
                 .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
                        withVelocity: .slow, thenHoldForDuration: 0.5)
         }

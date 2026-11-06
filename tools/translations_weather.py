@@ -12,10 +12,20 @@ W = {
         "Off when shooting indoors; the entry then shows no weather.",
         "Désactivé pour le tir en salle ; l'entrée n'affiche alors pas de météo.",
         "Disattivato quando si tira al coperto; la voce non mostra allora alcun meteo."),
-    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit dem Wetter von Apple Wetter; mit der Schussrichtung auch Windrichtung und Sonne.": (
-        "Everything is optional. With the range's location, the app fills empty fields with the weather from Apple Weather; with its shooting direction also the wind direction and the sun.",
-        "Tout est facultatif. Avec le lieu du stand, l'app remplit les champs vides avec la météo d'Apple ; avec la direction de tir aussi la direction du vent et le soleil.",
-        "Tutto è facoltativo. Con il luogo del poligono, l'app compila i campi vuoti con il meteo di Apple; con la direzione di tiro anche la direzione del vento e il sole."),
+    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit dem Wetter von Apple Wetter (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.": (
+        "Everything is optional. With the range's location, the app fills empty fields with the weather from Apple Weather (you can turn this off in Settings); with its shooting direction also the wind direction and the sun.",
+        "Tout est facultatif. Avec le lieu du stand, l'app remplit les champs vides avec la météo d'Apple (désactivable dans les Réglages) ; avec la direction de tir aussi la direction du vent et le soleil.",
+        "Tutto è facoltativo. Con il luogo del poligono, l'app compila i campi vuoti con il meteo di Apple (disattivabile nelle Impostazioni); con la direzione di tiro anche la direzione del vento e il sole."),
+    # With the Apple Weather switch off.
+    "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.": (
+        "Everything is optional. With the range's location and shooting direction, the app suggests the sun.",
+        "Tout est facultatif. Avec le lieu et la direction de tir du stand, l'app propose le soleil.",
+        "Tutto è facoltativo. Con il luogo e la direzione di tiro del poligono, l'app propone il sole."),
+    # Settings, under the location switch: what the weather lookup sends.
+    "Für das Wetter von Apple Wetter schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.": (
+        "For the weather from Apple Weather, the app sends the range's coordinates and the time to Apple, not your location. As you usually shoot there, it is nearly the same place though.",
+        "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et le moment, pas ta position. Comme tu tires en général sur place, c'est pourtant presque le même endroit.",
+        "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e il momento, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso luogo."),
     # Apple Weather (WeatherKit)
     "Wetter von Apple Wetter übernehmen": ("Fill in from Apple Weather", "Reprendre la météo d'Apple", "Riprendi il meteo di Apple"),
     "Wetter wird abgerufen …": ("Getting the weather …", "Récupération de la météo …", "Recupero del meteo …"),

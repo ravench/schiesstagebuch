@@ -111,6 +111,9 @@ extension WeatherConditions {
 }
 
 enum AppleWeather {
+    /// UserDefaults key of the Settings switch; on unless switched off. Off, the app sends nothing to Apple Weather.
+    static let enabledKey = "appleWeather.enabled"
+
     /// Apple Weather has hourly history from 1 August 2021 and forecasts ten days ahead.
     static let firstHour = Date(timeIntervalSince1970: 1_627_776_000)
 

@@ -18,6 +18,7 @@ struct SettingsView: View {
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
+    @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
     @AppStorage(ScoringSystem.enabledKey) private var scoringSystems = ""
 
@@ -66,8 +67,19 @@ struct SettingsView: View {
                     Toggle(isOn: $rangeByLocation) {
                         Label("Schiessanlage nach Standort wählen", systemImage: "location")
                     }
+                    // Only while weather is recorded at all; the editor has nothing to fill otherwise.
+                    if features.contains(.weather) {
+                        Toggle(isOn: $appleWeather) {
+                            Label("Wetter von Apple Wetter übernehmen", systemImage: "icloud.and.arrow.down")
+                        }
+                    }
                 } footer: {
-                    Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
+                        if features.contains(.weather) {
+                            Text("Für das Wetter von Apple Wetter schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
+                        }
+                    }
                 }
 
                 Section {
