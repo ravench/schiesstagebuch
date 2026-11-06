@@ -132,10 +132,6 @@ T = {
     "Filter (Mehrzahl)": ("Filters", "Filtres", "Filtri", "Filter"),
     "Zweiter Filter": ("Second filter", "Deuxième filtre", "Secondo filtro"),
     "Korrekturlinsen": ("Adjustment lenses", "Verres correcteurs", "Lenti correttive"),
-    "Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.": (
-        "Two filters can be combined per entry, usually a colour filter with a +0.25 or -0.25 adjustment lens.",
-        "Deux filtres peuvent être combinés par entrée, le plus souvent un filtre de couleur avec un verre correcteur +0.25 ou -0.25.",
-        "Per ogni voce si possono combinare due filtri, di solito un filtro colorato con una lente correttiva +0.25 o -0.25."),
     "Filter zurücksetzen": ("Reset filters", "Réinitialiser les filtres", "Reimposta filtri"),
     "Flinte": ("Shotgun", "Fusil de chasse", "Fucile a canna liscia"),
     "Fotos": ("Photos", "Photos", "Foto"),
@@ -443,7 +439,6 @@ T = {
     "Brillenfilter (AXIA)": ("Glasses filters (AXIA)", "Filtres de lunettes (AXIA)", "Filtri per occhiali (AXIA)"),
     "Filterrad Wyss (Stgw 90)": ("Wyss filter wheel (Stgw 90)", "Roue à filtres Wyss (Fass 90)", "Ruota filtri Wyss (Fass 90)"),
     "Filterräder Grünig + Elmiger (Stgw 90)": ("Grünig + Elmiger filter wheels (Stgw 90)", "Roues à filtres Grünig + Elmiger (Fass 90)", "Ruote filtri Grünig + Elmiger (Fass 90)"),
-    "Zwei Räder im Diopter mit je sechs Farben.": ("Two wheels in the diopter with six colours each.", "Deux roues dans le dioptre, six couleurs chacune.", "Due ruote nella diottra con sei colori ciascuna."),
     "Zusätzliche Felder": ("Extra fields", "Champs supplémentaires", "Campi aggiuntivi"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
     "An der Schiessbrille oder im Diopter, auch Korrekturgläser": (

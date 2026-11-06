@@ -78,16 +78,12 @@ struct FilterSettingsView: View {
                     ownToggles(FilterColor.gruenigElmiger)
                 } header: {
                     Text("Filterräder Grünig + Elmiger (Stgw 90)")
-                } footer: {
-                    Text("Zwei Räder im Diopter mit je sechs Farben.")
                 }
 
                 Section {
                     ownToggles(FilterColor.dioptre)
                 } header: {
                     Text("Korrekturlinsen")
-                } footer: {
-                    Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.")
                 }
             }
         }
