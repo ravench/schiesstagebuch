@@ -28,6 +28,16 @@ final class CaliberCatalogTests: ModelTestCase {
 
     // MARK: Seeding
 
+    func testScreenshotRunsSeedEveryTimeWithoutTouchingTheFlag() throws {
+        UserDefaults.standard.set(true, forKey: CaliberCatalog.seededKey)
+        CaliberCatalog.seedIfNeeded(context, always: true)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededKey)
+        CaliberCatalog.seedIfNeeded(context, always: true)
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: CaliberCatalog.seededKey), "the flag stays the real store's")
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count, "seeding twice links, never duplicates")
+    }
+
     func testSeedInsertsTheCatalogueOnceAndLinksExistingNames() throws {
         XCTAssertFalse(CaliberCatalog.items.isEmpty)
         let own = Caliber(name: "9 x 19 mm", category: "")

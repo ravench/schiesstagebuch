@@ -16,10 +16,9 @@ enum ScreenshotData {
         guard existing == 0 else { return }
 
         let range = ShootingRange(name: "Schiessanlage Ostermundigen", place: "Ostermundigen")
-        let gp11 = Caliber(name: "7.5x55 Swiss")
-        gp11.catalogID = "7.5x55 mm Swiss (GP 11)"  // catalogue calibres show their cartridge drawing
-        let luger = Caliber(name: "9mm Luger")
-        luger.catalogID = "9x19 mm"
+        // Catalogue calibres show their cartridge drawing; a seeded catalogue already holds them.
+        let gp11 = caliber("7.5x55 mm Swiss (GP 11)", in: context)
+        let luger = caliber("9x19 mm", in: context)
         let rifle = Weapon(name: "Stgw 90")
         rifle.category = .serviceRifle
         rifle.serialNumber = "A 123456"
@@ -27,8 +26,6 @@ enum ScreenshotData {
         pistol.category = .pistol
         let ammo = Ammunition(name: "GP 11", caliber: gp11)
         context.insert(range)
-        context.insert(gp11)
-        context.insert(luger)
         context.insert(rifle)
         context.insert(pistol)
         context.insert(ammo)
@@ -54,6 +51,17 @@ enum ScreenshotData {
             event.add(entry)
         }
         try? context.save()
+    }
+
+    /// The calibre with this catalogue id, inserted if the catalogue is not seeded.
+    @MainActor
+    private static func caliber(_ catalogID: String, in context: ModelContext) -> Caliber {
+        let all = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
+        if let existing = all.first(where: { $0.catalogID == catalogID }) { return existing }
+        let c = Caliber(name: CaliberCatalog.item(id: catalogID)?.name ?? catalogID)
+        c.catalogID = catalogID
+        context.insert(c)
+        return c
     }
 
     private struct Sample {
