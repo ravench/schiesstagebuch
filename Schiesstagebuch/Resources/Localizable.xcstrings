@@ -4193,6 +4193,52 @@
         }
       }
     },
+    "Getrennt pro Sportgerät: Dasselbe Los kann in einem anderen Sportgerät anders schiessen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split by equipment: the same lot can shoot differently in other equipment."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Séparé par équipement : le même lot peut tirer différemment dans un autre équipement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separato per attrezzo: lo stesso lotto può rendere diversamente in un altro attrezzo."
+          }
+        }
+      }
+    },
+    "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Split by firearm: the same lot can shoot differently in another firearm."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Séparé par arme : le même lot peut tirer différemment dans une autre arme."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separato per arma: lo stesso lotto può rendere diversamente in un’altra arma."
+          }
+        }
+      }
+    },
     "Gilt für alle %lld Stiche dieses Anlasses.": {
       "extractionState": "manual",
       "localizations": {
@@ -7708,6 +7754,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Senza calibro"
+          }
+        }
+      }
+    },
+    "Ohne Sportgerät": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No equipment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans équipement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza attrezzo"
+          }
+        }
+      }
+    },
+    "Ohne Waffe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No firearm"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans arme"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza arma"
           }
         }
       }

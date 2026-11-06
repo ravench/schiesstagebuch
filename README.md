@@ -43,7 +43,9 @@ match (Stich).
 - **Statistics** (Statistik): totals, shots over time (monthly or cumulative), result
   trend, shots per firearm, calibre and shooting range, with a period filter. Every
   firearm, calibre, shooting range and ammunition has its own statistics page; the
-  ammunition page also shows shots per lot.
+  ammunition page also shows shots per lot. Lots are compared by result percentage
+  (box plots), separately for each firearm, since a lot can shoot well in one firearm
+  and badly in another; a firearm's page compares the lots shot in it.
 - **Maintenance** (Pflege): log cleaning and service per firearm. Optional reminders
   after N shots and/or N days, as local notifications and a badge on the Firearms tab.
 - **For sport shooters** (Für Sportschützen): optional fields, each switched on by

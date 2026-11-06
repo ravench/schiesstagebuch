@@ -48,6 +48,7 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
+            lotResultsStop("07c-Waffe-Resultat-pro-Los")
             back()
         }
 
@@ -62,8 +63,29 @@ final class PRScreensTests: XCTestCase {
             }
             back()
         }
+        // The GP 11 lots, split by firearm.
+        if open(app.staticTexts["Munition"].firstMatch) {
+            if open(app.staticTexts["GP 11"].firstMatch) {
+                lotResultsStop("12-Munition-Resultat-pro-Los")
+                back()
+            }
+            back()
+        }
         scroll()
         snap("09-Einstellungen-unten")
+    }
+
+    /// Scrolls the «Resultat pro Los» chart to the top of the screen, so all of it shows.
+    private func lotResultsStop(_ name: String) {
+        let title = app.staticTexts["Resultat pro Los"].firstMatch
+        reveal(title, swipes: 10)
+        if title.exists && title.isHittable {
+            // Held at the end, so the list does not glide on past the chart.
+            title.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                       withVelocity: .slow, thenHoldForDuration: 0.5)
+        }
+        snap(name)
     }
 
     /// The firearm menu and the range list, both ending with «… hinzufügen».
@@ -121,9 +143,9 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Swipes up a little at a time until `element` can be tapped (at most six swipes).
-    private func reveal(_ element: XCUIElement) {
-        for _ in 0..<6 where !(element.exists && element.isHittable) {
+    /// Swipes up a little at a time until `element` can be tapped (at most `swipes` times).
+    private func reveal(_ element: XCUIElement, swipes: Int = 6) {
+        for _ in 0..<swipes where !(element.exists && element.isHittable) {
             app.swipeUp(velocity: .slow)
         }
     }

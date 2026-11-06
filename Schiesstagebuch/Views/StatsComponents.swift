@@ -226,57 +226,98 @@ struct BreakdownChart<Key: Hashable>: View {
     }
 }
 
-/// Box plot of result percentages per ammunition lot, so lots can be compared however each entry
-/// was scored (points of a maximum or a result in percent): box = Q1–Q3, bar = median, whiskers to
-/// 1.5 × IQR, every single result as a dot (outliers filled). Shown once two lots have a percentage.
+/// Box plots of result percentages per ammunition lot, one per firearm, so lots can be compared however
+/// each entry was scored (points of a maximum or a result in percent): box = Q1–Q3, bar = median,
+/// whiskers to 1.5 × IQR, every single result as a dot (outliers filled). A lot can shoot well in one
+/// firearm and badly in another, so results of different firearms are never pooled.
 struct LotResultsChart: View {
+    @Environment(\.term) private var term
     let entries: [Entry]
 
     private struct Dot: Identifiable { let id: Int; let lot: String; let value: Double; let outlier: Bool }
 
+    /// Something to compare: two lots, or one lot in two firearms.
+    static func shows(_ entries: [Entry]) -> Bool {
+        entries.percentageByWeaponAndLot.reduce(0) { $0 + $1.lots.count } >= 2
+    }
+
+    /// One scale for all firearms so their boxes line up: whole 5 % steps around the results, within 0–100 %.
+    static func domain(_ values: [Double]) -> ClosedRange<Double> {
+        let low = max(0, ((values.min() ?? 0) * 20).rounded(.down) / 20)
+        let high = min(1, ((values.max() ?? 1) * 20).rounded(.up) / 20)
+        return low < high ? low...high : max(0, high - 0.05)...max(high, 0.05)
+    }
+
     var body: some View {
-        let rows = entries.percentageByLot
-        if rows.count >= 2 {
-            let dots = rows.flatMap { r in r.values.map { v in (r.lot.number, v, r.stats.outliers.contains(v)) } }
-                .enumerated().map { Dot(id: $0.offset, lot: $0.element.0, value: $0.element.1, outlier: $0.element.2) }
+        let groups = entries.percentageByWeaponAndLot
+        if groups.reduce(0, { $0 + $1.lots.count }) >= 2 {
+            let domain = Self.domain(groups.flatMap { $0.lots.flatMap(\.values) })
             VStack(alignment: .leading, spacing: 8) {
                 Text("Resultat pro Los").font(.headline)
-                Chart {
-                    ForEach(rows, id: \.lot.persistentModelID) { row in
-                        let s = row.stats
-                        RuleMark(xStart: .value("Prozent", s.lowerWhisker), xEnd: .value("Prozent", s.upperWhisker),
-                                 y: .value("Los", row.lot.number))
-                            .foregroundStyle(.secondary)
-                        BarMark(xStart: .value("Q1", s.q1), xEnd: .value("Q3", s.q3), y: .value("Los", row.lot.number), height: 18)
-                            .foregroundStyle(.tint.opacity(0.3))
-                        RectangleMark(x: .value("Median", s.median), y: .value("Los", row.lot.number), width: 3, height: 22)
-                            .foregroundStyle(.tint)
-                            .annotation(position: .top, alignment: .leading, spacing: 2) {
-                                Text(verbatim: "\(ScoreFormat.percent(s.median)) · n = \(s.count)")
-                                    .font(.caption2.monospacedDigit()).foregroundStyle(.secondary)
-                            }
+                ForEach(groups, id: \.weapon?.persistentModelID) { group in
+                    // A firearm's own page has a single group: its name would only repeat the title.
+                    if groups.count > 1 {
+                        Text(group.weapon?.name ?? term("Ohne Waffe").loc).font(.subheadline.weight(.semibold))
                     }
-                    ForEach(dots) { d in
-                        PointMark(x: .value("Prozent", d.value), y: .value("Los", d.lot))
-                            .symbolSize(d.outlier ? 30 : 14)
-                            .foregroundStyle(d.outlier ? AnyShapeStyle(.red) : AnyShapeStyle(.primary.opacity(0.45)))
-                    }
+                    chart(group, domain: domain)
                 }
-                .chartXScale(domain: .automatic(includesZero: false))
-                .chartXAxis {
-                    AxisMarks { value in
-                        AxisGridLine()
-                        AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
-                    }
-                }
-                .frame(height: CGFloat(rows.count) * 52 + 30)
                 Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
                     .font(.caption).foregroundStyle(.secondary)
-                if rows.contains(where: { $0.count < BoxStats.reliableCount }) {
+                if groups.count > 1 {
+                    Text(term("Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.").loc)
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                if groups.contains(where: { $0.lots.contains { $0.count < BoxStats.reliableCount } }) {
                     Text("Mit weniger als 5 Resultaten pro Los sind Quartile wenig aussagekräftig.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
         }
+    }
+
+    private func chart(_ group: WeaponLotResults, domain: ClosedRange<Double>) -> some View {
+        let rows = group.lots
+        let dots = rows.flatMap { r in r.values.map { v in (group.label(r.lot), v, r.stats.outliers.contains(v)) } }
+            .enumerated().map { Dot(id: $0.offset, lot: $0.element.0, value: $0.element.1, outlier: $0.element.2) }
+        return Chart {
+            ForEach(rows, id: \.lot.persistentModelID) { row in
+                let s = row.stats, lot = group.label(row.lot)
+                RuleMark(xStart: .value("Prozent", s.lowerWhisker), xEnd: .value("Prozent", s.upperWhisker),
+                         y: .value("Los", lot))
+                    .foregroundStyle(.secondary)
+                BarMark(xStart: .value("Q1", s.q1), xEnd: .value("Q3", s.q3), y: .value("Los", lot), height: 18)
+                    .foregroundStyle(.tint.opacity(0.3))
+                RectangleMark(x: .value("Median", s.median), y: .value("Los", lot), width: 3, height: 22)
+                    .foregroundStyle(.tint)
+                // The lot's name sits above its row instead of on the y axis, whose width would differ
+                // per firearm and shift its plot against the others.
+                BarMark(xStart: .value("Prozent", domain.lowerBound), xEnd: .value("Prozent", domain.upperBound),
+                        y: .value("Los", lot), height: 22)
+                    .foregroundStyle(.clear)
+                    .accessibilityHidden(true) // only carries the label; VoiceOver reads the lot from the other marks
+                    .annotation(position: .top, alignment: .leading, spacing: 2) {
+                        HStack(spacing: 0) {
+                            Text(lot).bold()
+                            Text(verbatim: " · \(ScoreFormat.percent(s.median)) · n = \(s.count)").foregroundStyle(.secondary)
+                        }
+                        .font(.caption2.monospacedDigit())
+                        .lineLimit(1)
+                    }
+            }
+            ForEach(dots) { d in
+                PointMark(x: .value("Prozent", d.value), y: .value("Los", d.lot))
+                    .symbolSize(d.outlier ? 30 : 14)
+                    .foregroundStyle(d.outlier ? AnyShapeStyle(.red) : AnyShapeStyle(.primary.opacity(0.45)))
+            }
+        }
+        .chartXScale(domain: domain)
+        .chartYAxis(.hidden)
+        .chartXAxis {
+            AxisMarks { value in
+                AxisGridLine()
+                AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
+            }
+        }
+        .frame(height: CGFloat(rows.count) * 52 + 30)
     }
 }
