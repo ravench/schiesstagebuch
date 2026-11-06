@@ -32,7 +32,7 @@ final class PRScreensTests: XCTestCase {
 
         tab("Statistik")
         snap("05-Statistik")
-        stop("05b-Statistik-Resultat-pro-Stellung", below: "Box: mittlere Hälfte")
+        stop("05b-Statistik-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
 
         tab("Waffen")
         snap("06-Waffen")
@@ -50,8 +50,8 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
-            stop("07c-Waffe-Resultat-pro-Stellung", below: "Box: mittlere Hälfte")
-            stop("07d-Waffe-Resultat-pro-Los", below: "Getrennt pro Stellung")
+            stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
+            stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
             back()
         }
 
@@ -69,7 +69,7 @@ final class PRScreensTests: XCTestCase {
         // The GP 11 lots, split by firearm and position.
         if open(app.staticTexts["Munition"].firstMatch) {
             if open(app.staticTexts["GP 11"].firstMatch) {
-                stop("12-Munition-Resultat-pro-Los", below: "Getrennt pro Waffe")
+                stop("12-Munition-Resultat-pro-Los", chart: "Resultat pro Los")
                 back()
             }
             back()
@@ -78,9 +78,16 @@ final class PRScreensTests: XCTestCase {
         snap("09-Einstellungen-unten")
     }
 
-    /// Scrolls down to a whole chart through the first text below it that starts with `prefix`.
-    private func stop(_ name: String, below prefix: String) {
-        reveal(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", prefix)).firstMatch, swipes: 10)
+    /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
+    private func stop(_ name: String, chart title: String) {
+        let headline = app.staticTexts[title].firstMatch
+        reveal(headline, swipes: 10)
+        if headline.exists && headline.isHittable {
+            // Held at the end, so the list does not glide on past the chart.
+            headline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                       withVelocity: .slow, thenHoldForDuration: 0.5)
+        }
         snap(name)
     }
 

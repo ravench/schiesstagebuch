@@ -237,8 +237,8 @@ struct BreakdownChart<Key: Hashable>: View {
     }
 }
 
-/// Result percentages as box plots, one row per group: box = Q1–Q3, bar = median with «median · n»,
-/// whiskers to 1.5 × IQR, every single result as a dot (outliers red).
+/// Result percentages as box plots, one row per group: box = Q1–Q3, bar = median, whiskers to
+/// 1.5 × IQR, every single result as a dot (outliers red); above each row its name, median and n.
 struct BoxPlot: View {
     struct Row {
         var label: String
@@ -272,9 +272,17 @@ struct BoxPlot: View {
                     .foregroundStyle(.tint.opacity(0.3))
                 RectangleMark(x: .value("Median", s.median), y: .value("Gruppe", row.label), width: 3, height: 22)
                     .foregroundStyle(.tint)
+                // The row's name sits above it instead of on the y axis, whose width would differ per
+                // plot and shift it against the others.
+                BarMark(xStart: .value("Prozent", domain.lowerBound), xEnd: .value("Prozent", domain.upperBound),
+                        y: .value("Gruppe", row.label), height: 22)
+                    .foregroundStyle(.clear)
                     .annotation(position: .top, alignment: .leading, spacing: 2) {
-                        Text(verbatim: "\(ScoreFormat.percent(s.median)) · n = \(s.count)")
-                            .font(.caption2.monospacedDigit()).foregroundStyle(.secondary)
+                        HStack(spacing: 0) {
+                            Text(row.label).bold()
+                            Text(verbatim: " · \(ScoreFormat.percent(s.median)) · n = \(s.count)").foregroundStyle(.secondary)
+                        }
+                        .font(.caption2.monospacedDigit())
                     }
             }
             ForEach(dots) { d in
@@ -284,6 +292,7 @@ struct BoxPlot: View {
             }
         }
         .chartXScale(domain: domain)
+        .chartYAxis(.hidden)
         .chartXAxis {
             AxisMarks { value in
                 AxisGridLine()
