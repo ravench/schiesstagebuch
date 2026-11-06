@@ -268,7 +268,7 @@ struct BoxPlot: View {
     var bands = 1
     let domain: ClosedRange<Double>
 
-    private struct Dot: Identifiable { let id: Int; let y: Double; let value: Double; let outlier: Bool; let shape: BasicChartSymbolShape }
+    private struct Dot: Identifiable { let id: Int; let y: Double; let value: Double; let outlier: Bool; let marked: Bool; let shape: BasicChartSymbolShape }
 
     /// A scale that fits all values, so several plots line up: whole 5 % steps, within 0–100 %.
     static func domain(_ values: [Double]) -> ClosedRange<Double> {
@@ -292,7 +292,7 @@ struct BoxPlot: View {
             for box in row.boxes {
                 for v in box.values {
                     dots.append(Dot(id: dots.count, y: y(row: i, band: box.band), value: v, outlier: box.stats.outliers.contains(v),
-                                    shape: box.marker?.shape ?? .circle))
+                                    marked: box.marker != nil, shape: box.marker?.shape ?? .circle))
                 }
             }
         }
@@ -328,7 +328,8 @@ struct BoxPlot: View {
             ForEach(dots) { d in
                 PointMark(x: .value("Prozent", d.value), y: .value("Zeile", d.y))
                     .symbol(d.shape)
-                    .symbolSize(d.outlier ? 30 : 14)
+                    // Big enough to tell the shapes apart when they mark a series.
+                    .symbolSize(d.outlier ? 30 : d.marked ? 24 : 14)
                     .foregroundStyle(d.outlier ? AnyShapeStyle(.red) : AnyShapeStyle(.primary.opacity(0.45)))
                     .accessibilityHidden(true)
             }
@@ -352,7 +353,7 @@ struct BoxPlot: View {
             Text(row.label).bold()
             ForEach(Array(row.boxes.enumerated()), id: \.offset) { _, box in
                 if let marker = box.marker {
-                    Text(verbatim: "  \(marker.glyph) ").foregroundStyle(marker.color)
+                    marker.shape.fill(marker.color).frame(width: 7, height: 7).padding(.leading, 8).padding(.trailing, 3)
                 } else {
                     Text(verbatim: " · ").foregroundStyle(.secondary)
                 }
@@ -368,21 +369,20 @@ struct BoxPlot: View {
 struct SeriesMarker {
     var color: Color
     var shape: BasicChartSymbolShape
-    /// The shape as a character, for text.
-    var glyph: String
 }
 
 extension ShootingPosition {
-    /// The same marker for a position in every statistics chart. Colours from the Okabe–Ito palette,
-    /// which stays distinguishable with the common colour-vision deficiencies; none of them is red,
-    /// which marks outliers.
+    /// The same marker for a position in every statistics chart. Colours from the Okabe–Ito palette
+    /// (black, white in dark mode, for none), which stays distinguishable with red-green deficiencies;
+    /// with tritanopia blue/green and orange/purple come close, which the shapes make up for. None of
+    /// them is red, which marks outliers.
     static func marker(_ position: ShootingPosition?) -> SeriesMarker {
         switch position {
-        case .prone?: SeriesMarker(color: Color(red: 0, green: 0.447, blue: 0.698), shape: .circle, glyph: "●")
-        case .kneeling?: SeriesMarker(color: Color(red: 0.902, green: 0.624, blue: 0), shape: .square, glyph: "■")
-        case .standing?: SeriesMarker(color: Color(red: 0.8, green: 0.475, blue: 0.655), shape: .triangle, glyph: "▲")
-        case .rested?: SeriesMarker(color: Color(red: 0, green: 0.62, blue: 0.451), shape: .diamond, glyph: "◆")
-        case nil: SeriesMarker(color: .gray, shape: .cross, glyph: "✕")
+        case .prone?: SeriesMarker(color: Color(red: 0, green: 0.447, blue: 0.698), shape: .circle)
+        case .kneeling?: SeriesMarker(color: Color(red: 0.902, green: 0.624, blue: 0), shape: .square)
+        case .standing?: SeriesMarker(color: Color(red: 0.8, green: 0.475, blue: 0.655), shape: .triangle)
+        case .rested?: SeriesMarker(color: Color(red: 0, green: 0.62, blue: 0.451), shape: .diamond)
+        case nil: SeriesMarker(color: .primary, shape: .cross)
         }
     }
 }
@@ -396,7 +396,7 @@ struct PositionLegend: View {
             ForEach(Array(positions.enumerated()), id: \.offset) { _, position in
                 let marker = ShootingPosition.marker(position)
                 HStack(spacing: 4) {
-                    Text(verbatim: marker.glyph).foregroundStyle(marker.color)
+                    marker.shape.fill(marker.color).frame(width: 8, height: 8)
                     Text(position?.title ?? "Ohne Stellung".loc)
                 }
             }
