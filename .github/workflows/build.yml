@@ -206,7 +206,7 @@ jobs:
         # universal, and so are its images.
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
         run: |
-          xcrun simctl shutdown "$UDID"
+          xcrun simctl shutdown "$UDID" || true # fails if it is down already
           IPAD=$(xcrun simctl list devices available -j | python3 "$SCREENS/ipad_screens.py" pick-ipad)
           echo "iPad screens on $IPAD"
           xcrun simctl boot "$IPAD"
