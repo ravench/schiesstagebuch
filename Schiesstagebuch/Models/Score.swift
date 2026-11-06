@@ -114,6 +114,10 @@ extension Entry {
     /// sighters are split off.
     var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
 
+    /// The position statistics count this Stich in: the one entered, else the weapon type's usual one,
+    /// so Stiche saved before positions were recorded stay with the later ones.
+    var statsPosition: ShootingPosition? { position ?? weapon?.category.defaultPosition }
+
     /// The sighters' values, when they were entered shot by shot.
     var sighterValues: [Double] { Score.parseShots(sighterValuesText) }
 }
@@ -164,17 +168,15 @@ extension Sequence where Element == Entry {
     var lotComparisons: [LotComparison] {
         Dictionary(grouping: self, by: { $0.weapon?.persistentModelID }).values
             .flatMap { byWeapon in
-                Dictionary(grouping: byWeapon, by: \.position).values.compactMap { entries -> LotComparison? in
+                Dictionary(grouping: byWeapon, by: \.statsPosition).values.compactMap { entries -> LotComparison? in
                     let lots = entries.percentageByLot
-                    return lots.isEmpty ? nil : LotComparison(weapon: entries[0].weapon, position: entries[0].position, lots: lots)
+                    return lots.isEmpty ? nil : LotComparison(weapon: entries[0].weapon, position: entries[0].statsPosition, lots: lots)
                 }
             }
             .sorted {
-                if $0.count != $1.count { return $0.count > $1.count }
-                if ($0.weapon == nil) != ($1.weapon == nil) { return $1.weapon == nil }
-                let names = ($0.weapon?.name ?? "").localizedStandardCompare($1.weapon?.name ?? "")
-                if names != .orderedSame { return names == .orderedAscending }
-                return ShootingPosition.order($0.position) < ShootingPosition.order($1.position)
+                let order = firearmGroupOrder(($0.count, $0.weapon), ($1.count, $1.weapon))
+                return order != .orderedSame ? order == .orderedAscending
+                    : ShootingPosition.order($0.position) < ShootingPosition.order($1.position)
             }
     }
 
@@ -183,11 +185,23 @@ extension Sequence where Element == Entry {
     var percentageByPosition: [PositionResult] {
         var groups: [ShootingPosition?: [Double]] = [:]
         for entry in self {
-            if let p = entry.score.percentage { groups[entry.position, default: []].append(p) }
+            if let p = entry.score.percentage { groups[entry.statsPosition, default: []].append(p) }
         }
         return groups
             .compactMap { position, values in BoxStats(values).map { PositionResult(position: position, values: values.sorted(), stats: $0) } }
             .sorted { ShootingPosition.order($0.position) < ShootingPosition.order($1.position) }
+    }
+
+    /// `percentageByPosition` per firearm, for firearms with results in two positions or more, most
+    /// results first: across firearms, «liegend against stehend» would mostly be rifle against pistol.
+    var positionComparisons: [PositionComparison] {
+        Dictionary(grouping: self, by: { $0.weapon?.persistentModelID }).values
+            .compactMap { entries -> PositionComparison? in
+                let positions = entries.percentageByPosition
+                guard positions.filter({ $0.position != nil }).count >= 2 else { return nil }
+                return PositionComparison(weapon: entries[0].weapon, positions: positions)
+            }
+            .sorted { firearmGroupOrder(($0.count, $0.weapon), ($1.count, $1.weapon)) == .orderedAscending }
     }
 
     /// Mean points per entry over the entries with a numeric result.
@@ -229,6 +243,21 @@ extension ShootingPosition {
     static func order(_ position: ShootingPosition?) -> Int {
         position.flatMap { allCases.firstIndex(of: $0) } ?? allCases.count
     }
+}
+
+/// Positions shot with one firearm, see `positionComparisons`.
+struct PositionComparison {
+    /// nil for entries without a firearm.
+    var weapon: Weapon?
+    var positions: [PositionResult]
+    var count: Int { positions.reduce(0) { $0 + $1.stats.count } }
+}
+
+/// Order of per-firearm groups: most results first, then by firearm name, no firearm last.
+private func firearmGroupOrder(_ a: (count: Int, weapon: Weapon?), _ b: (count: Int, weapon: Weapon?)) -> ComparisonResult {
+    if a.count != b.count { return a.count > b.count ? .orderedAscending : .orderedDescending }
+    if (a.weapon == nil) != (b.weapon == nil) { return a.weapon == nil ? .orderedDescending : .orderedAscending }
+    return (a.weapon?.name ?? "").localizedStandardCompare(b.weapon?.name ?? "")
 }
 
 /// One shooting position's results, see `percentageByPosition`.

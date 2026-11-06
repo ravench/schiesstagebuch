@@ -103,7 +103,7 @@ struct ResultTrendChart: View {
 
     private var points: [Point] {
         entries.compactMap { e in
-            e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0, position: e.position?.title ?? "Ohne Stellung".loc) }
+            e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0, position: e.statsPosition?.title ?? "Ohne Stellung".loc) }
         }
         .sorted { $0.date < $1.date }
     }
@@ -359,26 +359,33 @@ struct LotResultsChart: View {
     }
 }
 
-/// Box plot of result percentages per shooting position: liegend or aufgelegt usually scores clearly
-/// higher than kniend or stehend, so a single average over all positions says little.
+/// Box plots of result percentages per shooting position, one per firearm shot in two positions or
+/// more: liegend or aufgelegt usually scores clearly higher than kniend or stehend, so a single
+/// average over all positions says little, and across firearms it would compare rifles with pistols.
 struct PositionResultsChart: View {
+    @Environment(\.term) private var term
     let entries: [Entry]
 
-    /// Shown once two positions have a percentage; entries without a position alone do not count.
-    static func shows(_ entries: [Entry]) -> Bool {
-        entries.percentageByPosition.filter { $0.position != nil }.count >= 2
-    }
+    static func shows(_ entries: [Entry]) -> Bool { !entries.positionComparisons.isEmpty }
 
     var body: some View {
-        let rows = entries.percentageByPosition
-        if rows.filter({ $0.position != nil }).count >= 2 {
+        let groups = entries.positionComparisons
+        if !groups.isEmpty {
+            let domain = BoxPlot.domain(groups.flatMap { $0.positions.flatMap(\.values) })
+            // A firearm's own page needs no name above the plot.
+            let named = Set(entries.map { $0.weapon?.persistentModelID }).count > 1
             VStack(alignment: .leading, spacing: 8) {
                 Text("Resultat pro Stellung").font(.headline)
-                BoxPlot(rows: rows.map { .init(label: $0.position?.title ?? "Ohne Stellung".loc, values: $0.values, stats: $0.stats) },
-                        domain: BoxPlot.domain(rows.flatMap(\.values)))
+                ForEach(Array(groups.enumerated()), id: \.offset) { _, group in
+                    if named {
+                        Text(group.weapon?.name ?? term("Ohne Waffe").loc).font(.subheadline.weight(.semibold))
+                    }
+                    BoxPlot(rows: group.positions.map { .init(label: $0.position?.title ?? "Ohne Stellung".loc, values: $0.values, stats: $0.stats) },
+                            domain: domain)
+                }
                 Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
                     .font(.caption).foregroundStyle(.secondary)
-                if rows.contains(where: { $0.stats.count < BoxStats.reliableCount }) {
+                if groups.contains(where: { $0.positions.contains { $0.stats.count < BoxStats.reliableCount } }) {
                     Text("Mit weniger als 5 Resultaten pro Stellung sind Quartile wenig aussagekräftig.")
                         .font(.caption).foregroundStyle(.secondary)
                 }

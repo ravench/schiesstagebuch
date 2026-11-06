@@ -57,7 +57,7 @@ final class ScreenshotDataTests: ModelTestCase {
         // Each lot is best in a different rifle: the screenshot shows why lots are split by firearm.
         XCTAssertEqual(groups.map { $0.lots.map(\.lot.number) }, [["21-07", "23-02"], ["23-02", "21-07"], ["21-07"]])
         XCTAssertEqual(entries.percentageByPosition.map(\.position), [.prone, .kneeling])
-        XCTAssertTrue(PositionResultsChart.shows(entries))
+        XCTAssertEqual(entries.positionComparisons.map { $0.weapon?.name }, ["Stgw 90"], "the K31 was only shot liegend")
     }
 
     func testSeedLeavesExistingDiaryAlone() throws {

@@ -177,4 +177,33 @@ final class LotResultTests: ModelTestCase {
         XCTAssertTrue(PositionResultsChart.shows(entries))
         XCTAssertFalse(PositionResultsChart.shows([entries[0], entries[4]]), "one position and none: nothing to compare")
     }
+
+    func testStichesWithoutPositionCountInTheWeaponTypesUsualOne() {
+        // Saved before positions were recorded: a service rifle's old results stay with its liegend ones.
+        let ammo = Ammunition(name: "GP 90"); context.insert(ammo)
+        let a = lot("A", ammo), b = lot("B", ammo)
+        let stgw = Weapon(name: "Stgw 90"), hunting = Weapon(name: "Blaser")
+        context.insert(stgw); context.insert(hunting)
+        stgw.category = .serviceRifle; hunting.category = .huntingRifle
+        let entries = [entry(a, result: "90 %", weapon: stgw), entry(b, result: "85 %", weapon: stgw, position: .prone),
+                       entry(a, result: "80 %", weapon: hunting)]
+        XCTAssertEqual(entries.map(\.statsPosition), [.prone, .prone, nil], "a hunting rifle has no usual position")
+        XCTAssertNil(entries[0].position, "nothing is written to the entry")
+        let groups = entries.lotComparisons
+        XCTAssertEqual(groups.map(\.position), [.prone, nil])
+        XCTAssertEqual(groups[0].lots.map(\.lot.number), ["A", "B"])
+    }
+
+    func testPositionsAreComparedPerFirearm() {
+        // A rifle shot liegend against a pistol shot stehend says nothing about the positions.
+        let rifle = Weapon(name: "Stgw 90"), pistol = Weapon(name: "P210")
+        context.insert(rifle); context.insert(pistol)
+        let rifleProne = entry(nil, result: "92 %", weapon: rifle, position: .prone)
+        let pistolStanding = entry(nil, result: "85 %", weapon: pistol, position: .standing)
+        XCTAssertFalse(PositionResultsChart.shows([rifleProne, pistolStanding]))
+        let groups = [rifleProne, pistolStanding, entry(nil, result: "84 %", weapon: rifle, position: .kneeling)].positionComparisons
+        XCTAssertEqual(groups.map { $0.weapon?.name }, ["Stgw 90"])
+        XCTAssertEqual(groups[0].positions.map(\.position), [.prone, .kneeling])
+        XCTAssertEqual(groups[0].count, 2)
+    }
 }
