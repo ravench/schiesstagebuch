@@ -6654,6 +6654,29 @@
         }
       }
     },
+    "Mit weniger als 5 Resultaten pro Stellung sind Quartile wenig aussagekräftig.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With fewer than 5 results per position, quartiles say little."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec moins de 5 résultats par position, les quartiles sont peu significatifs."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con meno di 5 risultati per posizione, i quartili sono poco significativi."
+          }
+        }
+      }
+    },
     "Monat": {
       "extractionState": "manual",
       "localizations": {
@@ -7846,6 +7869,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Senza attrezzo"
+          }
+        }
+      }
+    },
+    "Ohne Stellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No position"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza posizione"
           }
         }
       }
@@ -9180,6 +9226,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato per lotto"
+          }
+        }
+      }
+    },
+    "Resultat pro Stellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result by position"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat par position"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato per posizione"
           }
         }
       }
