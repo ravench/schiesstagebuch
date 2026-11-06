@@ -23,7 +23,7 @@ final class ShootingPositionTests: ModelTestCase {
         XCTAssertNil(ShootingPosition.following(.prone, from: .sportRifle, to: .huntingRifle))
         XCTAssertEqual(ShootingPosition.following(.rested, from: .pistol, to: .serviceRifle), .rested, "picked by the user")
         XCTAssertEqual(ShootingPosition.following(.kneeling, from: .sportRifle, to: nil), .kneeling)
-        XCTAssertNil(ShootingPosition.following(nil, from: .pistol, to: .serviceRifle), "«–» picked by the user stays")
+        XCTAssertNil(ShootingPosition.following(nil, from: .pistol, to: .serviceRifle), "«–» instead of the pistol's default stays")
     }
 
     func testEntryStoresThePositionAsRawValue() {
@@ -52,7 +52,7 @@ final class ShootingPositionTests: ModelTestCase {
                 XCTAssertEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), title, "\(key) in \(lang)")
             }
         }
-        XCTAssertEqual(ShootingPosition.allCases.map(\.title), ["Liegend", "Kniend", "Stehend", "Aufgelegt"].map(\.loc))
+        XCTAssertEqual(ShootingPosition.allCases.map(\.rawValue), ["prone", "kneeling", "standing", "rested"], "picker order")
     }
 
     func testSearchFindsThePosition() {

@@ -101,7 +101,10 @@ final class PRScreensTests: XCTestCase {
         reveal(picker)
         if open(picker) {
             snap("03c-Stellung-Auswahl")
-            _ = open(app.buttons["Liegend"].firstMatch)
+            // Close the menu even when the item is not found, so the next screens are not covered.
+            if !open(app.buttons["Liegend"].firstMatch) {
+                app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
+            }
         }
     }
 
