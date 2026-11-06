@@ -38,6 +38,15 @@ final class ScreenshotDataTests: ModelTestCase {
         }
     }
 
+    func testSeedReusesTheSeededCatalogue() throws {
+        CaliberCatalog.seedIfNeeded(context, always: true)
+        let before = try context.fetchCount(FetchDescriptor<Caliber>())
+        ScreenshotData.seed(context)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), before, "no second 9x19 next to the catalogue's")
+        let weapons = try context.fetch(FetchDescriptor<Weapon>())
+        XCTAssertEqual(Set(weapons.flatMap { $0.calibers.map(\.name) }), ["9x19 mm", "7.5x55 mm Swiss (GP 11)"])
+    }
+
     func testSeedLeavesExistingDiaryAlone() throws {
         addEntry(nil, on: day(1), shots: 5)
         ScreenshotData.seed(context)

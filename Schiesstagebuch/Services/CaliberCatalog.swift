@@ -86,9 +86,11 @@ enum CaliberCatalog {
     static let seededKey = "caliberCatalogSeeded.v2"
 
     /// Inserts the catalogue once, and links existing calibres with the same name to it.
+    /// A screenshot run seeds its in-memory store every time: the flag it would leave in the
+    /// simulator's defaults must not decide what the next run shows.
     @MainActor
-    static func seedIfNeeded(_ context: ModelContext) {
-        guard !UserDefaults.standard.bool(forKey: seededKey) else { return }
+    static func seedIfNeeded(_ context: ModelContext, always: Bool = ScreenshotData.isActive) {
+        guard always || !UserDefaults.standard.bool(forKey: seededKey) else { return }
         let existing = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
         for item in items {
             if let c = existing.first(where: { $0.catalogID == item.id || Caliber.normalized($0.name) == Caliber.normalized(item.name) }) {
@@ -101,7 +103,7 @@ enum CaliberCatalog {
             }
         }
         try? context.save()
-        UserDefaults.standard.set(true, forKey: seededKey)
+        if !always { UserDefaults.standard.set(true, forKey: seededKey) }
     }
 
     /// With iCloud sync every device seeds the catalogue once, so the same calibre can
