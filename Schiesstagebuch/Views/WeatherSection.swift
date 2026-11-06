@@ -167,19 +167,24 @@ struct AppleWeatherAttribution: View {
 /// Air temperature, humidity and pressure from Apple Weather in one line, read-only; nothing when none is stored.
 struct MeasuredWeatherLine: View {
     let conditions: WeatherConditions
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let shown = WeatherField.measured.compactMap { f in conditions.display(f).map { (field: f, text: $0.text) } }
         if !shown.isEmpty {
-            let labels = ForEach(shown, id: \.field.key) { item in
-                Label(item.text, systemImage: item.field.icon)
-                    .accessibilityLabel(Text(verbatim: "\(item.field.label.loc): \(item.text)"))
+            // One line; below each other at the accessibility text sizes. Not ViewThatFits: in a List row
+            // it picked the stacked layout and clipped it to one line's height.
+            let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+                                                      : AnyLayout(HStackLayout(spacing: 16))
+            layout {
+                ForEach(shown, id: \.field.key) { item in
+                    Label(item.text, systemImage: item.field.icon)
+                        .lineLimit(1)
+                        .accessibilityLabel(Text(verbatim: "\(item.field.label.loc): \(item.text)"))
+                }
             }
-            // One line; below each other with large text.
-            ViewThatFits {
-                HStack(spacing: 20) { labels }
-                VStack(alignment: .leading, spacing: 6) { labels }
-            }
+            .font(.subheadline)
+            .minimumScaleFactor(0.8)
             .foregroundStyle(.secondary)
             .monospacedDigit()
         }
