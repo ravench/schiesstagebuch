@@ -149,10 +149,11 @@ final class LotResultTests: ModelTestCase {
         XCTAssertEqual(rowB[0].result.values, [0.93, 0.95])
     }
 
-    func testEveryPositionHasItsOwnColour() {
-        let colours = ([nil] + ShootingPosition.allCases.map(Optional.some)).map(ShootingPosition.color)
-        XCTAssertEqual(Set(colours).count, ShootingPosition.allCases.count + 1)
-        XCTAssertFalse(colours.contains(.red), "red marks outliers")
+    func testEveryPositionHasItsOwnColourAndShape() {
+        let markers = ([nil] + ShootingPosition.allCases.map(Optional.some)).map(ShootingPosition.marker)
+        XCTAssertEqual(Set(markers.map(\.color)).count, markers.count)
+        XCTAssertEqual(Set(markers.map(\.glyph)).count, markers.count, "a shape too, so colour is never the only cue")
+        XCTAssertFalse(markers.map(\.color).contains(.red), "red marks outliers")
     }
 
     func testResultsPerPositionInPickerOrder() {

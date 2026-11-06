@@ -52,8 +52,8 @@ match (Stich).
   than kneeling or standing: one plot per firearm, each lot's positions as boxes in their
   own colour in the lot's row; a firearm's page compares the lots shot in it. Results per
   position get their own box plot per firearm, and the result trend draws one line per
-  position, in the same colours. Stiche without a position count in their firearm type's
-  usual one.
+  position. Each position keeps its colour and a shape (colour-blind safe palette) in all
+  these charts. Stiche without a position count in their firearm type's usual one.
 - **Maintenance** (Pflege): log cleaning and service per firearm. Optional reminders
   after N shots and/or N days, as local notifications and a badge on the Firearms tab.
 - **For sport shooters** (Für Sportschützen): optional fields, each switched on by
