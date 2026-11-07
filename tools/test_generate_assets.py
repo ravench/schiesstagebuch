@@ -52,6 +52,9 @@ class PatchedBulletTests(unittest.TestCase):
         self.assertNotIn("tip", self.outline("7.62x51 mm NATO")[1])
         self.assertEqual(self.outline(".17 HMR")[1]["tipMaterial"], "polymer")
         self.assertEqual(self.outline(".277 SIG Fury")[1]["headMaterial"], "steel")
+        snider = self.outline(".577 Snider")[1]
+        self.assertIn("head", snider, "paper case in a brass cup (calibre-data #49)")
+        self.assertNotIn("headMaterial", snider)
         calibers = generate_assets.build()[0]
         materials = {c["outline"]["caseMaterial"] for c in calibers if "caseMaterial" in c["outline"]}
         self.assertTrue(materials)

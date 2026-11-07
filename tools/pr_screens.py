@@ -3,7 +3,10 @@
     xcrun simctl list devices available -j | python3 tools/pr_screens.py pick-iphone
     python3 tools/pr_screens.py rename <xcresulttool export dir> <out dir>
     python3 tools/pr_screens.py changes <before dir> <after dir> <out dir>
-    python3 tools/pr_screens.py comment <out dir> <image base url> <run url>
+    python3 tools/pr_screens.py comment <out dir> <image base url> <run url> [ipad]
+
+With `ipad`, the comment is the one for the iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift),
+which the Build workflow's ipad-screens job takes and compares the same way.
 """
 import filecmp
 import json
@@ -14,6 +17,7 @@ import sys
 from ipad_screens import _ios_version, rename
 
 MARKER = "<!-- pr-screens -->"
+IPAD_MARKER = "<!-- pr-screens-ipad -->"
 TOUR = "SchiesstagebuchUITests/PRScreensTests.swift"
 
 
@@ -98,27 +102,43 @@ def collect(before_dir, after_dir, out_dir):
     return summary
 
 
-def _img(url):
-    return f'<img src="{url}" width="250">'
+def _img(url, width):
+    return f'<img src="{url}" width="{width}">'
 
 
-def comment(summary, base_url, run_url):
-    """Markdown for the pull request comment; base_url is where out_dir/before and /after are served."""
+def _section(summary, base_url, device, note, width):
+    """Lines for one device's screens: how many changed, and a before/after table of them."""
     found, total = summary["changes"], summary["total"]
-    lines = [MARKER, "### Screenshots", ""]
+    if not total:
+        return [f"No {device} screens could be taken on this pull request; see the run's log."]
+    lines = []
     if summary.get("base", 1) == 0:
-        lines += ["The screens of the base branch could not be taken, so every screen is shown as new.", ""]
+        lines += [f"The {device} screens of the base branch could not be taken, so every one is shown as new.", ""]
     if not found:
-        lines += [f"No visible change on the {total} screens of the tour.",
-                  f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`."]
+        return lines + [f"No visible change on the {total} {device} screens."]
+    lines += [f"{len(found)} of {total} {device} screens look different ({note}).", "",
+              "| Screen | Before | After |", "| --- | --- | --- |"]
+    for name, status in found:
+        before = "—" if status == "new" else _img(f"{base_url}/before/{name}", width)
+        after = "—" if status == "gone" else _img(f"{base_url}/after/{name}", width)
+        label = os.path.splitext(name)[0] + ("" if status == "changed" else f" ({status})")
+        lines.append(f"| {label} | {before} | {after} |")
+    return lines
+
+
+def comment(summary, base_url, run_url, ipad=False):
+    """Markdown for the pull request comment; base_url is where out_dir/before and /after are served.
+
+    The iPhone and the iPad screens each have their own comment, told apart by its first line.
+    """
+    if ipad:
+        lines = [IPAD_MARKER, "### iPad screenshots", ""]
+        lines += _section(summary, base_url, "iPad", "portrait and landscape", 320)
     else:
-        lines += [f"{len(found)} of {total} screens look different (iPhone, German, sample data).", "",
-                  "| Screen | Before | After |", "| --- | --- | --- |"]
-        for name, status in found:
-            before = "—" if status == "new" else _img(f"{base_url}/before/{name}")
-            after = "—" if status == "gone" else _img(f"{base_url}/after/{name}")
-            label = os.path.splitext(name)[0] + ("" if status == "changed" else f" ({status})")
-            lines.append(f"| {label} | {before} | {after} |")
+        lines = [MARKER, "### Screenshots", ""]
+        lines += _section(summary, base_url, "iPhone", "German, sample data", 250)
+        if summary["total"] and not summary["changes"]:
+            lines.append(f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`.")
     lines += ["", f"All screens of this run: [workflow artifacts]({run_url})."]
     return "\n".join(lines) + "\n"
 
@@ -133,9 +153,9 @@ def main(argv):
         summary = collect(argv[2], argv[3], argv[4])
         for name, status in summary["changes"]:
             print(f"{status}: {name}")
-    elif argv[1:2] == ["comment"] and len(argv) == 5:
+    elif argv[1:2] == ["comment"] and argv[5:] in ([], ["ipad"]) and len(argv) >= 5:
         with open(os.path.join(argv[2], "changes.json")) as f:
-            sys.stdout.write(comment(json.load(f), argv[3], argv[4]))
+            sys.stdout.write(comment(json.load(f), argv[3], argv[4], ipad=argv[5:] == ["ipad"]))
     else:
         sys.exit(__doc__)
 

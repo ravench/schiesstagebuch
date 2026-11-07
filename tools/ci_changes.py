@@ -14,10 +14,11 @@ import sys
 NO_MAC = ["*.md", ".claude/*", ".github/*", "tools/*", ".gitignore", ".swiftlint.yml"]
 # Exceptions: the Mac job itself, and the tools it runs on the built app and for its PR screens.
 NEEDS_MAC = [".github/workflows/build.yml", "tools/check_orientations.py", "tools/pr_screens.py",
-             "tools/ipad_screens.py"]
-# What can change a screen of the tour (SchiesstagebuchUITests/PRScreensTests.swift).
+             "tools/ipad_screens.py", "tools/publish_pr_screens.sh"]
+# What can change a screen of the tours (SchiesstagebuchUITests/PRScreensTests.swift, IPadScreensTests.swift)
+# or their comments.
 SCREENS = ["Schiesstagebuch/*", "SchiesstagebuchUITests/*", "calibre-data", "project.yml",
-           "tools/pr_screens.py", "tools/ipad_screens.py", ".github/workflows/build.yml"]
+           "tools/pr_screens.py", "tools/ipad_screens.py", "tools/publish_pr_screens.sh", ".github/workflows/build.yml"]
 
 
 def _clean(paths):
