@@ -1,5 +1,6 @@
 import XCTest
 import SwiftData
+import SwiftUI
 @testable import Schiesstagebuch
 
 /// Comparing ammunition lots by result percentage, however each entry was scored.
@@ -149,10 +150,12 @@ final class LotResultTests: ModelTestCase {
         XCTAssertEqual(rowB[0].result.values, [0.93, 0.95])
     }
 
-    func testEveryPositionHasItsOwnColour() {
-        let colours = ([nil] + ShootingPosition.allCases.map(Optional.some)).map(ShootingPosition.color)
-        XCTAssertEqual(Set(colours).count, ShootingPosition.allCases.count + 1)
-        XCTAssertFalse(colours.contains(.red), "red marks outliers")
+    func testEveryPositionHasItsOwnColourAndShape() {
+        let markers = ([nil] + ShootingPosition.allCases.map(Optional.some)).map(ShootingPosition.marker)
+        XCTAssertEqual(Set(markers.map(\.color)).count, markers.count)
+        let shapes = markers.map { $0.shape.path(in: CGRect(x: 0, y: 0, width: 10, height: 10)).description }
+        XCTAssertEqual(Set(shapes).count, markers.count, "a shape too, so colour is never the only cue")
+        XCTAssertFalse(markers.map(\.color).contains(.red), "red marks outliers")
     }
 
     func testResultsPerPositionInPickerOrder() {
