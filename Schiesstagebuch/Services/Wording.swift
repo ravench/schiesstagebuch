@@ -41,8 +41,8 @@ enum Wording {
             "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Sportgeräte werden archiviert.",
         "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.":
             "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät.",
-        "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen → Filter.":
-            "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen → Filter.",
+        "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.":
+            "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen › Filter.",
         "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.":
             "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.",
         "Prüfe unter Waffen die Kategorie und die Kaliber der importierten Waffen.":

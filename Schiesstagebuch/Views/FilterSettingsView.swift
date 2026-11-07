@@ -1,9 +1,11 @@
 import SwiftUI
 import UIKit
 
-/// Settings → Filters: tick the colour filters and adjustment lenses you own (only those appear in entries) and manage your own.
+/// Settings › Filter: the switch for recording filters, then the filters and adjustment lenses you own
+/// (only those appear in entries) and your own ones. The list shows whether the switch is on or off.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var editing: EditTarget?
 
     private struct EditTarget: Identifiable {
@@ -31,6 +33,14 @@ struct FilterSettingsView: View {
 
     var body: some View {
         List {
+            Section {
+                Toggle(isOn: Binding(get: { features.contains(.filter) }, set: { features.set(.filter, $0) })) {
+                    Label { Text("Filter erfassen") } icon: { FilterHolderIcon() }
+                }
+            } footer: {
+                Text("Bis zu zwei pro Eintrag.")
+            }
+
             Section {
                 ForEach(catalog.custom, id: \.name) { f in
                     Button { editing = EditTarget(original: f) } label: {
@@ -66,16 +76,12 @@ struct FilterSettingsView: View {
                 ownToggles(FilterColor.gruenigElmiger)
             } header: {
                 Text("Filterräder Grünig + Elmiger (Stgw 90)")
-            } footer: {
-                Text("Zwei Räder im Diopter mit je sechs Farben.")
             }
 
             Section {
                 ownToggles(FilterColor.dioptre)
             } header: {
                 Text("Korrekturlinsen")
-            } footer: {
-                Text("Pro Eintrag lassen sich zwei Filter kombinieren, meist ein Farbfilter mit einer Korrekturlinse +0.25 oder -0.25.")
             }
         }
         .navigationTitle("Filter (Mehrzahl)")

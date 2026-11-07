@@ -62,7 +62,7 @@ S = {
         "Optional. New entries take the values of the last entry with this equipment.",
         "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement.",
         "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo."),
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen → Filter.": (
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen › Filter.": (
         "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings › Filters.",
         "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres.",
         "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."),
