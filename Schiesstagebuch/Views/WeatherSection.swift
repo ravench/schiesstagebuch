@@ -1,4 +1,5 @@
 import SwiftUI
+import WeatherKit
 
 /// Weather in the entry editor: a «Wetter erfassen» switch (off for indoor shooting), the time,
 /// the entry's values in folding groups, and optional Ablösungen with their own time and values.
@@ -8,6 +9,7 @@ struct WeatherSection: View {
     let day: Date
     let range: ShootingRange?
     @State private var editingRelay: WeatherRelay?
+    @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
 
     var body: some View {
         Section {
@@ -19,6 +21,7 @@ struct WeatherSection: View {
                            displayedComponents: .hourAndMinute) {
                     Label("Uhrzeit", systemImage: "clock")
                 }
+                AppleWeatherRow(weather: $weather, date: WeatherRecord.combine(day: day, time: record.time), range: range)
                 WeatherFieldsView(conditions: Binding(get: { weather?.conditions ?? .init() }, set: { weather?.conditions = $0 }),
                                   level: .entry,
                                   sunSuggestion: SunDirection.suggestion(for: range, at: WeatherRecord.combine(day: day, time: record.time)))
@@ -27,7 +30,8 @@ struct WeatherSection: View {
             Text("Wetter")
         } footer: {
             Text(weather == nil ? "Aus, wenn drinnen geschossen wird; dann erscheint auch im Eintrag kein Wetter.".loc
-                                : "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.".loc)
+                 : appleWeather ? "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit Wetterdaten von Apple Weather (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.".loc
+                 : "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.".loc)
         }
 
         if let record = weather {
@@ -58,6 +62,131 @@ struct WeatherSection: View {
             } footer: {
                 Text("Optional: Wetter pro Ablösung oder Serie, mit Uhrzeit, um Wechsel festzuhalten.")
             }
+        }
+    }
+}
+
+/// Fills the weather from Apple Weather at the range's position for the hour of the entry: by itself while
+/// nothing is recorded yet and again when the hour or the range changes. Values the user changed stay.
+private struct AppleWeatherRow: View {
+    @Binding var weather: WeatherRecord?
+    let date: Date
+    let range: ShootingRange?
+    /// What the last fetch put in, to tell it apart from the user's own values.
+    @State private var last: WeatherConditions?
+    @State private var loaded: Request?
+    @State private var phase = Phase.idle
+    @AppStorage(AppleWeather.enabledKey) private var enabled = true
+
+    private enum Phase { case idle, loading, done, failed }
+
+    private struct Request: Hashable {
+        let latitude: Double, longitude: Double, hour: Date, bearing: Double?
+    }
+
+    private var request: Request? {
+        guard enabled, let lat = range?.latitude, let lon = range?.longitude,
+              let hour = Calendar.current.dateInterval(of: .hour, for: date)?.start, AppleWeather.covers(hour) else { return nil }
+        return Request(latitude: lat, longitude: lon, hour: hour, bearing: range?.shootingBearing)
+    }
+
+    var body: some View {
+        if let request {
+            Button { Task { await load(request) } } label: { label }
+                .disabled(phase == .loading)
+                .task(id: request) {
+                    guard request != loaded, last != nil || weather?.hasValues == false else { return }
+                    // Scrolling the time or date picker passes many hours: fetch the one it stops at.
+                    try? await Task.sleep(for: .seconds(0.5))
+                    if !Task.isCancelled { await load(request) }
+                }
+        }
+        if let weather { MeasuredWeatherLine(conditions: weather.conditions) }
+        if weather?.fromAppleWeather == true { AppleWeatherAttribution() }
+    }
+
+    @ViewBuilder private var label: some View {
+        switch phase {
+        case .idle:
+            Label("Wetterdaten von Apple Weather übernehmen", systemImage: "icloud.and.arrow.down")
+        case .loading:
+            Label { Text("Wetter wird abgerufen …") } icon: { ProgressView() }
+        case .done:
+            let hour = loaded?.hour ?? date
+            Label(String(localized: "Von Apple Weather übernommen (\(hour.formatted(date: .omitted, time: .shortened)))"), systemImage: "checkmark.circle")
+        case .failed:
+            Label("Apple Weather nicht erreichbar, nochmals versuchen", systemImage: "exclamationmark.triangle")
+        }
+    }
+
+    private func load(_ request: Request) async {
+        phase = .loading
+        do {
+            guard let reading = try await AppleWeather.reading(latitude: request.latitude, longitude: request.longitude, hour: request.hour) else {
+                phase = .failed
+                return
+            }
+            // A fetch for an hour or range the editor has since left must not land.
+            guard request == self.request else {
+                phase = .idle
+                return
+            }
+            let new = reading.conditions(facing: request.bearing)
+            let before = weather?.conditions
+            weather?.conditions.fill(from: new, after: last)
+            if weather?.conditions != before { weather?.fromAppleWeather = true }
+            last = new
+            loaded = request
+            phase = .done
+        } catch {
+            phase = Task.isCancelled ? .idle : .failed
+        }
+    }
+}
+
+/// The Apple Weather mark and the link to its data sources, required wherever values from it show.
+struct AppleWeatherAttribution: View {
+    @State private var attribution: WeatherAttribution?
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        HStack {
+            AsyncImage(url: scheme == .dark ? attribution?.combinedMarkDarkURL : attribution?.combinedMarkLightURL) { image in
+                image.resizable().scaledToFit().frame(height: 14)
+            } placeholder: {
+                Label { Text(verbatim: "Weather") } icon: { Image(systemName: "apple.logo") }
+            }
+            Spacer()
+            Link(destination: attribution?.legalPageURL ?? AppleWeather.legalPage) { Text("Datenquellen") }
+        }
+        .font(.footnote)
+        .task { if !ScreenshotData.isActive { attribution = try? await WeatherService.shared.attribution } }
+    }
+}
+
+/// Air temperature, humidity and pressure from Apple Weather in one line, read-only; nothing when none is stored.
+struct MeasuredWeatherLine: View {
+    let conditions: WeatherConditions
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    var body: some View {
+        let shown = WeatherField.measured.compactMap { f in conditions.display(f).map { (field: f, text: $0.text) } }
+        if !shown.isEmpty {
+            // One line; below each other at the accessibility text sizes. Not ViewThatFits: in a List row
+            // it picked the stacked layout and clipped it to one line's height.
+            let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+                                                      : AnyLayout(HStackLayout(spacing: 16))
+            layout {
+                ForEach(shown, id: \.field.key) { item in
+                    Label(item.text, systemImage: item.field.icon)
+                        .lineLimit(1)
+                        .accessibilityLabel(Text(verbatim: "\(item.field.label.loc): \(item.text)"))
+                }
+            }
+            .font(.subheadline)
+            .minimumScaleFactor(0.8)
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
         }
     }
 }
@@ -246,9 +375,12 @@ struct WeatherDetailSections: View {
             if let time = record.time {
                 row(label: "Uhrzeit".loc, icon: "clock", value: time.formatted(date: .omitted, time: .shortened), valueIcon: nil)
             }
+            MeasuredWeatherLine(conditions: record.conditions)
             values(record.conditions, level: .entry)
         } header: {
             Text("Wetter")
+        } footer: {
+            if record.fromAppleWeather == true { AppleWeatherAttribution() }
         }
         ForEach(record.sortedRelays) { relay in
             Section {

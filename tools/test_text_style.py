@@ -19,8 +19,8 @@ NOT_BRITISH = re.compile(r"\b(calibers?|colors?|programs?|licenses?|catalogs?|ce
 OLD_APP = re.compile(r"\b(alten?|old|ancienne|vecchia) app\b", re.I)
 README = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "README.md")
 # Words that may be capitalised mid-sentence: names, products and screens they refer to.
-PROPER = {"Albisgüetli", "Edit", "Elmiger", "Equipment", "Files", "Firearms", "Geco", "Log", "Maps",
-          "Menu", "My", "On", "Photos", "Settings", "ShootCounter-Export", "Swiss"}
+PROPER = {"Albisgüetli", "Apple", "Edit", "Elmiger", "Equipment", "Files", "Firearms", "Geco", "Log", "Maps",
+          "Menu", "My", "On", "Photos", "Settings", "ShootCounter-Export", "Swiss", "Weather"}
 
 
 def english():

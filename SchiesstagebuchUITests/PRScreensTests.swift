@@ -98,11 +98,39 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
+    func testWeatherStops() {
+        app.terminate()
+        app.launchArguments += ["-sportFeatures.v1", "8"] // only the weather switch of the sport shooter fields
+        app.launch()
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
+        reveal(weatherSwitch)
+        if (weatherSwitch.value as? String) != "1" {
+            weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        }
+        let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
+        reveal(wind)
+        if wind.exists { wind.tap() }
+        snap("13-Wetter-Apple-Wetter")
+        app.buttons["Sichern"].firstMatch.tap()
+        scroll()
+        snap("14-Eintrag-Wetter")
+        // The switch for it in Settings, with what it sends to Apple.
+        tab("Einstellungen")
+        topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
+    }
+
     /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
     private func stop(_ name: String, chart title: String) {
-        let headline = app.staticTexts[title].firstMatch
-        reveal(headline, swipes: 10)
-        holdAtTop(headline)
+        topStop(app.staticTexts[title].firstMatch, name)
+    }
+
+    /// Scrolls `element` to the top of the screen, so what follows it shows, and takes the screen.
+    private func topStop(_ element: XCUIElement, _ name: String) {
+        reveal(element, swipes: 10)
+        holdAtTop(element)
         snap(name)
     }
 
