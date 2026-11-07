@@ -86,7 +86,7 @@ struct RootView: View {
             SettingsView()
                 .tabItem { Label("Einstellungen", systemImage: "gearshape") }
         }
-        .task { showWelcome = !ScreenshotData.isActive && FirstRun.shouldShow() }
+        .task { showWelcome = ScreenshotData.isActive ? ScreenshotData.showsWelcome : FirstRun.shouldShow() }
         .sheet(isPresented: $showWelcome) { WelcomeView() }
     }
 }

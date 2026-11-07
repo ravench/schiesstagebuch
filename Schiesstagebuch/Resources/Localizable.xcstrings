@@ -852,29 +852,6 @@
         }
       }
     },
-    "An der Schiessbrille oder im Diopter, auch Korrekturgläser": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "On the shooting glasses or in the diopter, also correction lenses"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sur les lunettes de tir ou dans le dioptre, aussi les verres correcteurs"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sugli occhiali da tiro o nella diottra, anche lenti correttive"
-          }
-        }
-      }
-    },
     "Andere": {
       "extractionState": "manual",
       "localizations": {
@@ -4216,25 +4193,25 @@
         }
       }
     },
-    "Gefallene Stahlziele zählen als A. Fehlschüsse, No-Shoots und Verfahrensfehler kosten je 10 Punkte.": {
+    "Gefallene Stahlziele erfasst du als A-Treffer.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steel targets that fell count as A. Misses, no-shoots and procedurals cost 10 points each."
+            "value": "Enter fallen steel targets as A hits."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les cibles métalliques tombées comptent comme A. Manqués, no-shoots et pénalités de procédure coûtent 10 points chacun."
+            "value": "Saisis les cibles métalliques tombées comme impacts A."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "I bersagli metallici abbattuti contano come A. Mancati, no-shoot e penalità procedurali costano 10 punti ciascuno."
+            "value": "Registra i bersagli metallici abbattuti come colpi A."
           }
         }
       }
@@ -4331,48 +4308,48 @@
         }
       }
     },
-    "Getrennt pro Sportgerät: Dasselbe Los kann in einem anderen Sportgerät anders schiessen.": {
+    "Getrennt pro Sportgerät.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Split by equipment: the same lot can shoot differently in other equipment."
+            "value": "Split by equipment."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Séparé par équipement : le même lot peut tirer différemment dans un autre équipement."
+            "value": "Séparé par équipement."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Separato per attrezzo: lo stesso lotto può rendere diversamente in un altro attrezzo."
+            "value": "Separato per attrezzo."
           }
         }
       }
     },
-    "Getrennt pro Waffe: Dasselbe Los kann in einer anderen Waffe anders schiessen.": {
+    "Getrennt pro Waffe.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Split by firearm: the same lot can shoot differently in another firearm."
+            "value": "Split by firearm."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Séparé par arme : le même lot peut tirer différemment dans une autre arme."
+            "value": "Séparé par arme."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Separato per arma: lo stesso lotto può rendere diversamente in un’altra arma."
+            "value": "Separato per arma."
           }
         }
       }
@@ -6631,25 +6608,25 @@
         }
       }
     },
-    "Mindestens ein Kaliber. Mehrere, wenn das Patronenlager sie alle aufnimmt, z. B. .308 Win und 7.62 NATO.": {
+    "Mindestens ein Kaliber, auch mehrere.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "At least one calibre. Several when the chamber takes them all, e.g. .308 Win and 7.62 NATO."
+            "value": "At least one calibre, or several."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Au moins un calibre. Plusieurs si la chambre les accepte tous, p. ex. .308 Win et 7.62 OTAN."
+            "value": "Au moins un calibre, ou plusieurs."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Almeno un calibro. Più di uno se la camera li accetta tutti, p. es. .308 Win e 7.62 NATO."
+            "value": "Almeno un calibro, o più di uno."
           }
         }
       }
@@ -9460,29 +9437,6 @@
         }
       }
     },
-    "Ring und Iris am Diopter oder Iris an der Brille": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ring and iris on the diopter, or iris on the glasses"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anneau et iris sur le dioptre, ou iris sur les lunettes"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anello e iride sulla diottra, o iride sugli occhiali"
-          }
-        }
-      }
-    },
     "Ringgrösse": {
       "extractionState": "manual",
       "localizations": {
@@ -10054,29 +10008,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Numero di colpi"
-          }
-        }
-      }
-    },
-    "Schusszahl: alle abgegebenen Schüsse, auch Nachschüsse. Zeit vom Startsignal bis zum letzten Schuss.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shots: every round fired, make-up shots included. Time from the start signal to the last shot."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre de coups : tous les coups tirés, rattrapages compris. Temps du signal de départ au dernier coup."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numero di colpi: tutti i colpi sparati, compresi quelli di recupero. Tempo dal segnale di partenza all'ultimo colpo."
           }
         }
       }

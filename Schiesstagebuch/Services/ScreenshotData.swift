@@ -9,6 +9,9 @@ enum ScreenshotData {
 
     static var isActive: Bool { ProcessInfo.processInfo.arguments.contains(launchArgument) }
 
+    /// Screenshot runs skip the welcome screen unless they also pass `-welcome` (the PR screen tour does).
+    static var showsWelcome: Bool { ProcessInfo.processInfo.arguments.contains("-welcome") }
+
     /// Fills an empty store with a small, realistic diary. Does nothing if entries exist.
     @MainActor
     static func seed(_ context: ModelContext, now: Date = .now) {

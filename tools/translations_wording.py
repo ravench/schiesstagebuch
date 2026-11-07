@@ -28,10 +28,7 @@ S = {
     "Neue Sportgeräte": ("New equipment", "Nouveaux équipements", "Nuovi attrezzi"),
     "Pro Sportgerät": ("By equipment", "Par équipement", "Per attrezzo"),
     "Ohne Sportgerät": ("No equipment", "Sans équipement", "Senza attrezzo"),
-    "Getrennt pro Sportgerät: Dasselbe Los kann in einem anderen Sportgerät anders schiessen.": (
-        "Split by equipment: the same lot can shoot differently in other equipment.",
-        "Séparé par équipement : le même lot peut tirer différemment dans un autre équipement.",
-        "Separato per attrezzo: lo stesso lotto può rendere diversamente in un altro attrezzo."),
+    "Getrennt pro Sportgerät.": ("Split by equipment.", "Séparé par équipement.", "Separato per attrezzo."),
     "Sportgerät bearbeiten": ("Edit equipment", "Modifier l'équipement", "Modifica attrezzo"),
     "Sportgerät hinzufügen": ("Add equipment", "Ajouter un équipement", "Aggiungi attrezzo"),
     "Sportgerät löschen": ("Delete equipment", "Supprimer l'équipement", "Elimina attrezzo"),

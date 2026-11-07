@@ -78,8 +78,6 @@ struct IPSCStageSection: View {
             }
         } header: {
             Text("Stage")
-        } footer: {
-            Text("Schusszahl: alle abgegebenen Schüsse, auch Nachschüsse. Zeit vom Startsignal bis zum letzten Schuss.")
         }
 
         Section {
@@ -93,7 +91,7 @@ struct IPSCStageSection: View {
         } header: {
             Text("Treffer und Fehler")
         } footer: {
-            Text("Gefallene Stahlziele zählen als A. Fehlschüsse, No-Shoots und Verfahrensfehler kosten je 10 Punkte.")
+            Text("Gefallene Stahlziele erfasst du als A-Treffer.")
         }
     }
 }

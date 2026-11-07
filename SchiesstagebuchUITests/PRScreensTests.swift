@@ -100,9 +100,7 @@ final class PRScreensTests: XCTestCase {
 
     /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
     func testWeatherStops() {
-        app.terminate()
-        app.launchArguments += ["-sportFeatures.v1", "8"] // only the weather switch of the sport shooter fields
-        app.launch()
+        relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
         tab("Tagebuch")
         guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
@@ -120,6 +118,33 @@ final class PRScreensTests: XCTestCase {
         // The switch for it in Settings, with what it sends to Apple.
         tab("Einstellungen")
         topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
+    }
+
+    /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
+    func testWelcome() {
+        relaunch(adding: ["-welcome"])
+        let fields = app.staticTexts["Für Sportschützen"].firstMatch
+        if fields.waitForExistence(timeout: 10) {
+            reveal(fields)
+            holdAtTop(fields)
+        }
+        snap("00-Willkommen")
+    }
+
+    /// A new entry with only IPSC scoring switched on: the stage and the hits with their footer.
+    func testIPSCEntry() {
+        relaunch(adding: ["-scoringSystems.v1", "ipsc"])
+        if open(app.buttons["Neuer Eintrag"].firstMatch) {
+            topStop(app.staticTexts["Zeit"].firstMatch, "03d-IPSC-Eintrag")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        }
+    }
+
+    /// Starts the app again with `arguments` on top of the usual ones.
+    private func relaunch(adding arguments: [String]) {
+        app.terminate()
+        app.launchArguments += arguments
+        app.launch()
     }
 
     /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.

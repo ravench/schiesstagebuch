@@ -162,7 +162,7 @@ extension View {
 struct SportFeatureToggle: View {
     let feature: SportFeatures
     @Binding var features: SportFeatures
-    /// The welcome screen explains each field; Settings shows the names only.
+    /// The welcome screen shows the subtitles; Settings shows the names only.
     var showsDetail = true
 
     var body: some View {
@@ -170,8 +170,8 @@ struct SportFeatureToggle: View {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(feature.title.loc)
-                    if showsDetail {
-                        Text(feature.detail.loc).font(.caption).foregroundStyle(.secondary)
+                    if showsDetail, let detail = feature.detail {
+                        Text(detail.loc).font(.caption).foregroundStyle(.secondary)
                     }
                 }
             } icon: {
