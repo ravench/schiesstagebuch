@@ -162,23 +162,33 @@ extension View {
 struct SportFeatureToggle: View {
     let feature: SportFeatures
     @Binding var features: SportFeatures
+    /// The welcome screen shows the subtitles; Settings shows the names only.
+    var showsDetail = true
 
     var body: some View {
         Toggle(isOn: Binding(get: { features.contains(feature) }, set: { features.set(feature, $0) })) {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(feature.title.loc)
-                    if let detail = feature.detail {
+                    if showsDetail, let detail = feature.detail {
                         Text(detail.loc).font(.caption).foregroundStyle(.secondary)
                     }
                 }
             } icon: {
-                if let symbol = feature.systemImage {
-                    Image(systemName: symbol)
-                } else {
-                    FilterHolderIcon()
-                }
+                SportFeatureIcon(feature: feature)
             }
+        }
+    }
+}
+
+struct SportFeatureIcon: View {
+    let feature: SportFeatures
+
+    var body: some View {
+        if let symbol = feature.systemImage {
+            Image(systemName: symbol)
+        } else {
+            FilterHolderIcon()
         }
     }
 }

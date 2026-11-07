@@ -67,7 +67,7 @@ final class SightSettingsTests: ModelTestCase {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Für Sportschützen", "Farbfilter",
+            for key in ["Kein Filter", "Einstellungen für Sportschützen", "Für Sportschützen", "Filter (Mehrzahl)",
                                              "Diopter", "Ringgrösse", "Iris", "Zweibeinstütze", "Zweibeinstütze (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
@@ -169,7 +169,7 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertEqual(SightSettings(entry: e).bipodLength, 41.5)
     }
 
-    // MARK: Filter catalog (Settings → Filter)
+    // MARK: Filter catalog (Settings › Filter)
 
     func testCatalogStartsWithNoOwnedFilters() {
         let c = FilterCatalog(data: Data())

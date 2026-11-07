@@ -76,6 +76,26 @@ final class PRScreensTests: XCTestCase {
         }
         scroll()
         snap("09-Einstellungen-unten")
+        filterStops()
+    }
+
+    /// «Zusätzliche Felder» with one «Filter» row, and the filter page it opens: the switch
+    /// on top, the filters below, off and on. Comes from the end of Settings, so it scrolls back up.
+    private func filterStops() {
+        let extra = app.staticTexts["Zusätzliche Felder"].firstMatch
+        reveal(extra, up: false)
+        holdAtTop(extra)
+        snap("09a-Zusaetzliche-Felder")
+        if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Filter")).firstMatch) {
+            snap("09b-Filter")
+            let record = app.switches["Filter erfassen"].firstMatch
+            if record.waitForExistence(timeout: 5) {
+                // Tap the switch itself, not the label.
+                record.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+                snap("09c-Filter-ein")
+            }
+            back()
+        }
     }
 
     /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
@@ -232,10 +252,10 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Swipes up a little at a time until `element` can be tapped (at most `swipes` times).
-    private func reveal(_ element: XCUIElement, swipes: Int = 6) {
+    /// Swipes a little at a time until `element` can be tapped (at most `swipes` times).
+    private func reveal(_ element: XCUIElement, swipes: Int = 6, up: Bool = true) {
         for _ in 0..<swipes where !(element.exists && element.isHittable) {
-            app.swipeUp(velocity: .slow)
+            if up { app.swipeUp(velocity: .slow) } else { app.swipeDown(velocity: .slow) }
         }
     }
 
