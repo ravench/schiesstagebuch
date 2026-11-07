@@ -56,11 +56,12 @@ final class WeatherRelayUITests: XCTestCase {
         XCTAssertEqual(app.state, .runningForeground)
     }
 
-    /// Swipes up through the form until the element is on screen.
-    private func scroll(to element: XCUIElement, attempts: Int = 12) -> Bool {
+    /// Swipes up through the form until the element is on screen. Slowly: a fast swipe glides past a row in
+    /// the middle of the weather fields, and rows out of view leave the accessibility tree.
+    private func scroll(to element: XCUIElement, attempts: Int = 20) -> Bool {
         for _ in 0..<attempts {
             if element.exists && element.isHittable { return true }
-            app.swipeUp()
+            app.swipeUp(velocity: .slow)
         }
         return element.exists && element.isHittable
     }
