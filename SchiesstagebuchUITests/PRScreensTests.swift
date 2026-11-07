@@ -132,7 +132,8 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// The .577 Snider: a paper case standing in a brass cup.
+    /// The .577 Snider in the calibre list (the only place its drawing shows): a paper case
+    /// standing in a brass cup.
     func testPaperCase() {
         tab("Einstellungen")
         guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
@@ -143,9 +144,8 @@ final class PRScreensTests: XCTestCase {
             search.tap()
             search.typeText("Snider\n") // return hides the keyboard
         }
-        if open(app.staticTexts[".577 Snider"].firstMatch) {
-            snap("11b-Kaliber-Snider")
-        }
+        XCTAssertTrue(app.staticTexts[".577 Snider"].waitForExistence(timeout: 5), "No .577 Snider row")
+        snap("11b-Kaliber-Snider")
     }
 
     private func tab(_ name: String) {
