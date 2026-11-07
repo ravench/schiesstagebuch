@@ -52,8 +52,8 @@ match (Stich).
   than kneeling or standing: one plot per firearm, each lot's positions as boxes in their
   own colour in the lot's row; a firearm's page compares the lots shot in it. Results per
   position get their own box plot per firearm, and the result trend draws one line per
-  position, in the same colours. Stiche without a position count in their firearm type's
-  usual one.
+  position. Each position keeps its colour and a shape (colour-blind safe palette) in all
+  these charts. Stiche without a position count in their firearm type's usual one.
 - **Maintenance** (Pflege): log cleaning and service per firearm. Optional reminders
   after N shots and/or N days, as local notifications and a badge on the Firearms tab.
 - **For sport shooters** (Für Sportschützen): optional fields, each switched on by
@@ -98,7 +98,9 @@ If you build your own copy, replace `DEVELOPMENT_TEAM` in `project.yml` with you
 (or pick your team under Signing & Capabilities), then run on a device or simulator.
 For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates the
 container on first run. Change the bundle id / container in `project.yml` if
-`ch.giotta` isn't yours.
+`ch.giotta` isn't yours. Weather from Apple Weather needs WeatherKit turned on for the App ID
+under Certificates, Identifiers & Profiles, on both the Capabilities and the App Services tab;
+without it the weather fields still work, and the row that fills them says Apple Weather can't be reached.
 
 The calibre catalogue lives in the shared [calibre-data](https://github.com/ravench/calibre-data)
 repository, included as a git submodule at `calibre-data/` (also used by Kaliberfinder and the
@@ -147,7 +149,8 @@ screenshots every tab in portrait and landscape. Browse them on the `schiesstage
 [ravench/app-screens](https://github.com/ravench/app-screens/tree/schiesstagebuch/ipad-screens)
 (latest run only) or download the run's `ipad-screens` artifact. The UI test lives in
 `SchiesstagebuchUITests` and has its own scheme, `SchiesstagebuchScreens`, so the normal
-test run skips it.
+test run skips it. Pull requests that change the GUI get the same screens, before and after,
+as a comment from the **Build** workflow's `ipad-screens` job.
 
 ## Code style
 

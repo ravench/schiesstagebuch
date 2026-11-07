@@ -19,6 +19,10 @@ enum ScreenshotData {
         guard existing == 0 else { return }
 
         let range = ShootingRange(name: "Schiessanlage Ostermundigen", place: "Ostermundigen")
+        // A position and shooting direction, for the weather from Apple Weather (a fixed sample here).
+        range.latitude = 46.956
+        range.longitude = 7.497
+        range.shootingBearing = 60
         // Catalogue calibres show their cartridge drawing; a seeded catalogue already holds them.
         let gp11 = caliber("7.5x55 mm Swiss (GP 11)", in: context)
         let luger = caliber("9x19 mm", in: context)

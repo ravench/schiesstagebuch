@@ -78,6 +78,28 @@ final class PRScreensTests: XCTestCase {
         snap("09-Einstellungen-unten")
     }
 
+    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
+    func testWeatherStops() {
+        relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
+        reveal(weatherSwitch)
+        if (weatherSwitch.value as? String) != "1" {
+            weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        }
+        let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
+        reveal(wind)
+        if wind.exists { wind.tap() }
+        snap("13-Wetter-Apple-Wetter")
+        app.buttons["Sichern"].firstMatch.tap()
+        scroll()
+        snap("14-Eintrag-Wetter")
+        // The switch for it in Settings, with what it sends to Apple.
+        tab("Einstellungen")
+        topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
+    }
+
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
     func testWelcome() {
         relaunch(adding: ["-welcome"])
@@ -93,10 +115,7 @@ final class PRScreensTests: XCTestCase {
     func testIPSCEntry() {
         relaunch(adding: ["-scoringSystems.v1", "ipsc"])
         if open(app.buttons["Neuer Eintrag"].firstMatch) {
-            let time = app.staticTexts["Zeit"].firstMatch
-            reveal(time)
-            holdAtTop(time)
-            snap("03d-IPSC-Eintrag")
+            topStop(app.staticTexts["Zeit"].firstMatch, "03d-IPSC-Eintrag")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
     }
@@ -110,9 +129,13 @@ final class PRScreensTests: XCTestCase {
 
     /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
     private func stop(_ name: String, chart title: String) {
-        let headline = app.staticTexts[title].firstMatch
-        reveal(headline, swipes: 10)
-        holdAtTop(headline)
+        topStop(app.staticTexts[title].firstMatch, name)
+    }
+
+    /// Scrolls `element` to the top of the screen, so what follows it shows, and takes the screen.
+    private func topStop(_ element: XCUIElement, _ name: String) {
+        reveal(element, swipes: 10)
+        holdAtTop(element)
         snap(name)
     }
 
@@ -164,6 +187,22 @@ final class PRScreensTests: XCTestCase {
                 app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
             }
         }
+    }
+
+    /// The .577 Snider in the calibre list (the only place its drawing shows): a paper case
+    /// standing in a brass cup.
+    func testPaperCase() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        // The search field hides above the list until the list is pulled down.
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        if search.waitForExistence(timeout: 5) {
+            search.tap()
+            search.typeText("Snider\n") // return hides the keyboard
+        }
+        XCTAssertTrue(app.staticTexts[".577 Snider"].waitForExistence(timeout: 5), "No .577 Snider row")
+        snap("11b-Kaliber-Snider")
     }
 
     private func tab(_ name: String) {

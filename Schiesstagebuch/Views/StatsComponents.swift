@@ -119,7 +119,7 @@ struct ResultTrendChart: View {
                     if split {
                         LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
                             .foregroundStyle(by: .value("Stellung", p.position?.title ?? "Ohne Stellung".loc))
-                            .symbol(.circle)
+                            .symbol(by: .value("Stellung", p.position?.title ?? "Ohne Stellung".loc))
                             .interpolationMethod(.monotone)
                     } else {
                         LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
@@ -134,8 +134,9 @@ struct ResultTrendChart: View {
                     }
                 }
                 .chartYScale(domain: .automatic(includesZero: false))
-                // The same colour per position as in the box plots; one line needs no legend.
-                .chartForegroundStyleScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map(ShootingPosition.color))
+                // The same colour and shape per position as in the box plots; one line needs no legend.
+                .chartForegroundStyleScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map { ShootingPosition.marker($0).color })
+                .chartSymbolScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map { ShootingPosition.marker($0).shape })
                 .chartLegend(split ? .automatic : .hidden)
                 .frame(height: 180)
             }
@@ -248,8 +249,8 @@ struct BoxPlot: View {
     struct Box {
         /// The band of the row it is drawn in, counted from the top.
         var band = 0
-        /// nil: the tint.
-        var color: Color?
+        /// nil: the tint and round dots.
+        var marker: SeriesMarker?
         /// What VoiceOver reads after the row's name, e.g. the position.
         var name: String?
         /// Percentages (0...1).
@@ -267,7 +268,7 @@ struct BoxPlot: View {
     var bands = 1
     let domain: ClosedRange<Double>
 
-    private struct Dot: Identifiable { let id: Int; let y: Double; let value: Double; let outlier: Bool }
+    private struct Dot: Identifiable { let id: Int; let y: Double; let value: Double; let outlier: Bool; let marked: Bool; let shape: BasicChartSymbolShape }
 
     /// A scale that fits all values, so several plots line up: whole 5 % steps, within 0–100 %.
     static func domain(_ values: [Double]) -> ClosedRange<Double> {
@@ -290,7 +291,8 @@ struct BoxPlot: View {
         for (i, row) in rows.enumerated() {
             for box in row.boxes {
                 for v in box.values {
-                    dots.append(Dot(id: dots.count, y: y(row: i, band: box.band), value: v, outlier: box.stats.outliers.contains(v)))
+                    dots.append(Dot(id: dots.count, y: y(row: i, band: box.band), value: v, outlier: box.stats.outliers.contains(v),
+                                    marked: box.marker != nil, shape: box.marker?.shape ?? .circle))
                 }
             }
         }
@@ -303,7 +305,7 @@ struct BoxPlot: View {
                 ForEach(Array(row.boxes.enumerated()), id: \.offset) { _, box in
                     let s = box.stats
                     let mid = y(row: i, band: box.band)
-                    let style = box.color.map { AnyShapeStyle($0) } ?? AnyShapeStyle(.tint)
+                    let style = box.marker.map { AnyShapeStyle($0.color) } ?? AnyShapeStyle(.tint)
                     RuleMark(xStart: .value("Prozent", s.lowerWhisker), xEnd: .value("Prozent", s.upperWhisker), y: .value("Zeile", mid))
                         .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
@@ -325,7 +327,9 @@ struct BoxPlot: View {
             }
             ForEach(dots) { d in
                 PointMark(x: .value("Prozent", d.value), y: .value("Zeile", d.y))
-                    .symbolSize(d.outlier ? 30 : 14)
+                    .symbol(d.shape)
+                    // Big enough to tell the shapes apart when they mark a series.
+                    .symbolSize(d.outlier ? 30 : d.marked ? 24 : 14)
                     .foregroundStyle(d.outlier ? AnyShapeStyle(.red) : AnyShapeStyle(.primary.opacity(0.45)))
                     .accessibilityHidden(true)
             }
@@ -342,14 +346,14 @@ struct BoxPlot: View {
         }
     }
 
-    /// The row's name with each box's median and n; with several bands, a dot in the box's colour
-    /// tells which band the numbers belong to.
+    /// The row's name with each box's median and n, each after its marker (colour and shape) when
+    /// the boxes have one.
     private func label(_ row: Row) -> some View {
         HStack(spacing: 0) {
             Text(row.label).bold()
             ForEach(Array(row.boxes.enumerated()), id: \.offset) { _, box in
-                if bands > 1, let color = box.color {
-                    Text(verbatim: "  ● ").foregroundStyle(color)
+                if let marker = box.marker {
+                    marker.shape.fill(marker.color).frame(width: 7, height: 7).padding(.leading, 8).padding(.trailing, 3)
                 } else {
                     Text(verbatim: " · ").foregroundStyle(.secondary)
                 }
@@ -361,28 +365,38 @@ struct BoxPlot: View {
     }
 }
 
+/// How a series in a chart is told apart: a colour and, so colour is never the only cue, a shape.
+struct SeriesMarker {
+    var color: Color
+    var shape: BasicChartSymbolShape
+}
+
 extension ShootingPosition {
-    /// The same colour for a position in every statistics chart; grey for none.
-    static func color(_ position: ShootingPosition?) -> Color {
+    /// The same marker for a position in every statistics chart. Colours from the Okabe–Ito palette
+    /// (black, white in dark mode, for none), which stays distinguishable with red-green deficiencies;
+    /// with tritanopia blue/green and orange/purple come close, which the shapes make up for. None of
+    /// them is red, which marks outliers.
+    static func marker(_ position: ShootingPosition?) -> SeriesMarker {
         switch position {
-        case .prone?: .blue
-        case .rested?: .teal
-        case .kneeling?: .orange
-        case .standing?: .purple
-        case nil: .gray
+        case .prone?: SeriesMarker(color: Color(red: 0, green: 0.447, blue: 0.698), shape: .circle)
+        case .kneeling?: SeriesMarker(color: Color(red: 0.902, green: 0.624, blue: 0), shape: .square)
+        case .standing?: SeriesMarker(color: Color(red: 0.8, green: 0.475, blue: 0.655), shape: .triangle)
+        case .rested?: SeriesMarker(color: Color(red: 0, green: 0.62, blue: 0.451), shape: .diamond)
+        case nil: SeriesMarker(color: .primary, shape: .cross)
         }
     }
 }
 
-/// Which colour stands for which shooting position.
+/// Which colour and shape stands for which shooting position.
 struct PositionLegend: View {
     let positions: [ShootingPosition?]
 
     var body: some View {
         HStack(spacing: 12) {
             ForEach(Array(positions.enumerated()), id: \.offset) { _, position in
+                let marker = ShootingPosition.marker(position)
                 HStack(spacing: 4) {
-                    Circle().fill(ShootingPosition.color(position)).frame(width: 8, height: 8)
+                    marker.shape.fill(marker.color).frame(width: 8, height: 8)
                     Text(position?.title ?? "Ohne Stellung".loc)
                 }
             }
@@ -425,7 +439,7 @@ struct LotResultsChart: View {
                     }
                     BoxPlot(rows: group.lots.map { lot in
                                 BoxPlot.Row(label: group.label(lot), boxes: group.results(lot).map {
-                                    BoxPlot.Box(band: $0.band, color: colored ? ShootingPosition.color($0.position) : nil,
+                                    BoxPlot.Box(band: $0.band, marker: colored ? ShootingPosition.marker($0.position) : nil,
                                                 name: $0.position?.title, values: $0.result.values, stats: $0.result.stats)
                                 })
                             },
@@ -469,7 +483,7 @@ struct PositionResultsChart: View {
                     }
                     BoxPlot(rows: group.positions.map {
                                 BoxPlot.Row(label: $0.position?.title ?? "Ohne Stellung".loc,
-                                            boxes: [BoxPlot.Box(color: ShootingPosition.color($0.position), values: $0.values, stats: $0.stats)])
+                                            boxes: [BoxPlot.Box(marker: ShootingPosition.marker($0.position), values: $0.values, stats: $0.stats)])
                             },
                             domain: domain)
                 }

@@ -132,6 +132,15 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertNotNil(fury.outline.head)
     }
 
+    /// The Snider's paper case stands in a brass cup (calibre-data #49): a head part without a
+    /// material, which the drawing fills with brass.
+    func testSniderPaperCaseHasABrassHead() throws {
+        let snider = try XCTUnwrap(CaliberCatalog.item(id: ".577 Snider"))
+        XCTAssertEqual(CartridgeView.caseFill(snider.outline.caseMaterial), .paper)
+        XCTAssertNotNil(snider.outline.head)
+        XCTAssertNil(snider.outline.headMaterial)
+    }
+
     func testGP1890DoesNotTakeOverGP90OrGP11() throws {
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
         let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11"))

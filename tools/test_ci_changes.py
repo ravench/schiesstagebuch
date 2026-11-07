@@ -45,7 +45,7 @@ class NeedsScreensTests(unittest.TestCase):
     def test_gui_changes_get_the_screens(self):
         for path in ["Schiesstagebuch/Views/EntryEditorView.swift", "SchiesstagebuchUITests/PRScreensTests.swift",
                      "calibre-data", "project.yml", "tools/pr_screens.py", "tools/ipad_screens.py",
-                     ".github/workflows/build.yml"]:
+                     "tools/publish_pr_screens.sh", ".github/workflows/build.yml"]:
             with self.subTest(path=path):
                 self.assertTrue(needs_screens(["README.md", path]))
 

@@ -9,7 +9,7 @@ final class WeatherTests: ModelTestCase {
     func testFieldKeysMatchTheSpec() {
         let specKeys = ["overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
                         "wind_strength", "wind_clock", "wind_character", "temp_feel",
-                        "ammo_temp", "precipitation", "rain_during_relay", "ground", "humidity_pct",
+                        "air_temp_c", "ammo_temp", "precipitation", "rain_during_relay", "ground", "humidity_pct",
                         "haze_rising_moisture", "pressure_hpa", "aids", "weather_impact", "weather_note"]
         XCTAssertEqual(Set(WeatherField.all.map(\.key)), Set(specKeys))
         XCTAssertEqual(WeatherField.all.count, specKeys.count, "no duplicates")
@@ -29,24 +29,39 @@ final class WeatherTests: ModelTestCase {
     }
 
     func testRemovedFieldsAreGone() {
-        // Raven 2026-11-03/04: no stand temperature, wind type or measured air temperature;
-        // the temperature is only recorded as felt.
-        for key in ["stand_temp", "wind_type", "air_temp_c"] { XCTAssertNil(WeatherField.field(key), key) }
+        // Raven 2026-11-03/04: no stand temperature or wind type; the temperature is entered only as felt.
+        for key in ["stand_temp", "wind_type"] { XCTAssertNil(WeatherField.field(key), key) }
         XCTAssertNotNil(WeatherField.field("temp_feel"))
         for field in WeatherField.fields(for: .entry, in: .temperature) {
             if case .number = field.kind { XCTFail("\(field.key) is a number field") }
         }
         // Values from older builds are dropped when the record is stored again, and never shown.
         var c = WeatherConditions()
-        c.values = ["stand_temp": .number(18), "wind_type": .option("bise"), "air_temp_c": .number(12),
-                    "temp_feel": .option("cool")]
+        c.values = ["stand_temp": .number(18), "wind_type": .option("bise"), "temp_feel": .option("cool")]
         XCTAssertEqual(c.normalized().values, ["temp_feel": .option("cool")])
         let summary = c.summary(level: .entry)
-        XCTAssertFalse(summary.contains("18") || summary.contains("12"), summary)
+        XCTAssertFalse(summary.contains("18"), summary)
+    }
+
+    func testMeasuredValuesAreKeptButHaveNoInput() {
+        // Raven 2026-11-06: air temperature, humidity and pressure from Apple Weather are saved and shown
+        // read-only in one line; no number fields for them in the editor, the details or the CSV for now.
+        XCTAssertEqual(WeatherField.measured.map(\.key), ["air_temp_c", "humidity_pct", "pressure_hpa"])
+        let shownKeys = Set(WeatherField.fields(for: .entry).map(\.key)).union(WeatherField.fields(for: .relay).map(\.key))
+        for field in WeatherField.measured { XCTAssertFalse(shownKeys.contains(field.key), field.key) }
+
+        var c = WeatherConditions()
+        c.set("air_temp_c", .number(12))
+        c.set("humidity_pct", .number(62))
+        c.set("pressure_hpa", .number(1018))
+        c.set("sky", .option("sunny"))
+        XCTAssertEqual(c.normalized(), c, "stored with the record")
+        XCTAssertEqual(c.summary(level: .entry), "\("Himmel".loc): \("sonnig".loc)")
+        XCTAssertTrue(c.display(WeatherField.field("air_temp_c")!)!.text.hasSuffix("°C"))
     }
 
     func testLevelsFollowTheSpec() {
-        let entryOnly = ["overall", "ammo_temp", "ground", "humidity_pct", "pressure_hpa"]
+        let entryOnly = ["overall", "ammo_temp", "ground"]
         let relayKeys = Set(WeatherField.fields(for: .relay).map(\.key))
         let entryKeys = Set(WeatherField.fields(for: .entry).map(\.key))
         for key in entryOnly {

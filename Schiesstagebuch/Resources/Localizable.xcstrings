@@ -806,6 +806,29 @@
         }
       }
     },
+    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit Wetterdaten von Apple Weather (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything is optional. With the range's location, the app fills empty fields with the weather from Apple Weather (you can turn this off in Settings); with its shooting direction also the wind direction and the sun."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout est facultatif. Avec le lieu du stand, l'app remplit les champs vides avec la météo d'Apple (désactivable dans les Réglages) ; avec la direction de tir aussi la direction du vent et le soleil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto è facoltativo. Con il luogo del poligono, l'app compila i campi vuoti con il meteo di Apple (disattivabile nelle Impostazioni); con la direzione di tiro anche la direzione del vento e il sole."
+          }
+        }
+      }
+    },
     "Als aufgebraucht markieren": {
       "extractionState": "manual",
       "localizations": {
@@ -1032,6 +1055,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Icona dell’app"
+          }
+        }
+      }
+    },
+    "Apple Weather nicht erreichbar, nochmals versuchen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Weather not reachable, try again"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Météo d'Apple injoignable, réessayer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meteo di Apple non raggiungibile, riprova"
           }
         }
       }
@@ -2182,6 +2228,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dati"
+          }
+        }
+      }
+    },
+    "Datenquellen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data sources"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources des données"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fonti dei dati"
           }
         }
       }
@@ -4005,6 +4074,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per i bersagli tirati più volte a questo evento."
+          }
+        }
+      }
+    },
+    "Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For the weather from Apple Weather, the app sends the range's coordinates and the time to Apple, not your location. As you usually shoot there, it is nearly the same place though."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et l'heure, pas ta position. Comme tu y tires le plus souvent, c'est tout de même presque le même endroit."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e l'ora, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso posto."
           }
         }
       }
@@ -6282,6 +6374,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pistola ad aria compressa"
+          }
+        }
+      }
+    },
+    "Lufttemperatur": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Air temperature"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Température de l'air"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura dell'aria"
           }
         }
       }
@@ -11576,6 +11691,29 @@
         }
       }
     },
+    "Von Apple Weather übernommen (%@)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filled in from Apple Weather (%@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reprise de la météo d'Apple (%@)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripreso dal meteo di Apple (%@)"
+          }
+        }
+      }
+    },
     "Vorderlader / Schwarzpulver": {
       "extractionState": "manual",
       "localizations": {
@@ -12101,6 +12239,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra il meteo"
+          }
+        }
+      }
+    },
+    "Wetter wird abgerufen …": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Getting the weather …"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récupération de la météo …"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recupero del meteo …"
+          }
+        }
+      }
+    },
+    "Wetterdaten von Apple Weather übernehmen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fill in from Apple Weather"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reprendre la météo d'Apple"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprendi il meteo di Apple"
           }
         }
       }

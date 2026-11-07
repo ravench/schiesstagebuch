@@ -26,6 +26,8 @@ targets:
         com.apple.developer.icloud-services:
           - CloudKit
         aps-environment: development
+        # Weather from Apple Weather for a Stich; WeatherKit must be on for the App ID (Capabilities and App Services).
+        com.apple.developer.weatherkit: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ch.giotta.schiesstagebuch
