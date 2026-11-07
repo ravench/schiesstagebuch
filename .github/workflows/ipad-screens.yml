@@ -2,7 +2,7 @@ name: iPad screens
 # Screenshots of every main screen on an iPad simulator, portrait and landscape, with sample data.
 # See them in ravench/app-screens on its schiesstagebuch/ipad-screens branch, or download the run's "ipad-screens" artifact.
 # Runs by hand (Actions › iPad screens › Run workflow). Pull requests that change the GUI get the
-# same screens, before and after, in the Build job's PR screens comment.
+# same screens, before and after, as a comment from the Build workflow's ipad-screens job.
 on:
   workflow_dispatch:
 defaults:

@@ -143,7 +143,7 @@ screenshots every tab in portrait and landscape. Browse them on the `schiesstage
 (latest run only) or download the run's `ipad-screens` artifact. The UI test lives in
 `SchiesstagebuchUITests` and has its own scheme, `SchiesstagebuchScreens`, so the normal
 test run skips it. Pull requests that change the GUI get the same screens, before and after,
-in the PR screens comment of the **Build** workflow.
+as a comment from the **Build** workflow's `ipad-screens` job.
 
 ## Code style
 

@@ -1,9 +1,9 @@
 import XCTest
 
 /// Takes a screenshot of every main screen in portrait and landscape, so the iPad layout can be
-/// checked without a device. The Build job's PR screens run it on an iPad simulator for pull
-/// requests that change the GUI and comment with the screens that changed; .github/workflows/ipad-screens.yml
-/// runs it by hand for a full set.
+/// checked without a device. The Build workflow's ipad-screens job runs it on an iPad simulator for
+/// pull requests that change the GUI and comments with the screens that changed;
+/// .github/workflows/ipad-screens.yml runs it by hand for a full set.
 final class IPadScreensTests: XCTestCase {
     static let tabs = ["Tagebuch", "Statistik", "Waffen", "Einstellungen"]
 

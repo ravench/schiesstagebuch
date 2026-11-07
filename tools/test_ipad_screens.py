@@ -86,7 +86,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertRegex(self.workflow, r"runs-on: macos-2[6-9]")
 
     def test_pull_requests_get_them_in_the_build_job(self):
-        # No second Mac runner per pull request: the Build job's PR screens take the iPad screens.
+        # Pull requests get them, before and after, from the Build workflow's ipad-screens job.
         self.assertNotIn("pull_request", self.workflow)
         with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
             self.assertIn("-only-testing:SchiesstagebuchUITests/IPadScreensTests", f.read())

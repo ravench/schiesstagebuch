@@ -3,10 +3,10 @@
     xcrun simctl list devices available -j | python3 tools/pr_screens.py pick-iphone
     python3 tools/pr_screens.py rename <xcresulttool export dir> <out dir>
     python3 tools/pr_screens.py changes <before dir> <after dir> <out dir>
-    python3 tools/pr_screens.py comment <out dir> <image base url> <run url>
+    python3 tools/pr_screens.py comment <out dir> <image base url> <run url> [ipad]
 
-The iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift) go through `changes` into
-<out dir>/ipad, and `comment` adds them below the iPhone ones.
+With `ipad`, the comment is the one for the iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift),
+which the Build workflow's ipad-screens job takes and compares the same way.
 """
 import filecmp
 import json
@@ -17,6 +17,7 @@ import sys
 from ipad_screens import _ios_version, rename
 
 MARKER = "<!-- pr-screens -->"
+IPAD_MARKER = "<!-- pr-screens-ipad -->"
 TOUR = "SchiesstagebuchUITests/PRScreensTests.swift"
 
 
@@ -125,25 +126,21 @@ def _section(summary, base_url, device, note, width):
     return lines
 
 
-def comment(summary, base_url, run_url, ipad=None):
+def comment(summary, base_url, run_url, ipad=False):
     """Markdown for the pull request comment; base_url is where out_dir/before and /after are served.
 
-    ipad is the iPad screens' summary, served from base_url/ipad.
+    The iPhone and the iPad screens each have their own comment, told apart by its first line.
     """
-    lines = [MARKER, "### Screenshots", ""] + _section(summary, base_url, "iPhone", "German, sample data", 250)
-    if summary["total"] and not summary["changes"]:
-        lines.append(f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`.")
-    if ipad is not None:
-        lines += ["", "#### iPad", ""] + _section(ipad, f"{base_url}/ipad", "iPad", "portrait and landscape", 320)
+    if ipad:
+        lines = [IPAD_MARKER, "### iPad screenshots", ""]
+        lines += _section(summary, base_url, "iPad", "portrait and landscape", 320)
+    else:
+        lines = [MARKER, "### Screenshots", ""]
+        lines += _section(summary, base_url, "iPhone", "German, sample data", 250)
+        if summary["total"] and not summary["changes"]:
+            lines.append(f"If this pull request changes a screen the tour does not reach, add it to `{TOUR}`.")
     lines += ["", f"All screens of this run: [workflow artifacts]({run_url})."]
     return "\n".join(lines) + "\n"
-
-
-def _summary(path):
-    if not os.path.exists(path):
-        return None
-    with open(path) as f:
-        return json.load(f)
 
 
 def main(argv):
@@ -156,9 +153,9 @@ def main(argv):
         summary = collect(argv[2], argv[3], argv[4])
         for name, status in summary["changes"]:
             print(f"{status}: {name}")
-    elif argv[1:2] == ["comment"] and len(argv) == 5:
-        ipad = _summary(os.path.join(argv[2], "ipad", "changes.json"))
-        sys.stdout.write(comment(_summary(os.path.join(argv[2], "changes.json")), argv[3], argv[4], ipad))
+    elif argv[1:2] == ["comment"] and argv[5:] in ([], ["ipad"]) and len(argv) >= 5:
+        with open(os.path.join(argv[2], "changes.json")) as f:
+            sys.stdout.write(comment(json.load(f), argv[3], argv[4], ipad=argv[5:] == ["ipad"]))
     else:
         sys.exit(__doc__)
 
