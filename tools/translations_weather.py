@@ -41,12 +41,6 @@ W = {
     "%lld Uhr": ("%lld o'clock", "%lld heures", "ore %lld"),
     "ja": ("yes", "oui", "sì"),
     "–": ("–", "–", "–"),
-    # Groups
-    "Licht & Sicht": ("Light & visibility", "Lumière & visibilité", "Luce & visibilità"),
-    "Wind": ("Wind", "Vent", "Vento"),
-    "Temperatur": ("Temperature", "Température", "Temperatura"),
-    "Niederschlag & Luft": ("Precipitation & air", "Précipitations & air", "Precipitazioni & aria"),
-    "Hilfsmittel & Einfluss": ("Aids & impact", "Accessoires & influence", "Ausili & influenza"),
     # Fields
     "Gesamteindruck": ("Overall impression", "Impression générale", "Impressione generale"),
     "Himmel": ("Sky", "Ciel", "Cielo"),

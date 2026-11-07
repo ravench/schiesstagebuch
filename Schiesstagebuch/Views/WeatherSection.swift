@@ -2,7 +2,7 @@ import SwiftUI
 import WeatherKit
 
 /// Weather in the entry editor: a «Wetter erfassen» switch (off for indoor shooting), the time,
-/// the entry's values in folding groups, and optional Ablösungen with their own time and values.
+/// the entry's values in one list, and optional Ablösungen with their own time and values.
 struct WeatherSection: View {
     @Binding var weather: WeatherRecord?
     /// Day of the entry and its range, for the sun suggestion.
@@ -236,32 +236,15 @@ private struct RelayEditorView: View {
     }
 }
 
-/// The fields of one level, overview first and the rest in folding groups.
+/// The fields of one level, all in one list.
 struct WeatherFieldsView: View {
     @Binding var conditions: WeatherConditions
     let level: WeatherLevel
     var sunSuggestion: SunDirection?
 
     var body: some View {
-        ForEach(WeatherField.fields(for: level, in: .overview)) { field in
+        ForEach(WeatherField.fields(for: level)) { field in
             WeatherFieldRow(field: field, conditions: $conditions, sunSuggestion: sunSuggestion)
-        }
-        ForEach(WeatherGroup.allCases.filter { $0 != .overview }, id: \.self) { group in
-            let fields = WeatherField.fields(for: level, in: group)
-            if !fields.isEmpty {
-                DisclosureGroup {
-                    ForEach(fields) { field in
-                        WeatherFieldRow(field: field, conditions: $conditions, sunSuggestion: sunSuggestion)
-                    }
-                } label: {
-                    HStack {
-                        Label(group.rawValue.loc, systemImage: group.icon)
-                        Spacer()
-                        let filled = fields.filter { conditions[$0.key] != nil }.count
-                        if filled > 0 { Text(filled.formatted()).monospacedDigit().foregroundStyle(.secondary) }
-                    }
-                }
-            }
         }
     }
 }

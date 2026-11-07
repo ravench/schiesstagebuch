@@ -32,8 +32,8 @@ final class WeatherTests: ModelTestCase {
         // Raven 2026-11-03/04: no stand temperature or wind type; the temperature is entered only as felt.
         for key in ["stand_temp", "wind_type"] { XCTAssertNil(WeatherField.field(key), key) }
         XCTAssertNotNil(WeatherField.field("temp_feel"))
-        for field in WeatherField.fields(for: .entry, in: .temperature) {
-            if case .number = field.kind { XCTFail("\(field.key) is a number field") }
+        for field in WeatherField.fields(for: .entry) {
+            if case .number = field.kind { XCTFail("\(field.key) is a number input") }
         }
         // Values from older builds are dropped when the record is stored again, and never shown.
         var c = WeatherConditions()
@@ -72,9 +72,22 @@ final class WeatherTests: ModelTestCase {
         XCTAssertTrue(relayKeys.isSuperset(of: ["sky", "light", "sun_direction", "wind_strength", "wind_clock", "aids"]))
     }
 
+    /// The editor shows every field of a level in one list, in this order.
+    func testFieldsOfALevelInEditorOrder() {
+        XCTAssertEqual(WeatherField.fields(for: .entry).map(\.key), [
+            "overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility", "haze_rising_moisture",
+            "wind_strength", "wind_clock", "wind_character", "temp_feel", "ammo_temp", "precipitation", "ground",
+            "aids", "weather_impact", "weather_note",
+        ])
+        XCTAssertEqual(WeatherField.fields(for: .relay).map(\.key), [
+            "sky", "light", "sun_direction", "target_light", "glare", "visibility", "haze_rising_moisture",
+            "wind_strength", "wind_clock", "wind_character", "temp_feel", "precipitation", "rain_during_relay",
+            "aids", "weather_impact", "weather_note",
+        ])
+    }
+
     func testEveryIconExists() {
-        var icons = WeatherGroup.allCases.map(\.icon)
-        for field in WeatherField.all { icons.append(field.icon); icons += field.options.map(\.icon) }
+        var icons = WeatherField.all.flatMap { [$0.icon] + $0.options.map(\.icon) }
         icons += ["cloud.sun", "clock", "location.north.line", "location.north.fill"]
         for name in Set(icons) {
             XCTAssertNotNil(UIImage(systemName: name), "SF Symbol \(name) does not exist")
@@ -82,8 +95,7 @@ final class WeatherTests: ModelTestCase {
     }
 
     func testEveryLabelIsTranslated() throws {
-        var keys = WeatherGroup.allCases.map(\.rawValue).filter { !$0.isEmpty }
-        for field in WeatherField.all { keys.append(field.label); keys += field.options.map(\.label) }
+        var keys = WeatherField.all.flatMap { [$0.label] + $0.options.map(\.label) }
         keys += ["Wetter", "Wetter erfassen", "Uhrzeit", "Ablösung", "Ablösungen / Serien", "Ablösung hinzufügen", "ja", "von vorne"]
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))

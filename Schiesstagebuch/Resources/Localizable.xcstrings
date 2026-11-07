@@ -4653,29 +4653,6 @@
         }
       }
     },
-    "Hilfsmittel & Einfluss": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aids & impact"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accessoires & influence"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ausili & influenza"
-          }
-        }
-      }
-    },
     "Himmel": {
       "extractionState": "manual",
       "localizations": {
@@ -5937,29 +5914,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultimi 12 mesi"
-          }
-        }
-      }
-    },
-    "Licht & Sicht": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Light & visibility"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lumière & visibilité"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Luce & visibilità"
           }
         }
       }
@@ -7570,29 +7524,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Precipitazioni"
-          }
-        }
-      }
-    },
-    "Niederschlag & Luft": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precipitation & air"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Précipitations & air"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precipitazioni & aria"
           }
         }
       }
@@ -11254,29 +11185,6 @@
         }
       }
     },
-    "Temperatur": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temperature"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Température"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temperatura"
-          }
-        }
-      }
-    },
     "Temperaturgefühl": {
       "extractionState": "manual",
       "localizations": {
@@ -12400,29 +12308,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Benvenuto"
-          }
-        }
-      }
-    },
-    "Wind": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wind"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vent"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vento"
           }
         }
       }

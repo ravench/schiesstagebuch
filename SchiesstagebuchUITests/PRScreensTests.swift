@@ -98,7 +98,8 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
+    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): the fields in the editor, in one
+    /// list from the switch down to the wind, then in the entry.
     func testWeatherStops() {
         relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
         tab("Tagebuch")
@@ -108,10 +109,9 @@ final class PRScreensTests: XCTestCase {
         if (weatherSwitch.value as? String) != "1" {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
-        let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
-        reveal(wind)
-        if wind.exists { wind.tap() }
+        holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
+        topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind")
         app.buttons["Sichern"].firstMatch.tap()
         scroll()
         snap("14-Eintrag-Wetter")

@@ -1,6 +1,7 @@
 import XCTest
 
 /// Adds an Ablösung with its own weather in a new entry: the app used to crash on «Ablösung hinzufügen».
+/// Also checks that the weather fields show in one list, without groups to open first.
 /// Runs in the Build workflow on an iPhone simulator, with the sample data in memory.
 final class WeatherRelayUITests: XCTestCase {
     private var app: XCUIApplication!
@@ -25,6 +26,8 @@ final class WeatherRelayUITests: XCTestCase {
             // Tap the switch itself, not the label.
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
+        XCTAssertTrue(scroll(to: app.switches["Dunst / aufsteigende Feuchtigkeit"].firstMatch),
+                      "The weather fields of the entry are not all in the list")
 
         let addRelay = app.buttons["Ablösung hinzufügen"].firstMatch
         XCTAssertTrue(scroll(to: addRelay), "No «Ablösung hinzufügen» button")
@@ -35,6 +38,8 @@ final class WeatherRelayUITests: XCTestCase {
         sleep(2)
         XCTAssertEqual(app.state, .runningForeground, "The app crashed")
         XCTAssertTrue(app.navigationBars["Ablösung"].exists, "The Ablösung editor closed by itself")
+        XCTAssertTrue(scroll(to: app.switches["Niederschlag in der eigenen Ablösung"].firstMatch),
+                      "The weather fields of the Ablösung are not all in the list")
         app.navigationBars["Ablösung"].buttons["Sichern"].tap()
 
         XCTAssertEqual(app.state, .runningForeground)

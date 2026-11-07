@@ -8,27 +8,6 @@ import Foundation
 /// is never entered by hand: only Apple Weather fills it (see `WeatherField.measured`).
 enum WeatherLevel: Hashable { case entry, relay }
 
-/// Groups that fold the many fields into a few sections in the editor.
-enum WeatherGroup: String, CaseIterable, Hashable {
-    case overview = ""
-    case light = "Licht & Sicht"
-    case wind = "Wind"
-    case temperature = "Temperatur"
-    case precipitation = "Niederschlag & Luft"
-    case aids = "Hilfsmittel & Einfluss"
-
-    var icon: String {
-        switch self {
-        case .overview: "star"
-        case .light: "sun.max"
-        case .wind: "wind"
-        case .temperature: "thermometer.medium"
-        case .precipitation: "cloud.rain"
-        case .aids: "backpack"
-        }
-    }
-}
-
 struct WeatherOption: Hashable {
     let key: String
     let label: String
@@ -50,7 +29,6 @@ struct WeatherField: Identifiable, Hashable {
     let key: String
     let label: String
     let icon: String
-    let group: WeatherGroup
     let levels: Set<WeatherLevel>
     let kind: Kind
 
@@ -74,14 +52,14 @@ extension WeatherField {
     private static let both: Set<WeatherLevel> = [.entry, .relay]
 
     static let all: [WeatherField] = [
-        .init(key: "overall", label: "Gesamteindruck", icon: "star", group: .overview, levels: [.entry], kind: .select([
+        .init(key: "overall", label: "Gesamteindruck", icon: "star", levels: [.entry], kind: .select([
             o("ideal", "ideal", "star.fill"),
             o("good", "gut", "hand.thumbsup"),
             o("mixed", "durchzogen", "circle.lefthalf.filled"),
             o("difficult", "schwierig", "exclamationmark.triangle"),
             o("nasty", "garstig", "hand.thumbsdown"),
         ])),
-        .init(key: "sky", label: "Himmel", icon: "cloud.sun", group: .light, levels: both, kind: .select([
+        .init(key: "sky", label: "Himmel", icon: "cloud.sun", levels: both, kind: .select([
             o("sunny", "sonnig", "sun.max"),
             o("partly_cloudy", "leicht bewölkt", "cloud.sun"),
             o("overcast", "bedeckt", "cloud"),
@@ -89,7 +67,7 @@ extension WeatherField {
             o("fog", "Nebel", "cloud.fog"),
             o("haze", "Dunst", "sun.haze"),
         ])),
-        .init(key: "light", label: "Lichtverhältnisse", icon: "lightbulb", group: .light, levels: both, kind: .select([
+        .init(key: "light", label: "Lichtverhältnisse", icon: "lightbulb", levels: both, kind: .select([
             o("constant", "gleichbleibend", "lightbulb"),
             o("changing", "wechselnd", "arrow.triangle.2.circlepath"),
             o("glaring", "grell", "sun.max.fill"),
@@ -98,7 +76,7 @@ extension WeatherField {
             o("artificial", "Kunstlicht", "lamp.ceiling"),
             o("dark_lit_target", "dunkel, Scheibe beleuchtet", "moon.stars"),
         ])),
-        .init(key: "sun_direction", label: "Sonne zum Schützen", icon: "sun.max", group: .light, levels: both, kind: .select([
+        .init(key: "sun_direction", label: "Sonne zum Schützen", icon: "sun.max", levels: both, kind: .select([
             o("none", "keine", "circle.slash"),
             o("behind", "von hinten", "arrow.down.circle"),
             o("left", "von links", "arrow.left.circle"),
@@ -106,42 +84,41 @@ extension WeatherField {
             o("front", "von vorne (im Gesicht)", "arrow.up.circle"),
             o("low", "tief stehend", "sun.horizon"),
         ])),
-        .init(key: "target_light", label: "Scheibe", icon: "target", group: .light, levels: both, kind: .select([
+        .init(key: "target_light", label: "Scheibe", icon: "target", levels: both, kind: .select([
             o("sun", "in der Sonne", "sun.max"),
             o("shade", "im Schatten", "tree"),
             o("partial_shade", "Teilschatten / Schattenwurf", "circle.lefthalf.filled"),
             o("sun_into_stand", "Sonne direkt in den Stand", "rays"),
         ])),
-        .init(key: "glare", label: "Blendung", icon: "eye", group: .light, levels: both, kind: .select([
+        .init(key: "glare", label: "Blendung", icon: "eye", levels: both, kind: .select([
             o("0", "keine", "eye"),
             o("1", "leicht", "sun.min"),
             o("2", "stark", "sun.max.fill"),
         ])),
-        .init(key: "visibility", label: "Sicht auf die Scheiben", icon: "binoculars", group: .light, levels: both, kind: .select([
+        .init(key: "visibility", label: "Sicht auf die Scheiben", icon: "binoculars", levels: both, kind: .select([
             o("clear", "klar", "eye"),
             o("light_haze", "leichter Dunst", "sun.haze"),
             o("fog_veil", "Nebelschleier vor den Scheiben", "cloud.fog"),
             o("fog", "Nebel, Scheiben zeitweise weg", "eye.slash"),
             o("restricted", "eingeschränkt durch den Stand (Tunnel, Blenden)", "eye.trianglebadge.exclamationmark"),
         ])),
-        .init(key: "haze_rising_moisture", label: "Dunst / aufsteigende Feuchtigkeit", icon: "sun.haze",
-              group: .light, levels: both, kind: .flag),
-        .init(key: "wind_strength", label: "Windstärke am Stand", icon: "wind", group: .wind, levels: both, kind: .select([
+        .init(key: "haze_rising_moisture", label: "Dunst / aufsteigende Feuchtigkeit", icon: "sun.haze", levels: both, kind: .flag),
+        .init(key: "wind_strength", label: "Windstärke am Stand", icon: "wind", levels: both, kind: .select([
             o("calm", "windstill", "leaf"),
             o("light", "ein bisschen Wind", "flag"),
             o("moderate", "mässig", "wind"),
             o("strong", "stark", "tropicalstorm"),
             o("stormy", "stürmisch", "tornado"),
         ])),
-        .init(key: "wind_clock", label: "Windrichtung (Uhr)", icon: "clock", group: .wind, levels: both, kind: .clock),
-        .init(key: "wind_character", label: "Windcharakter", icon: "wind", group: .wind, levels: both, kind: .select([
+        .init(key: "wind_clock", label: "Windrichtung (Uhr)", icon: "clock", levels: both, kind: .clock),
+        .init(key: "wind_character", label: "Windcharakter", icon: "wind", levels: both, kind: .select([
             o("steady", "konstant", "arrow.right"),
             o("variable", "wechselnd", "arrow.left.arrow.right"),
             o("gusty", "böig", "wind"),
             o("rising", "aufkommend", "arrow.up.right"),
             o("falling", "abflauend", "arrow.down.right"),
         ])),
-        .init(key: "temp_feel", label: "Temperaturgefühl", icon: "figure.stand", group: .temperature, levels: both, kind: .select([
+        .init(key: "temp_feel", label: "Temperaturgefühl", icon: "figure.stand", levels: both, kind: .select([
             o("icy", "eisig", "snowflake"),
             o("cold", "kalt", "thermometer.snowflake"),
             o("cool", "kühl", "thermometer.low"),
@@ -151,12 +128,12 @@ extension WeatherField {
             o("hot", "heiss", "thermometer.sun"),
             o("oppressive", "drückend", "humidity"),
         ])),
-        .init(key: "ammo_temp", label: "Munition", icon: "shippingbox", group: .temperature, levels: [.entry], kind: .select([
+        .init(key: "ammo_temp", label: "Munition", icon: "shippingbox", levels: [.entry], kind: .select([
             o("cold", "kalt", "snowflake"),
             o("room", "Raumtemperatur", "house"),
             o("warm_sun", "warm (Sonne)", "sun.max"),
         ])),
-        .init(key: "precipitation", label: "Niederschlag", icon: "cloud.rain", group: .precipitation, levels: both, kind: .select([
+        .init(key: "precipitation", label: "Niederschlag", icon: "cloud.rain", levels: both, kind: .select([
             o("none", "kein", "xmark.circle"),
             o("drizzle", "Nieselregen", "cloud.drizzle"),
             o("light_rain", "leichter Regen", "cloud.rain"),
@@ -167,26 +144,21 @@ extension WeatherField {
             o("sleet", "Schneeregen", "cloud.sleet"),
             o("hail", "Hagel", "cloud.hail"),
         ])),
-        .init(key: "rain_during_relay", label: "Niederschlag in der eigenen Ablösung", icon: "umbrella",
-              group: .precipitation, levels: [.relay], kind: .flag),
-        .init(key: "ground", label: "Unterlage / Boden", icon: "square.bottomhalf.filled", group: .precipitation, levels: [.entry],
-              kind: .select([
-                o("dry", "trocken", "sun.max"),
-                o("damp", "feucht", "drop"),
-                o("wet", "nass", "drop.fill"),
-                o("puddle", "Pfütze", "water.waves"),
-                o("snow", "Schnee", "snowflake"),
-                o("straw", "Stroh", "leaf"),
-              ])),
+        .init(key: "rain_during_relay", label: "Niederschlag in der eigenen Ablösung", icon: "umbrella", levels: [.relay], kind: .flag),
+        .init(key: "ground", label: "Unterlage / Boden", icon: "square.bottomhalf.filled", levels: [.entry], kind: .select([
+            o("dry", "trocken", "sun.max"),
+            o("damp", "feucht", "drop"),
+            o("wet", "nass", "drop.fill"),
+            o("puddle", "Pfütze", "water.waves"),
+            o("snow", "Schnee", "snowflake"),
+            o("straw", "Stroh", "leaf"),
+        ])),
         // Measured values (the spec's source "weather_api"): stored when Apple Weather fills the record and
         // shown read-only in one line, but no input by hand for now (Raven 2026-11-06).
-        .init(key: "air_temp_c", label: "Lufttemperatur", icon: "thermometer.medium", group: .temperature, levels: [],
-              kind: .number(unit: "°C", range: -60...60)),
-        .init(key: "humidity_pct", label: "Luftfeuchtigkeit", icon: "humidity", group: .precipitation, levels: [],
-              kind: .number(unit: "%", range: 0...100)),
-        .init(key: "pressure_hpa", label: "Luftdruck (Wetter)", icon: "barometer", group: .precipitation, levels: [],
-              kind: .number(unit: "hPa", range: 800...1100)),
-        .init(key: "aids", label: "Hilfsmittel", icon: "backpack", group: .aids, levels: both, kind: .multi([
+        .init(key: "air_temp_c", label: "Lufttemperatur", icon: "thermometer.medium", levels: [], kind: .number(unit: "°C", range: -60...60)),
+        .init(key: "humidity_pct", label: "Luftfeuchtigkeit", icon: "humidity", levels: [], kind: .number(unit: "%", range: 0...100)),
+        .init(key: "pressure_hpa", label: "Luftdruck (Wetter)", icon: "barometer", levels: [], kind: .number(unit: "hPa", range: 800...1100)),
+        .init(key: "aids", label: "Hilfsmittel", icon: "backpack", levels: both, kind: .multi([
             o("cap", "Schiessmütze", "person.fill"),
             o("sunshade", "Sonnenblende", "sun.min"),
             o("iris", "Blende / Irisblende", "camera.aperture"),
@@ -197,13 +169,12 @@ extension WeatherField {
             o("warm_clothes", "warme Kleidung", "flame"),
             o("shirtsleeves", "hemdsärmelig", "tshirt"),
         ])),
-        .init(key: "weather_impact", label: "Einfluss aufs Resultat", icon: "chart.line.downtrend.xyaxis", group: .aids, levels: both,
-              kind: .select([
-                o("0", "keiner", "checkmark.circle"),
-                o("1", "spürbar", "exclamationmark.circle"),
-                o("2", "deutlich", "exclamationmark.triangle"),
-              ])),
-        .init(key: "weather_note", label: "Bemerkung Wetter", icon: "text.bubble", group: .aids, levels: both, kind: .text),
+        .init(key: "weather_impact", label: "Einfluss aufs Resultat", icon: "chart.line.downtrend.xyaxis", levels: both, kind: .select([
+            o("0", "keiner", "checkmark.circle"),
+            o("1", "spürbar", "exclamationmark.circle"),
+            o("2", "deutlich", "exclamationmark.triangle"),
+        ])),
+        .init(key: "weather_note", label: "Bemerkung Wetter", icon: "text.bubble", levels: both, kind: .text),
     ]
 
     static func field(_ key: String) -> WeatherField? { all.first { $0.key == key } }
@@ -211,8 +182,9 @@ extension WeatherField {
     /// Air temperature, humidity and pressure, in the order of their read-only line.
     static let measured = all.filter(\.levels.isEmpty)
 
-    static func fields(for level: WeatherLevel, in group: WeatherGroup? = nil) -> [WeatherField] {
-        all.filter { $0.levels.contains(level) && (group == nil || $0.group == group) }
+    /// The fields of one level, in the editor's order.
+    static func fields(for level: WeatherLevel) -> [WeatherField] {
+        all.filter { $0.levels.contains(level) }
     }
 
     /// "3 Uhr (von rechts)" for the four main hours, "4 Uhr" otherwise.
