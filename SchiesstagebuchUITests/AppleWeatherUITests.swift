@@ -19,7 +19,7 @@ final class AppleWeatherUITests: XCTestCase {
         XCTAssertEqual(settingsSwitch().value as? String, "1", "Apple Weather should be on until switched off")
         openWeatherOfSampleEntry()
         XCTAssertTrue(appleWeatherRow.waitForExistence(timeout: 10) && appleWeatherRow.isHittable, "No Apple Weather row in the entry editor")
-        let filled = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Von Apple Wetter übernommen")).firstMatch
+        let filled = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Von Apple Weather übernommen")).firstMatch
         XCTAssertTrue(filled.waitForExistence(timeout: 10), "The weather was not filled in")
     }
 
@@ -38,7 +38,7 @@ final class AppleWeatherUITests: XCTestCase {
         let tab = app.tabBars.buttons["Einstellungen"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))
         tab.tap()
-        let toggle = app.switches["Wetter von Apple Wetter übernehmen"].firstMatch
+        let toggle = app.switches["Wetterdaten von Apple Weather übernehmen"].firstMatch
         XCTAssertTrue(scroll(to: toggle), "No Apple Weather switch in Settings")
         return toggle
     }
@@ -77,7 +77,7 @@ final class AppleWeatherUITests: XCTestCase {
 
     /// The editor's fill button in any of its states.
     private var appleWeatherRow: XCUIElement {
-        app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Apple Wetter")).firstMatch
+        app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Apple Weather")).firstMatch
     }
 
     /// Swipes up through the list until the element is on screen.

@@ -30,7 +30,7 @@ struct WeatherSection: View {
             Text("Wetter")
         } footer: {
             Text(weather == nil ? "Aus, wenn drinnen geschossen wird; dann erscheint auch im Eintrag kein Wetter.".loc
-                 : appleWeather ? "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit dem Wetter von Apple Wetter (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.".loc
+                 : appleWeather ? "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit Wetterdaten von Apple Weather (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.".loc
                  : "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.".loc)
         }
 
@@ -108,14 +108,14 @@ private struct AppleWeatherRow: View {
     @ViewBuilder private var label: some View {
         switch phase {
         case .idle:
-            Label("Wetter von Apple Wetter übernehmen", systemImage: "icloud.and.arrow.down")
+            Label("Wetterdaten von Apple Weather übernehmen", systemImage: "icloud.and.arrow.down")
         case .loading:
             Label { Text("Wetter wird abgerufen …") } icon: { ProgressView() }
         case .done:
             let hour = loaded?.hour ?? date
-            Label(String(localized: "Von Apple Wetter übernommen (\(hour.formatted(date: .omitted, time: .shortened)))"), systemImage: "checkmark.circle")
+            Label(String(localized: "Von Apple Weather übernommen (\(hour.formatted(date: .omitted, time: .shortened)))"), systemImage: "checkmark.circle")
         case .failed:
-            Label("Apple Wetter nicht erreichbar, nochmals versuchen", systemImage: "exclamationmark.triangle")
+            Label("Apple Weather nicht erreichbar, nochmals versuchen", systemImage: "exclamationmark.triangle")
         }
     }
 

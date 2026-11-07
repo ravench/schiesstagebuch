@@ -70,14 +70,14 @@ struct SettingsView: View {
                     // Only while weather is recorded at all; the editor has nothing to fill otherwise.
                     if features.contains(.weather) {
                         Toggle(isOn: $appleWeather) {
-                            Label("Wetter von Apple Wetter übernehmen", systemImage: "icloud.and.arrow.down")
+                            Label("Wetterdaten von Apple Weather übernehmen", systemImage: "icloud.and.arrow.down")
                         }
                     }
                 } footer: {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
                         if features.contains(.weather) {
-                            Text("Für das Wetter von Apple Wetter schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
+                            Text("Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
                         }
                     }
                 }

@@ -806,7 +806,7 @@
         }
       }
     },
-    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit dem Wetter von Apple Wetter (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.": {
+    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit Wetterdaten von Apple Weather (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -1082,7 +1082,7 @@
         }
       }
     },
-    "Apple Wetter nicht erreichbar, nochmals versuchen": {
+    "Apple Weather nicht erreichbar, nochmals versuchen": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -4101,7 +4101,7 @@
         }
       }
     },
-    "Für das Wetter von Apple Wetter schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.": {
+    "Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -11760,7 +11760,7 @@
         }
       }
     },
-    "Von Apple Wetter übernommen (%@)": {
+    "Von Apple Weather übernommen (%@)": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -12312,29 +12312,6 @@
         }
       }
     },
-    "Wetter von Apple Wetter übernehmen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fill in from Apple Weather"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reprendre la météo d'Apple"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Riprendi il meteo di Apple"
-          }
-        }
-      }
-    },
     "Wetter wird abgerufen …": {
       "extractionState": "manual",
       "localizations": {
@@ -12354,6 +12331,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Recupero del meteo …"
+          }
+        }
+      }
+    },
+    "Wetterdaten von Apple Weather übernehmen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fill in from Apple Weather"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reprendre la météo d'Apple"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprendi il meteo di Apple"
           }
         }
       }
