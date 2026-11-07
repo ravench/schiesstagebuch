@@ -80,7 +80,7 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// «Zusätzliche Felder» with one «Filter» row, and the filter page it opens: the switch
-    /// on top, the filters below once it is on. Comes from the end of Settings, so it scrolls back up.
+    /// on top, the filters below, off and on. Comes from the end of Settings, so it scrolls back up.
     private func filterStops() {
         let extra = app.staticTexts["Zusätzliche Felder"].firstMatch
         reveal(extra, up: false)

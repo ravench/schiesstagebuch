@@ -1,8 +1,8 @@
 import SwiftUI
 import UIKit
 
-/// Settings › Filter: the switch for recording colour filters, and while it is on, the colour filters and
-/// adjustment lenses you own (only those appear in entries) and your own ones.
+/// Settings › Filter: the switch for recording filters, then the filters and adjustment lenses you own
+/// (only those appear in entries) and your own ones. The list shows whether the switch is on or off.
 struct FilterSettingsView: View {
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
@@ -41,50 +41,47 @@ struct FilterSettingsView: View {
                 Text("Bis zu zwei pro Eintrag.")
             }
 
-            // Like Wi-Fi in iOS Settings: the filters show while the switch is on.
-            if features.contains(.filter) {
-                Section {
-                    ForEach(catalog.custom, id: \.name) { f in
-                        Button { editing = EditTarget(original: f) } label: {
-                            Label { Text(f.name).foregroundStyle(Color.primary) } icon: { FilterSwatch(filter: f) }
-                        }
+            Section {
+                ForEach(catalog.custom, id: \.name) { f in
+                    Button { editing = EditTarget(original: f) } label: {
+                        Label { Text(f.name).foregroundStyle(Color.primary) } icon: { FilterSwatch(filter: f) }
                     }
-                    .onDelete { idx in
-                        let names = idx.map { catalog.custom[$0].name }
-                        update { c in names.forEach { c.remove($0) } }
-                    }
-                    Button { editing = EditTarget(original: nil) } label: {
-                        Label("Filter hinzufügen", systemImage: "plus")
-                    }
-                } header: {
-                    Text("Eigene Filter")
                 }
+                .onDelete { idx in
+                    let names = idx.map { catalog.custom[$0].name }
+                    update { c in names.forEach { c.remove($0) } }
+                }
+                Button { editing = EditTarget(original: nil) } label: {
+                    Label("Filter hinzufügen", systemImage: "plus")
+                }
+            } header: {
+                Text("Eigene Filter")
+            }
 
-                Section {
-                    ownToggles(FilterColor.filters)
-                } header: {
-                    Text("Brillenfilter (AXIA)")
-                } footer: {
-                    Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
-                }
+            Section {
+                ownToggles(FilterColor.filters)
+            } header: {
+                Text("Brillenfilter (AXIA)")
+            } footer: {
+                Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
+            }
 
-                Section {
-                    ownToggles(FilterColor.wyss)
-                } header: {
-                    Text("Filterrad Wyss (Stgw 90)")
-                }
+            Section {
+                ownToggles(FilterColor.wyss)
+            } header: {
+                Text("Filterrad Wyss (Stgw 90)")
+            }
 
-                Section {
-                    ownToggles(FilterColor.gruenigElmiger)
-                } header: {
-                    Text("Filterräder Grünig + Elmiger (Stgw 90)")
-                }
+            Section {
+                ownToggles(FilterColor.gruenigElmiger)
+            } header: {
+                Text("Filterräder Grünig + Elmiger (Stgw 90)")
+            }
 
-                Section {
-                    ownToggles(FilterColor.dioptre)
-                } header: {
-                    Text("Korrekturlinsen")
-                }
+            Section {
+                ownToggles(FilterColor.dioptre)
+            } header: {
+                Text("Korrekturlinsen")
             }
         }
         .navigationTitle("Filter (Mehrzahl)")
