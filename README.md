@@ -147,7 +147,8 @@ screenshots every tab in portrait and landscape. Browse them on the `schiesstage
 [ravench/app-screens](https://github.com/ravench/app-screens/tree/schiesstagebuch/ipad-screens)
 (latest run only) or download the run's `ipad-screens` artifact. The UI test lives in
 `SchiesstagebuchUITests` and has its own scheme, `SchiesstagebuchScreens`, so the normal
-test run skips it.
+test run skips it. Pull requests that change the GUI get the same screens, before and after,
+as a comment from the **Build** workflow's `ipad-screens` job.
 
 ## Code style
 
