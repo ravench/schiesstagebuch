@@ -78,13 +78,41 @@ final class PRScreensTests: XCTestCase {
         snap("09-Einstellungen-unten")
     }
 
+    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
+    func testWeatherStops() {
+        app.terminate()
+        app.launchArguments += ["-sportFeatures.v1", "8"] // only the weather switch of the sport shooter fields
+        app.launch()
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
+        reveal(weatherSwitch)
+        if (weatherSwitch.value as? String) != "1" {
+            weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        }
+        let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
+        reveal(wind)
+        if wind.exists { wind.tap() }
+        snap("13-Wetter-Apple-Wetter")
+        app.buttons["Sichern"].firstMatch.tap()
+        scroll()
+        snap("14-Eintrag-Wetter")
+        // The switch for it in Settings, with what it sends to Apple.
+        tab("Einstellungen")
+        topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
+    }
+
     /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
     private func stop(_ name: String, chart title: String) {
-        let headline = app.staticTexts[title].firstMatch
-        reveal(headline, swipes: 10)
-        if headline.exists && headline.isHittable {
-            // Held at the end, so the list does not glide on past the chart.
-            headline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        topStop(app.staticTexts[title].firstMatch, name)
+    }
+
+    /// Scrolls `element` to the top of the screen, so what follows it shows, and takes the screen.
+    private func topStop(_ element: XCUIElement, _ name: String) {
+        reveal(element, swipes: 10)
+        if element.exists && element.isHittable {
+            // Held at the end, so the list does not glide on past it.
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
                 .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
                        withVelocity: .slow, thenHoldForDuration: 0.5)
         }

@@ -12,10 +12,27 @@ W = {
         "Off when shooting indoors; the entry then shows no weather.",
         "Désactivé pour le tir en salle ; l'entrée n'affiche alors pas de météo.",
         "Disattivato quando si tira al coperto; la voce non mostra allora alcun meteo."),
+    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit Wetterdaten von Apple Weather (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.": (
+        "Everything is optional. With the range's location, the app fills empty fields with the weather from Apple Weather (you can turn this off in Settings); with its shooting direction also the wind direction and the sun.",
+        "Tout est facultatif. Avec le lieu du stand, l'app remplit les champs vides avec la météo d'Apple (désactivable dans les Réglages) ; avec la direction de tir aussi la direction du vent et le soleil.",
+        "Tutto è facoltativo. Con il luogo del poligono, l'app compila i campi vuoti con il meteo di Apple (disattivabile nelle Impostazioni); con la direzione di tiro anche la direzione del vento e il sole."),
+    # With the Apple Weather switch off.
     "Alles optional. Mit Ort und Schussrichtung der Schiessanlage schlägt die App die Sonne vor.": (
         "Everything is optional. With the range's location and shooting direction, the app suggests the sun.",
         "Tout est facultatif. Avec le lieu et la direction de tir du stand, l'app propose le soleil.",
         "Tutto è facoltativo. Con il luogo e la direzione di tiro del poligono, l'app propone il sole."),
+    # Settings, under the location switch: what the weather lookup sends.
+    "Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.": (
+        "For the weather from Apple Weather, the app sends the range's coordinates and the time to Apple, not your location. As you usually shoot there, it is nearly the same place though.",
+        "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et l'heure, pas ta position. Comme tu y tires le plus souvent, c'est tout de même presque le même endroit.",
+        "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e l'ora, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso posto."),
+    # Apple Weather (WeatherKit)
+    "Wetterdaten von Apple Weather übernehmen": ("Fill in from Apple Weather", "Reprendre la météo d'Apple", "Riprendi il meteo di Apple"),
+    "Wetter wird abgerufen …": ("Getting the weather …", "Récupération de la météo …", "Recupero del meteo …"),
+    "Von Apple Weather übernommen (%@)": ("Filled in from Apple Weather (%@)", "Reprise de la météo d'Apple (%@)", "Ripreso dal meteo di Apple (%@)"),
+    "Apple Weather nicht erreichbar, nochmals versuchen": (
+        "Apple Weather not reachable, try again", "Météo d'Apple injoignable, réessayer", "Meteo di Apple non raggiungibile, riprova"),
+    "Datenquellen": ("Data sources", "Sources des données", "Fonti dei dati"),
     "Optional: Wetter pro Ablösung oder Serie, mit Uhrzeit, um Wechsel festzuhalten.": (
         "Optional: weather per relay or series, with the time, to record changes.",
         "Facultatif : météo par relève ou série, avec l'heure, pour noter les changements.",
@@ -46,6 +63,7 @@ W = {
     "Niederschlag": ("Precipitation", "Précipitations", "Precipitazioni"),
     "Niederschlag in der eigenen Ablösung": ("Precipitation during my relay", "Précipitations pendant ma relève", "Precipitazioni durante il mio turno"),
     "Unterlage / Boden": ("Ground / mat", "Sol / support", "Terreno / appoggio"),
+    "Lufttemperatur": ("Air temperature", "Température de l'air", "Temperatura dell'aria"),
     "Luftfeuchtigkeit": ("Humidity", "Humidité", "Umidità"),
     "Luftdruck (Wetter)": ("Air pressure", "Pression atmosphérique", "Pressione atmosferica"),
     "Hilfsmittel": ("Aids", "Accessoires", "Ausili"),

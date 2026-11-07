@@ -98,7 +98,9 @@ If you build your own copy, replace `DEVELOPMENT_TEAM` in `project.yml` with you
 (or pick your team under Signing & Capabilities), then run on a device or simulator.
 For iCloud sync the team needs the iCloud (CloudKit) capability; Xcode creates the
 container on first run. Change the bundle id / container in `project.yml` if
-`ch.giotta` isn't yours.
+`ch.giotta` isn't yours. Weather from Apple Weather needs WeatherKit turned on for the App ID
+under Certificates, Identifiers & Profiles, on both the Capabilities and the App Services tab;
+without it the weather fields still work, and the row that fills them says Apple Weather can't be reached.
 
 The calibre catalogue lives in the shared [calibre-data](https://github.com/ravench/calibre-data)
 repository, included as a git submodule at `calibre-data/` (also used by Kaliberfinder and the
