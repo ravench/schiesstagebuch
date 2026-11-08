@@ -203,9 +203,10 @@ extension Sequence where Element == Entry {
             .sorted { firearmGroupOrder(($0.count, $0.weapon), ($1.count, $1.weapon)) == .orderedAscending }
     }
 
-    /// Mean points per entry over the entries with a numeric result.
+    /// Mean points per entry over the entries with a numeric result; impossible results (over
+    /// the maximum) are left out, as in `averagePercentage`.
     var averagePoints: Double? {
-        let p = compactMap(\.score.points)
+        let p = filter { !$0.score.exceedsMax }.compactMap(\.score.points)
         return p.isEmpty ? nil : p.reduce(0, +) / Double(p.count)
     }
 }
