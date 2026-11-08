@@ -17,6 +17,7 @@ struct StandblattScanView: View {
     @State private var event = ""
     @State private var attachPhotos = true
     @State private var isReading = false
+    @State private var applying = false
     @State private var didRead = false
     @State private var confirmingSums = false
 
@@ -34,7 +35,7 @@ struct StandblattScanView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 if strips.indices.contains(selected) {
-                    ToolbarItem(placement: .confirmationAction) { Button("Übernehmen") { applyChecked() }.bold() }
+                    ToolbarItem(placement: .confirmationAction) { Button("Übernehmen") { applyChecked() }.bold().disabled(applying) }
                 }
             }
             .fullScreenCover(isPresented: $showingCamera) {
@@ -236,11 +237,16 @@ struct StandblattScanView: View {
 
     private func apply() {
         let strip = strips[selected]
-        let photos = attachPhotos
-            ? images.compactMap { $0.jpegData(compressionQuality: 0.9).flatMap { ImageCompressor.jpeg(from: $0) } }
-            : []
-        onApply(StandblattImport(strip, scoring: scoring, event: event), photos)
-        dismiss()
+        let images = attachPhotos ? images : []
+        applying = true
+        Task {
+            // Re-encoding the full-size pages took a second or more on the main thread.
+            let photos = await Task.detached(priority: .userInitiated) {
+                images.compactMap { $0.jpegData(compressionQuality: 0.9).flatMap { ImageCompressor.jpeg(from: $0) } }
+            }.value
+            onApply(StandblattImport(strip, scoring: scoring, event: event), photos)
+            dismiss()
+        }
     }
 }
 
