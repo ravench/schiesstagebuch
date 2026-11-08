@@ -1,0 +1,22 @@
+{"notes": {
+  "de": ["Das Wetter zeigt alle Felder in einer Liste",
+         "Sicherungen behalten die Reihenfolge der Stiche eines Anlasses",
+         "Importierte Munition bekommt ihr Kaliber aus dem Katalog",
+         "Editoren schliessen nur noch mit Abbrechen oder Sichern",
+         "Ø Punkte und Bestes Resultat lassen unmögliche Resultate weg"],
+  "en": ["The weather shows all its fields in one list",
+         "Backups keep the order of the Stiche of an Anlass",
+         "Imported ammunition gets its calibre from the catalogue",
+         "Editors close only with Cancel or Save",
+         "Average and best points leave impossible results out"],
+  "fr": ["La météo montre tous ses champs dans une liste",
+         "Les sauvegardes gardent l'ordre des passes d'un événement",
+         "Les munitions importées reçoivent leur calibre du catalogue",
+         "Les éditeurs ne se ferment qu'avec Annuler ou Enregistrer",
+         "La moyenne et le meilleur résultat ignorent les résultats impossibles"],
+  "it": ["Il meteo mostra tutti i campi in un unico elenco",
+         "I backup mantengono l'ordine delle serie di un evento",
+         "Le munizioni importate ricevono il calibro dal catalogo",
+         "Gli editor si chiudono solo con Annulla o Salva",
+         "Media e miglior risultato tralasciano i risultati impossibili"]
+}}
