@@ -295,6 +295,21 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertNil(wc.dimensionGroup)
     }
 
+    func testKadettenpatroneIsItsOwnRifleCalibre() throws {
+        let kp = try XCTUnwrap(CaliberCatalog.match("Kadettenpatrone"))
+        XCTAssertEqual(kp.name, "7.5 mm Kadettenpatrone")
+        XCTAssertEqual(kp.category, CaliberCatalog.Category.rifle.rawValue)
+        // The names on the box and the cadet rifle's short name find it.
+        for text in ["Kadetten-Pat", "Cart. 7,5 mm cadetti", "KG97"] {
+            XCTAssertEqual(CaliberCatalog.match(text)?.id, kp.id, text)
+        }
+        XCTAssertEqual(kp.displayAliases, ["Cart. 7,5 mm cadets", "Cart. 7,5 mm cadetti"])
+        XCTAssertEqual(CaliberCatalog.match("GP 1890")?.name, "7.5x53.5 mm Swiss (GP 1890)")
+        // Measured on Raven's round, its case is longer than the GP 1890's: not offered as one chamber.
+        XCTAssertNotNil(kp.outline.bullet)
+        XCTAssertNil(kp.dimensionGroup)
+    }
+
     // MARK: De-duplication after iCloud sync
 
     func testDuplicatesMergeIntoTheOldestRecord() throws {

@@ -239,6 +239,20 @@ final class PRScreensTests: XCTestCase {
         snap("11c-Kaliber-32-SW")
     }
 
+    /// The Swiss cadet round, found by the name on its box.
+    func testKadettenpatrone() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        if search.waitForExistence(timeout: 5) {
+            search.tap()
+            search.typeText("Kadetten\n") // return hides the keyboard
+        }
+        XCTAssertTrue(app.staticTexts["7.5 mm Kadettenpatrone"].waitForExistence(timeout: 5), "No Kadettenpatrone row")
+        snap("11d-Kaliber-Kadettenpatrone")
+    }
+
     private func tab(_ name: String) {
         let button = app.tabBars.buttons[name]
         XCTAssertTrue(button.waitForExistence(timeout: 10), "No tab \(name)")
