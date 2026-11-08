@@ -412,7 +412,8 @@ enum StandblattParser {
                     let expected = ring(forHundredths: h)
                     // The ring is printed before the hundredths; when it was misread, the hundredths decide.
                     shot.ring = expected
-                    shot.uncertain = raw.values.count >= 2 && raw.values[raw.values.count - 2] != expected
+                    // A10 rows print ring and hundredths: one value read means the other was lost.
+                    shot.uncertain = raw.values.count < 2 || raw.values[raw.values.count - 2] != expected
                     if shot.innerTen && shot.ring != 10 { shot.innerTen = false }
                 }
                 strip.passes[p].shots[s] = shot
