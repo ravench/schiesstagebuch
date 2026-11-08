@@ -183,7 +183,7 @@ final class PRScreensTests: XCTestCase {
             let search = app.searchFields.firstMatch
             if search.waitForExistence(timeout: 5) {
                 search.tap()
-                search.typeText("Keine solche Anlage")
+                search.typeText("Keine solche Anlage\n") // Return: no blinking caret in the screen
                 snap("03b-Schiessanlage-ohne-Treffer")
             }
             // While searching, the first bar button clears or closes the search instead of
