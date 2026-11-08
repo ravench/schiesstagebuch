@@ -44,7 +44,12 @@ struct EventDetailView: View {
 
             Section(event.scoringSystem == .ipsc ? "Stages".loc : "Stiche".loc) {
                 ForEach(event.sortedEntries) { entry in
-                    NavigationLink(value: entry) { StichRow(entry: entry) }
+                    // Deleting the last Stich deletes the event too: this screen leaves first, then deletes.
+                    NavigationLink {
+                        EntryDetailView(entry: entry, deleteLast: { deleting = true; dismiss() })
+                    } label: {
+                        StichRow(entry: entry)
+                    }
                 }
                 .onDelete(perform: deleteStiche)
                 Button { addingStich = true } label: {

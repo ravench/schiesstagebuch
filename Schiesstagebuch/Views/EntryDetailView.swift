@@ -3,6 +3,9 @@ import SwiftUI
 struct EntryDetailView: View {
     @Environment(\.term) private var term
     let entry: Entry
+    /// From the event's screen: called instead of deleting when the entry is the event's last Stich,
+    /// since the event goes with it and that screen must leave before it is deleted.
+    var deleteLast: (() -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
@@ -165,7 +168,11 @@ struct EntryDetailView: View {
         .onDisappear {
             guard deleting else { return }
             deleting = false
-            try? Deletion.delete(entry, in: context)
+            if let deleteLast, (entry.shootingEvent?.stichCount ?? 0) <= 1 {
+                deleteLast()
+            } else {
+                try? Deletion.delete(entry, in: context)
+            }
         }
     }
 
