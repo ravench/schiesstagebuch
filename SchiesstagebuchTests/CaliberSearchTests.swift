@@ -23,6 +23,7 @@ final class CaliberSearchTests: ModelTestCase {
         XCTAssertTrue(nine.matches("9 x 19"))
         XCTAssertTrue(nine.matches("9MM PARA"))
         XCTAssertTrue(nine.matches(""))
+        XCTAssertTrue(nine.matches("mm"), "nothing left to search for")
         XCTAssertFalse(nine.matches("9x21"))
     }
 
