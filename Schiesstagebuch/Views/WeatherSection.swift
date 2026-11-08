@@ -27,7 +27,12 @@ struct WeatherSection: View {
                            displayedComponents: .hourAndMinute) {
                     Label("Uhrzeit", systemImage: "clock")
                 }
-                AppleWeatherRow(weather: $weather, date: WeatherRecord.combine(day: day, time: record.time), range: range)
+                let date = WeatherRecord.combine(day: day, time: record.time)
+                // Only when it shows something: with rows here that showed nothing (Apple Weather off), the
+                // weather fields below opened blank pages.
+                if AppleWeatherRow.shows(record, enabled: appleWeather, range: range, date: date) {
+                    AppleWeatherRow(weather: $weather, date: date, range: range)
+                }
                 let conditions = Binding(get: { weather?.conditions ?? .init() }, set: { weather?.conditions = $0 })
                 ForEach(WeatherField.inputs.filter { $0.isShown(with: record.conditions) }) { field in
                     WeatherFieldRow(field: field, conditions: conditions)
@@ -61,10 +66,19 @@ private struct AppleWeatherRow: View {
         let latitude: Double, longitude: Double, hour: Date, bearing: Double?
     }
 
-    private var request: Request? {
+    /// What to fetch: nothing while switched off, without the range's position, or for an hour Apple Weather does not cover.
+    private static func request(enabled: Bool, range: ShootingRange?, date: Date) -> Request? {
         guard enabled, let lat = range?.latitude, let lon = range?.longitude,
               let hour = Calendar.current.dateInterval(of: .hour, for: date)?.start, AppleWeather.covers(hour) else { return nil }
         return Request(latitude: lat, longitude: lon, hour: hour, bearing: range?.shootingBearing)
+    }
+
+    private var request: Request? { Self.request(enabled: enabled, range: range, date: date) }
+
+    /// Whether the row shows anything: the fill button, values from Apple Weather or their attribution.
+    static func shows(_ record: WeatherRecord, enabled: Bool, range: ShootingRange?, date: Date) -> Bool {
+        request(enabled: enabled, range: range, date: date) != nil || record.fromAppleWeather == true
+            || MeasuredWeatherLine.shows(record.conditions)
     }
 
     var body: some View {
@@ -78,7 +92,7 @@ private struct AppleWeatherRow: View {
                     if !Task.isCancelled { await load(request) }
                 }
         }
-        // Only with values: with an empty row here, the weather fields below opened blank pages.
+        // Only with values, so it adds no empty row.
         if let conditions = weather?.conditions, MeasuredWeatherLine.shows(conditions) { MeasuredWeatherLine(conditions: conditions) }
         if weather?.fromAppleWeather == true { AppleWeatherAttribution() }
     }
