@@ -6,11 +6,11 @@ import SwiftUI
 final class CaliberCatalogTests: ModelTestCase {
     override func setUp() async throws {
         try await super.setUp()
-        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededKey)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
     }
 
     override func tearDown() async throws {
-        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededKey)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
         try await super.tearDown()
     }
 
@@ -28,13 +28,14 @@ final class CaliberCatalogTests: ModelTestCase {
 
     // MARK: Seeding
 
-    func testScreenshotRunsSeedEveryTimeWithoutTouchingTheFlag() throws {
-        UserDefaults.standard.set(true, forKey: CaliberCatalog.seededKey)
+    func testScreenshotRunsSeedEveryTimeWithoutTouchingTheIDs() throws {
+        let allIDs = CaliberCatalog.items.map(\.id)
+        UserDefaults.standard.set(allIDs, forKey: CaliberCatalog.seededIDsKey)
         CaliberCatalog.seedIfNeeded(context, always: true)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count)
-        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededKey)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
         CaliberCatalog.seedIfNeeded(context, always: true)
-        XCTAssertFalse(UserDefaults.standard.bool(forKey: CaliberCatalog.seededKey), "the flag stays the real store's")
+        XCTAssertNil(UserDefaults.standard.stringArray(forKey: CaliberCatalog.seededIDsKey), "the ids stay the real store's")
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count, "seeding twice links, never duplicates")
     }
 
@@ -53,6 +54,70 @@ final class CaliberCatalogTests: ModelTestCase {
 
         CaliberCatalog.seedIfNeeded(context)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count, "seeding is a one-off")
+    }
+
+    private func removeCalibre(_ id: String) throws {
+        for c in try context.fetch(FetchDescriptor<Caliber>()) where c.catalogID == id { context.delete(c) }
+        try context.save()
+    }
+
+    func testSeedAddsCalibresTheCatalogueGainedLater() throws {
+        // A journal seeded before GP 1890 was in the catalogue.
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp1890)
+        UserDefaults.standard.set(CaliberCatalog.items.map(\.id).filter { $0 != gp1890 }, forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        let all = try context.fetch(FetchDescriptor<Caliber>())
+        XCTAssertEqual(all.count, CaliberCatalog.items.count)
+        XCTAssertEqual(all.filter { $0.catalogID == gp1890 }.count, 1)
+        XCTAssertEqual(Set(UserDefaults.standard.stringArray(forKey: CaliberCatalog.seededIDsKey) ?? []), Set(CaliberCatalog.items.map(\.id)))
+    }
+
+    func testJournalSeededOnlyOnceBeforeGetsTheMissingCalibres() throws {
+        // Until 2026-11 the catalogue was seeded once behind a flag, so later calibres never arrived.
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp1890)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        let all = try context.fetch(FetchDescriptor<Caliber>())
+        XCTAssertEqual(all.count, CaliberCatalog.items.count, "the missing one is added, the others linked, none twice")
+        XCTAssertEqual(Set(all.map(\.catalogID)).count, all.count)
+    }
+
+    func testSeedNeverAddsACalibreTwice() throws {
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp1890)
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count - 1,
+                       "a calibre the journal was given is not brought back")
+    }
+
+    func testHandMadeCalibreIsLinkedByAnyOfItsNames() throws {
+        let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp11)
+        let own = Caliber(name: "GP 11", category: "")  // made by hand while the catalogue lacked it
+        context.insert(own)
+        try context.save()
+        UserDefaults.standard.set(CaliberCatalog.items.map(\.id).filter { $0 != gp11 }, forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(own.catalogID, gp11)
+        XCTAssertEqual(own.name, "GP 11", "the user's name stays")
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count)
+    }
+
+    func testExactMatchPrefersNamesOverOtherNames() {
+        // The .32 S&W Long has the search name "32s&w", which is also how ".32 S&W" is written.
+        XCTAssertEqual(CaliberCatalog.exactMatch(".32 S&W")?.name, ".32 S&W")
+        XCTAssertEqual(CaliberCatalog.match(".32 S&W")?.name, ".32 S&W")
+        XCTAssertEqual(CaliberCatalog.exactMatch("9 mm Para")?.name, "9x19 mm")
+        XCTAssertNil(CaliberCatalog.exactMatch("9x1"), "no prefixes")
     }
 
     func testNameNormalisationIgnoresDotsSpacesAndMillimetres() {

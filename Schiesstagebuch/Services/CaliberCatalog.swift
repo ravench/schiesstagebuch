@@ -64,14 +64,18 @@ enum CaliberCatalog {
     static func match(_ text: String) -> Item? {
         let key = normalizedAlias(text)
         guard !key.isEmpty else { return nil }
-        if let exact = items.first(where: {
-            normalizedAlias($0.name) == key
-                || $0.aliases.contains { normalizedAlias($0) == key }
+        return exactMatch(text) ?? items.first { normalizedAlias($0.name).hasPrefix(key) }
+    }
+
+    /// The catalogue entry whose name or one of its other names is `text`, spelled any way.
+    /// Names win over other names: ".32 S&W" is that calibre, not the .32 S&W Long ("32s&w").
+    static func exactMatch(_ text: String) -> Item? {
+        let key = normalizedAlias(text)
+        guard !key.isEmpty else { return nil }
+        return items.first { normalizedAlias($0.name) == key } ?? items.first {
+            $0.aliases.contains { normalizedAlias($0) == key }
                 || ($0.displayAliases ?? []).contains { normalizedAlias($0) == key }
-        }) {
-            return exact
         }
-        return items.first { normalizedAlias($0.name).hasPrefix(key) }
     }
 
     static func normalizedAlias(_ s: String) -> String {
@@ -83,17 +87,27 @@ enum CaliberCatalog {
             .trimmingCharacters(in: CharacterSet(charactersIn: "."))
     }
 
-    static let seededKey = "caliberCatalogSeeded.v2"
+    /// Ids of the catalogue calibres this journal has already been given.
+    static let seededIDsKey = "caliberCatalogSeededIDs"
 
-    /// Inserts the catalogue once, and links existing calibres with the same name to it.
-    /// A screenshot run seeds its in-memory store every time: the flag it would leave in the
+    /// Inserts each catalogue calibre once, also those the catalogue gains in a later version.
+    /// A calibre the user made by hand under one of its names is linked to it instead.
+    /// A screenshot run seeds its in-memory store every time: the ids it would leave in the
     /// simulator's defaults must not decide what the next run shows.
     @MainActor
     static func seedIfNeeded(_ context: ModelContext, always: Bool = ScreenshotData.isActive) {
-        guard always || !UserDefaults.standard.bool(forKey: seededKey) else { return }
+        let seeded = always ? [] : Set(UserDefaults.standard.stringArray(forKey: seededIDsKey) ?? [])
+        let new = items.filter { !seeded.contains($0.id) }
+        guard !new.isEmpty else { return }
         let existing = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
-        for item in items {
-            if let c = existing.first(where: { $0.catalogID == item.id || Caliber.normalized($0.name) == Caliber.normalized(item.name) }) {
+        let linked = Dictionary(existing.map { ($0.catalogID, $0) }, uniquingKeysWith: { a, _ in a })
+        // The user's own calibres (e.g. ".32 S&W Long WC" made by hand) by the catalogue entry they name.
+        var own: [String: Caliber] = [:]
+        for c in existing where c.catalogID.isEmpty {
+            if let id = exactMatch(c.name)?.id, own[id] == nil { own[id] = c }
+        }
+        for item in new {
+            if let c = linked[item.id] ?? own[item.id] {
                 c.catalogID = item.id
                 if c.category.isEmpty { c.category = item.category }
             } else {
@@ -103,7 +117,7 @@ enum CaliberCatalog {
             }
         }
         try? context.save()
-        if !always { UserDefaults.standard.set(true, forKey: seededKey) }
+        if !always { UserDefaults.standard.set(items.map(\.id), forKey: seededIDsKey) }
     }
 
     /// With iCloud sync every device seeds the catalogue once, so the same calibre can
