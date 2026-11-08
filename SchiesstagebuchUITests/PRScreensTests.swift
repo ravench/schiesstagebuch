@@ -112,6 +112,13 @@ final class PRScreensTests: XCTestCase {
         }
         holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
+        // A field Apple Weather leaves empty: its list.
+        let overall = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Gesamteindruck")).firstMatch
+        if overall.waitForExistence(timeout: 3) && overall.isHittable {
+            overall.tap()
+            snap("13a-Gesamteindruck")
+            leavePicker()
+        }
         topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind")
         // The eight wind directions. Before them, «Windrichtung (Uhr)» was a menu of clock hours: no stop then.
         let direction = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@ AND NOT (label CONTAINS %@)",
@@ -157,12 +164,29 @@ final class PRScreensTests: XCTestCase {
         if (weatherSwitch.value as? String) != "1" {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
+        // Right after the switch: the sun, which fills in by itself, then the empty wind strength.
+        let sun = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Sonne zum Schützen")).firstMatch
+        reveal(sun)
+        if sun.exists && sun.isHittable {
+            sun.tap()
+            snap("16a-Sonne-ohne-Apple-Wetter")
+            leavePicker()
+        }
         let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
         topStop(strength, "16-Wetter-ohne-Apple-Wetter")
         guard strength.exists && strength.isHittable else { return }
         strength.tap()
         snap("16b-Windstaerke-ohne-Apple-Wetter")
-        if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") }
+        leavePicker()
+        // Saved and opened again, so the fields are there from the start: the wind strengths, then calm air.
+        app.buttons["Sichern"].firstMatch.tap()
+        guard open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        reveal(weatherSwitch, swipes: 12)
+        topStop(strength, "16c-Wetter-ohne-Apple-Wetter-gesichert")
+        guard strength.exists && strength.isHittable else { return }
+        strength.tap()
+        snap("16d-Windstaerke-ohne-Apple-Wetter-gesichert")
+        if pick("windstill") { snap("16e-Windstill-ohne-Apple-Wetter") } else { leavePicker() }
     }
 
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
@@ -292,6 +316,12 @@ final class PRScreensTests: XCTestCase {
         guard option.waitForExistence(timeout: 3) else { return false }
         option.tap()
         return true
+    }
+
+    /// Back from a page opened in the entry editor; nothing in the editor itself, whose first bar button is
+    /// «Abbrechen».
+    private func leavePicker() {
+        if !app.buttons["Sichern"].exists { back() }
     }
 
     private func back() {

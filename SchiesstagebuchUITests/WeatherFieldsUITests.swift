@@ -47,13 +47,13 @@ final class WeatherFieldsUITests: XCTestCase {
 
         let strength = row("Windstärke am Stand")
         let direction = row("Windrichtung")
-        XCTAssertTrue(scroll(to: strength), "No «Windstärke am Stand» row")
-        // Near the top and held there, as in the tour, so the rows under it stay in view: rows out of view
-        // leave the accessibility tree, and a missing row would prove nothing.
-        strength.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
-                   withVelocity: .slow, thenHoldForDuration: 0.5)
-        XCTAssertTrue(direction.exists && direction.isHittable, "No «Windrichtung» while the wind strength is open")
+        let feel = row("Temperaturgefühl")
+        // Down to the field after the wind, so the wind rows above it are in view too: rows out of view leave
+        // the accessibility tree, and a missing row would prove nothing.
+        XCTAssertTrue(scroll(to: feel), "No «Temperaturgefühl» row")
+        if !strength.isHittable { app.swipeDown(velocity: .slow) } // the swipe ended with the wind under the bar
+        XCTAssertTrue(strength.exists && strength.isHittable, "No «Windstärke am Stand» row")
+        XCTAssertTrue(direction.exists && direction.isHittable, "No «Windrichtung» while there is wind")
         XCTAssertTrue(row("Windcharakter").exists)
 
         strength.tap()
@@ -63,7 +63,6 @@ final class WeatherFieldsUITests: XCTestCase {
         XCTAssertTrue(calm.waitForExistence(timeout: 5), "No «windstill» in the wind strengths. On screen: \(screen())")
         calm.tap()
 
-        let feel = row("Temperaturgefühl")
         XCTAssertTrue(feel.waitForExistence(timeout: 5) && feel.isHittable, "Back in the editor, the next field should show")
         XCTAssertFalse(direction.exists, "«Windrichtung» in calm air")
         XCTAssertFalse(row("Windcharakter").exists, "«Windcharakter» in calm air")
