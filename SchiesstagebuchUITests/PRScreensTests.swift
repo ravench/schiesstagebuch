@@ -99,7 +99,8 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Weather filled from Apple Weather (a fixed sample in screenshot runs): the fields in the editor, in one
-    /// list from the switch down to the wind, the wind directions, then the weather in the entry.
+    /// list from the switch down to the wind, the wind directions and strengths, calm air, then the weather
+    /// in the entry.
     func testWeatherStops() {
         relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
         tab("Tagebuch")
@@ -119,6 +120,23 @@ final class PRScreensTests: XCTestCase {
             direction.tap()
             snap("13c-Windrichtung")
             back()
+        }
+        // The wind strengths, then calm air without wind direction and character, then back to the sample's
+        // «ein bisschen Wind», so the entry below keeps them.
+        let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
+        if strength.waitForExistence(timeout: 3) {
+            holdAtTop(strength)
+            strength.tap()
+            snap("13d-Windstaerke")
+            // Back only from the strengths: in the editor, the first bar button is «Abbrechen».
+            let inEditor = { strength.exists && strength.isHittable }
+            if pick("windstill") {
+                snap("13e-Windstill")
+                strength.tap()
+                if !pick("ein bisschen Wind") && !inEditor() { back() }
+            } else if !inEditor() {
+                back()
+            }
         }
         app.buttons["Sichern"].firstMatch.tap()
         scroll()
@@ -245,6 +263,15 @@ final class PRScreensTests: XCTestCase {
             return false
         }
         element.tap()
+        return true
+    }
+
+    /// Taps the option of an open picker whose label holds `name`: buttons or cells with a text, depending
+    /// on the iOS version. False when there is none.
+    private func pick(_ name: String) -> Bool {
+        let option = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", name)).firstMatch
+        guard option.waitForExistence(timeout: 3) else { return false }
+        option.tap()
         return true
     }
 

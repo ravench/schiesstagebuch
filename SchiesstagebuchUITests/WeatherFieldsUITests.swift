@@ -1,6 +1,6 @@
 import XCTest
 
-/// The weather fields of a new entry: wind direction and character hide in calm air.
+/// The weather fields in the entry editor: wind direction and character hide in calm air.
 /// Runs in the Build workflow on an iPhone simulator, with the sample data in memory.
 final class WeatherFieldsUITests: XCTestCase {
     private var app: XCUIApplication!
@@ -16,9 +16,14 @@ final class WeatherFieldsUITests: XCTestCase {
     }
 
     func testWindDirectionHidesInCalmAir() {
-        let newEntry = app.buttons["Neuer Eintrag"].firstMatch
-        XCTAssertTrue(newEntry.waitForExistence(timeout: 10))
-        newEntry.tap()
+        // The sample Feldschiessen entry, as in the screen tour, which opens the weather pickers from there.
+        app.tabBars.buttons["Tagebuch"].tap()
+        let entry = app.staticTexts["Feldschiessen"].firstMatch
+        XCTAssertTrue(entry.waitForExistence(timeout: 10))
+        entry.tap()
+        let edit = app.buttons["Bearbeiten"].firstMatch
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        edit.tap()
 
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         XCTAssertTrue(scroll(to: weatherSwitch), "No «Wetter erfassen» switch in the entry editor")
@@ -42,8 +47,7 @@ final class WeatherFieldsUITests: XCTestCase {
         // Any element type, and the name anywhere in the label: a picker's options are buttons or cells
         // with a text, depending on the iOS version.
         let calm = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "windstill")).firstMatch
-        XCTAssertTrue(calm.waitForExistence(timeout: 5),
-                      strength.exists && strength.isHittable ? "The wind strengths did not open" : "No «windstill» in the wind strengths")
+        XCTAssertTrue(calm.waitForExistence(timeout: 5), "No «windstill» in the wind strengths. On screen: \(screen())")
         calm.tap()
 
         let feel = row("Temperaturgefühl")
@@ -65,5 +69,15 @@ final class WeatherFieldsUITests: XCTestCase {
             app.swipeUp(velocity: .slow)
         }
         return element.exists && element.isHittable
+    }
+
+    /// For a failure message: the bar titles and the labels of the texts, buttons and cells on screen.
+    private func screen() -> String {
+        guard app.state == .runningForeground else { return "the app is not running (state \(app.state.rawValue))" }
+        func labels(_ query: XCUIElementQuery) -> String {
+            query.allElementsBoundByIndex.prefix(15).map { "«\($0.label)»" }.joined(separator: " ")
+        }
+        let bars = app.navigationBars.allElementsBoundByIndex.map(\.identifier).joined(separator: ", ")
+        return "bars \(bars); texts \(labels(app.staticTexts)); buttons \(labels(app.buttons)); cells \(labels(app.cells))"
     }
 }
