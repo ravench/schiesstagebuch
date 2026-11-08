@@ -77,6 +77,26 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(restored.shootingEvent?.createdAt, day(7))
     }
 
+    /// The legacy import spaces the Stiche of one Anlass by a millisecond to keep the file's order;
+    /// whole-second dates in the backup shuffled them on restore.
+    func testRoundTripKeepsTheOrderOfSticheAddedWithinOneSecond() throws {
+        let event = ShootingEvent(date: day(1)); context.insert(event)
+        for i in 0..<5 {
+            addStich(to: event, nil, shots: 10, stich: "Stich \(i)").createdAt = day(1).addingTimeInterval(Double(i) / 1000)
+        }
+        try context.save()
+
+        let (keep, target) = try freshContext()
+        _ = keep
+        try Backup.restore(from: try Backup.export(context), into: target)
+
+        let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<ShootingEvent>()).first).sortedEntries
+        XCTAssertEqual(restored.map(\.stich), (0..<5).map { "Stich \($0)" })
+        for (i, e) in restored.enumerated() {
+            XCTAssertEqual(e.createdAt.timeIntervalSince(day(1)), Double(i) / 1000, accuracy: 1e-4)
+        }
+    }
+
     func testCalibresWithTheSameNameRestoreAsOne() throws {
         let json = """
         {"version":1,"exportedAt":"2026-01-01T00:00:00Z","weapons":[],"ammunition":[],"ranges":[],"maintenance":[],"entries":[],
