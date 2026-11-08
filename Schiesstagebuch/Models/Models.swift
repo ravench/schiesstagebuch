@@ -93,8 +93,14 @@ final class Caliber: ArchivableItem {
         return result
     }
 
+    /// Whether the name, a printed name or a search name from the catalogue ("Pist Pat 41", "K31")
+    /// contains `query`, ignoring case, spaces and "mm".
     func matches(_ query: String) -> Bool {
-        query.isEmpty || name.localizedCaseInsensitiveContains(query) || aliasSummary.localizedCaseInsensitiveContains(query)
+        let key = Caliber.normalized(query)
+        guard !key.isEmpty else { return true }
+        let item = CaliberCatalog.item(id: catalogID)
+        let names = [name] + (item?.displayAliases ?? []) + (item?.aliases ?? [])
+        return names.contains { Caliber.normalized($0).contains(key) }
     }
 
     /// Name comparison key for seeding, restoring and importing: the same rules the catalogue
