@@ -304,10 +304,23 @@ final class CaliberCatalogTests: ModelTestCase {
             XCTAssertEqual(CaliberCatalog.match(text)?.id, kp.id, text)
         }
         XCTAssertEqual(kp.displayAliases, ["Cart. 7,5 mm cadets", "Cart. 7,5 mm cadetti"])
-        XCTAssertEqual(CaliberCatalog.match("GP 1890")?.name, "7.5x53.5 mm Swiss (GP 1890)")
-        // Measured on Raven's round, its case is longer than the GP 1890's: not offered as one chamber.
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
+        XCTAssertEqual(gp1890.name, "7.5x53.5 mm Swiss (GP 1890)")
+        // calibre-data #57: both are drawn on the 54.6 mm case Raven measured (the Kadettengewehr is
+        // sighted for both), so they are offered as one chamber; the bullets still tell them apart.
+        XCTAssertNotNil(kp.dimensionGroup)
+        XCTAssertEqual(kp.dimensionGroup, gp1890.dimensionGroup)
         XCTAssertNotNil(kp.outline.bullet)
-        XCTAssertNil(kp.dimensionGroup)
+        XCTAssertNotEqual(kp.outline.bullet, gp1890.outline.bullet)
+        XCTAssertEqual(CaliberCatalog.items.filter { $0.dimensionGroup == kp.dimensionGroup }.map(\.id).sorted(),
+                       [kp.id, gp1890.id].sorted(), "no third calibre in that chamber")
+    }
+
+    func testFortyFiveSuperIsANameOfTheFortyFiveACP() {
+        // calibre-data #59: the .45 Super is a load in the .45 ACP case, no longer a calibre of its own.
+        XCTAssertNil(CaliberCatalog.item(id: ".45 Super"))
+        XCTAssertEqual(CaliberCatalog.match(".45 Super")?.name, ".45 ACP")
+        XCTAssertNil(CaliberCatalog.item(id: ".45 ACP")?.dimensionGroup)
     }
 
     // MARK: De-duplication after iCloud sync
