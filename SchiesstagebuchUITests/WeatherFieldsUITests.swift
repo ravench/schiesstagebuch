@@ -8,9 +8,10 @@ final class WeatherFieldsUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
-        // Sample data, German UI, and only the weather switch of the sport shooter fields on (1 << 3).
+        // Sample data, German UI, only the weather switch of the sport shooter fields on (1 << 3), and
+        // Apple Weather off, so nothing fills the wind while the test picks it.
         app.launchArguments = ["-screenshotData", "-AppleLanguages", "(de)", "-AppleLocale", "de_CH",
-                               "-sportFeatures.v1", "8"]
+                               "-sportFeatures.v1", "8", "-appleWeather.enabled", "0"]
         app.launch()
     }
 
@@ -38,8 +39,11 @@ final class WeatherFieldsUITests: XCTestCase {
         XCTAssertTrue(row("Windcharakter").exists)
 
         strength.tap()
-        let calm = app.buttons["windstill"].firstMatch
-        XCTAssertTrue(calm.waitForExistence(timeout: 5), "No «windstill» in the wind strengths")
+        // Any element type, and the name anywhere in the label: a picker's options are buttons or cells
+        // with a text, depending on the iOS version.
+        let calm = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "windstill")).firstMatch
+        XCTAssertTrue(calm.waitForExistence(timeout: 5),
+                      strength.exists && strength.isHittable ? "The wind strengths did not open" : "No «windstill» in the wind strengths")
         calm.tap()
 
         let feel = row("Temperaturgefühl")

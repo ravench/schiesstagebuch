@@ -280,8 +280,9 @@ struct WeatherRecord: Codable, Hashable {
         return entries.filter { $0.weapon == weapon }.max { $0.date < $1.date }?.shootingEvent?.weatherData != nil
     }
 
-    /// Nothing recorded yet apart from the time: the switch may follow the weapon's default.
-    var hasValues: Bool { !conditions.isEmpty }
+    /// Something recorded apart from the time and the sun, which the app fills in by itself. While
+    /// nothing is, the switch follows the weapon's default and Apple Weather fills the fields by itself.
+    var hasValues: Bool { conditions.values.keys.contains { $0 != "sun_direction" } }
 
     /// What a new entry shows after the weapon changed: recorded weather stays whatever the new
     /// weapon's habit is; an empty record follows the weapon's default (on outdoors, off indoors).

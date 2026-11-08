@@ -42,6 +42,16 @@ final class EditorCarryOverTests: ModelTestCase {
         XCTAssertNil(WeatherRecord.carriedOver(from: nil, to: nil, in: entries, now: now))
     }
 
+    func testTheSunAloneIsNothingRecorded() {
+        var record = WeatherRecord(time: day(9))
+        record.conditions.set("sun_direction", .option("front"))
+        XCTAssertFalse(record.hasValues, "the app fills the sun in by itself")
+        XCTAssertNil(WeatherRecord.carriedOver(from: record, to: pistol, in: entries),
+                     "only the time and the sun: an indoor weapon switches the weather off")
+        record.conditions.set("sky", .option("overcast"))
+        XCTAssertTrue(record.hasValues)
+    }
+
     func testRecordedWeatherSurvivesAWeaponChange() {
         var record = WeatherRecord(time: day(9))
         record.conditions.set("sky", .option("fog"))
