@@ -35,4 +35,21 @@ final class EditorPickerUITests: XCTestCase {
         XCTAssertEqual(app.textFields.firstMatch.value as? String, "Testmunition", "Picking a calibre dropped the name")
         app.buttons["Abbrechen"].firstMatch.tap()
     }
+
+    /// A small swipe down used to close an editor sheet and lose what was typed (Raven, 2026-11-08).
+    func testSwipeDownDoesNotCloseAnEditor() {
+        app.tabBars.buttons["Einstellungen"].tap()
+        app.staticTexts["Munition"].firstMatch.tap()
+        app.buttons["Hinzufügen"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Neue Munition"].waitForExistence(timeout: 5))
+        let name = app.textFields.firstMatch
+        name.tap()
+        name.typeText("Testmunition")
+        app.navigationBars["Neue Munition"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.6)))
+        sleep(1)
+        XCTAssertTrue(app.navigationBars["Neue Munition"].exists, "The swipe closed the editor")
+        XCTAssertEqual(app.textFields.firstMatch.value as? String, "Testmunition")
+        app.buttons["Abbrechen"].firstMatch.tap()
+    }
 }

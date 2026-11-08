@@ -214,6 +214,7 @@ struct EventEditorView: View {
                     WeatherSection(weather: $weather, day: date, range: range)
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle("Anlass bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
