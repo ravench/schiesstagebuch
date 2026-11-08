@@ -8,15 +8,14 @@ final class WeatherFieldsUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
-        // Sample data, German UI, only the weather switch of the sport shooter fields on (1 << 3), and
-        // Apple Weather off, so nothing fills the wind while the test picks it.
+        // Sample data, German UI, and only the weather switch of the sport shooter fields on (1 << 3).
         app.launchArguments = ["-screenshotData", "-AppleLanguages", "(de)", "-AppleLocale", "de_CH",
-                               "-sportFeatures.v1", "8", "-appleWeather.enabled", "0"]
+                               "-sportFeatures.v1", "8"]
         app.launch()
     }
 
     func testWindDirectionHidesInCalmAir() {
-        // The sample Feldschiessen entry, as in the screen tour, which opens the weather pickers from there.
+        // The way of the screen tour, which opens the wind strengths from the sample Feldschiessen entry.
         app.tabBars.buttons["Tagebuch"].tap()
         let entry = app.staticTexts["Feldschiessen"].firstMatch
         XCTAssertTrue(entry.waitForExistence(timeout: 10))
@@ -31,14 +30,15 @@ final class WeatherFieldsUITests: XCTestCase {
             // Tap the switch itself, not the label.
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
+        sleep(2) // Apple Weather (a fixed sample) fills the fields half a second after the switch; let that land first
 
         let strength = row("Windstärke am Stand")
         let direction = row("Windrichtung")
         XCTAssertTrue(scroll(to: strength), "No «Windstärke am Stand» row")
-        // Up the screen, so the rows under it stay in view: rows out of view leave the accessibility
-        // tree, and a missing row would prove nothing.
-        strength.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5))
-            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3)),
+        // Near the top and held there, as in the tour, so the rows under it stay in view: rows out of view
+        // leave the accessibility tree, and a missing row would prove nothing.
+        strength.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
                    withVelocity: .slow, thenHoldForDuration: 0.5)
         XCTAssertTrue(direction.exists && direction.isHittable, "No «Windrichtung» while the wind strength is open")
         XCTAssertTrue(row("Windcharakter").exists)
@@ -71,11 +71,12 @@ final class WeatherFieldsUITests: XCTestCase {
         return element.exists && element.isHittable
     }
 
-    /// For a failure message: the bar titles and the labels of the texts, buttons and cells on screen.
+    /// For a failure message: the bar titles and the labels of the texts, buttons and cells. The last ones:
+    /// a sheet comes after the screen under it.
     private func screen() -> String {
         guard app.state == .runningForeground else { return "the app is not running (state \(app.state.rawValue))" }
         func labels(_ query: XCUIElementQuery) -> String {
-            query.allElementsBoundByIndex.prefix(15).map { "«\($0.label)»" }.joined(separator: " ")
+            query.allElementsBoundByIndex.suffix(20).map { "«\($0.label)»" }.joined(separator: " ")
         }
         let bars = app.navigationBars.allElementsBoundByIndex.map(\.identifier).joined(separator: ", ")
         return "bars \(bars); texts \(labels(app.staticTexts)); buttons \(labels(app.buttons)); cells \(labels(app.cells))"

@@ -146,6 +146,25 @@ final class PRScreensTests: XCTestCase {
         topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
     }
 
+    /// Without Apple Weather: the fields from the wind down, with the footer on what the app still fills in,
+    /// then the wind strengths opened from an empty field, and calm air.
+    func testWeatherWithoutAppleWeather() {
+        relaunch(adding: ["-sportFeatures.v1", "8", "-appleWeather.enabled", "0"])
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
+        reveal(weatherSwitch)
+        if (weatherSwitch.value as? String) != "1" {
+            weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        }
+        let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
+        topStop(strength, "16-Wetter-ohne-Apple-Wetter")
+        guard strength.exists && strength.isHittable else { return }
+        strength.tap()
+        snap("16b-Windstaerke-ohne-Apple-Wetter")
+        if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") }
+    }
+
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
     func testWelcome() {
         relaunch(adding: ["-welcome"])
