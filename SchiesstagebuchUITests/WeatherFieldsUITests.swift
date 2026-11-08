@@ -62,7 +62,9 @@ final class WeatherFieldsUITests: XCTestCase {
         XCTAssertTrue(calm.waitForExistence(timeout: 5), "No «windstill» in the wind strengths. On screen: \(screen())")
         calm.tap()
 
-        XCTAssertTrue(feel.waitForExistence(timeout: 5) && feel.isHittable, "Back in the editor, the next field should show")
+        _ = feel.waitForExistence(timeout: 5) // the menu closing
+        // Scrolled to again: the swipe down above can have left it below the screen.
+        XCTAssertTrue(scroll(to: feel), "Back in the editor, the next field should show")
         XCTAssertFalse(direction.exists, "«Windrichtung» in calm air")
         XCTAssertFalse(row("Windcharakter").exists, "«Windcharakter» in calm air")
     }
