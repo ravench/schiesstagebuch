@@ -44,11 +44,16 @@ final class LastStichDeletionUITests: XCTestCase {
     /// Opens the first Stich of the Anlass screen and deletes it from its toolbar menu.
     private func deleteFirstStich() {
         app.cells.containing(.staticText, identifier: "Stgw 90").firstMatch.tap()
-        let more = app.navigationBars.firstMatch.buttons["TopOverflowBarButtonItem"] // «Weitere»
-        XCTAssertTrue(more.waitForExistence(timeout: 5), "No toolbar menu on the Stich detail")
-        more.tap()
         let delete = app.buttons["Löschen"].firstMatch
-        XCTAssertTrue(delete.waitForExistence(timeout: 5))
+        if !delete.waitForExistence(timeout: 2) {
+            // «Löschen» sits in the bar's overflow menu, whose name and identifier differ between
+            // iOS versions («Weitere», «Mehr»): it is the rightmost button of the bar.
+            let buttons = app.navigationBars.firstMatch.buttons.allElementsBoundByIndex
+            if buttons.count < 2 { print(app.debugDescription) }
+            XCTAssertTrue(buttons.count >= 2, "No toolbar menu on the Stich detail")
+            buttons.max { $0.frame.minX < $1.frame.minX }?.tap()
+        }
+        XCTAssertTrue(delete.waitForExistence(timeout: 5), "No «Löschen» in the toolbar menu")
         delete.tap()
         let confirm = app.buttons["Löschen"].firstMatch
         XCTAssertTrue(confirm.waitForExistence(timeout: 5))
