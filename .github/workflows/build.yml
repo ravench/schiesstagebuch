@@ -133,6 +133,7 @@ jobs:
             -derivedDataPath "$DERIVED_DATA" \
             -only-testing:SchiesstagebuchUITests/WeatherRelayUITests \
             -only-testing:SchiesstagebuchUITests/AppleWeatherUITests \
+            -only-testing:SchiesstagebuchUITests/EditorPickerUITests \
             -resultBundlePath "$RUNNER_TEMP/UITests.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: Test summary

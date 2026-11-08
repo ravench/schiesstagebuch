@@ -358,6 +358,24 @@ final class StandblattParserTests: XCTestCase {
         XCTAssertEqual(strip.passes[0].shots.map(\.uncertain), [false, false, true])
     }
 
+    func testTotalLineBeforeTheFirstHeaderIsIgnored() throws {
+        // Loose lines come before the header groups in reading order; a Total among them used to
+        // close the (empty) first strip, and all its shots were then dropped.
+        let text = """
+        Total 18 171
+        Scheibe 8/4
+        1 → 9 90
+        2 ↘ 9 81
+        Subtota 18 171
+        Total 18 171
+        """
+        let strips = StandblattParser.parse(text: text)
+        XCTAssertEqual(strips.count, 1)
+        XCTAssertEqual(rings(strips[0]), [[9, 9]])
+        XCTAssertEqual(strips[0].printedRings, 18)
+        XCTAssertEqual(strips[0].printedHundredths, 171)
+    }
+
     func testPlainTextSkipsCopyLines() {
         let text = """
         Scheibe 8/2

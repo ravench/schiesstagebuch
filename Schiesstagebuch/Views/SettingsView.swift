@@ -356,6 +356,8 @@ struct AmmunitionEditorView: View {
     @State private var caliber: Caliber?
     @State private var isArchived = false
     @State private var lots: [LotDraft] = []
+    /// `onAppear` runs again when the Kaliber picker pops; loading then would drop every edit.
+    @State private var didLoad = false
 
     /// Calibres used by a weapon first, the rest of the catalogue below.
     private var inUse: [Caliber] { Caliber.keepingGroupsTogether(calibers.filter { !$0.weapons.isEmpty }) }
@@ -448,6 +450,8 @@ struct AmmunitionEditorView: View {
                 }
             }
             .onAppear {
+                guard !didLoad else { return }
+                didLoad = true
                 name = ammunition?.name ?? ""
                 caliber = ammunition?.caliber ?? suggestedCaliber
                 isArchived = ammunition?.isArchived ?? false

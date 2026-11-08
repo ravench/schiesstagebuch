@@ -64,12 +64,12 @@ enum CaliberCatalog {
     static func match(_ text: String) -> Item? {
         let key = normalizedAlias(text)
         guard !key.isEmpty else { return nil }
-        if let exact = items.first(where: {
-            normalizedAlias($0.name) == key
-                || $0.aliases.contains { normalizedAlias($0) == key }
-                || ($0.displayAliases ?? []).contains { normalizedAlias($0) == key }
+        // Names before aliases: ".32 S&W Long" lists "32s&w" as an alias, which must not take ".32 S&W".
+        if let byName = items.first(where: { normalizedAlias($0.name) == key }) { return byName }
+        if let byAlias = items.first(where: {
+            $0.aliases.contains { normalizedAlias($0) == key } || ($0.displayAliases ?? []).contains { normalizedAlias($0) == key }
         }) {
-            return exact
+            return byAlias
         }
         return items.first { normalizedAlias($0.name).hasPrefix(key) }
     }
