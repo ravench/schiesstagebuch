@@ -1,6 +1,7 @@
 import XCTest
 
-/// The weather fields in the entry editor: wind direction and character hide in calm air.
+/// The weather fields in the entry editor: the wind strengths open, and wind direction and character hide in
+/// calm air, with fields filled by Apple Weather and with empty ones.
 /// Runs in the Build workflow on an iPhone simulator, with the sample data in memory.
 final class WeatherFieldsUITests: XCTestCase {
     private var app: XCUIApplication!
@@ -11,11 +12,23 @@ final class WeatherFieldsUITests: XCTestCase {
         // Sample data, German UI, and only the weather switch of the sport shooter fields on (1 << 3).
         app.launchArguments = ["-screenshotData", "-AppleLanguages", "(de)", "-AppleLocale", "de_CH",
                                "-sportFeatures.v1", "8"]
-        app.launch()
     }
 
     func testWindDirectionHidesInCalmAir() {
-        // The way of the screen tour, which opens the wind strengths from the sample Feldschiessen entry.
+        app.launch()
+        checkCalmAir()
+    }
+
+    /// Every field empty: the wind strengths once opened a blank page then.
+    func testWindDirectionHidesInCalmAirWithoutAppleWeather() {
+        app.launchArguments += ["-appleWeather.enabled", "0"]
+        app.launch()
+        checkCalmAir()
+    }
+
+    /// Opens the weather of the sample Feldschiessen entry, picks «windstill» and checks that wind direction and
+    /// character are gone. The way of the screen tour.
+    private func checkCalmAir() {
         app.tabBars.buttons["Tagebuch"].tap()
         let entry = app.staticTexts["Feldschiessen"].firstMatch
         XCTAssertTrue(entry.waitForExistence(timeout: 10))
@@ -30,7 +43,7 @@ final class WeatherFieldsUITests: XCTestCase {
             // Tap the switch itself, not the label.
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
-        sleep(2) // Apple Weather (a fixed sample) fills the fields half a second after the switch; let that land first
+        sleep(2) // Apple Weather, when on, fills the fields (a fixed sample) half a second after the switch
 
         let strength = row("Windstärke am Stand")
         let direction = row("Windrichtung")

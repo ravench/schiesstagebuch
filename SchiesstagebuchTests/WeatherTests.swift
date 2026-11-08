@@ -118,6 +118,17 @@ final class WeatherTests: ModelTestCase {
         XCTAssertTrue(c.display(WeatherField.field("air_temp_c")!)!.text.hasSuffix("°C"))
     }
 
+    func testMeasuredLineOnlyWithMeasuredValues() {
+        // Without them it is left out of the lists, so the editor has no empty row.
+        var c = WeatherConditions()
+        XCTAssertFalse(MeasuredWeatherLine.shows(c))
+        c.set("sky", .option("sunny"))
+        c.set("sun_direction", .option("front"))
+        XCTAssertFalse(MeasuredWeatherLine.shows(c), "only values typed in the editor")
+        c.set("humidity_pct", .number(62))
+        XCTAssertTrue(MeasuredWeatherLine.shows(c))
+    }
+
     func testEveryIconExists() {
         var icons = WeatherField.all.flatMap { [$0.icon] + $0.options.map(\.icon) }
         icons += ["cloud.sun", "clock"]

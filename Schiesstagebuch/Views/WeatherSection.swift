@@ -78,7 +78,8 @@ private struct AppleWeatherRow: View {
                     if !Task.isCancelled { await load(request) }
                 }
         }
-        if let weather { MeasuredWeatherLine(conditions: weather.conditions) }
+        // Only with values: with an empty row here, the weather fields below opened blank pages.
+        if let conditions = weather?.conditions, MeasuredWeatherLine.shows(conditions) { MeasuredWeatherLine(conditions: conditions) }
         if weather?.fromAppleWeather == true { AppleWeatherAttribution() }
     }
 
@@ -141,10 +142,15 @@ struct AppleWeatherAttribution: View {
     }
 }
 
-/// Air temperature, humidity and pressure from Apple Weather in one line, read-only; nothing when none is stored.
+/// Air temperature, humidity and pressure from Apple Weather in one line, read-only. Lists add it only where
+/// `shows(_:)` is true, so it never makes an empty row.
 struct MeasuredWeatherLine: View {
     let conditions: WeatherConditions
     @Environment(\.dynamicTypeSize) private var typeSize
+
+    static func shows(_ conditions: WeatherConditions) -> Bool {
+        WeatherField.measured.contains { conditions.display($0) != nil }
+    }
 
     var body: some View {
         let shown = WeatherField.measured.compactMap { f in conditions.display(f).map { (field: f, text: $0.text) } }
@@ -206,7 +212,7 @@ struct WeatherDetailSection: View {
             if let time = record.time {
                 row(label: "Uhrzeit".loc, icon: "clock", value: time.formatted(date: .omitted, time: .shortened), valueIcon: nil)
             }
-            MeasuredWeatherLine(conditions: record.conditions)
+            if MeasuredWeatherLine.shows(record.conditions) { MeasuredWeatherLine(conditions: record.conditions) }
             ForEach(WeatherField.inputs) { field in
                 if let shown = record.conditions.display(field) {
                     row(label: field.label.loc, icon: field.icon, value: shown.text, valueIcon: shown.icon)
