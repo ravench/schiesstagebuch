@@ -169,6 +169,13 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertNotEqual(Caliber.normalized("9x19"), Caliber.normalized("9x21"))
     }
 
+    func testExactNameBeatsAnotherCalibresAlias() {
+        // ".32 S&W Long" lists "32s&w" among its aliases and comes first in the file.
+        XCTAssertEqual(CaliberCatalog.match(".32 S&W")?.name, ".32 S&W")
+        XCTAssertEqual(CaliberCatalog.match("32 S&W Long")?.name, ".32 S&W Long")
+        XCTAssertEqual(CaliberCatalog.match("32swl")?.name, ".32 S&W Long", "aliases still match")
+    }
+
     // MARK: Swiss service rounds
 
     func testGP1890IsItsOwnRifleCalibre() throws {

@@ -93,8 +93,13 @@ final class Caliber: ArchivableItem {
         return result
     }
 
+    /// Whether the name, a printed name or a search name from the catalogue ("Pist Pat 41", "K31")
+    /// contains `query`, both compared the way the catalogue compares its aliases (`Caliber.normalized`).
+    /// The name is normalised on every call because the user may have renamed the calibre.
     func matches(_ query: String) -> Bool {
-        query.isEmpty || name.localizedCaseInsensitiveContains(query) || aliasSummary.localizedCaseInsensitiveContains(query)
+        let key = Caliber.normalized(query)
+        guard !key.isEmpty else { return true }
+        return Caliber.normalized(name).contains(key) || CaliberCatalog.searchKeys(id: catalogID).contains { $0.contains(key) }
     }
 
     /// Name comparison key for seeding, restoring and importing: the same rules the catalogue

@@ -58,6 +58,13 @@ enum CaliberCatalog {
 
     private static let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
 
+    /// Each calibre's name, printed names and search names, normalised once for the calibre search.
+    private static let keysByID = Dictionary(
+        items.map { ($0.id, ([$0.name] + ($0.displayAliases ?? []) + $0.aliases).map(normalizedAlias)) },
+        uniquingKeysWith: { a, _ in a })
+
+    static func searchKeys(id: String) -> [String] { keysByID[id] ?? [] }
+
     static func item(id: String) -> Item? { byID[id] }
 
     /// Finds a catalogue entry for free text like "GP90", "9mm", "45 Auto" or ".22 lr".

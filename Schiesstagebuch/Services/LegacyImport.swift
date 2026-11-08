@@ -283,17 +283,22 @@ enum LegacyImport {
 
     @MainActor
     static func apply(_ plan: Plan, context: ModelContext, loadPhotos: Bool,
-                      catalogue: [RangeCatalog.Item] = RangeCatalog.items) async -> Summary {
+                      catalogue: [RangeCatalog.Item] = RangeCatalog.items) async throws -> Summary {
         var summary = Summary()
 
-        let calibers = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
-        /// By exact name, by normalised name, and last by the catalogue entry the name stands for.
+        var calibers = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
+        /// By exact name, by normalised name, and last by the catalogue entry the name stands for,
+        /// which is created when the user does not have it (deleted, or planned by its catalogue name).
         func caliber(named name: String?) -> Caliber? {
             guard let name else { return nil }
             if let c = calibers.first(where: { $0.name == name }) { return c }
             if let c = calibers.first(where: { Caliber.normalized($0.name) == Caliber.normalized(name) }) { return c }
-            guard let id = CaliberCatalog.match(name)?.id else { return nil }
-            return calibers.first { $0.catalogID == id }
+            guard let item = CaliberCatalog.match(name) else { return nil }
+            if let c = calibers.first(where: { $0.catalogID == item.id }) { return c }
+            let c = Caliber(name: item.name, category: item.category)
+            c.catalogID = item.id
+            context.insert(c); calibers.append(c)
+            return c
         }
 
         let matched = MatchedRanges(plan: plan, ranges: (try? context.fetch(FetchDescriptor<ShootingRange>())) ?? [],
@@ -367,7 +372,7 @@ enum LegacyImport {
             if !hadBarrels, let first = created.first { w.makeDefault(first) }
         }
 
-        try? context.save()
+        try context.save()
         return summary
     }
 

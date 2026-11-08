@@ -79,6 +79,10 @@ struct LegacyImportView: View {
                                 set: { self.plan?.ammoCaliber[ammo] = $0.isEmpty ? nil : $0 })) {
                                 Text("Kein Kaliber").tag("")
                                 ForEach(calibers) { Text($0.name).tag($0.name) }
+                                // A catalogue calibre the user does not have: created on import.
+                                if let planned = self.plan?.ammoCaliber[ammo], !calibers.contains(where: { $0.name == planned }) {
+                                    Text(planned).tag(planned)
+                                }
                             }
                         }
                     } header: {
@@ -205,7 +209,11 @@ struct LegacyImportView: View {
     private func run(_ plan: LegacyImport.Plan) {
         running = true
         Task {
-            summary = await LegacyImport.apply(plan, context: context, loadPhotos: loadPhotos)
+            do {
+                summary = try await LegacyImport.apply(plan, context: context, loadPhotos: loadPhotos)
+            } catch {
+                self.error = error.localizedDescription
+            }
             running = false
         }
     }
