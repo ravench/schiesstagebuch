@@ -59,6 +59,8 @@ final class WeatherFieldsUITests: XCTestCase {
         strength.tap()
         // Any element type, and the name anywhere in the label: the menu's items, whatever iOS makes of them.
         let calm = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "windstill")).firstMatch
+        // On the CI simulator the first tap on a menu row is sometimes lost (about every other run): once more then.
+        if !calm.waitForExistence(timeout: 3) { strength.tap() }
         XCTAssertTrue(calm.waitForExistence(timeout: 5), "No «windstill» in the wind strengths. On screen: \(screen())")
         calm.tap()
 

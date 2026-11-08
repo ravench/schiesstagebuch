@@ -122,7 +122,7 @@ final class PRScreensTests: XCTestCase {
         let direction = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@ AND NOT (label CONTAINS %@)",
                                                          "Windrichtung", "(Uhr)")).firstMatch
         if direction.waitForExistence(timeout: 3) {
-            direction.tap()
+            openMenu(direction, showing: "von vorne links")
             snap("13c-Windrichtung")
             closeMenu()
         }
@@ -131,11 +131,11 @@ final class PRScreensTests: XCTestCase {
         let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
         if strength.waitForExistence(timeout: 3) {
             holdAtTop(strength, besideRow: true)
-            strength.tap()
+            openMenu(strength, showing: "windstill")
             snap("13d-Windstaerke")
             if pick("windstill") {
                 snap("13e-Windstill")
-                strength.tap()
+                openMenu(strength, showing: "ein bisschen Wind")
                 if !pick("ein bisschen Wind") { closeMenu() }
             } else {
                 closeMenu()
@@ -163,16 +163,9 @@ final class PRScreensTests: XCTestCase {
         let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
         topStop(strength, "16-Wetter-ohne-Apple-Wetter", besideRow: true)
         guard strength.exists && strength.isHittable else { return }
-        strength.tap()
+        openMenu(strength, showing: "windstill")
         snap("16b-Windstaerke-ohne-Apple-Wetter")
-        if !pick("windstill") {
-            // The first tap did not open the menu (the UI test fails then too): does a second one?
-            closeMenu()
-            strength.tap()
-            snap("16b2-Windstaerke-zweiter-Tipp")
-            guard pick("windstill") else { closeMenu(); return }
-        }
-        snap("16c-Windstill-ohne-Apple-Wetter")
+        if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") } else { closeMenu() }
     }
 
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
@@ -340,6 +333,17 @@ final class PRScreensTests: XCTestCase {
         guard option.waitForExistence(timeout: 3) else { return false }
         option.tap()
         return true
+    }
+
+    /// Taps a menu row and waits for its menu, which shows `item`. On the CI simulator the first tap on a menu
+    /// row is sometimes lost (about every other run): once more then.
+    @discardableResult
+    private func openMenu(_ row: XCUIElement, showing item: String) -> Bool {
+        let option = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", item)).firstMatch
+        row.tap()
+        if option.waitForExistence(timeout: 3) { return true }
+        row.tap()
+        return option.waitForExistence(timeout: 3)
     }
 
     /// Closes an open menu with a tap beside it, on the bar's title; nothing happens there without one.
