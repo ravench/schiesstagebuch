@@ -32,11 +32,12 @@ final class EntryModelTests: ModelTestCase {
         let a = addEntry(nil, on: day(1), shots: 10); a.result = "90"; a.maxPoints = 100
         let b = addEntry(nil, on: day(2), shots: 30); b.result = "240"; b.maxPoints = 300
         let c = addEntry(nil, on: day(3), shots: 10); c.result = "Kranz"
-        let entries = [a, b, c]
+        let d = addEntry(nil, on: day(4), shots: 10); d.result = "110"; d.maxPoints = 100
+        let entries = [a, b, c, d]
         XCTAssertEqual(entries.averagePercentage!, 0.85, accuracy: 1e-9)
         // (90 + 240) / 40 shots, weighted by shots.
         XCTAssertEqual(entries.averagePerShot!, 8.25, accuracy: 1e-9)
-        XCTAssertEqual(entries.averagePoints!, 165, accuracy: 1e-9, "per entry, text results left out")
+        XCTAssertEqual(entries.averagePoints!, 165, accuracy: 1e-9, "per entry; text results and results over the maximum left out")
     }
 
     func testLotsSortedAndArchivedHidden() throws {

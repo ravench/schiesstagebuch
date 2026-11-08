@@ -110,6 +110,10 @@ final class PRScreensTests: XCTestCase {
         if (weatherSwitch.value as? String) != "1" {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
+        // The rows under the switch grow when the (sample) weather arrives: wait, so the screen
+        // scrolls the same way every run.
+        _ = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Von Apple Weather übernommen")).firstMatch
+            .waitForExistence(timeout: 10)
         holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
         topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind",
@@ -225,7 +229,7 @@ final class PRScreensTests: XCTestCase {
             let search = app.searchFields.firstMatch
             if search.waitForExistence(timeout: 5) {
                 search.tap()
-                search.typeText("Keine solche Anlage")
+                search.typeText("Keine solche Anlage\n") // Return: no blinking caret in the screen
                 snap("03b-Schiessanlage-ohne-Treffer")
             }
             // While searching, the first bar button clears or closes the search instead of
@@ -270,6 +274,34 @@ final class PRScreensTests: XCTestCase {
         }
         XCTAssertTrue(app.staticTexts[".577 Snider"].waitForExistence(timeout: 5), "No .577 Snider row")
         snap("11b-Kaliber-Snider")
+    }
+
+    /// The .32 S&W rows in the calibre list: the wadcutter, seated flush, shows only its case.
+    func testWadcutter() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        if search.waitForExistence(timeout: 5) {
+            search.tap()
+            search.typeText("32 S&W\n") // return hides the keyboard
+        }
+        XCTAssertTrue(app.staticTexts[".32 S&W Long Wadcutter"].waitForExistence(timeout: 5), "No wadcutter row")
+        snap("11c-Kaliber-32-SW")
+    }
+
+    /// The Swiss cadet round, found by the name on its box.
+    func testKadettenpatrone() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        if search.waitForExistence(timeout: 5) {
+            search.tap()
+            search.typeText("Kadetten\n") // return hides the keyboard
+        }
+        XCTAssertTrue(app.staticTexts["7.5 mm Kadettenpatrone"].waitForExistence(timeout: 5), "No Kadettenpatrone row")
+        snap("11d-Kaliber-Kadettenpatrone")
     }
 
     private func tab(_ name: String) {

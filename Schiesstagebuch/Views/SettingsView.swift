@@ -270,6 +270,7 @@ struct CaliberEditorView: View {
                 }
                 if caliber != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(caliber == nil ? "Neues Kaliber".loc : "Kaliber bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -356,6 +357,8 @@ struct AmmunitionEditorView: View {
     @State private var caliber: Caliber?
     @State private var isArchived = false
     @State private var lots: [LotDraft] = []
+    /// `onAppear` runs again when the Kaliber picker pops; loading then would drop every edit.
+    @State private var didLoad = false
 
     /// Calibres used by a weapon first, the rest of the catalogue below.
     private var inUse: [Caliber] { Caliber.keepingGroupsTogether(calibers.filter { !$0.weapons.isEmpty }) }
@@ -429,6 +432,7 @@ struct AmmunitionEditorView: View {
                 lotSections
                 if ammunition != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(ammunition == nil ? "Neue Munition".loc : "Munition bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -448,6 +452,8 @@ struct AmmunitionEditorView: View {
                 }
             }
             .onAppear {
+                guard !didLoad else { return }
+                didLoad = true
                 name = ammunition?.name ?? ""
                 caliber = ammunition?.caliber ?? suggestedCaliber
                 isArchived = ammunition?.isArchived ?? false
@@ -542,6 +548,7 @@ struct RangeEditorView: View {
                 }
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

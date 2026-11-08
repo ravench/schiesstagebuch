@@ -344,6 +344,38 @@ final class StandblattParserTests: XCTestCase {
         XCTAssertEqual(strips[0].printedHundredths, 500)
     }
 
+    func testA10RowWithOneValueIsUncertain() throws {
+        // "3 ↗ 9": the hundredths were not read; 9 alone would count as hundredths 9, ring 1.
+        let text = """
+        Scheibe 8/4
+        1 → 9 90
+        2 ↘ 10 95
+        3 ↗ 9
+        Total 28 270
+        """
+        let strip = try XCTUnwrap(StandblattParser.parse(text: text).first)
+        XCTAssertEqual(strip.target, .a10)
+        XCTAssertEqual(strip.passes[0].shots.map(\.uncertain), [false, false, true])
+    }
+
+    func testTotalLineBeforeTheFirstHeaderIsIgnored() throws {
+        // Loose lines come before the header groups in reading order; a Total among them used to
+        // close the (empty) first strip, and all its shots were then dropped.
+        let text = """
+        Total 18 171
+        Scheibe 8/4
+        1 → 9 90
+        2 ↘ 9 81
+        Subtota 18 171
+        Total 18 171
+        """
+        let strips = StandblattParser.parse(text: text)
+        XCTAssertEqual(strips.count, 1)
+        XCTAssertEqual(rings(strips[0]), [[9, 9]])
+        XCTAssertEqual(strips[0].printedRings, 18)
+        XCTAssertEqual(strips[0].printedHundredths, 171)
+    }
+
     func testPlainTextSkipsCopyLines() {
         let text = """
         Scheibe 8/2

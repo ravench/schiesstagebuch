@@ -245,6 +245,7 @@ struct LicenceCardEditor: View {
                     }
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle("SSV-Lizenz")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

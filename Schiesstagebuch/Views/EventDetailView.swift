@@ -44,7 +44,12 @@ struct EventDetailView: View {
 
             Section(event.scoringSystem == .ipsc ? "Stages".loc : "Stiche".loc) {
                 ForEach(event.sortedEntries) { entry in
-                    NavigationLink(value: entry) { StichRow(entry: entry) }
+                    // Deleting the last Stich deletes the event too: this screen leaves first, then deletes.
+                    NavigationLink {
+                        EntryDetailView(entry: entry, deleteLast: { deleting = true; dismiss() })
+                    } label: {
+                        StichRow(entry: entry)
+                    }
                 }
                 .onDelete(perform: deleteStiche)
                 Button { addingStich = true } label: {
@@ -188,6 +193,8 @@ struct EventEditorView: View {
     @State private var scoring: ScoringSystem = .rings
     @State private var division = ""
     @State private var powerFactor: IPSCPowerFactor = .minor
+    /// `onAppear` runs again when the Schiessanlage picker pops; loading then would drop every edit.
+    @State private var didLoad = false
 
     var body: some View {
         NavigationStack {
@@ -207,6 +214,7 @@ struct EventEditorView: View {
                     WeatherSection(weather: $weather, day: date, range: range)
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle("Anlass bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -214,6 +222,8 @@ struct EventEditorView: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold() }
             }
             .onAppear {
+                guard !didLoad else { return }
+                didLoad = true
                 date = event.date; range = event.range; name = event.name; weather = event.weather
                 scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
             }

@@ -6,11 +6,11 @@ import SwiftUI
 final class CaliberCatalogTests: ModelTestCase {
     override func setUp() async throws {
         try await super.setUp()
-        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededKey)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
     }
 
     override func tearDown() async throws {
-        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededKey)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
         try await super.tearDown()
     }
 
@@ -28,13 +28,14 @@ final class CaliberCatalogTests: ModelTestCase {
 
     // MARK: Seeding
 
-    func testScreenshotRunsSeedEveryTimeWithoutTouchingTheFlag() throws {
-        UserDefaults.standard.set(true, forKey: CaliberCatalog.seededKey)
+    func testScreenshotRunsSeedEveryTimeWithoutTouchingTheIDs() throws {
+        let allIDs = CaliberCatalog.items.map(\.id)
+        UserDefaults.standard.set(allIDs, forKey: CaliberCatalog.seededIDsKey)
         CaliberCatalog.seedIfNeeded(context, always: true)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count)
-        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededKey)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
         CaliberCatalog.seedIfNeeded(context, always: true)
-        XCTAssertFalse(UserDefaults.standard.bool(forKey: CaliberCatalog.seededKey), "the flag stays the real store's")
+        XCTAssertNil(UserDefaults.standard.stringArray(forKey: CaliberCatalog.seededIDsKey), "the ids stay the real store's")
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count, "seeding twice links, never duplicates")
     }
 
@@ -55,11 +56,124 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count, "seeding is a one-off")
     }
 
+    private func removeCalibre(_ id: String) throws {
+        for c in try context.fetch(FetchDescriptor<Caliber>()) where c.catalogID == id { context.delete(c) }
+        try context.save()
+    }
+
+    func testSeedAddsCalibresTheCatalogueGainedLater() throws {
+        // A journal seeded before GP 1890 was in the catalogue.
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp1890)
+        UserDefaults.standard.set(CaliberCatalog.items.map(\.id).filter { $0 != gp1890 }, forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        let all = try context.fetch(FetchDescriptor<Caliber>())
+        XCTAssertEqual(all.count, CaliberCatalog.items.count)
+        XCTAssertEqual(all.filter { $0.catalogID == gp1890 }.count, 1)
+        XCTAssertEqual(Set(UserDefaults.standard.stringArray(forKey: CaliberCatalog.seededIDsKey) ?? []), Set(CaliberCatalog.items.map(\.id)))
+    }
+
+    func testJournalSeededOnlyOnceBeforeGetsTheMissingCalibres() throws {
+        // Until 2026-11 the catalogue was seeded once behind a flag, so later calibres never arrived.
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp1890)
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        let all = try context.fetch(FetchDescriptor<Caliber>())
+        XCTAssertEqual(all.count, CaliberCatalog.items.count, "the missing one is added, the others linked, none twice")
+        XCTAssertEqual(Set(all.map(\.catalogID)).count, all.count)
+    }
+
+    func testSeedNeverAddsACalibreTwice() throws {
+        let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp1890)
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count - 1,
+                       "a calibre the journal was given is not brought back")
+    }
+
+    func testHandMadeCalibreIsLinkedByAnyOfItsNames() throws {
+        let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp11)
+        let own = Caliber(name: "GP 11", category: "")  // made by hand while the catalogue lacked it
+        context.insert(own)
+        try context.save()
+        UserDefaults.standard.set(CaliberCatalog.items.map(\.id).filter { $0 != gp11 }, forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(own.catalogID, gp11)
+        XCTAssertEqual(own.name, "GP 11", "the user's name stays")
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count)
+    }
+
+    func testHandMadeAbbreviationIsNotLinked() throws {
+        // "LG" is a search name of the 4.5 mm Diabolo, but a calibre named so by hand may mean anything.
+        let diabolo = try XCTUnwrap(CaliberCatalog.match("LG")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(diabolo)
+        let own = Caliber(name: "LG", category: "")
+        context.insert(own)
+        try context.save()
+        UserDefaults.standard.set(CaliberCatalog.items.map(\.id).filter { $0 != diabolo }, forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(own.catalogID, "")
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count + 1)
+    }
+
+    func testHandMadeCalibreStaysOwnWhenItsCalibreWasGivenBefore() throws {
+        CaliberCatalog.seedIfNeeded(context)
+        let own = Caliber(name: "9 mm Luger", category: "")
+        context.insert(own)
+        try context.save()
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(own.catalogID, "", "only calibres new to the journal are linked")
+    }
+
+    func testRecordUnderARenamedIDFollowsTheRename() throws {
+        // calibre-data #13 renamed "5.6 mm GP 90 (Swiss)" to "5.6 mm GP 90" (2026-11-04).
+        let gp90 = try XCTUnwrap(CaliberCatalog.item(id: "5.6 mm GP 90")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp90)
+        let old = Caliber(name: "5.6 mm GP 90 (Swiss)", category: CaliberCatalog.Category.rifle.rawValue)
+        old.catalogID = "5.6 mm GP 90 (Swiss)"
+        context.insert(old)
+        try context.save()
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(old.catalogID, gp90)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count, "no second GP 90")
+    }
+
+    func testExactMatchPrefersNamesOverOtherNames() {
+        // The .32 S&W Long has the search name "32s&w", which is also how ".32 S&W" is written.
+        XCTAssertEqual(CaliberCatalog.exactMatch(".32 S&W")?.name, ".32 S&W")
+        XCTAssertEqual(CaliberCatalog.match(".32 S&W")?.name, ".32 S&W")
+        XCTAssertEqual(CaliberCatalog.exactMatch("9 mm Para")?.name, "9x19 mm")
+        XCTAssertNil(CaliberCatalog.exactMatch("9x1"), "no prefixes")
+        XCTAssertEqual(CaliberCatalog.exactMatch("9 mm Luger", searchNames: false)?.name, "9x19 mm", "a printed name")
+        XCTAssertNil(CaliberCatalog.exactMatch("9mm", searchNames: false), "a search name")
+    }
+
     func testNameNormalisationIgnoresDotsSpacesAndMillimetres() {
         XCTAssertEqual(Caliber.normalized(".45 ACP"), Caliber.normalized("45 acp"))
         XCTAssertEqual(Caliber.normalized("9×19 mm"), Caliber.normalized("9x19"))
         XCTAssertEqual(Caliber.normalized("7,5x55 mm Swiss"), Caliber.normalized("7.5x55 Swiss"))
         XCTAssertNotEqual(Caliber.normalized("9x19"), Caliber.normalized("9x21"))
+    }
+
+    func testExactNameBeatsAnotherCalibresAlias() {
+        // ".32 S&W Long" lists "32s&w" among its aliases and comes first in the file.
+        XCTAssertEqual(CaliberCatalog.match(".32 S&W")?.name, ".32 S&W")
+        XCTAssertEqual(CaliberCatalog.match("32 S&W Long")?.name, ".32 S&W Long")
+        XCTAssertEqual(CaliberCatalog.match("32swl")?.name, ".32 S&W Long", "aliases still match")
     }
 
     // MARK: Swiss service rounds
@@ -155,6 +269,45 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertNotNil(CaliberCatalog.items.first { $0.name == "5.6 mm GP 90" })
         XCTAssertNil(CaliberCatalog.items.first { $0.name == "5.6 mm GP 90 (Swiss)" })
         XCTAssertEqual(CaliberCatalog.match("Gewehrpatrone 90")?.name, "5.6 mm GP 90")
+    }
+
+    func testSwissArmyPistolNamesFindTheParabellumRounds() {
+        // 9 mm Para is «Pistolenpatrone 41» (Pist Pat 41) in the Swiss Army; the 7.65 mm boxes say «Pistolen-Patronen Cal. 7,65 mm».
+        for text in ["Pist Pat 41", "pistpat41", "Pistolenpatrone 41", "9 mm Pist Pat 41"] {
+            XCTAssertEqual(CaliberCatalog.match(text)?.name, "9x19 mm", text)
+        }
+        XCTAssertEqual(CaliberCatalog.match("Pistolenpatrone 7,65")?.name, "7.65 mm Parabellum")
+        // Search names only: the printed names stay.
+        XCTAssertEqual(CaliberCatalog.item(id: "9x19 mm")?.displayAliases, ["9 mm Luger", "9 mm Para"])
+    }
+
+    func testWadcutterIsItsOwnPistolCalibre() throws {
+        let wc = try XCTUnwrap(CaliberCatalog.match(".32 S&W Long WC"))
+        XCTAssertEqual(wc.name, ".32 S&W Long Wadcutter")
+        XCTAssertEqual(wc.category, CaliberCatalog.Category.handgun.rawValue)
+        XCTAssertEqual(CaliberCatalog.match("32 WC")?.id, wc.id)
+        // Its own name still means the round-nose .32 S&W Long.
+        XCTAssertEqual(CaliberCatalog.match(".32 S&W Long")?.name, ".32 S&W Long")
+        // Seated flush, so the drawing shows only the case; its case is shorter than the .32 S&W Long's
+        // (23.27 against 23.4 mm), so the two are not offered as one chamber.
+        XCTAssertNotNil(wc.outline.case)
+        XCTAssertNil(wc.outline.bullet)
+        XCTAssertNil(wc.dimensionGroup)
+    }
+
+    func testKadettenpatroneIsItsOwnRifleCalibre() throws {
+        let kp = try XCTUnwrap(CaliberCatalog.match("Kadettenpatrone"))
+        XCTAssertEqual(kp.name, "7.5 mm Kadettenpatrone")
+        XCTAssertEqual(kp.category, CaliberCatalog.Category.rifle.rawValue)
+        // The names on the box and the cadet rifle's short name find it.
+        for text in ["Kadetten-Pat", "Cart. 7,5 mm cadetti", "KG97"] {
+            XCTAssertEqual(CaliberCatalog.match(text)?.id, kp.id, text)
+        }
+        XCTAssertEqual(kp.displayAliases, ["Cart. 7,5 mm cadets", "Cart. 7,5 mm cadetti"])
+        XCTAssertEqual(CaliberCatalog.match("GP 1890")?.name, "7.5x53.5 mm Swiss (GP 1890)")
+        // Measured on Raven's round, its case is longer than the GP 1890's: not offered as one chamber.
+        XCTAssertNotNil(kp.outline.bullet)
+        XCTAssertNil(kp.dimensionGroup)
     }
 
     // MARK: De-duplication after iCloud sync
