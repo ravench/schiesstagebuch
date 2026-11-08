@@ -49,6 +49,16 @@ final class WeatherRelayUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["Ablösung"].exists, "The second Ablösung editor closed by itself")
         app.navigationBars["Ablösung"].buttons["Sichern"].tap()
         XCTAssertEqual(app.state, .runningForeground)
+
+        // A third one cancelled: the list keeps its two (the Ablösung used to be added before the sheet opened).
+        let relayRows = app.buttons.matching(NSPredicate(format: "label MATCHES %@", "^\\d{1,2}:\\d{2}.*"))
+        XCTAssertTrue(scroll(to: addRelay))
+        XCTAssertEqual(relayRows.count, 2)
+        addRelay.tap()
+        XCTAssertTrue(app.navigationBars["Ablösung"].waitForExistence(timeout: 5))
+        app.navigationBars["Ablösung"].buttons["Abbrechen"].tap()
+        XCTAssertTrue(addRelay.waitForExistence(timeout: 5))
+        XCTAssertEqual(relayRows.count, 2, "A cancelled Ablösung stayed in the list")
     }
 
     /// Swipes up through the form until the element is on screen.

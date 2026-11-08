@@ -44,9 +44,7 @@ struct WeatherSection: View {
                     weather?.relays.removeAll { ids.contains($0.id) }
                 }
                 Button {
-                    let relay = WeatherRelay(time: record.nextRelayTime(fallback: day))
-                    weather?.relays.append(relay)
-                    editingRelay = relay
+                    editingRelay = WeatherRelay(time: record.nextRelayTime(fallback: day)) // added on Sichern
                 } label: {
                     Label("Ablösung hinzufügen", systemImage: "plus")
                 }
@@ -55,6 +53,7 @@ struct WeatherSection: View {
                 .sheet(item: $editingRelay) { relay in
                     RelayEditorView(relay: relay, day: day, range: range) { saved in
                         if let i = weather?.relays.firstIndex(where: { $0.id == saved.id }) { weather?.relays[i] = saved }
+                        else { weather?.relays.append(saved) }
                     }
                 }
             } header: {
