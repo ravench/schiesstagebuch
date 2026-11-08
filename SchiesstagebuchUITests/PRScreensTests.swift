@@ -112,7 +112,8 @@ final class PRScreensTests: XCTestCase {
         }
         holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
-        topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind")
+        topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind",
+                besideRow: true)
         // The eight wind directions. Before them, «Windrichtung (Uhr)» was a menu of clock hours: no stop then.
         let direction = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@ AND NOT (label CONTAINS %@)",
                                                          "Windrichtung", "(Uhr)")).firstMatch
@@ -125,7 +126,7 @@ final class PRScreensTests: XCTestCase {
         // «ein bisschen Wind», so the entry below keeps them.
         let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
         if strength.waitForExistence(timeout: 3) {
-            holdAtTop(strength)
+            holdAtTop(strength, besideRow: true)
             strength.tap()
             snap("13d-Windstaerke")
             if pick("windstill") {
@@ -156,7 +157,7 @@ final class PRScreensTests: XCTestCase {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
         let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
-        topStop(strength, "16-Wetter-ohne-Apple-Wetter")
+        topStop(strength, "16-Wetter-ohne-Apple-Wetter", besideRow: true)
         guard strength.exists && strength.isHittable else { return }
         strength.tap()
         snap("16b-Windstaerke-ohne-Apple-Wetter")
@@ -196,19 +197,22 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Scrolls `element` to the top of the screen, so what follows it shows, and takes the screen.
-    private func topStop(_ element: XCUIElement, _ name: String) {
+    private func topStop(_ element: XCUIElement, _ name: String, besideRow: Bool = false) {
         reveal(element, swipes: 10)
-        holdAtTop(element)
+        holdAtTop(element, besideRow: besideRow)
         snap(name)
     }
 
-    /// Drags `element` near the top of the screen, so what follows it shows.
-    private func holdAtTop(_ element: XCUIElement) {
+    /// Drags `element` near the top of the screen, so what follows it shows. `besideRow` drags in the list's
+    /// margin at the element's height: a press on a menu row opens its menu instead of scrolling.
+    private func holdAtTop(_ element: XCUIElement, besideRow: Bool = false) {
         guard element.exists && element.isHittable else { return }
+        let start = besideRow
+            ? app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: element.frame.midY / app.frame.height))
+            : element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         // Held at the end, so the list does not glide on past it.
-        element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
-                   withVelocity: .slow, thenHoldForDuration: 0.5)
+        start.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: besideRow ? 0.03 : 0.5, dy: 0.18)),
+                    withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
     /// The firearm menu and the range list, both ending with «… hinzufügen».
