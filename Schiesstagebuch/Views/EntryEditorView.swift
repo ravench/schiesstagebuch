@@ -272,16 +272,23 @@ struct EntryEditorView: View {
             }
             .onChange(of: mode) { old, new in
                 guard didLoad else { return }
-                // Carry the count over so switching modes never loses what was typed.
+                // Carry the count over so switching modes never loses what was typed. Einzelschüsse
+                // with none typed carry nothing: the counts from before stay.
                 let total = shotTotal(in: old)
-                if old == .shots { sighters = sighterShotCount }
-                // The automatic total of the Passen stays as the result in the other modes.
-                if old == .passeTotals, !enteredPasseTotals.isEmpty { result = enteredPasseTotals.resultText }
+                if old != .shots || total > 0 {
+                    if old == .shots { sighters = sighterShotCount }
+                    // The automatic total of the Passen stays as the result in the other modes.
+                    if old == .passeTotals, !enteredPasseTotals.isEmpty { result = enteredPasseTotals.resultText }
+                    switch new {
+                    case .total: shotCount = total
+                    case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
+                    case .passeTotals, .shots: break
+                    }
+                }
                 switch new {
-                case .total: shotCount = total
-                case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
                 case .passeTotals: if passeTotals.isEmpty { passeTotals = [PasseTotalDraft()] }
                 case .shots: if passes.isEmpty { passes = [PassDraft(text: "")] }
+                case .total, .split: break
                 }
             }
             .onChange(of: pickerItems) { _, items in
