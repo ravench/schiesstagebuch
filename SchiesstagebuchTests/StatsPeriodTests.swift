@@ -15,4 +15,12 @@ final class StatsPeriodTests: ModelTestCase {
         XCTAssertEqual(listed.map(\.date), listed.map(\.date).sorted(by: >))
         XCTAssertEqual(StatsPeriod.all.entries(all + [old]).count, 61)
     }
+
+    func testLast12MonthsStartsAtTheBeginningOfTheDay() {
+        let calendar = Calendar.current
+        let firstDay = calendar.startOfDay(for: calendar.date(byAdding: .month, value: -12, to: .now)!)
+        XCTAssertTrue(StatsPeriod.last12Months.contains(firstDay))
+        XCTAssertTrue(StatsPeriod.last12Months.contains(firstDay.addingTimeInterval(3600)), "any time of that day")
+        XCTAssertFalse(StatsPeriod.last12Months.contains(firstDay.addingTimeInterval(-1)))
+    }
 }
