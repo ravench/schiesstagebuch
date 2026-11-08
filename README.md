@@ -60,8 +60,8 @@ match (Stich).
   itself on the welcome screen or in Settings, all off by default: colour filters
   (Farbfilter, on the glasses or in the diopter, up to two per entry, including
   adjustment lenses and the Wyss and Grünig + Elmiger filter wheels), diopter, ring
-  and iris, bipod (Zweibeinstütze) length for rifles, and weather per event with
-  relays (Ablösungen) and a sun position suggestion.
+  and iris, bipod (Zweibeinstütze) length for rifles, and weather per event in one
+  list, with the sun position filled in from the range's shooting direction.
 - **«Sportgeräte» instead of «Waffen»**: a switch in Settings (and on the welcome
   screen) that calls firearms «Sportgeräte» (English: equipment) throughout the app.
   The default is «Waffen». Only the wording changes; data, backups and the CSV keep

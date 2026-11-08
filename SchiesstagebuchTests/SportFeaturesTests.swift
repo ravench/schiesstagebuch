@@ -65,7 +65,7 @@ final class SportFeaturesTests: ModelTestCase {
         XCTAssertNil(SportFeatures.filter.detail)
         XCTAssertNil(SportFeatures.sight.detail)
         XCTAssertNotNil(SportFeatures.bipod.detail, "the field shows for rifles only")
-        XCTAssertNotNil(SportFeatures.weather.detail, "recorded per event and per relay")
+        XCTAssertNotNil(SportFeatures.weather.detail, "recorded per event")
     }
 
     func testOnlyColourFiltersUseTheFilterHolderAndListTheFilters() {
