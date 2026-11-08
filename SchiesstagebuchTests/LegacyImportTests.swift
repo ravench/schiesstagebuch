@@ -33,7 +33,7 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(plan.newRows.count, 2)
         XCTAssertEqual(plan.weapons, ["P75", "Stgw-90 Skye"])
 
-        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        let summary = try await LegacyImport.apply(plan, context: context, loadPhotos: false)
         XCTAssertEqual(summary.entries, 2)
         XCTAssertEqual(summary.weapons, 2)
         XCTAssertEqual(summary.ranges, 1)
@@ -63,7 +63,7 @@ final class LegacyImportTests: ModelTestCase {
         15.06.2026\tAlbisgüetli\tFeldschiessen\tStgw-90 Skye\t18\tGP90\t\t\t
         """
         let plan = LegacyImport.plan(LegacyImport.parseTSV(tsv), context: context, catalogue: [])
-        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        let summary = try await LegacyImport.apply(plan, context: context, loadPhotos: false)
         XCTAssertEqual(summary.entries, 5)
 
         let events = try context.fetch(FetchDescriptor<ShootingEvent>())
@@ -106,7 +106,7 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(rows.map(\.weapons), [["Stgw-90"], ["P75"], []], "weapons only where one name has several lines")
         XCTAssertNil(plan.rangeChoice[try XCTUnwrap(rows[1].keys.first)], "among several, nothing is chosen for the user")
 
-        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        let summary = try await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
         XCTAssertEqual(summary.ranges, 4, "two from the catalogue, own Albisgüetli for the pistol, Training Keller")
         let obligatorisch = try entry("Obligatorisches", 12)
         XCTAssertEqual(obligatorisch.range?.catalogID, "tlm:albis300", "the event takes its first row's range")
@@ -125,7 +125,7 @@ final class LegacyImportTests: ModelTestCase {
         var plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
         let several = try XCTUnwrap(LegacyImport.rangeMatchRows(plan).first { $0.options.count > 1 })
         for key in several.keys { plan.rangeChoice[key] = several.options[0].target }
-        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        let summary = try await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
         XCTAssertEqual(try entry("Training", 13).range?.catalogID, "tlm:albis25")
         XCTAssertEqual(summary.ranges, 4, "both Albisgütli stands, Bubendorf, Training Keller")
         XCTAssertFalse(try context.fetch(FetchDescriptor<ShootingRange>()).contains { $0.name == "Albisgüetli" })
@@ -135,7 +135,7 @@ final class LegacyImportTests: ModelTestCase {
         let catalogue = RangeMatcherTests.catalogue
         var plan = LegacyImport.plan(LegacyImport.parseTSV(rangeTSV), context: context, catalogue: catalogue)
         plan.rangeChoice = [:]
-        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        _ = try await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
         let ranges = try context.fetch(FetchDescriptor<ShootingRange>())
         XCTAssertEqual(Set(ranges.map(\.name)), ["Albisgüetli", "Schiessanlage Bubendorf", "Training Keller"])
         XCTAssertTrue(ranges.allSatisfy { $0.catalogID.isEmpty })
@@ -161,7 +161,7 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(LegacyImport.rangeMatchRows(plan).flatMap { $0.options.map(\.target) }, [.existing(imported.id), .existing(own.id)],
                        "the own range beats the catalogue's Bern-Riedbach; the same name needs no match")
 
-        let summary = await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
+        let summary = try await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: catalogue)
         XCTAssertEqual(summary.ranges, 0)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingRange>()), 3)
         XCTAssertEqual(try entry("Training", 12).range, own)
@@ -181,14 +181,30 @@ final class LegacyImportTests: ModelTestCase {
         let plan = LegacyImport.plan(rows, context: context)
         XCTAssertEqual(plan.ammoCaliber["9x19"], "9 mm Para", "the picker offers the user's name")
 
-        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        _ = try await LegacyImport.apply(plan, context: context, loadPhotos: false)
         let p75 = try XCTUnwrap(try context.fetch(FetchDescriptor<Weapon>()).first { $0.name == "P75" })
         XCTAssertEqual(p75.calibers, [nine])
         XCTAssertEqual(p75.barrels?.count, 1, "one barrel per calibre used")
         XCTAssertEqual(p75.barrels?.first?.isDefault, true)
         let entry = try XCTUnwrap(try context.fetch(FetchDescriptor<Entry>()).first { $0.weapon == p75 })
         XCTAssertEqual(entry.caliber, nine)
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 1, "no second 9x19 is created")
+        XCTAssertEqual(try context.fetch(FetchDescriptor<Caliber>()).filter { $0.catalogID == nine.catalogID }.count, 1,
+                       "no second 9x19 is created")
+    }
+
+    func testAmmunitionOfACalibreTheUserDoesNotHaveGetsItFromTheCatalogue() async throws {
+        // No calibres in the app (deleted, or never seeded): the plan offers the catalogue name and
+        // the import creates that calibre, instead of ammunition and a weapon without one.
+        let rows = LegacyImport.parseTSV(tsv)
+        let plan = LegacyImport.plan(rows, context: context)
+        let item = try XCTUnwrap(CaliberCatalog.match("9x19"))
+        XCTAssertEqual(plan.ammoCaliber["9x19"], item.name)
+
+        _ = try await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        let ammo = try XCTUnwrap(try context.fetch(FetchDescriptor<Ammunition>()).first { $0.name == "9x19" })
+        XCTAssertEqual(ammo.caliber?.catalogID, item.id)
+        let p75 = try XCTUnwrap(try context.fetch(FetchDescriptor<Weapon>()).first { $0.name == "P75" })
+        XCTAssertEqual(p75.calibers.map(\.catalogID), [item.id])
     }
 
     func testReadsTheOldAppsSQLiteDatabase() throws {
@@ -248,7 +264,7 @@ final class LegacyImportTests: ModelTestCase {
     func testImportedShotsCountAsScoredShots() async throws {
         var plan = LegacyImport.plan(LegacyImport.parseTSV(realRows), context: context)
         plan.splitSighters = []  // keep the old totals as they are
-        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        _ = try await LegacyImport.apply(plan, context: context, loadPhotos: false)
         // One entry of the user's own with sighters makes the stats show the split.
         let own = addEntry(nil, on: day(1), shots: 25); own.sighterCount = 5
 
@@ -289,7 +305,7 @@ final class LegacyImportTests: ModelTestCase {
         let feld = try XCTUnwrap(plan.newRows.first { $0.event == "Feldstich" })
         plan.splitSighters.remove(feld.key)
 
-        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        _ = try await LegacyImport.apply(plan, context: context, loadPhotos: false)
         let entries = try context.fetch(FetchDescriptor<Entry>())
         let match = try XCTUnwrap(entries.first { $0.result == "491" })
         XCTAssertEqual(match.sighterCount, 2)
@@ -303,7 +319,7 @@ final class LegacyImportTests: ModelTestCase {
     func testImportedResultsGetNoPercentageOrPerShotAverage() async throws {
         var plan = LegacyImport.plan(LegacyImport.parseTSV(realRows), context: context)
         plan.splitSighters = []  // keep the old totals as they are
-        _ = await LegacyImport.apply(plan, context: context, loadPhotos: false)
+        _ = try await LegacyImport.apply(plan, context: context, loadPhotos: false)
         let entries = try context.fetch(FetchDescriptor<Entry>())
         XCTAssertTrue(entries.allSatisfy(\.isLegacyImport))
         // "/" separated the results of several Stiche in Schusszähler, it is not "of max".

@@ -41,9 +41,9 @@ enum StichStats {
     }
 
     /// Highest numeric result among `entries`. Only meaningful for one Stich, which always has
-    /// the same shot count and maximum.
+    /// the same shot count and maximum. Impossible results (over the maximum) are left out.
     static func bestPoints(_ entries: [Entry]) -> Double? {
-        entries.compactMap(\.score.points).max()
+        entries.filter { !$0.score.exceedsMax }.compactMap(\.score.points).max()
     }
 
     /// Stich names used before, most recent first, for picking the same spelling again.

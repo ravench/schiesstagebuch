@@ -58,18 +58,25 @@ enum CaliberCatalog {
 
     private static let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
 
+    /// Each calibre's name, printed names and search names, normalised once for the calibre search.
+    private static let keysByID = Dictionary(
+        items.map { ($0.id, ([$0.name] + ($0.displayAliases ?? []) + $0.aliases).map(normalizedAlias)) },
+        uniquingKeysWith: { a, _ in a })
+
+    static func searchKeys(id: String) -> [String] { keysByID[id] ?? [] }
+
     static func item(id: String) -> Item? { byID[id] }
 
     /// Finds a catalogue entry for free text like "GP90", "9mm", "45 Auto" or ".22 lr".
     static func match(_ text: String) -> Item? {
         let key = normalizedAlias(text)
         guard !key.isEmpty else { return nil }
-        if let exact = items.first(where: {
-            normalizedAlias($0.name) == key
-                || $0.aliases.contains { normalizedAlias($0) == key }
-                || ($0.displayAliases ?? []).contains { normalizedAlias($0) == key }
+        // Names before aliases: ".32 S&W Long" lists "32s&w" as an alias, which must not take ".32 S&W".
+        if let byName = items.first(where: { normalizedAlias($0.name) == key }) { return byName }
+        if let byAlias = items.first(where: {
+            $0.aliases.contains { normalizedAlias($0) == key } || ($0.displayAliases ?? []).contains { normalizedAlias($0) == key }
         }) {
-            return exact
+            return byAlias
         }
         return items.first { normalizedAlias($0.name).hasPrefix(key) }
     }

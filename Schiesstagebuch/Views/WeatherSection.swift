@@ -44,9 +44,7 @@ struct WeatherSection: View {
                     weather?.relays.removeAll { ids.contains($0.id) }
                 }
                 Button {
-                    let relay = WeatherRelay(time: record.nextRelayTime(fallback: day))
-                    weather?.relays.append(relay)
-                    editingRelay = relay
+                    editingRelay = WeatherRelay(time: record.nextRelayTime(fallback: day)) // added on Sichern
                 } label: {
                     Label("Ablösung hinzufügen", systemImage: "plus")
                 }
@@ -55,6 +53,7 @@ struct WeatherSection: View {
                 .sheet(item: $editingRelay) { relay in
                     RelayEditorView(relay: relay, day: day, range: range) { saved in
                         if let i = weather?.relays.firstIndex(where: { $0.id == saved.id }) { weather?.relays[i] = saved }
+                        else { weather?.relays.append(saved) }
                     }
                 }
             } header: {
@@ -76,6 +75,8 @@ private struct AppleWeatherRow: View {
     @State private var last: WeatherConditions?
     @State private var loaded: Request?
     @State private var phase = Phase.idle
+    /// The fetch the button started, cancelled when the hour or range changes or the row leaves.
+    @State private var fetch: Task<Void, Never>?
     @AppStorage(AppleWeather.enabledKey) private var enabled = true
 
     private enum Phase { case idle, loading, done, failed }
@@ -92,9 +93,11 @@ private struct AppleWeatherRow: View {
 
     var body: some View {
         if let request {
-            Button { Task { await load(request) } } label: { label }
+            Button { fetch = Task { await load(request) } } label: { label }
                 .disabled(phase == .loading)
+                .onDisappear { fetch?.cancel() }
                 .task(id: request) {
+                    fetch?.cancel()
                     guard request != loaded, last != nil || weather?.hasValues == false else { return }
                     // Scrolling the time or date picker passes many hours: fetch the one it stops at.
                     try? await Task.sleep(for: .seconds(0.5))
@@ -126,8 +129,9 @@ private struct AppleWeatherRow: View {
                 phase = .failed
                 return
             }
-            // A fetch for an hour or range the editor has since left must not land.
-            guard request == self.request else {
+            // A fetch for an hour or range the editor has since left must not land. (`self.request`
+            // is no use here: the closure holds a copy of the row with the old hour.)
+            guard !Task.isCancelled else {
                 phase = .idle
                 return
             }

@@ -144,6 +144,7 @@ struct BarrelEditorView: View {
                     SerialField(title: "Seriennummer (optional)", text: $serialNumber)
                     if weapon.hasSeveralBarrels || barrel == nil {
                         Toggle("Standardlauf", isOn: $isDefault)
+                            .disabled(barrel?.isDefault == true) // off would leave the firearm without one: pick another
                     }
                 } footer: {
                     Text("Der Standardlauf ist bei neuen Einträgen vorausgewählt.")
