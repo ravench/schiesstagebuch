@@ -17,9 +17,12 @@ enum StatsPeriod: Hashable {
 
     func contains(_ date: Date) -> Bool {
         switch self {
-        case .all: true
-        case .year(let y): Calendar.current.component(.year, from: date) == y
-        case .last12Months: date >= Calendar.current.date(byAdding: .month, value: -12, to: .now)!
+        case .all: return true
+        case .year(let y): return Calendar.current.component(.year, from: date) == y
+        case .last12Months:
+            // From the start of that day, so the period does not shift during the day.
+            let calendar = Calendar.current
+            return date >= calendar.startOfDay(for: calendar.date(byAdding: .month, value: -12, to: .now) ?? .now)
         }
     }
 
