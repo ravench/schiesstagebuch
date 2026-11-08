@@ -112,12 +112,54 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count)
     }
 
+    func testHandMadeAbbreviationIsNotLinked() throws {
+        // "LG" is a search name of the 4.5 mm Diabolo, but a calibre named so by hand may mean anything.
+        let diabolo = try XCTUnwrap(CaliberCatalog.match("LG")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(diabolo)
+        let own = Caliber(name: "LG", category: "")
+        context.insert(own)
+        try context.save()
+        UserDefaults.standard.set(CaliberCatalog.items.map(\.id).filter { $0 != diabolo }, forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(own.catalogID, "")
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count + 1)
+    }
+
+    func testHandMadeCalibreStaysOwnWhenItsCalibreWasGivenBefore() throws {
+        CaliberCatalog.seedIfNeeded(context)
+        let own = Caliber(name: "9 mm Luger", category: "")
+        context.insert(own)
+        try context.save()
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(own.catalogID, "", "only calibres new to the journal are linked")
+    }
+
+    func testRecordUnderARenamedIDFollowsTheRename() throws {
+        // calibre-data #13 renamed "5.6 mm GP 90 (Swiss)" to "5.6 mm GP 90" (2026-11-04).
+        let gp90 = try XCTUnwrap(CaliberCatalog.item(id: "5.6 mm GP 90")).id
+        CaliberCatalog.seedIfNeeded(context)
+        try removeCalibre(gp90)
+        let old = Caliber(name: "5.6 mm GP 90 (Swiss)", category: CaliberCatalog.Category.rifle.rawValue)
+        old.catalogID = "5.6 mm GP 90 (Swiss)"
+        context.insert(old)
+        try context.save()
+        UserDefaults.standard.removeObject(forKey: CaliberCatalog.seededIDsKey)
+
+        CaliberCatalog.seedIfNeeded(context)
+        XCTAssertEqual(old.catalogID, gp90)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), CaliberCatalog.items.count, "no second GP 90")
+    }
+
     func testExactMatchPrefersNamesOverOtherNames() {
         // The .32 S&W Long has the search name "32s&w", which is also how ".32 S&W" is written.
         XCTAssertEqual(CaliberCatalog.exactMatch(".32 S&W")?.name, ".32 S&W")
         XCTAssertEqual(CaliberCatalog.match(".32 S&W")?.name, ".32 S&W")
         XCTAssertEqual(CaliberCatalog.exactMatch("9 mm Para")?.name, "9x19 mm")
         XCTAssertNil(CaliberCatalog.exactMatch("9x1"), "no prefixes")
+        XCTAssertEqual(CaliberCatalog.exactMatch("9 mm Luger", searchNames: false)?.name, "9x19 mm", "a printed name")
+        XCTAssertNil(CaliberCatalog.exactMatch("9mm", searchNames: false), "a search name")
     }
 
     func testNameNormalisationIgnoresDotsSpacesAndMillimetres() {
