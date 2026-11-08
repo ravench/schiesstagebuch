@@ -225,6 +225,7 @@ struct EntryEditorView: View {
                     Text("Fotos (\(photos.count)/\(Limits.maxPhotos))")
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(addingTo != nil ? "Weiterer Stich".loc : entry == nil ? "Neuer Eintrag".loc : "Eintrag bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

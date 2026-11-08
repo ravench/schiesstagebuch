@@ -181,6 +181,7 @@ struct BarrelEditorView: View {
                     }
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(barrel == nil ? "Neuer Lauf".loc : "Lauf bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

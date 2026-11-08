@@ -129,6 +129,7 @@ struct FilterEditorView: View {
                     }
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(original == nil ? "Neuer Filter".loc : "Filter bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

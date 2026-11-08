@@ -226,6 +226,7 @@ private struct RelayEditorView: View {
                                   sunSuggestion: SunDirection.suggestion(for: range,
                                                                          at: WeatherRecord.combine(day: day, time: relay.time)))
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle("Ablösung")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

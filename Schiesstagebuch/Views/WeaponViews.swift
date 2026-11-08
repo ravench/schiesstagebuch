@@ -167,6 +167,7 @@ struct MaintenanceEditorView: View {
                 DatePicker("Datum", selection: $date, in: ...Date.now, displayedComponents: .date)
                 TextField("Notizen (optional)", text: $notes, axis: .vertical).lineLimit(2...5)
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle("\(kind.title) erfassen")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -312,6 +313,7 @@ struct WeaponEditorView: View {
                     }
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(weapon == nil ? term("Neue Waffe").loc : term("Waffe bearbeiten").loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -270,6 +270,7 @@ struct CaliberEditorView: View {
                 }
                 if caliber != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(caliber == nil ? "Neues Kaliber".loc : "Kaliber bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -431,6 +432,7 @@ struct AmmunitionEditorView: View {
                 lotSections
                 if ammunition != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(ammunition == nil ? "Neue Munition".loc : "Munition bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -546,6 +548,7 @@ struct RangeEditorView: View {
                 }
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

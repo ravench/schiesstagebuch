@@ -29,6 +29,7 @@ struct StandblattScanView: View {
                     sourceSection
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle("Standblatt scannen")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
