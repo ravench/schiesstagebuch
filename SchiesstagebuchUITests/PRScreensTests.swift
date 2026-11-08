@@ -225,6 +225,20 @@ final class PRScreensTests: XCTestCase {
         snap("11b-Kaliber-Snider")
     }
 
+    /// The .32 S&W rows in the calibre list: the wadcutter, seated flush, shows only its case.
+    func testWadcutter() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        if search.waitForExistence(timeout: 5) {
+            search.tap()
+            search.typeText("32 S&W\n") // return hides the keyboard
+        }
+        XCTAssertTrue(app.staticTexts[".32 S&W Long Wadcutter"].waitForExistence(timeout: 5), "No wadcutter row")
+        snap("11c-Kaliber-32-SW")
+    }
+
     private func tab(_ name: String) {
         let button = app.tabBars.buttons[name]
         XCTAssertTrue(button.waitForExistence(timeout: 10), "No tab \(name)")

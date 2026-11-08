@@ -27,6 +27,13 @@ final class CaliberSearchTests: ModelTestCase {
         XCTAssertFalse(nine.matches("9x21"))
     }
 
+    func testSwissArmyNameFindsTheNineMillimetre() throws {
+        let nine = try catalogue("9x19")
+        XCTAssertTrue(nine.matches("Pist Pat 41"))
+        XCTAssertTrue(nine.matches("pistolenpatrone 41"))
+        XCTAssertFalse(try catalogue("7.65 Parabellum").matches("Pist Pat 41"))
+    }
+
     func testOwnCalibresMatchOnTheirName() {
         let own = Caliber(name: "6.5 Wildcat")
         context.insert(own)
