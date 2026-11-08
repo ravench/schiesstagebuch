@@ -28,8 +28,7 @@ struct WeatherSection: View {
                     Label("Uhrzeit", systemImage: "clock")
                 }
                 let date = WeatherRecord.combine(day: day, time: record.time)
-                // Only when it shows something: with rows here that showed nothing (Apple Weather off), the
-                // weather fields below opened blank pages.
+                // Only when it shows something, so the list has no empty row.
                 if AppleWeatherRow.shows(record, enabled: appleWeather, range: range, date: date) {
                     AppleWeatherRow(weather: $weather, date: date, range: range)
                 }
@@ -205,7 +204,9 @@ struct WeatherFieldRow: View {
             } label: {
                 Label(field.label.loc, systemImage: field.icon)
             }
-            .pickerStyle(.navigationLink)
+            // A menu, not a page: right after «Wetter erfassen» was switched on, the page of a field without
+            // a value could open blank (iOS 26).
+            .pickerStyle(.menu)
         case .text:
             TextField(field.label.loc, text: Binding(get: { conditions.text(field.key) },
                                                      set: { conditions.values[field.key] = $0.isEmpty ? nil : .text($0) }),

@@ -19,7 +19,7 @@ final class WeatherFieldsUITests: XCTestCase {
         checkCalmAir()
     }
 
-    /// Every field empty: the wind strengths once opened a blank page then.
+    /// Every field empty. As pages, the wind strengths opened blank then; now they are a menu.
     func testWindDirectionHidesInCalmAirWithoutAppleWeather() {
         app.launchArguments += ["-appleWeather.enabled", "0"]
         app.launch()
@@ -57,8 +57,7 @@ final class WeatherFieldsUITests: XCTestCase {
         XCTAssertTrue(row("Windcharakter").exists)
 
         strength.tap()
-        // Any element type, and the name anywhere in the label: a picker's options are buttons or cells
-        // with a text, depending on the iOS version.
+        // Any element type, and the name anywhere in the label: the menu's items, whatever iOS makes of them.
         let calm = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "windstill")).firstMatch
         XCTAssertTrue(calm.waitForExistence(timeout: 5), "No «windstill» in the wind strengths. On screen: \(screen())")
         calm.tap()

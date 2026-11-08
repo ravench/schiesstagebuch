@@ -99,8 +99,8 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Weather filled from Apple Weather (a fixed sample in screenshot runs): the fields in the editor, in one
-    /// list from the switch down to the wind, the wind directions and strengths, calm air, then the weather
-    /// in the entry.
+    /// list from the switch down to the wind, the menus of wind directions and strengths, calm air, then the
+    /// weather in the entry.
     func testWeatherStops() {
         relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
         tab("Tagebuch")
@@ -112,13 +112,6 @@ final class PRScreensTests: XCTestCase {
         }
         holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
-        // A field Apple Weather leaves empty: its list.
-        let overall = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Gesamteindruck")).firstMatch
-        if overall.waitForExistence(timeout: 3) && overall.isHittable {
-            overall.tap()
-            snap("13a-Gesamteindruck")
-            leavePicker()
-        }
         topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind")
         // The eight wind directions. Before them, «Windrichtung (Uhr)» was a menu of clock hours: no stop then.
         let direction = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@ AND NOT (label CONTAINS %@)",
@@ -126,7 +119,7 @@ final class PRScreensTests: XCTestCase {
         if direction.waitForExistence(timeout: 3) {
             direction.tap()
             snap("13c-Windrichtung")
-            back()
+            closeMenu()
         }
         // The wind strengths, then calm air without wind direction and character, then back to the sample's
         // «ein bisschen Wind», so the entry below keeps them.
@@ -135,14 +128,12 @@ final class PRScreensTests: XCTestCase {
             holdAtTop(strength)
             strength.tap()
             snap("13d-Windstaerke")
-            // Back only from the strengths: in the editor, the first bar button is «Abbrechen».
-            let inEditor = { strength.exists && strength.isHittable }
             if pick("windstill") {
                 snap("13e-Windstill")
                 strength.tap()
-                if !pick("ein bisschen Wind") && !inEditor() { back() }
-            } else if !inEditor() {
-                back()
+                if !pick("ein bisschen Wind") { closeMenu() }
+            } else {
+                closeMenu()
             }
         }
         app.buttons["Sichern"].firstMatch.tap()
@@ -154,7 +145,7 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Without Apple Weather: the fields from the wind down, with the footer on what the app still fills in,
-    /// then the wind strengths opened from an empty field, and calm air.
+    /// then the wind strengths of an empty field, and calm air.
     func testWeatherWithoutAppleWeather() {
         relaunch(adding: ["-sportFeatures.v1", "8", "-appleWeather.enabled", "0"])
         tab("Tagebuch")
@@ -164,29 +155,12 @@ final class PRScreensTests: XCTestCase {
         if (weatherSwitch.value as? String) != "1" {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
-        // Right after the switch: the sun, which fills in by itself, then the empty wind strength.
-        let sun = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Sonne zum Schützen")).firstMatch
-        reveal(sun)
-        if sun.exists && sun.isHittable {
-            sun.tap()
-            snap("16a-Sonne-ohne-Apple-Wetter")
-            leavePicker()
-        }
         let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
         topStop(strength, "16-Wetter-ohne-Apple-Wetter")
         guard strength.exists && strength.isHittable else { return }
         strength.tap()
         snap("16b-Windstaerke-ohne-Apple-Wetter")
-        leavePicker()
-        // Saved and opened again, so the fields are there from the start: the wind strengths, then calm air.
-        app.buttons["Sichern"].firstMatch.tap()
-        guard open(app.buttons["Bearbeiten"].firstMatch) else { return }
-        reveal(weatherSwitch, swipes: 12)
-        topStop(strength, "16c-Wetter-ohne-Apple-Wetter-gesichert")
-        guard strength.exists && strength.isHittable else { return }
-        strength.tap()
-        snap("16d-Windstaerke-ohne-Apple-Wetter-gesichert")
-        if pick("windstill") { snap("16e-Windstill-ohne-Apple-Wetter") } else { leavePicker() }
+        if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") } else { closeMenu() }
     }
 
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
@@ -309,8 +283,8 @@ final class PRScreensTests: XCTestCase {
         return true
     }
 
-    /// Taps the option of an open picker whose label holds `name`: buttons or cells with a text, depending
-    /// on the iOS version. False when there is none.
+    /// Taps the option of an open picker whose label holds `name`, whatever element type it has. False when
+    /// there is none.
     private func pick(_ name: String) -> Bool {
         let option = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", name)).firstMatch
         guard option.waitForExistence(timeout: 3) else { return false }
@@ -318,10 +292,9 @@ final class PRScreensTests: XCTestCase {
         return true
     }
 
-    /// Back from a page opened in the entry editor; nothing in the editor itself, whose first bar button is
-    /// «Abbrechen».
-    private func leavePicker() {
-        if !app.buttons["Sichern"].exists { back() }
+    /// Closes an open menu with a tap beside it, on the bar's title; nothing happens there without one.
+    private func closeMenu() {
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
     }
 
     private func back() {
