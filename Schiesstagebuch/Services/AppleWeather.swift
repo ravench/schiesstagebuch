@@ -49,23 +49,24 @@ extension WeatherReading {
                                        windSpeed: 14, windGust: 38, windFrom: 250, temperature: 18, apparentTemperature: 17, dewPoint: 9,
                                        precipitation: 0, humidity: 0.62, pressure: 1018.4)
 
-    /// Values for the fields this data can tell; the wind clock needs the range's shooting direction.
-    /// How it felt, the light at the stand, the ground and the aids stay for the shooter. Air temperature,
-    /// humidity and pressure are measured values without an input (see `WeatherField.measured`).
+    /// Values for the fields this data can tell; the wind direction needs the range's shooting direction.
+    /// How it felt and the light at the stand stay for the shooter. Air temperature, humidity and
+    /// pressure are measured values without an input (see `WeatherField.measured`).
     func conditions(facing bearing: Double?) -> WeatherConditions {
         var c = WeatherConditions()
         c.set("sky", sky.map(WeatherValue.option))
-        c.set("visibility", .option(visibility < 300 ? "fog" : visibility < 1_000 ? "fog_veil" : visibility < 5_000 ? "light_haze" : "clear"))
+        c.set("visibility", .option(visibility < 1_000 ? "fog" : visibility < 5_000 ? "light_haze" : "clear"))
         // Beaufort 0–1, 2–3, 4–5, 6–7, 8 and more.
         let strength = [(6.0, "calm"), (20, "light"), (39, "moderate"), (62, "strong")].first { windSpeed < $0.0 }?.1 ?? "stormy"
         c.set("wind_strength", .option(strength))
-        if let bearing, strength != "calm" {
-            // 12 o'clock is wind from the targets, 3 o'clock from the right.
-            let hour = Int((Compass.normalized(windFrom - bearing) / 30).rounded()) % 12
-            c.set("wind_clock", .number(Double(hour == 0 ? 12 : hour)))
+        if strength != "calm" {
+            if let bearing, let directions = WeatherField.field("wind_direction")?.options {
+                // The nearest of eight directions, clockwise from the targets: 90° more is wind from the right.
+                c.set("wind_direction", .option(directions[Int((Compass.normalized(windFrom - bearing) / 45).rounded()) % 8].key))
+            }
+            // Gusts at least 10 knots above the mean wind, as weather services call it gusty.
+            if let gust = windGust, gust - windSpeed >= 18 { c.set("wind_character", .option("gusty")) }
         }
-        // Gusts at least 10 knots above the mean wind, as weather services call it gusty.
-        if let gust = windGust, gust - windSpeed >= 18 { c.set("wind_character", .option("gusty")) }
         c.set("temp_feel", .option(feel))
         c.set("precipitation", precipitationKind.map(WeatherValue.option))
         c.set("air_temp_c", .number(temperature.rounded()))
@@ -110,7 +111,7 @@ extension WeatherConditions {
     /// input, so they always follow the newest fetch, also one in a later editing session.
     mutating func fill(from new: WeatherConditions, after last: WeatherConditions?) {
         let keys = Set(new.values.keys).union(last.map { Array($0.values.keys) } ?? [])
-        for key in keys where values[key] == last?[key] || WeatherField.field(key)?.levels.isEmpty == true {
+        for key in keys where values[key] == last?[key] || WeatherField.field(key)?.isMeasured == true {
             values[key] = new[key]
         }
     }

@@ -131,7 +131,7 @@ jobs:
             -scheme SchiesstagebuchScreens \
             -destination "id=$UDID" \
             -derivedDataPath "$DERIVED_DATA" \
-            -only-testing:SchiesstagebuchUITests/WeatherRelayUITests \
+            -only-testing:SchiesstagebuchUITests/WeatherFieldsUITests \
             -only-testing:SchiesstagebuchUITests/AppleWeatherUITests \
             -only-testing:SchiesstagebuchUITests/EditorPickerUITests \
             -only-testing:SchiesstagebuchUITests/LastStichDeletionUITests \

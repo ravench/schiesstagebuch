@@ -13,7 +13,7 @@ struct SportFeatures: OptionSet, Hashable {
     static let sight = SportFeatures(rawValue: 1 << 1)
     /// Bipod length; rifles only.
     static let bipod = SportFeatures(rawValue: 1 << 2)
-    /// Weather per event, with Ablösungen.
+    /// Weather per event.
     static let weather = SportFeatures(rawValue: 1 << 3)
 
     /// Each feature on its own, in the order the welcome screen and Settings list them.
@@ -45,7 +45,7 @@ struct SportFeatures: OptionSet, Hashable {
     var detail: String? {
         switch self {
         case .bipod: "Länge in cm, nur bei Gewehren"
-        case .weather: "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen"
+        case .weather: "Licht, Wind und Temperatur pro Anlass"
         default: nil
         }
     }

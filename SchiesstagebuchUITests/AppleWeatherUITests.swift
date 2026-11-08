@@ -64,14 +64,14 @@ final class AppleWeatherUITests: XCTestCase {
             // Tap the switch itself, not the label.
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
-        // The first weather group sits under the Apple Weather row: with both on screen, so is the row's place.
-        let firstGroup = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Gesamteindruck")).firstMatch
-        _ = firstGroup.waitForExistence(timeout: 5)
-        for _ in 0..<4 where !(firstGroup.exists && firstGroup.isHittable) { // a little at a time, keeping the switch in view
+        // The first weather field sits under the Apple Weather row: with both on screen, so is the row's place.
+        let firstField = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Gesamteindruck")).firstMatch
+        _ = firstField.waitForExistence(timeout: 5)
+        for _ in 0..<4 where !(firstField.exists && firstField.isHittable) { // a little at a time, keeping the switch in view
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
                 .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)))
         }
-        XCTAssertTrue(firstGroup.isHittable && weatherSwitch.isHittable,
+        XCTAssertTrue(firstField.isHittable && weatherSwitch.isHittable,
                       "The weather rows are not on screen")
     }
 

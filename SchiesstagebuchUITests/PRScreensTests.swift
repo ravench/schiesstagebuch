@@ -98,7 +98,9 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): in the editor, then in the entry.
+    /// Weather filled from Apple Weather (a fixed sample in screenshot runs): the fields in the editor, in one
+    /// list from the switch down to the wind, the menus of wind directions and strengths, calm air, then the
+    /// weather in the entry.
     func testWeatherStops() {
         relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
         tab("Tagebuch")
@@ -112,17 +114,58 @@ final class PRScreensTests: XCTestCase {
         // scrolls the same way every run.
         _ = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Von Apple Weather übernommen")).firstMatch
             .waitForExistence(timeout: 10)
-        let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
-        reveal(wind)
-        holdAtTop(wind) // the swipes of `reveal` end at a different offset each run
-        if wind.exists { wind.tap() }
+        holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
+        topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind",
+                besideRow: true)
+        // The eight wind directions. Before them, «Windrichtung (Uhr)» was a menu of clock hours: no stop then.
+        let direction = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@ AND NOT (label CONTAINS %@)",
+                                                         "Windrichtung", "(Uhr)")).firstMatch
+        if direction.waitForExistence(timeout: 3) {
+            openMenu(direction, showing: "von vorne links")
+            snap("13c-Windrichtung")
+            closeMenu()
+        }
+        // The wind strengths, then calm air without wind direction and character, then back to the sample's
+        // «ein bisschen Wind», so the entry below keeps them.
+        let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
+        if strength.waitForExistence(timeout: 3) {
+            holdAtTop(strength, besideRow: true)
+            openMenu(strength, showing: "windstill")
+            snap("13d-Windstaerke")
+            if pick("windstill") {
+                snap("13e-Windstill")
+                openMenu(strength, showing: "ein bisschen Wind")
+                if !pick("ein bisschen Wind") { closeMenu() }
+            } else {
+                closeMenu()
+            }
+        }
         app.buttons["Sichern"].firstMatch.tap()
         scroll()
         snap("14-Eintrag-Wetter")
         // The switch for it in Settings, with what it sends to Apple.
         tab("Einstellungen")
         topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
+    }
+
+    /// Without Apple Weather: the fields from the wind down, with the footer on what the app still fills in,
+    /// then the wind strengths of an empty field, and calm air.
+    func testWeatherWithoutAppleWeather() {
+        relaunch(adding: ["-sportFeatures.v1", "8", "-appleWeather.enabled", "0"])
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
+        reveal(weatherSwitch)
+        if (weatherSwitch.value as? String) != "1" {
+            weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        }
+        let strength = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch
+        topStop(strength, "16-Wetter-ohne-Apple-Wetter", besideRow: true)
+        guard strength.exists && strength.isHittable else { return }
+        openMenu(strength, showing: "windstill")
+        snap("16b-Windstaerke-ohne-Apple-Wetter")
+        if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") } else { closeMenu() }
     }
 
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
@@ -168,18 +211,28 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Scrolls `element` to the top of the screen, so what follows it shows, and takes the screen.
-    private func topStop(_ element: XCUIElement, _ name: String) {
+    private func topStop(_ element: XCUIElement, _ name: String, besideRow: Bool = false) {
         reveal(element, swipes: 10)
-        holdAtTop(element)
+        holdAtTop(element, besideRow: besideRow)
         snap(name)
     }
 
-    /// Drags `element` near the top of the screen, so what follows it shows.
-    private func holdAtTop(_ element: XCUIElement) {
+    /// Drags `element` near the top of the screen, so what follows it shows. `besideRow` drags in the list's
+    /// margin at the element's height: a press on a menu row opens its menu instead of scrolling.
+    private func holdAtTop(_ element: XCUIElement, besideRow: Bool = false) {
         guard element.exists && element.isHittable else { return }
-        // Held at the end, so the list does not glide on past it.
-        element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+        guard besideRow else {
+            // Held at the end, so the list does not glide on past it.
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                       withVelocity: .slow, thenHoldForDuration: 0.5)
+            return
+        }
+        // From no lower than three quarters down: a drag from the bottom edge goes to the system, not the list.
+        let y = element.frame.midY / app.frame.height
+        let from = min(y, 0.75)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: from))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: max(0.02, from - (y - 0.18)))),
                    withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
@@ -281,6 +334,31 @@ final class PRScreensTests: XCTestCase {
         }
         element.tap()
         return true
+    }
+
+    /// Taps the option of an open picker whose label holds `name`, whatever element type it has. False when
+    /// there is none.
+    private func pick(_ name: String) -> Bool {
+        let option = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", name)).firstMatch
+        guard option.waitForExistence(timeout: 3) else { return false }
+        option.tap()
+        return true
+    }
+
+    /// Taps a menu row and waits for its menu, which shows `item`. On the CI simulator the first tap on a menu
+    /// row is sometimes lost (about every other run): once more then.
+    @discardableResult
+    private func openMenu(_ row: XCUIElement, showing item: String) -> Bool {
+        let option = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", item)).firstMatch
+        row.tap()
+        if option.waitForExistence(timeout: 3) { return true }
+        row.tap()
+        return option.waitForExistence(timeout: 3)
+    }
+
+    /// Closes an open menu with a tap beside it, on the bar's title; nothing happens there without one.
+    private func closeMenu() {
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
     }
 
     private func back() {

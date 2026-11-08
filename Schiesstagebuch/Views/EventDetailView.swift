@@ -69,7 +69,7 @@ struct EventDetailView: View {
             }
 
             if features.contains(.weather), let weather = event.weather {
-                WeatherDetailSections(record: weather)
+                WeatherDetailSection(record: weather)
             }
         }
         .navigationTitle(event.date.formatted(date: .abbreviated, time: .omitted))
