@@ -13,7 +13,7 @@ struct WeatherSection: View {
 
     var body: some View {
         Section {
-            Toggle(isOn: Binding(get: { weather != nil }, set: { weather = $0 ? (weather ?? WeatherRecord(time: .now)) : nil })) {
+            Toggle(isOn: Binding(get: { weather != nil }, set: { weather = $0 ? (weather ?? WeatherRecord(time: WeatherRecord.startTime)) : nil })) {
                 Label("Wetter erfassen", systemImage: "cloud.sun")
             }
             if let record = weather {

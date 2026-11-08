@@ -5,7 +5,10 @@ import SwiftData
 /// shooter picks the scoring systems, which sport-shooter fields to record, the wording and, in Switzerland, whether to
 /// prefill the shooting ranges. Everything can be changed later in Settings.
 struct WelcomeView: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    /// No intro animation with Reduce Motion, nor in screenshot runs, whose screens must not
+    /// depend on when the screenshot is taken.
+    private var reduceMotion: Bool { systemReduceMotion || ScreenshotData.isActive }
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []

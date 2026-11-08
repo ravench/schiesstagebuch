@@ -339,6 +339,11 @@ struct WeatherRelay: Codable, Hashable, Identifiable {
 struct WeatherRecord: Codable, Hashable {
     /// Time of day of the entry (only hours and minutes count).
     var time: Date?
+    /// The time a new record starts with: now, or a fixed hour in screenshot runs so the screens
+    /// compare equal from run to run.
+    static var startTime: Date {
+        ScreenshotData.isActive ? Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now : .now
+    }
     var conditions = WeatherConditions()
     var relays: [WeatherRelay] = []
     /// Some values came from Apple Weather, which then has to be credited wherever they show.

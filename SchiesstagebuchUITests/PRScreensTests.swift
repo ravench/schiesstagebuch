@@ -108,8 +108,13 @@ final class PRScreensTests: XCTestCase {
         if (weatherSwitch.value as? String) != "1" {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
+        // The rows under the switch grow when the (sample) weather arrives: wait, so the screen
+        // scrolls the same way every run.
+        _ = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Von Apple Weather übernommen")).firstMatch
+            .waitForExistence(timeout: 10)
         let wind = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Wind")).firstMatch
         reveal(wind)
+        holdAtTop(wind) // the swipes of `reveal` end at a different offset each run
         if wind.exists { wind.tap() }
         snap("13-Wetter-Apple-Wetter")
         app.buttons["Sichern"].firstMatch.tap()
@@ -178,7 +183,7 @@ final class PRScreensTests: XCTestCase {
             let search = app.searchFields.firstMatch
             if search.waitForExistence(timeout: 5) {
                 search.tap()
-                search.typeText("Keine solche Anlage")
+                search.typeText("Keine solche Anlage\n") // Return: no blinking caret in the screen
                 snap("03b-Schiessanlage-ohne-Treffer")
             }
             // While searching, the first bar button clears or closes the search instead of
