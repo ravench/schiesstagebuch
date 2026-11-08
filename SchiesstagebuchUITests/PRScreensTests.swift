@@ -179,6 +179,16 @@ final class PRScreensTests: XCTestCase {
         snap("00-Willkommen")
     }
 
+    /// The release notes a TestFlight build shows the first time it is opened (CI writes them into the
+    /// bundle; here from a fixture, as if they were not shown yet).
+    func testWhatsNew() {
+        let notes = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("SchiesstagebuchTests/Fixtures/changelog.json")
+        relaunch(adding: ["-screenTourChangelog", notes.path, "-changelogShownBuild", "none"])
+        XCTAssertTrue(app.navigationBars["Neu in dieser Version"].waitForExistence(timeout: 10), "The release notes did not open")
+        snap("20-Neu-in-dieser-Version")
+    }
+
     /// A new entry with only IPSC scoring switched on: the stage and the hits with their footer.
     func testIPSCEntry() {
         relaunch(adding: ["-scoringSystems.v1", "ipsc"])

@@ -6930,6 +6930,29 @@
         }
       }
     },
+    "Neu in dieser Version": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New in this version"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveautés de cette version"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novità in questa versione"
+          }
+        }
+      }
+    },
     "Neue Anlage anlegen": {
       "extractionState": "manual",
       "localizations": {

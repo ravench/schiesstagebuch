@@ -127,6 +127,7 @@ T = {
         "Set reminders under Edit.", "Les rappels se règlent sous Modifier.", "I promemoria si impostano in Modifica."),
     "Export fehlgeschlagen: %@": ("Export failed: %@", "Échec de l'export : %@", "Esportazione non riuscita: %@"),
     "Fertig": ("Done", "OK", "Fine"),
+    "Neu in dieser Version": ("New in this version", "Nouveautés de cette version", "Novità in questa versione"),
     "Filter": ("Filter", "Filtre", "Filtro"),
     # Settings page and entries with two filters; German plural = singular, so the key carries a German value.
     "Filter (Mehrzahl)": ("Filters", "Filtres", "Filtri", "Filter"),
