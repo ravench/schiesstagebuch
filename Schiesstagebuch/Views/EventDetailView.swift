@@ -188,6 +188,8 @@ struct EventEditorView: View {
     @State private var scoring: ScoringSystem = .rings
     @State private var division = ""
     @State private var powerFactor: IPSCPowerFactor = .minor
+    /// `onAppear` runs again when the Schiessanlage picker pops; loading then would drop every edit.
+    @State private var didLoad = false
 
     var body: some View {
         NavigationStack {
@@ -214,6 +216,8 @@ struct EventEditorView: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold() }
             }
             .onAppear {
+                guard !didLoad else { return }
+                didLoad = true
                 date = event.date; range = event.range; name = event.name; weather = event.weather
                 scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
             }
