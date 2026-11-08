@@ -66,6 +66,9 @@ struct RootView: View {
     @Query(filter: #Predicate<Weapon> { !$0.isArchived }) private var weapons: [Weapon]
     @Query private var licenceCards: [LicenceCard]
     @State private var showWelcome = false
+    /// The release notes of this build, the first time it is opened (`Changelog`).
+    @State private var whatsNew: [String] = []
+    @State private var showWhatsNew = false
 
     private var dueCount: Int { weapons.reduce(0) { $0 + $1.dueMaintenance.count } }
 
@@ -86,7 +89,16 @@ struct RootView: View {
             SettingsView()
                 .tabItem { Label("Einstellungen", systemImage: "gearshape") }
         }
-        .task { showWelcome = ScreenshotData.isActive ? ScreenshotData.showsWelcome : FirstRun.shouldShow() }
+        .task {
+            showWelcome = ScreenshotData.isActive ? ScreenshotData.showsWelcome : FirstRun.shouldShow()
+            guard !showWelcome else { return } // a first start shows the welcome screen; the notes wait
+            let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+            if let notes = Changelog.toShow(build: build, language: Bundle.main.preferredLocalizations.first ?? "de") {
+                whatsNew = notes
+                showWhatsNew = true
+            }
+        }
         .sheet(isPresented: $showWelcome) { WelcomeView() }
+        .sheet(isPresented: $showWhatsNew) { WhatsNewView(bullets: whatsNew) }
     }
 }
