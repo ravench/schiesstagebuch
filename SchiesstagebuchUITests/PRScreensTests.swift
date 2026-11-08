@@ -99,7 +99,7 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Weather filled from Apple Weather (a fixed sample in screenshot runs): the fields in the editor, in one
-    /// list from the switch down to the wind, then in the entry.
+    /// list from the switch down to the wind, the wind directions, then the weather in the entry.
     func testWeatherStops() {
         relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
         tab("Tagebuch")
@@ -112,6 +112,14 @@ final class PRScreensTests: XCTestCase {
         holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
         topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind")
+        // The eight wind directions. Before them, «Windrichtung (Uhr)» was a menu of clock hours: no stop then.
+        let direction = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@ AND NOT (label CONTAINS %@)",
+                                                         "Windrichtung", "(Uhr)")).firstMatch
+        if direction.waitForExistence(timeout: 3) {
+            direction.tap()
+            snap("13c-Windrichtung")
+            back()
+        }
         app.buttons["Sichern"].firstMatch.tap()
         scroll()
         snap("14-Eintrag-Wetter")

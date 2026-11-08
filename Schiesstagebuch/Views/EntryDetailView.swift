@@ -124,7 +124,7 @@ struct EntryDetailView: View {
             }
 
             if features.contains(.weather), let weather = entry.weather {
-                WeatherDetailSections(record: weather)
+                WeatherDetailSection(record: weather)
             }
 
             if !entry.notes.isEmpty {

@@ -131,7 +131,7 @@ jobs:
             -scheme SchiesstagebuchScreens \
             -destination "id=$UDID" \
             -derivedDataPath "$DERIVED_DATA" \
-            -only-testing:SchiesstagebuchUITests/WeatherRelayUITests \
+            -only-testing:SchiesstagebuchUITests/WeatherFieldsUITests \
             -only-testing:SchiesstagebuchUITests/AppleWeatherUITests \
             -resultBundlePath "$RUNNER_TEMP/UITests.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty

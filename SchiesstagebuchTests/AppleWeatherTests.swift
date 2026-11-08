@@ -18,7 +18,7 @@ final class AppleWeatherTests: XCTestCase {
         XCTAssertEqual(c.option("sky"), "sunny")
         XCTAssertEqual(c.option("visibility"), "clear")
         XCTAssertEqual(c.option("wind_strength"), "calm")
-        XCTAssertNil(c["wind_clock"], "no direction for calm air")
+        XCTAssertNil(c["wind_direction"], "no direction for calm air")
         XCTAssertNil(c["wind_character"])
         XCTAssertEqual(c.option("temp_feel"), "pleasant")
         XCTAssertEqual(c.option("precipitation"), "none")
@@ -27,23 +27,27 @@ final class AppleWeatherTests: XCTestCase {
         XCTAssertEqual(c.number("air_temp_c"), 21)
         XCTAssertEqual(c.values.count, 8)
         // How it felt at the stand stays with the shooter.
-        for key in ["overall", "light", "sun_direction", "target_light", "glare", "ammo_temp", "ground", "aids", "weather_impact"] {
+        for key in ["overall", "light", "sun_direction", "target_light", "glare", "weather_impact"] {
             XCTAssertNil(c[key], key)
         }
     }
 
-    func testWindClockFollowsTheShootingDirection() {
-        func clock(from: Double, facing: Double?) -> Double? {
-            reading { $0.windSpeed = 15; $0.windFrom = from }.conditions(facing: facing).number("wind_clock")
+    func testWindDirectionFollowsTheShootingDirection() {
+        func direction(from: Double, facing: Double?) -> String? {
+            reading { $0.windSpeed = 15; $0.windFrom = from }.conditions(facing: facing).option("wind_direction")
         }
         // Shooting north-east (45°).
-        XCTAssertEqual(clock(from: 45, facing: 45), 12, "from the targets")
-        XCTAssertEqual(clock(from: 135, facing: 45), 3, "from the right")
-        XCTAssertEqual(clock(from: 225, facing: 45), 6, "from behind")
-        XCTAssertEqual(clock(from: 315, facing: 45), 9, "from the left")
-        XCTAssertEqual(clock(from: 105, facing: 45), 2)
-        XCTAssertEqual(clock(from: 30, facing: 45), 12, "15° left of the targets rounds to 12, not 0")
-        XCTAssertNil(clock(from: 135, facing: nil), "no shooting direction, no clock")
+        XCTAssertEqual(direction(from: 45, facing: 45), "front", "from the targets")
+        XCTAssertEqual(direction(from: 90, facing: 45), "front_right")
+        XCTAssertEqual(direction(from: 135, facing: 45), "right")
+        XCTAssertEqual(direction(from: 180, facing: 45), "back_right")
+        XCTAssertEqual(direction(from: 225, facing: 45), "back", "from behind")
+        XCTAssertEqual(direction(from: 270, facing: 45), "back_left")
+        XCTAssertEqual(direction(from: 315, facing: 45), "left")
+        XCTAssertEqual(direction(from: 0, facing: 45), "front_left")
+        XCTAssertEqual(direction(from: 30, facing: 45), "front", "15° left of the targets is still from the front")
+        XCTAssertEqual(direction(from: 68, facing: 45), "front_right", "23° right is nearer to front right")
+        XCTAssertNil(direction(from: 135, facing: nil), "no shooting direction, no wind direction")
     }
 
     func testWindStrengthInBeaufortSteps() {
@@ -57,6 +61,7 @@ final class AppleWeatherTests: XCTestCase {
     func testOnlyStrongGustsCountAsGusty() {
         XCTAssertEqual(reading { $0.windSpeed = 20; $0.windGust = 38 }.conditions(facing: nil).option("wind_character"), "gusty")
         XCTAssertNil(reading { $0.windSpeed = 20; $0.windGust = 30 }.conditions(facing: nil)["wind_character"])
+        XCTAssertNil(reading { $0.windSpeed = 4; $0.windGust = 30 }.conditions(facing: nil)["wind_character"], "not in calm air")
     }
 
     func testSky() {
@@ -99,7 +104,7 @@ final class AppleWeatherTests: XCTestCase {
 
         func sight(_ metres: Double) -> String? { reading { $0.visibility = metres }.conditions(facing: nil).option("visibility") }
         XCTAssertEqual(sight(200), "fog")
-        XCTAssertEqual(sight(800), "fog_veil")
+        XCTAssertEqual(sight(800), "fog")
         XCTAssertEqual(sight(3_000), "light_haze")
         XCTAssertEqual(sight(8_000), "clear")
     }
@@ -120,7 +125,7 @@ final class AppleWeatherTests: XCTestCase {
     func testLaterFetchReplacesOnlyWhatTheUserLeftAlone() {
         var last = WeatherConditions()
         last.set("humidity_pct", .number(70))
-        last.set("wind_clock", .number(3))
+        last.set("wind_direction", .option("right"))
         last.set("wind_strength", .option("light"))
         last.set("sky", .option("overcast"))
         var c = last
@@ -137,7 +142,7 @@ final class AppleWeatherTests: XCTestCase {
 
         XCTAssertEqual(c.number("humidity_pct"), 60)
         XCTAssertEqual(c.number("pressure_hpa"), 1015)
-        XCTAssertNil(c["wind_clock"], "gone with the calm air")
+        XCTAssertNil(c["wind_direction"], "gone with the calm air")
         XCTAssertEqual(c.option("wind_strength"), "strong")
         XCTAssertEqual(c.option("overall"), "good")
         XCTAssertNil(c["sky"], "a cleared field stays empty")
@@ -182,7 +187,7 @@ final class AppleWeatherTests: XCTestCase {
     func testScreenshotSampleFillsTheWind() {
         let c = WeatherReading.sample.conditions(facing: 60)
         XCTAssertEqual(c.option("wind_strength"), "light")
-        XCTAssertEqual(c.number("wind_clock"), 6)
+        XCTAssertEqual(c.option("wind_direction"), "back")
         XCTAssertEqual(c.option("wind_character"), "gusty")
         XCTAssertEqual(c.option("sky"), "partly_cloudy")
         XCTAssertEqual(c.number("air_temp_c"), 18)

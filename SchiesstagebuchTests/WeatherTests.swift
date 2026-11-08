@@ -4,15 +4,22 @@ import UIKit
 @testable import Schiesstagebuch
 
 final class WeatherTests: ModelTestCase {
-    // MARK: Field definitions follow wetter-felder.json
+    // MARK: Field definitions: wetter-felder.json trimmed to Raven's list (2026-11-07)
 
-    func testFieldKeysMatchTheSpec() {
-        let specKeys = ["overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
-                        "wind_strength", "wind_clock", "wind_character", "temp_feel",
-                        "air_temp_c", "ammo_temp", "precipitation", "rain_during_relay", "ground", "humidity_pct",
-                        "haze_rising_moisture", "pressure_hpa", "aids", "weather_impact", "weather_note"]
-        XCTAssertEqual(Set(WeatherField.all.map(\.key)), Set(specKeys))
-        XCTAssertEqual(WeatherField.all.count, specKeys.count, "no duplicates")
+    func testFieldKeys() {
+        let keys = ["overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
+                    "wind_strength", "wind_direction", "wind_character", "temp_feel", "precipitation",
+                    "weather_impact", "weather_note", "air_temp_c", "humidity_pct", "pressure_hpa"]
+        XCTAssertEqual(WeatherField.all.map(\.key), keys, "no duplicates, in this order")
+    }
+
+    /// The editor shows every field with an input in one list, in this order.
+    func testInputsInEditorOrder() {
+        XCTAssertEqual(WeatherField.inputs.map(\.key), [
+            "overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
+            "wind_strength", "wind_direction", "wind_character", "temp_feel", "precipitation",
+            "weather_impact", "weather_note",
+        ])
     }
 
     func testOptionKeysMatchTheSpec() {
@@ -22,7 +29,10 @@ final class WeatherTests: ModelTestCase {
         XCTAssertEqual(keys("sun_direction"), SunDirection.allCases.map(\.rawValue))
         XCTAssertEqual(keys("glare"), ["0", "1", "2"])
         XCTAssertEqual(keys("precipitation"), ["none", "drizzle", "light_rain", "rain", "heavy_rain", "showers", "snow", "sleet", "hail"])
-        XCTAssertEqual(keys("aids").count, 9)
+        XCTAssertEqual(keys("visibility"), ["clear", "light_haze", "fog"])
+        XCTAssertEqual(keys("wind_character"), ["steady", "variable", "gusty"])
+        // Clockwise from the targets, 45° apart, as Apple Weather's wind is mapped onto them.
+        XCTAssertEqual(keys("wind_direction"), ["front", "front_right", "right", "back_right", "back", "back_left", "left", "front_left"])
         for field in WeatherField.all {
             XCTAssertEqual(Set(field.options.map(\.key)).count, field.options.count, "unique options in \(field.key)")
         }
@@ -30,24 +40,72 @@ final class WeatherTests: ModelTestCase {
 
     func testRemovedFieldsAreGone() {
         // Raven 2026-11-03/04: no stand temperature or wind type; the temperature is entered only as felt.
-        for key in ["stand_temp", "wind_type"] { XCTAssertNil(WeatherField.field(key), key) }
+        // Raven 2026-11-07: no haze switch, ammunition, ground or aids, and no Ablösungen; the wind
+        // direction has eight directions instead of clock hours.
+        for key in ["stand_temp", "wind_type", "haze_rising_moisture", "ammo_temp", "ground", "aids", "rain_during_relay", "wind_clock"] {
+            XCTAssertNil(WeatherField.field(key), key)
+        }
         XCTAssertNotNil(WeatherField.field("temp_feel"))
-        for field in WeatherField.fields(for: .entry) {
+        for field in WeatherField.inputs {
             if case .number = field.kind { XCTFail("\(field.key) is a number input") }
         }
         // Values from older builds are dropped when the record is stored again, and never shown.
         var c = WeatherConditions()
-        c.values = ["stand_temp": .number(18), "wind_type": .option("bise"), "temp_feel": .option("cool")]
+        c.values = ["stand_temp": .number(18), "wind_type": .option("bise"), "temp_feel": .option("cool"),
+                    "visibility": .option("fog_veil"), "wind_character": .option("rising")]
         XCTAssertEqual(c.normalized().values, ["temp_feel": .option("cool")])
-        let summary = c.summary(level: .entry)
+        let summary = c.summary()
         XCTAssertFalse(summary.contains("18"), summary)
+    }
+
+    func testRecordsFromOlderBuildsStillLoad() throws {
+        // Saved with yes/no and multi-choice fields and an Ablösung: the record loads, those values go.
+        let json = """
+        {"time": 0, "conditions": {"values": {"sky": {"option": {"_0": "sunny"}}, "aids": {"options": {"_0": ["cap"]}},
+         "haze_rising_moisture": {"flag": {"_0": true}}, "wind_clock": {"number": {"_0": 3}}}},
+         "relays": [{"id": "6F9619FF-8B86-D011-B42D-00C04FC964FF", "time": 3600, "conditions": {"values": {}}}]}
+        """
+        let record = try JSONDecoder().decode(WeatherRecord.self, from: Data(json.utf8))
+        XCTAssertEqual(record.normalized().conditions.values, ["sky": .option("sunny")])
+    }
+
+    func testWindDirectionAndCharacterOnlyWithWind() {
+        var c = WeatherConditions()
+        c.set("wind_direction", .option("left"))
+        c.set("wind_character", .option("gusty"))
+        let direction = WeatherField.field("wind_direction")!, character = WeatherField.field("wind_character")!
+        XCTAssertTrue(direction.isShown(with: c) && character.isShown(with: c), "shown before a strength is picked")
+        c.set("wind_strength", .option("light"))
+        XCTAssertTrue(direction.isShown(with: c) && character.isShown(with: c))
+        XCTAssertEqual(c.normalized(), c)
+
+        c.set("wind_strength", .option("calm"))
+        XCTAssertFalse(direction.isShown(with: c), "hidden in calm air")
+        XCTAssertFalse(character.isShown(with: c))
+        XCTAssertTrue(WeatherField.field("temp_feel")!.isShown(with: c))
+        XCTAssertEqual(c.normalized().values, ["wind_strength": .option("calm")], "and not stored")
+    }
+
+    func testSunFillsWhileEmptyOrUnchanged() {
+        var c = WeatherConditions()
+        c.fillSun(nil, after: nil)
+        XCTAssertNil(c["sun_direction"], "no range position or shooting direction")
+        c.fillSun(.left, after: nil)
+        XCTAssertEqual(c.option("sun_direction"), "left", "fills an empty field")
+        c.fillSun(.front, after: .left)
+        XCTAssertEqual(c.option("sun_direction"), "front", "follows a new time while the user left it alone")
+        c.set("sun_direction", .option("none"))
+        c.fillSun(.low, after: .front)
+        XCTAssertEqual(c.option("sun_direction"), "none", "the user's pick stays")
+        c.fillSun(nil, after: .low)
+        XCTAssertEqual(c.option("sun_direction"), "none")
     }
 
     func testMeasuredValuesAreKeptButHaveNoInput() {
         // Raven 2026-11-06: air temperature, humidity and pressure from Apple Weather are saved and shown
         // read-only in one line; no number fields for them in the editor, the details or the CSV for now.
         XCTAssertEqual(WeatherField.measured.map(\.key), ["air_temp_c", "humidity_pct", "pressure_hpa"])
-        let shownKeys = Set(WeatherField.fields(for: .entry).map(\.key)).union(WeatherField.fields(for: .relay).map(\.key))
+        let shownKeys = Set(WeatherField.inputs.map(\.key))
         for field in WeatherField.measured { XCTAssertFalse(shownKeys.contains(field.key), field.key) }
 
         var c = WeatherConditions()
@@ -56,39 +114,13 @@ final class WeatherTests: ModelTestCase {
         c.set("pressure_hpa", .number(1018))
         c.set("sky", .option("sunny"))
         XCTAssertEqual(c.normalized(), c, "stored with the record")
-        XCTAssertEqual(c.summary(level: .entry), "\("Himmel".loc): \("sonnig".loc)")
+        XCTAssertEqual(c.summary(), "\("Himmel".loc): \("sonnig".loc)")
         XCTAssertTrue(c.display(WeatherField.field("air_temp_c")!)!.text.hasSuffix("°C"))
-    }
-
-    func testLevelsFollowTheSpec() {
-        let entryOnly = ["overall", "ammo_temp", "ground"]
-        let relayKeys = Set(WeatherField.fields(for: .relay).map(\.key))
-        let entryKeys = Set(WeatherField.fields(for: .entry).map(\.key))
-        for key in entryOnly {
-            XCTAssertTrue(entryKeys.contains(key)); XCTAssertFalse(relayKeys.contains(key), key)
-        }
-        XCTAssertTrue(relayKeys.contains("rain_during_relay"))
-        XCTAssertFalse(entryKeys.contains("rain_during_relay"))
-        XCTAssertTrue(relayKeys.isSuperset(of: ["sky", "light", "sun_direction", "wind_strength", "wind_clock", "aids"]))
-    }
-
-    /// The editor shows every field of a level in one list, in this order.
-    func testFieldsOfALevelInEditorOrder() {
-        XCTAssertEqual(WeatherField.fields(for: .entry).map(\.key), [
-            "overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility", "haze_rising_moisture",
-            "wind_strength", "wind_clock", "wind_character", "temp_feel", "ammo_temp", "precipitation", "ground",
-            "aids", "weather_impact", "weather_note",
-        ])
-        XCTAssertEqual(WeatherField.fields(for: .relay).map(\.key), [
-            "sky", "light", "sun_direction", "target_light", "glare", "visibility", "haze_rising_moisture",
-            "wind_strength", "wind_clock", "wind_character", "temp_feel", "precipitation", "rain_during_relay",
-            "aids", "weather_impact", "weather_note",
-        ])
     }
 
     func testEveryIconExists() {
         var icons = WeatherField.all.flatMap { [$0.icon] + $0.options.map(\.icon) }
-        icons += ["cloud.sun", "clock", "location.north.line", "location.north.fill"]
+        icons += ["cloud.sun", "clock"]
         for name in Set(icons) {
             XCTAssertNotNil(UIImage(systemName: name), "SF Symbol \(name) does not exist")
         }
@@ -96,7 +128,7 @@ final class WeatherTests: ModelTestCase {
 
     func testEveryLabelIsTranslated() throws {
         var keys = WeatherField.all.flatMap { [$0.label] + $0.options.map(\.label) }
-        keys += ["Wetter", "Wetter erfassen", "Uhrzeit", "Ablösung", "Ablösungen / Serien", "Ablösung hinzufügen", "ja", "von vorne"]
+        keys += ["Wetter", "Wetter erfassen", "Uhrzeit"]
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
@@ -124,20 +156,10 @@ final class WeatherTests: ModelTestCase {
         c.set("humidity_pct", .number(.nan))
         XCTAssertNil(c["humidity_pct"])
 
-        c.set("wind_clock", .number(3.4))
-        XCTAssertEqual(c.number("wind_clock"), 3)
-        c.set("wind_clock", .number(13))
-        XCTAssertNil(c["wind_clock"])
-
-        c.set("haze_rising_moisture", .flag(true))
-        XCTAssertTrue(c.flag("haze_rising_moisture"))
-        c.set("haze_rising_moisture", .flag(false))
-        XCTAssertNil(c["haze_rising_moisture"], "false is stored as nothing")
-
-        c.set("aids", .options(["filter", "cap", "umbrella?"]))
-        XCTAssertEqual(c.options("aids"), ["cap", "filter"], "spec order, unknown dropped")
-        c.set("aids", .options([]))
-        XCTAssertNil(c["aids"])
+        c.set("wind_direction", .option("back_left"))
+        XCTAssertEqual(c.option("wind_direction"), "back_left")
+        c.set("wind_direction", .number(3))
+        XCTAssertNil(c["wind_direction"], "no clock hours any more")
 
         c.set("weather_note", .text("  Bise am Nachmittag  "))
         XCTAssertEqual(c.text("weather_note"), "Bise am Nachmittag")
@@ -148,28 +170,21 @@ final class WeatherTests: ModelTestCase {
     func testDisplayAndSummary() {
         var c = WeatherConditions()
         c.set("overall", .option("good"))
-        c.set("wind_clock", .number(9))
+        c.set("wind_direction", .option("left"))
         c.set("humidity_pct", .number(62.5))
-        c.set("aids", .options(["cap", "cover"]))
         XCTAssertEqual(c.display(WeatherField.field("overall")!)?.text, "gut".loc)
         XCTAssertEqual(c.display(WeatherField.field("overall")!)?.icon, "hand.thumbsup")
-        XCTAssertTrue(c.display(WeatherField.field("wind_clock")!)!.text.contains("von links".loc))
+        XCTAssertEqual(c.display(WeatherField.field("wind_direction")!)?.text, "von links".loc)
+        XCTAssertEqual(c.display(WeatherField.field("wind_direction")!)?.icon, "arrow.right", "blowing from the left to the right")
         XCTAssertTrue(c.display(WeatherField.field("humidity_pct")!)!.text.hasSuffix("%"))
-        XCTAssertEqual(c.display(WeatherField.field("aids")!)?.icon, "person.fill")
         XCTAssertNil(c.display(WeatherField.field("sky")!))
 
-        let summary = c.summary(level: .entry)
+        let summary = c.summary()
         XCTAssertTrue(summary.hasPrefix("\("Gesamteindruck".loc): \("gut".loc)"), summary)
-        XCTAssertFalse(c.summary(level: .relay).contains("Gesamteindruck".loc), "overall is entry-only")
+        XCTAssertTrue(summary.contains("\("Windrichtung".loc): \("von links".loc)"), summary)
     }
 
-    func testClockLabels() {
-        XCTAssertTrue(WeatherField.clockLabel(12).contains("von vorne".loc))
-        XCTAssertTrue(WeatherField.clockLabel(6).contains("von hinten".loc))
-        XCTAssertFalse(WeatherField.clockLabel(4).contains("("))
-    }
-
-    // MARK: Record, entry storage and relays
+    // MARK: Record and entry storage
 
     func testEventStoresWeatherAsJSONAndNilMeansNone() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
@@ -177,23 +192,12 @@ final class WeatherTests: ModelTestCase {
         XCTAssertNil(e.weather)
         var record = WeatherRecord(time: day(1))
         record.conditions.set("sky", .option("fog"))
-        record.relays.append(WeatherRelay(time: day(1).addingTimeInterval(3600)))
         event.weather = record
         XCTAssertNotNil(event.weatherData)
         XCTAssertEqual(e.weather, record, "a Stich shows its event's weather")
         event.weather = nil
         XCTAssertNil(event.weatherData)
         XCTAssertNil(e.weather)
-    }
-
-    func testRelaysAreSortedAndNextTimeFollowsTheLast() {
-        let t0 = day(1)
-        var record = WeatherRecord(time: t0)
-        XCTAssertEqual(record.nextRelayTime(fallback: .distantPast), t0)
-        record.relays = [WeatherRelay(time: t0.addingTimeInterval(7200)), WeatherRelay(time: t0.addingTimeInterval(1800))]
-        XCTAssertEqual(record.sortedRelays.map(\.time), [t0.addingTimeInterval(1800), t0.addingTimeInterval(7200)])
-        XCTAssertEqual(record.nextRelayTime(fallback: t0), t0.addingTimeInterval(9000))
-        XCTAssertEqual(WeatherRecord().nextRelayTime(fallback: t0), t0)
     }
 
     func testCombineTakesDayFromEntryAndTimeFromWeather() {
@@ -225,9 +229,6 @@ final class WeatherTests: ModelTestCase {
         let e = addEntry(nil, on: day(1), shots: 10)
         var record = WeatherRecord(time: day(1))
         record.conditions.set("wind_strength", .option("strong"))
-        var relay = WeatherRelay(time: day(1).addingTimeInterval(1800))
-        relay.conditions.set("rain_during_relay", .flag(true))
-        record.relays = [relay]
         e.shootingEvent?.weather = record
         try context.save()
 
@@ -243,8 +244,7 @@ final class WeatherTests: ModelTestCase {
         let lines = csv.components(separatedBy: "\r\n")
         let header = lines[0].components(separatedBy: ";")
         XCTAssertTrue(header.contains("Wetter".loc))
-        XCTAssertTrue(lines[1].contains("stark".loc))
-        XCTAssertTrue(lines[1].contains("Ablösung".loc))
+        XCTAssertTrue(lines[1].contains("\("Windstärke am Stand".loc): \("stark".loc)"))
         XCTAssertEqual(header.count, lines[1].components(separatedBy: ";").count)
     }
 }

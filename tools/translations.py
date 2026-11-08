@@ -440,10 +440,10 @@ T = {
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
     "Diopter, Ring und Iris": ("Diopter, ring and iris", "Dioptre, anneau et iris", "Diottra, anello e iride"),
     "Länge in cm, nur bei Gewehren": ("Length in cm, rifles only", "Longueur en cm, fusils uniquement", "Lunghezza in cm, solo fucili"),
-    "Licht, Wind und Temperatur pro Anlass, auch für Ablösungen": (
-        "Light, wind and temperature per event, also for relays",
-        "Lumière, vent et température par événement, aussi pour les relèves",
-        "Luce, vento e temperatura per evento, anche per i turni"),
+    "Licht, Wind und Temperatur pro Anlass": (
+        "Light, wind and temperature per event",
+        "Lumière, vent et température par événement",
+        "Luce, vento e temperatura per evento"),
     "Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.": (
         "Switch each field on separately. Hidden values stay saved.",
         "Chaque champ s'active séparément. Les valeurs masquées restent enregistrées.",
