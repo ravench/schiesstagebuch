@@ -271,6 +271,45 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CaliberCatalog.match("Gewehrpatrone 90")?.name, "5.6 mm GP 90")
     }
 
+    func testSwissArmyPistolNamesFindTheParabellumRounds() {
+        // 9 mm Para is «Pistolenpatrone 41» (Pist Pat 41) in the Swiss Army; the 7.65 mm boxes say «Pistolen-Patronen Cal. 7,65 mm».
+        for text in ["Pist Pat 41", "pistpat41", "Pistolenpatrone 41", "9 mm Pist Pat 41"] {
+            XCTAssertEqual(CaliberCatalog.match(text)?.name, "9x19 mm", text)
+        }
+        XCTAssertEqual(CaliberCatalog.match("Pistolenpatrone 7,65")?.name, "7.65 mm Parabellum")
+        // Search names only: the printed names stay.
+        XCTAssertEqual(CaliberCatalog.item(id: "9x19 mm")?.displayAliases, ["9 mm Luger", "9 mm Para"])
+    }
+
+    func testWadcutterIsItsOwnPistolCalibre() throws {
+        let wc = try XCTUnwrap(CaliberCatalog.match(".32 S&W Long WC"))
+        XCTAssertEqual(wc.name, ".32 S&W Long Wadcutter")
+        XCTAssertEqual(wc.category, CaliberCatalog.Category.handgun.rawValue)
+        XCTAssertEqual(CaliberCatalog.match("32 WC")?.id, wc.id)
+        // Its own name still means the round-nose .32 S&W Long.
+        XCTAssertEqual(CaliberCatalog.match(".32 S&W Long")?.name, ".32 S&W Long")
+        // Seated flush, so the drawing shows only the case; its case is shorter than the .32 S&W Long's
+        // (23.27 against 23.4 mm), so the two are not offered as one chamber.
+        XCTAssertNotNil(wc.outline.case)
+        XCTAssertNil(wc.outline.bullet)
+        XCTAssertNil(wc.dimensionGroup)
+    }
+
+    func testKadettenpatroneIsItsOwnRifleCalibre() throws {
+        let kp = try XCTUnwrap(CaliberCatalog.match("Kadettenpatrone"))
+        XCTAssertEqual(kp.name, "7.5 mm Kadettenpatrone")
+        XCTAssertEqual(kp.category, CaliberCatalog.Category.rifle.rawValue)
+        // The names on the box and the cadet rifle's short name find it.
+        for text in ["Kadetten-Pat", "Cart. 7,5 mm cadetti", "KG97"] {
+            XCTAssertEqual(CaliberCatalog.match(text)?.id, kp.id, text)
+        }
+        XCTAssertEqual(kp.displayAliases, ["Cart. 7,5 mm cadets", "Cart. 7,5 mm cadetti"])
+        XCTAssertEqual(CaliberCatalog.match("GP 1890")?.name, "7.5x53.5 mm Swiss (GP 1890)")
+        // Measured on Raven's round, its case is longer than the GP 1890's: not offered as one chamber.
+        XCTAssertNotNil(kp.outline.bullet)
+        XCTAssertNil(kp.dimensionGroup)
+    }
+
     // MARK: De-duplication after iCloud sync
 
     func testDuplicatesMergeIntoTheOldestRecord() throws {
