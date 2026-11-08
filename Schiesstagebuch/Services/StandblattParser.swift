@@ -376,7 +376,9 @@ enum StandblattParser {
                     guard !copy, !draft.closed, !draft.current.shots.isEmpty else { continue }
                     draft.closePasse(numbers)
                 case let .total(numbers, copy):
-                    guard !copy, !draft.closed else { continue }
+                    // A Total before any "Scheibe" header (a printed box, a handwritten sum in the
+                    // margin) belongs to no strip; closing the empty draft would swallow the first one.
+                    guard !copy, !draft.closed, draft.strip.scheibe != nil else { continue }
                     draft.closePasse(nil)
                     draft.total = numbers
                     draft.closed = true

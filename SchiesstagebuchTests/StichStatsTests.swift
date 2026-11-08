@@ -67,7 +67,11 @@ final class StichStatsTests: ModelTestCase {
         a.result = "540"; a.maxPoints = 600
         let b = addStich(to: event("Training", on: 2), nil, shots: 60, stich: "Bezirksmatch")
         b.result = "560"; b.maxPoints = 600
+        // Over the maximum (from an old backup or another device): not a best result, not in the average.
+        let c = addStich(to: event("Training", on: 3), nil, shots: 60, stich: "Bezirksmatch")
+        c.result = "650"; c.maxPoints = 600
         let entries = StichStats.entries(named: "Bezirksmatch", in: try allEntries())
+        XCTAssertEqual(entries.count, 3)
         XCTAssertEqual(StichStats.bestPoints(entries), 560)
         XCTAssertEqual(entries.averagePoints, 550)
         XCTAssertNil(StichStats.bestPoints([]))

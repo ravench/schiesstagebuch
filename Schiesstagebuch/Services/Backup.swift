@@ -114,6 +114,15 @@ enum Backup {
         try context.fetch(FetchDescriptor<T>())
     }
 
+    /// Dates with milliseconds: Stiche added within one second keep their order (`createdAt`).
+    /// `.iso8601` wrote whole seconds, which `isoSeconds` still reads.
+    private static let isoMilliseconds: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return f
+    }()
+    private static let isoSeconds = ISO8601DateFormatter()
+
     static func export(_ context: ModelContext) throws -> Data {
         let file = File(
             version: currentVersion,
@@ -172,7 +181,10 @@ enum Backup {
                       scoringSystem: $0.scoringSystemRaw, ipscDivision: $0.ipscDivision, ipscPowerFactor: $0.ipscPowerFactorRaw)
             })
         let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
+        encoder.dateEncodingStrategy = .custom { date, encoder in
+            var c = encoder.singleValueContainer()
+            try c.encode(isoMilliseconds.string(from: date))
+        }
         encoder.outputFormatting = [.sortedKeys]
         return try encoder.encode(file)
     }
@@ -308,7 +320,14 @@ enum Backup {
 
     static func restore(from data: Data, into context: ModelContext) throws -> String {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let c = try decoder.singleValueContainer()
+            let s = try c.decode(String.self)
+            guard let date = isoMilliseconds.date(from: s) ?? isoSeconds.date(from: s) else {
+                throw DecodingError.dataCorruptedError(in: c, debugDescription: "Not an ISO 8601 date: \(s)")
+            }
+            return date
+        }
         let file = try decoder.decode(File.self, from: data)
         guard file.version <= currentVersion else {
             throw CocoaError(.fileReadUnsupportedScheme, userInfo: [NSLocalizedDescriptionKey: "Backup stammt aus einer neueren App-Version.".loc])
