@@ -165,7 +165,14 @@ final class PRScreensTests: XCTestCase {
         guard strength.exists && strength.isHittable else { return }
         strength.tap()
         snap("16b-Windstaerke-ohne-Apple-Wetter")
-        if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") } else { closeMenu() }
+        if !pick("windstill") {
+            // The first tap did not open the menu (the UI test fails then too): does a second one?
+            closeMenu()
+            strength.tap()
+            snap("16b2-Windstaerke-zweiter-Tipp")
+            guard pick("windstill") else { closeMenu(); return }
+        }
+        snap("16c-Windstill-ohne-Apple-Wetter")
     }
 
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
@@ -211,12 +218,19 @@ final class PRScreensTests: XCTestCase {
     /// margin at the element's height: a press on a menu row opens its menu instead of scrolling.
     private func holdAtTop(_ element: XCUIElement, besideRow: Bool = false) {
         guard element.exists && element.isHittable else { return }
-        let start = besideRow
-            ? app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: element.frame.midY / app.frame.height))
-            : element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-        // Held at the end, so the list does not glide on past it.
-        start.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: besideRow ? 0.03 : 0.5, dy: 0.18)),
-                    withVelocity: .slow, thenHoldForDuration: 0.5)
+        guard besideRow else {
+            // Held at the end, so the list does not glide on past it.
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
+                       withVelocity: .slow, thenHoldForDuration: 0.5)
+            return
+        }
+        // From no lower than three quarters down: a drag from the bottom edge goes to the system, not the list.
+        let y = element.frame.midY / app.frame.height
+        let from = min(y, 0.75)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: from))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: max(0.02, from - (y - 0.18)))),
+                   withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
     /// The firearm menu and the range list, both ending with «… hinzufügen».

@@ -9,6 +9,8 @@ struct WeatherSection: View {
     let day: Date
     let range: ShootingRange?
     @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
+    /// The sun the app filled in last, to tell it apart from one the user picked.
+    @State private var filledSun: SunDirection?
 
     /// The sun at the range at the entry's time; nil without weather, or without the range's position or shooting direction.
     private var sun: SunDirection? {
@@ -20,8 +22,13 @@ struct WeatherSection: View {
             Toggle(isOn: Binding(get: { weather != nil }, set: { weather = $0 ? (weather ?? WeatherRecord(time: WeatherRecord.startTime)) : nil })) {
                 Label("Wetter erfassen", systemImage: "cloud.sun")
             }
-            // On this one row: a modifier on the whole Section goes to every row of it.
-            .onChange(of: sun, initial: true) { old, new in weather?.conditions.fillSun(new, after: old) }
+            // On this one row: a modifier on the whole Section goes to every row of it. A task, not
+            // `onChange`: filled in the same update that adds the fields, the menus of the fields without
+            // a value did not open right after the switch (iOS 26).
+            .task(id: sun) {
+                weather?.conditions.fillSun(sun, after: filledSun)
+                filledSun = sun
+            }
             if let record = weather {
                 DatePicker(selection: Binding(get: { record.time ?? day }, set: { weather?.time = $0 }),
                            displayedComponents: .hourAndMinute) {
