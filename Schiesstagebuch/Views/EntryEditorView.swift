@@ -502,7 +502,7 @@ struct EntryEditorView: View {
             scoring = ScoringSystem.forNewEvent(enabled: ScoringSystem.enabled(from: enabledScoring))
             sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
             // Weather starts on when the last entry with this weapon had it (off for indoor shooting).
-            weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: .now) : nil
+            weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: WeatherRecord.startTime) : nil
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
             if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
