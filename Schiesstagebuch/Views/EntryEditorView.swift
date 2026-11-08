@@ -1,10 +1,9 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
-import CoreLocation
 
-/// Create (entry == nil) or edit an entry, i.e. one Stich and the event it belongs to.
-/// With `addingTo`, the new entry becomes another Stich of that event. Changes are only written on "Sichern".
+/// Create (entry == nil) or edit an entry, i.e. one Stich and the shared part of the event it belongs to.
+/// A new entry becomes a Stich of `addingTo`, the event recorded before it. Changes are only written on "Sichern".
 struct EntryEditorView: View {
     @Environment(\.term) private var term
     let entry: Entry?
@@ -16,14 +15,9 @@ struct EntryEditorView: View {
     @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @Query(filter: #Predicate<Ammunition> { !$0.isArchived }, sort: \Ammunition.name) private var ammunitions: [Ammunition]
     @Query(sort: \Entry.date, order: .reverse) private var allEntries: [Entry]
-    @Query private var allEvents: [ShootingEvent]
 
     @State private var date = Date.now
     @State private var range: ShootingRange?
-    /// The range picked by position, shown with its distance until the user picks another.
-    @State private var autoRange: NearbyRanges.Match?
-    @State private var here = OneShotLocation()
-    @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
     @State private var event = ""
     @State private var stich = ""
     @State private var weapon: Weapon?
@@ -48,7 +42,6 @@ struct EntryEditorView: View {
     /// Sighter values in per-shot mode; their number is the sighter count there.
     @State private var sighterBoxes = ShotBoxes(text: "")
     @State private var passeTotals: [PasseTotalDraft] = []
-    @AppStorage(ScoringSystem.enabledKey) private var enabledScoring = ""
     /// The event's scoring system; changing it here changes it for all its Stiche.
     @State private var scoring: ScoringSystem = .rings
     @State private var division = ""
@@ -68,14 +61,8 @@ struct EntryEditorView: View {
     @State private var quickAdd: QuickAdd?
     @State private var showingScanner = false
     @State private var didLoad = false
-    @FocusState private var eventFocused: Bool
 
     enum QuickAdd: Identifiable { case weapon, ammunition; var id: Self { self } }
-
-    private var recentEvents: [String] {
-        var seen = Set<String>()
-        return allEntries.map(\.eventName).filter { !$0.isEmpty && seen.insert($0).inserted }.prefix(8).map { $0 }
-    }
 
     /// Stiche of the event once this one is saved.
     private var stichCount: Int {
@@ -86,13 +73,8 @@ struct EntryEditorView: View {
     /// Stich names used before, so the same Stich is spelled alike and groups in the statistics.
     private var recentStiche: [String] { StichStats.recentNames(in: allEntries) }
 
-    /// Weapon, sight and weather follow the user's habits only for a brand-new event.
-    private var startsNewEvent: Bool { entry == nil && addingTo == nil }
-
-    /// Earlier event names matching what is typed, shown below the field while it has focus.
-    private var eventSuggestions: [String] {
-        eventFocused ? EventSuggestions.suggestions(for: event, in: allEvents) : []
-    }
+    /// The first Stich of an event: the sight follows the weapon picked, as there is no Stich before it.
+    private var firstStich: Bool { entry == nil && addingTo?.stichCount == 0 }
 
     /// Barrels fitted on the entry's day; the picker only shows when there is a real choice.
     private var barrelChoices: [Barrel] { weapon?.mountedBarrels(on: date) ?? [] }
@@ -123,28 +105,8 @@ struct EntryEditorView: View {
 
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    RangePickerRow(selection: $range, ranges: ranges, location: here.location)
-                    if let autoRange, autoRange.range == range {
-                        Label { Text("Nach Standort gewählt · \(formattedAutoDistance)") } icon: {
-                            Image(systemName: "location.fill")
-                        }
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    }
-                    HStack {
-                        TextField("Anlass", text: $event)
-                            .focused($eventFocused)
-                        if !recentEvents.isEmpty {
-                            Menu {
-                                ForEach(recentEvents, id: \.self) { e in Button(e) { event = e } }
-                            } label: { Image(systemName: "clock.arrow.circlepath") }
-                        }
-                    }
-                    ForEach(eventSuggestions, id: \.self) { s in
-                        Button { event = s } label: {
-                            Label { Text(verbatim: s) } icon: { Image(systemName: "arrow.up.left") }
-                        }
-                    }
+                    RangePickerRow(selection: $range, ranges: ranges)
+                    TextField("Anlass", text: $event)
                     HStack {
                         TextField(scoring == .ipsc ? "Stage".loc : "Stich".loc, text: $stich)
                         if scoring != .ipsc, !recentStiche.isEmpty {
@@ -226,19 +188,13 @@ struct EntryEditorView: View {
                 }
             }
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
-            .navigationTitle(addingTo != nil ? "Weiterer Stich".loc : entry == nil ? "Neuer Eintrag".loc : "Eintrag bearbeiten".loc)
+            .navigationTitle(entry != nil ? "Eintrag bearbeiten".loc : firstStich ? "Neuer Stich".loc : "Weiterer Stich".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(scoring == .rings && currentScore.exceedsMax) }
             }
             .onAppear(perform: load)
-            .onChange(of: here.location) { _, new in applyNearestRange(new) }
-            .onChange(of: date) { _, new in
-                // A back-dated entry was shot elsewhere: undo the pick by position.
-                guard let autoRange, autoRange.range == range, !Calendar.current.isDateInToday(new) else { return }
-                range = nil; self.autoRange = nil
-            }
             .onChange(of: weapon) { old, new in weaponChanged(from: old, to: new) }
             .onChange(of: barrel) { _, new in
                 guard didLoad, let new else { return }
@@ -388,12 +344,9 @@ struct EntryEditorView: View {
         guard didLoad else { return }
         // A new Stich keeps the position the user picked, else it follows the weapon type.
         if entry == nil { position = ShootingPosition.following(position, from: old?.category, to: new?.category) }
-        // New entries take the sight settings and weather switch of the last entry with this
-        // weapon, but never throw away values the user has typed already.
-        if startsNewEvent {
-            sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
-            weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
-        }
+        // The first Stich takes the sight settings of the last entry with this weapon, but never
+        // throws away values the user has typed already.
+        if firstStich { sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries) }
         // The weapon's default barrel (or the one for the current calibre) with its calibre.
         if let barrel, barrel.weapon == new { return }
         barrel = caliber.flatMap { new?.barrel(for: $0, on: date) } ?? new?.preferredBarrel(on: date)
@@ -480,60 +433,37 @@ struct EntryEditorView: View {
             if let shootingEvent = entry.shootingEvent { loadScoring(of: shootingEvent) }
             ipsc = entry.ipscStage ?? IPSCStage()
         } else if let addingTo {
-            // Another Stich of the same event: the shared part as it is, the rest from its last Stich.
+            // A Stich of the event: the shared part as it is.
             date = addingTo.date; range = addingTo.range; event = addingTo.name; weather = addingTo.weather
             loadScoring(of: addingTo)
-            let last = addingTo.sortedEntries.last
-            weapon = last?.weapon?.isArchived == false ? last?.weapon : nil
-            barrel = weapon == nil ? nil : last?.effectiveBarrel ?? weapon?.preferredBarrel(on: date)
-            caliber = weapon == nil ? nil : last?.caliber ?? weapon?.preferredCaliber(for: barrel)
-            ammunition = last?.ammunition?.isArchived == false && last?.ammunition?.fits(caliber) == true
-                ? last?.ammunition : suggestedAmmunition(weapon: weapon, caliber: caliber)
-            lot = ammunition == last?.ammunition && last?.lot?.isArchived == false ? last?.lot : suggestedLot(for: ammunition)
-            sight = last.map { SightSettings(entry: $0) } ?? SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
+            if let last = addingTo.sortedEntries.last {
+                // Another Stich of the same event: the rest from its last Stich.
+                weapon = last.weapon?.isArchived == false ? last.weapon : nil
+                barrel = weapon == nil ? nil : last.effectiveBarrel ?? weapon?.preferredBarrel(on: date)
+                caliber = weapon == nil ? nil : last.caliber ?? weapon?.preferredCaliber(for: barrel)
+                ammunition = last.ammunition?.isArchived == false && last.ammunition?.fits(caliber) == true
+                    ? last.ammunition : suggestedAmmunition(weapon: weapon, caliber: caliber)
+                lot = ammunition == last.ammunition && last.lot?.isArchived == false ? last.lot : suggestedLot(for: ammunition)
+                sight = SightSettings(entry: last)
+            } else if let last = allEntries.first {
+                // The first Stich starts from the most recent weapon and ammo: usually what you shoot next.
+                weapon = last.weapon?.isArchived == false ? last.weapon : nil
+                barrel = weapon?.preferredBarrel(on: date)
+                caliber = weapon?.preferredCaliber(for: barrel)
+                ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
+                lot = suggestedLot(for: ammunition)
+                sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
+            }
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
             if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
-        } else if let last = allEntries.first {
-            // New entries start from the most recent weapon and ammo: usually what you shoot next.
-            // The range stays empty unless the position picks one (NearbyRanges).
-            weapon = last.weapon?.isArchived == false ? last.weapon : nil
-            barrel = weapon?.preferredBarrel(on: date)
-            caliber = weapon?.preferredCaliber(for: barrel)
-            ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
-            lot = suggestedLot(for: ammunition)
         }
         if entry == nil { position = weapon?.category.defaultPosition }
-        if startsNewEvent {
-            // A new match starts with the division and power factor of the last one.
-            if let last = ShootingEvent.lastIPSC(in: allEvents) { loadScoring(of: last) }
-            scoring = ScoringSystem.forNewEvent(enabled: ScoringSystem.enabled(from: enabledScoring))
-            sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
-            // Weather starts on when the last entry with this weapon had it (off for indoor shooting).
-            weather = WeatherRecord.recordsByDefault(for: weapon, in: allEntries) ? WeatherRecord(time: WeatherRecord.startTime) : nil
-            mode = defaultMode
-            if mode == .shots { passes = [PassDraft(text: "")] }
-            if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
-            if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges) {
-                here.request()
-            }
-        }
         didLoad = true
     }
 
     private func loadScoring(of event: ShootingEvent) {
         scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
-    }
-
-    private var formattedAutoDistance: String { autoRange.map { NearbyRanges.format($0.distance) } ?? "" }
-
-    /// Selects the range you are at once the position arrives, unless you picked one yourself meanwhile.
-    private func applyNearestRange(_ location: CLLocation?) {
-        guard startsNewEvent, let location,
-              NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges),
-              let match = NearbyRanges.preselection(ranges, from: location, current: range)
-        else { return }
-        range = match.range; autoRange = match
     }
 
     /// Last ammo used with this weapon and calibre, else the only ammo of that calibre.

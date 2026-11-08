@@ -5,6 +5,7 @@ struct EntryListView: View {
     @Environment(\.term) private var term
     @Environment(\.modelContext) private var context
     @Query(sort: \Entry.date, order: .reverse) private var entries: [Entry]
+    @Query private var events: [ShootingEvent]
     @Query(sort: \Weapon.name) private var weapons: [Weapon]
     @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
 
@@ -13,10 +14,13 @@ struct EntryListView: View {
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @State private var rangeFilter: ShootingRange?
     @State private var yearFilter: Int?
-    @State private var showingNewEntry = false
+    @State private var showingNewEvent = false
+    /// The event just recorded: the journal opens it once its sheet is down, for the first Stich.
+    @State private var created: ShootingEvent?
+    @State private var path = NavigationPath()
 
     private var years: [Int] {
-        Array(Set(entries.map { Calendar.current.component(.year, from: $0.date) })).sorted(by: >)
+        Array(Set((entries.map(\.date) + events.map(\.date)).map { Calendar.current.component(.year, from: $0) })).sorted(by: >)
     }
 
     private var filtered: [Entry] {
@@ -28,10 +32,19 @@ struct EntryListView: View {
         }
     }
 
+    /// Events recorded without a Stich so far; a weapon filter cannot match them.
+    private var emptyEvents: [ShootingEvent] {
+        events.filter { event in
+            event.stichCount == 0 && weaponFilter == nil && event.matches(searchText)
+            && (rangeFilter == nil || event.range == rangeFilter)
+            && (yearFilter == nil || Calendar.current.component(.year, from: event.date) == yearFilter)
+        }
+    }
+
     /// Events grouped by month, newest first.
     private var sections: [(month: Date, items: [JournalItem])] {
         let cal = Calendar.current
-        let items = JournalItem.group(filtered)
+        let items = JournalItem.group(filtered, emptyEvents: emptyEvents)
         let grouped = Dictionary(grouping: items) {
             cal.date(from: cal.dateComponents([.year, .month], from: $0.date))!
         }
@@ -41,18 +54,18 @@ struct EntryListView: View {
     private var isFiltering: Bool { weaponFilter != nil || rangeFilter != nil || yearFilter != nil }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             Group {
-                if entries.isEmpty {
+                if entries.isEmpty && events.isEmpty {
                     ContentUnavailableView {
                         Label("Noch keine Einträge", systemImage: "target")
                     } description: {
                         Text("Erfasse deinen ersten Schiesstag mit +.")
                     } actions: {
-                        Button("Eintrag erfassen") { showingNewEntry = true }
+                        Button("Anlass erfassen") { showingNewEvent = true }
                             .buttonStyle(.borderedProminent)
                     }
-                } else if filtered.isEmpty {
+                } else if filtered.isEmpty && emptyEvents.isEmpty {
                     ContentUnavailableView.search(text: searchText)
                 } else {
                     list
@@ -63,12 +76,15 @@ struct EntryListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) { filterMenu }
                 ToolbarItem(placement: .primaryAction) {
-                    Button { showingNewEntry = true } label: { Label("Neuer Eintrag", systemImage: "plus") }
+                    Button { showingNewEvent = true } label: { Label("Neuer Anlass", systemImage: "plus") }
                 }
             }
-            .sheet(isPresented: $showingNewEntry) {
-                EntryEditorView(entry: nil)
-            }
+            // The event first (date, range, Anlass); its Stiche are added on its screen, which opens next.
+            .sheet(isPresented: $showingNewEvent, onDismiss: {
+                if let created { path.append(created); self.created = nil }
+            }, content: {
+                EventEditorView(event: nil) { created = $0 }
+            })
             .navigationDestination(for: Entry.self) { EntryDetailView(entry: $0) }
             .navigationDestination(for: ShootingEvent.self) { EventDetailView(event: $0) }
         }
@@ -93,7 +109,9 @@ struct EntryListView: View {
                     }
                     .onDelete { offsets in
                         // Only the Stiche shown: a filter may hide others of the same event.
-                        try? Deletion.delete(offsets.flatMap { section.items[$0].entries }, in: context)
+                        let items = offsets.map { section.items[$0] }
+                        try? Deletion.delete(items.flatMap(\.entries), in: context)
+                        for event in items.filter(\.entries.isEmpty).compactMap(\.event) { try? Deletion.delete(event, in: context) }
                     }
                 } header: {
                     HStack {

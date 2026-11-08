@@ -34,7 +34,7 @@ final class LastStichDeletionUITests: XCTestCase {
 
         // The last Stich: the Anlass goes with it, and the app must land in the journal.
         deleteFirstStich()
-        XCTAssertTrue(app.buttons["Neuer Eintrag"].firstMatch.waitForExistence(timeout: 5), "Not back in the journal")
+        XCTAssertTrue(app.buttons["Neuer Anlass"].firstMatch.waitForExistence(timeout: 5), "Not back in the journal")
         XCTAssertEqual(app.state, .runningForeground, "The app crashed")
         // The Anlass is deleted once its screen has left, a moment after the journal shows.
         expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: app.staticTexts["Feldschiessen"])

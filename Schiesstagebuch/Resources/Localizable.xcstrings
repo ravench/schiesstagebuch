@@ -806,6 +806,29 @@
         }
       }
     },
+    "Anlass erfassen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log event"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisir un événement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra evento"
+          }
+        }
+      }
+    },
     "Anlass mit allen Stichen löschen?": {
       "extractionState": "manual",
       "localizations": {
@@ -2439,6 +2462,29 @@
         }
       }
     },
+    "Die Stiche erfasst du anschliessend im Anlass.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You add the matches in the event afterwards."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu saisis ensuite les cibles dans l'événement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I bersagli li registri poi nell'evento."
+          }
+        }
+      }
+    },
     "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.": {
       "extractionState": "manual",
       "localizations": {
@@ -2872,29 +2918,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifica voce"
-          }
-        }
-      }
-    },
-    "Eintrag erfassen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log entry"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saisir une entrée"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Registra voce"
           }
         }
       }
@@ -7137,25 +7160,25 @@
         }
       }
     },
-    "Neuer Eintrag": {
+    "Neuer Anlass": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "New entry"
+            "value": "New event"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nouvelle entrée"
+            "value": "Nouvel événement"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nuova voce"
+            "value": "Nuovo evento"
           }
         }
       }
@@ -7202,6 +7225,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nuova canna"
+          }
+        }
+      }
+    },
+    "Neuer Stich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New match"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouvelle cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo bersaglio"
           }
         }
       }

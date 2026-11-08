@@ -21,13 +21,25 @@ final class PRScreensTests: XCTestCase {
             snap("02-Eintrag")
             back()
         }
-        if open(app.buttons["Neuer Eintrag"].firstMatch) {
-            snap("03-Neuer-Eintrag")
-            pickerStops()
-            positionStop()
-            scroll()
-            snap("04-Neuer-Eintrag-unten")
-            app.buttons["Abbrechen"].firstMatch.tap()
+        // The Anlass first (date, range, name), then its screen with no Stich yet, then the first Stich.
+        if open(app.buttons["Neuer Anlass"].firstMatch) {
+            snap("03-Neuer-Anlass")
+            rangeStop()
+            app.buttons["Sichern"].firstMatch.tap()
+            let addStich = app.buttons["Stich hinzufügen"].firstMatch
+            if addStich.waitForExistence(timeout: 5) {
+                snap("03e-Anlass-ohne-Stiche")
+                addStich.tap()
+                snap("03f-Neuer-Stich")
+                weaponStop()
+                positionStop()
+                scroll()
+                snap("04-Neuer-Stich-unten")
+                app.buttons["Abbrechen"].firstMatch.tap()
+            } else {
+                XCTFail("The new Anlass did not open")
+            }
+            back()
         }
 
         tab("Statistik")
@@ -189,10 +201,12 @@ final class PRScreensTests: XCTestCase {
         snap("20-Neu-in-dieser-Version")
     }
 
-    /// A new entry with only IPSC scoring switched on: the stage and the hits with their footer.
+    /// A new stage with only IPSC scoring switched on: the stage and the hits with their footer.
     func testIPSCEntry() {
         relaunch(adding: ["-scoringSystems.v1", "ipsc"])
-        if open(app.buttons["Neuer Eintrag"].firstMatch) {
+        guard open(app.buttons["Neuer Anlass"].firstMatch) else { return }
+        app.buttons["Sichern"].firstMatch.tap()
+        if open(app.buttons["Stage hinzufügen"].firstMatch) {
             topStop(app.staticTexts["Zeit"].firstMatch, "03d-IPSC-Eintrag")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
@@ -236,12 +250,16 @@ final class PRScreensTests: XCTestCase {
                    withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
-    /// The firearm menu and the range list, both ending with «… hinzufügen».
-    private func pickerStops() {
+    /// The firearm menu in the Stich editor, ending with «Waffe hinzufügen».
+    private func weaponStop() {
         if open(app.buttons["Waffe"].firstMatch) {
             snap("03a-Waffe-Auswahl")
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
         }
+    }
+
+    /// The range list in the Anlass editor, ending with «Schiessanlage hinzufügen».
+    private func rangeStop() {
         if open(app.staticTexts["Schiessanlage"].firstMatch) {
             let search = app.searchFields.firstMatch
             if search.waitForExistence(timeout: 5) {

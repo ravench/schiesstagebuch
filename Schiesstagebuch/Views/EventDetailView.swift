@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 /// An event with several Stiche: what they share, then one row per Stich.
 struct EventDetailView: View {
@@ -177,18 +178,29 @@ struct RepeatedStichRow: View {
     }
 }
 
-/// Edits what all Stiche of an event share: date, range, Anlass, scoring and weather.
+/// Records an event (event == nil; its Stiche are added on its screen afterwards) or edits what all
+/// Stiche of an event share: date, range, Anlass, scoring and weather. Nothing is written before «Sichern».
 struct EventEditorView: View {
-    let event: ShootingEvent
+    let event: ShootingEvent?
+    /// Called with the event just recorded, after the sheet is dismissed.
+    var onCreate: ((ShootingEvent) -> Void)?
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
+    @Query(sort: \Entry.date, order: .reverse) private var allEntries: [Entry]
+    @Query private var allEvents: [ShootingEvent]
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
+    @AppStorage(ScoringSystem.enabledKey) private var enabledScoring = ""
+    @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
 
     @State private var date = Date.now
     @State private var range: ShootingRange?
+    /// The range picked by position, shown with its distance until the user picks another.
+    @State private var autoRange: NearbyRanges.Match?
+    @State private var here = OneShotLocation()
     @State private var name = ""
+    @FocusState private var nameFocused: Bool
     @State private var weather: WeatherRecord?
     @State private var scoring: ScoringSystem = .rings
     @State private var division = ""
@@ -196,41 +208,116 @@ struct EventEditorView: View {
     /// `onAppear` runs again when the Schiessanlage picker pops; loading then would drop every edit.
     @State private var didLoad = false
 
+    private var recentEvents: [String] {
+        var seen = Set<String>()
+        return allEntries.map(\.eventName).filter { !$0.isEmpty && seen.insert($0).inserted }.prefix(8).map { $0 }
+    }
+
+    /// Earlier event names matching what is typed, shown below the field while it has focus.
+    private var nameSuggestions: [String] {
+        nameFocused ? EventSuggestions.suggestions(for: name, in: allEvents) : []
+    }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    RangePickerRow(selection: $range, ranges: ranges)
-                    TextField("Anlass", text: $name)
+                    RangePickerRow(selection: $range, ranges: ranges, location: here.location)
+                    if let autoRange, autoRange.range == range {
+                        Label { Text("Nach Standort gewählt · \(formattedAutoDistance)") } icon: {
+                            Image(systemName: "location.fill")
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
+                    HStack {
+                        TextField("Anlass", text: $name)
+                            .focused($nameFocused)
+                        if !recentEvents.isEmpty {
+                            Menu {
+                                ForEach(recentEvents, id: \.self) { e in Button(e) { name = e } }
+                            } label: { Image(systemName: "clock.arrow.circlepath") }
+                        }
+                    }
+                    ForEach(nameSuggestions, id: \.self) { s in
+                        Button { name = s } label: {
+                            Label { Text(verbatim: s) } icon: { Image(systemName: "arrow.up.left") }
+                        }
+                    }
                     ScoringSystemPicker(system: $scoring)
                     if scoring == .ipsc {
                         IPSCMatchFields(division: $division, powerFactor: $powerFactor)
                     }
                 } footer: {
-                    Text("Gilt für alle \(event.stichCount) Stiche dieses Anlasses.")
+                    if let event {
+                        Text("Gilt für alle \(event.stichCount) Stiche dieses Anlasses.")
+                    } else {
+                        Text("Die Stiche erfasst du anschliessend im Anlass.")
+                    }
                 }
                 if features.contains(.weather) {
                     WeatherSection(weather: $weather, day: date, range: range)
                 }
             }
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
-            .navigationTitle("Anlass bearbeiten")
+            .navigationTitle(event == nil ? "Neuer Anlass".loc : "Anlass bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold() }
             }
-            .onAppear {
-                guard !didLoad else { return }
-                didLoad = true
-                date = event.date; range = event.range; name = event.name; weather = event.weather
-                scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
+            .onAppear(perform: load)
+            .onChange(of: here.location) { _, new in applyNearestRange(new) }
+            .onChange(of: date) { _, new in
+                // A back-dated event was shot elsewhere: undo the pick by position.
+                guard let autoRange, autoRange.range == range, !Calendar.current.isDateInToday(new) else { return }
+                range = nil; self.autoRange = nil
             }
         }
     }
 
+    private func load() {
+        guard !didLoad else { return }
+        didLoad = true
+        if let event {
+            date = event.date; range = event.range; name = event.name; weather = event.weather
+            scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
+            return
+        }
+        // A new match starts with the division and power factor of the last one.
+        if let last = ShootingEvent.lastIPSC(in: allEvents) { division = last.ipscDivision; powerFactor = last.ipscPowerFactor }
+        scoring = ScoringSystem.forNewEvent(enabled: ScoringSystem.enabled(from: enabledScoring))
+        // Weather starts on when the last entry with the weapon shot last had it (off for indoor shooting).
+        weather = WeatherRecord.recordsByDefault(for: allEntries.first?.weapon, in: allEntries) ? WeatherRecord(time: WeatherRecord.startTime) : nil
+        if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges) {
+            here.request()
+        }
+    }
+
+    private var formattedAutoDistance: String { autoRange.map { NearbyRanges.format($0.distance) } ?? "" }
+
+    /// Selects the range you are at once the position arrives, unless you picked one yourself meanwhile.
+    private func applyNearestRange(_ location: CLLocation?) {
+        guard event == nil, let location,
+              NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges),
+              let match = NearbyRanges.preselection(ranges, from: location, current: range)
+        else { return }
+        range = match.range; autoRange = match
+    }
+
     private func save() {
+        guard let event else {
+            let event = ShootingEvent(date: date, name: name.trimmingCharacters(in: .whitespaces), range: range)
+            context.insert(event)
+            event.scoringSystem = scoring
+            if scoring == .ipsc { event.setIPSC(division: division, powerFactor: powerFactor) }
+            if features.contains(.weather) { event.weather = weather?.normalized() }
+            try? context.save()
+            dismiss()
+            onCreate?(event)
+            return
+        }
         let moved = !Calendar.current.isDate(date, inSameDayAs: event.date)
         event.name = name.trimmingCharacters(in: .whitespaces)
         event.range = range
