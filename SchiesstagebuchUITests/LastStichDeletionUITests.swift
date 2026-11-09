@@ -1,7 +1,7 @@
 import XCTest
 
-/// Deleting a Stich from its detail screen when it is the last one of its Anlass: the Anlass goes
-/// too, and the Anlass screen underneath must leave before that, or it shows a deleted record.
+/// Deleting a Stich from its detail screen, down to the last one of its Anlass: the Anlass stays,
+/// with no Stich (Raven 2026-11-09), and its screen underneath shows it so.
 /// Runs in the Build workflow on an iPhone simulator, with the sample data in memory.
 final class LastStichDeletionUITests: XCTestCase {
     private var app: XCUIApplication!
@@ -13,7 +13,7 @@ final class LastStichDeletionUITests: XCTestCase {
         app.launch()
     }
 
-    func testDeletingTheLastStichFromItsDetailLeavesTheAnlassScreen() {
+    func testDeletingTheLastStichFromItsDetailKeepsTheAnlass() {
         // Give the sample Feldschiessen a second Stich, so the journal shows it as an Anlass.
         let entry = app.staticTexts["Feldschiessen"].firstMatch
         XCTAssertTrue(entry.waitForExistence(timeout: 10))
@@ -32,13 +32,14 @@ final class LastStichDeletionUITests: XCTestCase {
         deleteFirstStich()
         XCTAssertTrue(app.staticTexts["Stiche"].waitForExistence(timeout: 5), "Back on the Anlass with one Stich left")
 
-        // The last Stich: the Anlass goes with it, and the app must land in the journal.
+        // The last Stich: the Anlass stays, empty, and its screen offers the next Stich.
         deleteFirstStich()
-        XCTAssertTrue(app.buttons["Neuer Anlass"].firstMatch.waitForExistence(timeout: 5), "Not back in the journal")
+        XCTAssertTrue(app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5), "Not back on the Anlass screen")
         XCTAssertEqual(app.state, .runningForeground, "The app crashed")
-        // The Anlass is deleted once its screen has left, a moment after the journal shows.
-        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: app.staticTexts["Feldschiessen"])
+        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: app.cells.containing(.staticText, identifier: "Stgw 90").firstMatch)
         waitForExpectations(timeout: 5)
+        app.navigationBars.firstMatch.buttons.firstMatch.tap() // back to the journal
+        XCTAssertTrue(app.staticTexts["Feldschiessen"].waitForExistence(timeout: 5), "The Anlass left the journal")
     }
 
     /// Opens the first Stich of the Anlass screen and deletes it from its toolbar menu.

@@ -192,11 +192,13 @@ final class ShootingEventTests: ModelTestCase {
         XCTAssertEqual(event.totalShots, 20)
     }
 
-    func testDeletingTheLastStichDeletesTheEvent() throws {
+    func testDeletingTheLastStichKeepsTheEvent() throws {
+        // Raven 2026-11-09: an Anlass is recorded on its own and deleted on its own.
         let e = addEntry(nil, on: day(1), shots: 10)
         try context.save()
         try Deletion.delete(e, in: context)
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 0)
+        let events = try context.fetch(FetchDescriptor<ShootingEvent>())
+        XCTAssertEqual(events.map(\.stichCount), [0])
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Entry>()), 0)
     }
 

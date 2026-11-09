@@ -45,12 +45,7 @@ struct EventDetailView: View {
 
             Section(event.scoringSystem == .ipsc ? "Stages".loc : "Stiche".loc) {
                 ForEach(event.sortedEntries) { entry in
-                    // Deleting the last Stich deletes the event too: this screen leaves first, then deletes.
-                    NavigationLink {
-                        EntryDetailView(entry: entry, deleteLast: { deleting = true; dismiss() })
-                    } label: {
-                        StichRow(entry: entry)
-                    }
+                    NavigationLink { EntryDetailView(entry: entry) } label: { StichRow(entry: entry) }
                 }
                 .onDelete(perform: deleteStiche)
                 Button { addingStich = true } label: {
@@ -82,7 +77,7 @@ struct EventDetailView: View {
             }
         }
         .sheet(isPresented: $editing) { EventEditorView(event: event) }
-        .sheet(isPresented: $addingStich) { EntryEditorView(entry: nil, addingTo: event) }
+        .sheet(isPresented: $addingStich) { EntryEditorView(addingTo: event) }
         .confirmationDialog("Anlass mit allen Stichen löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Löschen", role: .destructive) {
                 deleting = true
@@ -96,15 +91,10 @@ struct EventDetailView: View {
         }
     }
 
+    /// The event stays, with or without Stiche (Raven 2026-11-09); «Löschen» in the toolbar deletes it.
     private func deleteStiche(_ offsets: IndexSet) {
         let entries = event.sortedEntries
-        // Deleting the last Stich deletes the event too: leave the screen first.
-        if offsets.count >= entries.count {
-            deleting = true
-            dismiss()
-        } else {
-            try? Deletion.delete(offsets.map { entries[$0] }, in: context)
-        }
+        try? Deletion.delete(offsets.map { entries[$0] }, in: context)
     }
 
     private func metric(_ title: String, _ value: String) -> some View {
