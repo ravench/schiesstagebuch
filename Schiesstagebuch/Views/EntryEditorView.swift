@@ -2,12 +2,24 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
-/// Create (entry == nil) or edit an entry, i.e. one Stich and the shared part of the event it belongs to.
-/// A new entry becomes a Stich of `addingTo`, the event recorded before it. Changes are only written on "Sichern".
+/// Edit an entry (one Stich, with the shared part of its event), or add a Stich to `addingTo`, the event
+/// recorded before it: that form starts with the Stich itself and repeats nothing of the event
+/// (Raven 2026-11-09). Changes are only written on "Sichern".
 struct EntryEditorView: View {
     @Environment(\.term) private var term
     let entry: Entry?
-    var addingTo: ShootingEvent?
+    let addingTo: ShootingEvent?
+
+    init(entry: Entry) {
+        self.entry = entry
+        addingTo = nil
+    }
+
+    /// A new Stich of `event`; a Stich never starts an event of its own.
+    init(addingTo event: ShootingEvent) {
+        entry = nil
+        addingTo = event
+    }
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -95,18 +107,24 @@ struct EntryEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    Button { showingScanner = true } label: {
-                        Label("Standblatt scannen", systemImage: "doc.text.viewfinder")
+                // The shared part of the event only when editing: a new Stich starts with its own name.
+                if entry != nil {
+                    Section {
+                        DatePicker("Datum", selection: $date, displayedComponents: .date)
+                        RangePickerRow(selection: $range, ranges: ranges)
+                        TextField("Anlass", text: $event)
+                        ScoringSystemPicker(system: $scoring)
+                        if scoring == .ipsc {
+                            IPSCMatchFields(division: $division, powerFactor: $powerFactor)
+                        }
+                    } footer: {
+                        if stichCount > 1 {
+                            Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
+                        }
                     }
-                } footer: {
-                    Text("Liest Datum, Anlass, Einzelschüsse und Total von einem Standblatt.")
                 }
 
                 Section {
-                    DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    RangePickerRow(selection: $range, ranges: ranges)
-                    TextField("Anlass", text: $event)
                     HStack {
                         TextField(scoring == .ipsc ? "Stage".loc : "Stich".loc, text: $stich)
                         if scoring != .ipsc, !recentStiche.isEmpty {
@@ -115,19 +133,6 @@ struct EntryEditorView: View {
                             } label: { Image(systemName: "clock.arrow.circlepath") }
                         }
                     }
-                    ScoringSystemPicker(system: $scoring)
-                    if scoring == .ipsc {
-                        IPSCMatchFields(division: $division, powerFactor: $powerFactor)
-                    }
-                } footer: {
-                    if stichCount > 1 {
-                        Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
-                    } else if scoring != .ipsc {
-                        Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
-                    }
-                }
-
-                Section {
                     pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
                     if barrelChoices.count > 1 {
@@ -153,6 +158,21 @@ struct EntryEditorView: View {
                         }
                     }
                     if scoring != .ipsc { positionPicker }
+                } footer: {
+                    if scoring != .ipsc {
+                        Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
+                    }
+                }
+                // Plain pickers show their value in grey, which read as disabled next to the tinted
+                // firearm and ammunition rows: one colour for every value that can be changed.
+                .tint(.accentColor)
+
+                Section {
+                    Button { showingScanner = true } label: {
+                        Label("Standblatt scannen", systemImage: "doc.text.viewfinder")
+                    }
+                } footer: {
+                    Text("Liest Datum, Anlass, Einzelschüsse und Total von einem Standblatt.")
                 }
 
                 if scoring == .ipsc {
@@ -187,12 +207,18 @@ struct EntryEditorView: View {
                     Text("Fotos (\(photos.count)/\(Limits.maxPhotos))")
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(entry != nil ? "Eintrag bearbeiten".loc : firstStich ? "Neuer Stich".loc : "Weiterer Stich".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(scoring == .rings && currentScore.exceedsMax) }
+                // The number pads have no return key to put the keyboard away.
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Fertig") { UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil) }
+                }
             }
             .onAppear(perform: load)
             .onChange(of: weapon) { old, new in weaponChanged(from: old, to: new) }
@@ -519,6 +545,8 @@ struct EntryEditorView: View {
         let oldWeapon = entry?.weapon
         let target = entry ?? Entry()
         if entry == nil { context.insert(target) }
+        // The event: the one the Stich is added to, or the edited entry's (made anew only for an
+        // entry a sync left without one).
         let shootingEvent = addingTo ?? ShootingEvent.of(target, in: context)
         let moved = !Calendar.current.isDate(date, inSameDayAs: shootingEvent.date)
         shootingEvent.add(target)

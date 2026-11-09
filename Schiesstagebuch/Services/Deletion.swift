@@ -19,28 +19,19 @@ enum Deletion {
     }
 
     /// Deletes entries and recalculates the shot-based reminders of the weapons they belonged to.
-    /// An event left without any Stich is deleted with its last one.
+    /// Their event stays, even without a Stich left (Raven 2026-11-09): it is deleted on its own.
     static func delete(_ entries: [Entry], in context: ModelContext) throws {
         let weapons = Set(entries.compactMap(\.weapon))
-        let gone = Set(entries.map(\.persistentModelID))
-        let emptied = Set(entries.compactMap(\.shootingEvent)).filter { event in
-            (event.entries ?? []).allSatisfy { gone.contains($0.persistentModelID) }
-        }
         entries.forEach(context.delete)
-        emptied.forEach(context.delete)
         try context.save()
         weapons.forEach { MaintenanceNotifier.refresh($0) }
     }
 
     /// Deletes an event with all its Stiche.
     static func delete(_ event: ShootingEvent, in context: ModelContext) throws {
-        let entries = event.entries ?? []
-        if entries.isEmpty {
-            context.delete(event)
-            try context.save()
-        } else {
-            try delete(entries, in: context)
-        }
+        try delete(event.entries ?? [], in: context)
+        context.delete(event)
+        try context.save()
     }
 
     static func delete(_ entry: Entry, in context: ModelContext) throws {
