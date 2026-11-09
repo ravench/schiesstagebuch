@@ -4,7 +4,19 @@ import SwiftUI
 
 /// Side view of a calibre's cartridge, from the catalogue. Custom calibres get a generic glyph.
 struct CartridgeView: View {
-    let caliber: Caliber?
+    let catalogID: String?
+    private let name: String
+
+    init(caliber: Caliber?) {
+        catalogID = caliber?.catalogID
+        name = caliber?.name ?? ""
+    }
+
+    /// A catalogue calibre without a record, e.g. as an icon.
+    init(catalogID: String) {
+        self.catalogID = catalogID
+        name = catalogID
+    }
 
     private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let patch: Path?
         let tip: Path?; let bulletFill: Color; let hullFill: Color; let headFill: Color; let tipFill: Color }
@@ -12,7 +24,7 @@ struct CartridgeView: View {
     private static var cache: [String: Parts] = [:]
 
     private var parts: Parts? {
-        guard let id = caliber?.catalogID, !id.isEmpty, let item = CaliberCatalog.item(id: id) else { return nil }
+        guard let id = catalogID, !id.isEmpty, let item = CaliberCatalog.item(id: id) else { return nil }
         if let p = Self.cache[id] { return p }
         let o = item.outline
         let p = Parts(box: CGSize(width: o.width, height: o.height),
@@ -68,7 +80,7 @@ struct CartridgeView: View {
                 draw(parts.patch, .paper)
                 draw(parts.tip, parts.tipFill)
             }
-            .accessibilityLabel(caliber?.name ?? "")
+            .accessibilityLabel(name)
         } else {
             Image(systemName: "circle.dotted").foregroundStyle(.secondary)
         }
@@ -213,5 +225,32 @@ struct WeaponIcon: View {
         } else {
             Image(systemName: "scope")
         }
+    }
+}
+
+// MARK: - Bipod
+
+/// A rifle's bipod seen from the front: the fore-end clamp with two splayed legs on feet (there is no
+/// SF Symbol for one). Drawn in the tint, sized like a symbol in a list row.
+struct BipodIcon: View {
+    @ScaledMetric(relativeTo: .body) private var size: CGFloat = 22
+
+    var body: some View {
+        Canvas { ctx, canvas in
+            let s = min(canvas.width, canvas.height)
+            let line = StrokeStyle(lineWidth: s * 0.09, lineCap: .round, lineJoin: .round)
+            var path = Path()
+            // Clamp under the barrel, with the barrel as a short bar on top.
+            path.move(to: CGPoint(x: s * 0.3, y: s * 0.12)); path.addLine(to: CGPoint(x: s * 0.7, y: s * 0.12))
+            path.addRect(CGRect(x: s * 0.38, y: s * 0.2, width: s * 0.24, height: s * 0.16))
+            // Legs, splayed to the feet.
+            path.move(to: CGPoint(x: s * 0.42, y: s * 0.36)); path.addLine(to: CGPoint(x: s * 0.16, y: s * 0.86))
+            path.move(to: CGPoint(x: s * 0.58, y: s * 0.36)); path.addLine(to: CGPoint(x: s * 0.84, y: s * 0.86))
+            path.move(to: CGPoint(x: s * 0.08, y: s * 0.9)); path.addLine(to: CGPoint(x: s * 0.26, y: s * 0.9))
+            path.move(to: CGPoint(x: s * 0.74, y: s * 0.9)); path.addLine(to: CGPoint(x: s * 0.92, y: s * 0.9))
+            ctx.stroke(path, with: .style(.tint), style: line)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 }

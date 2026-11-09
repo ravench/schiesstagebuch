@@ -33,7 +33,7 @@ final class AppleWeatherUITests: XCTestCase {
         XCTAssertFalse(appleWeatherRow.exists, "Apple Weather row although switched off")
     }
 
-    /// The switch in Settings, under «Schiessanlage nach Standort wählen».
+    /// The switch in Settings, under the «Wetter» switch of «Zusätzliche Felder».
     private func settingsSwitch() -> XCUIElement {
         let tab = app.tabBars.buttons["Einstellungen"]
         XCTAssertTrue(tab.waitForExistence(timeout: 10))

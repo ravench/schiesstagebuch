@@ -18,7 +18,7 @@ struct SightSection: View {
             }
             if fields.contains(.iris) { rulerRow("Iris", value: $sight.irisSize) }
             if fields.contains(.diopter) { rulerRow("Diopter", value: $sight.diopter) }
-            if fields.contains(.ring), aperture != .iris { rulerRow("Ringgrösse", value: $sight.ringSize) }
+            if fields.contains(.ring), aperture != .iris { rulerRow("Ringkorn", value: $sight.ringSize) }
             if fields.contains(.bipod), aperture != .iris {
                 rulerRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm", start: 20,
                          scale: SightSettings.bipodRulerScale, clamp: SightSettings.clampBipod)
