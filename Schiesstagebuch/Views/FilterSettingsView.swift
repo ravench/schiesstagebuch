@@ -63,7 +63,7 @@ struct FilterSettingsView: View {
             } header: {
                 Text("Brillenfilter")
             } footer: {
-                Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Die Namen folgen der AXIA-Liste; dieselben Filter gibt es auch von anderen Herstellern.")
+                Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Andere Filter kannst du von Hand anlegen.")
             }
 
             // A wheel is bought whole, so it is owned whole: one switch, its colours shown beneath.
