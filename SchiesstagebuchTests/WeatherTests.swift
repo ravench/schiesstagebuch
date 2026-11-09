@@ -29,7 +29,9 @@ final class WeatherTests: ModelTestCase {
         XCTAssertEqual(keys("sun_direction"), SunDirection.allCases.map(\.rawValue))
         XCTAssertEqual(keys("glare"), ["0", "1", "2"])
         XCTAssertEqual(keys("precipitation"), ["none", "drizzle", "light_rain", "rain", "heavy_rain", "showers", "snow", "sleet", "hail"])
-        XCTAssertEqual(keys("visibility"), ["clear", "light_haze", "fog"])
+        XCTAssertEqual(keys("visibility"), ["clear", "light_haze", "fog", "mirage"], "mirage added 2026-11-09")
+        XCTAssertEqual(keys("target_light"), ["sun", "shade", "partial_shade"], "«Sonne direkt in den Stand» dropped 2026-11-09")
+        XCTAssertEqual(WeatherField.field("light")?.option("constant")?.icon, "arrow.right", "same icon as steady wind")
         XCTAssertEqual(keys("wind_character"), ["steady", "variable", "gusty"])
         // Clockwise from the targets, 45° apart, as Apple Weather's wind is mapped onto them.
         XCTAssertEqual(keys("wind_direction"), ["front", "front_right", "right", "back_right", "back", "back_left", "left", "front_left"])

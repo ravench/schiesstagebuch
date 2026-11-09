@@ -3641,6 +3641,29 @@
         }
       }
     },
+    "Flimmern": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mirage"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mirage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tremolio"
+          }
+        }
+      }
+    },
     "Flinte": {
       "extractionState": "manual",
       "localizations": {
@@ -9893,29 +9916,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Visibilità dei bersagli"
-          }
-        }
-      }
-    },
-    "Sonne direkt in den Stand": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "sun straight into the stand"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "soleil directement dans le stand"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "sole dritto nel poligono"
           }
         }
       }
