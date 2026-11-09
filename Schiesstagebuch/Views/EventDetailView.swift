@@ -241,9 +241,7 @@ struct EventEditorView: View {
                         }
                     }
                     ForEach(nameSuggestions, id: \.self) { s in
-                        Button { name = s } label: {
-                            Label { Text(verbatim: s) } icon: { Image(systemName: "arrow.up.left") }
-                        }
+                        Button(s) { name = s }
                     }
                     ScoringSystemPicker(system: $scoring)
                     if scoring == .ipsc {

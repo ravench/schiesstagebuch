@@ -107,6 +107,17 @@ struct EntryEditorView: View {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
                     RangePickerRow(selection: $range, ranges: ranges)
                     TextField("Anlass", text: $event)
+                    ScoringSystemPicker(system: $scoring)
+                    if scoring == .ipsc {
+                        IPSCMatchFields(division: $division, powerFactor: $powerFactor)
+                    }
+                } footer: {
+                    if stichCount > 1 {
+                        Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
+                    }
+                }
+
+                Section {
                     HStack {
                         TextField(scoring == .ipsc ? "Stage".loc : "Stich".loc, text: $stich)
                         if scoring != .ipsc, !recentStiche.isEmpty {
@@ -115,19 +126,6 @@ struct EntryEditorView: View {
                             } label: { Image(systemName: "clock.arrow.circlepath") }
                         }
                     }
-                    ScoringSystemPicker(system: $scoring)
-                    if scoring == .ipsc {
-                        IPSCMatchFields(division: $division, powerFactor: $powerFactor)
-                    }
-                } footer: {
-                    if stichCount > 1 {
-                        Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
-                    } else if scoring != .ipsc {
-                        Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
-                    }
-                }
-
-                Section {
                     pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
                     if barrelChoices.count > 1 {
@@ -153,7 +151,14 @@ struct EntryEditorView: View {
                         }
                     }
                     if scoring != .ipsc { positionPicker }
+                } footer: {
+                    if scoring != .ipsc {
+                        Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
+                    }
                 }
+                // Plain pickers show their value in grey, which read as disabled next to the tinted
+                // firearm and ammunition rows: one colour for every value that can be changed.
+                .tint(.accentColor)
 
                 if scoring == .ipsc {
                     IPSCStageSection(stage: $ipsc, shotCount: $shotCount, powerFactor: powerFactor)
@@ -187,12 +192,18 @@ struct EntryEditorView: View {
                     Text("Fotos (\(photos.count)/\(Limits.maxPhotos))")
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(entry != nil ? "Eintrag bearbeiten".loc : firstStich ? "Neuer Stich".loc : "Weiterer Stich".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(scoring == .rings && currentScore.exceedsMax) }
+                // The number pads have no return key to put the keyboard away.
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Fertig") { UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil) }
+                }
             }
             .onAppear(perform: load)
             .onChange(of: weapon) { old, new in weaponChanged(from: old, to: new) }
