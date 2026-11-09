@@ -116,6 +116,17 @@ final class PRScreensTests: XCTestCase {
             .waitForExistence(timeout: 10)
         holdAtTop(weatherSwitch)
         snap("13-Wetter-Apple-Wetter")
+        // The light, target and view menus: the steady light's arrow, the target without «Sonne direkt in
+        // den Stand», and «Flimmern» among the views of the targets.
+        for (row, option, name) in [("Lichtverhältnisse", "gleichbleibend", "13f-Lichtverhaeltnisse"),
+                                    ("Scheibe", "Teilschatten", "13g-Scheibe"),
+                                    ("Sicht auf die Scheiben", "Flimmern", "13h-Sicht-auf-die-Scheiben")] {
+            let button = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", row)).firstMatch
+            if button.waitForExistence(timeout: 3), openMenu(button, showing: option) {
+                snap(name)
+                closeMenu()
+            }
+        }
         topStop(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Windstärke am Stand")).firstMatch, "13b-Wetter-Wind",
                 besideRow: true)
         // The eight wind directions. Before them, «Windrichtung (Uhr)» was a menu of clock hours: no stop then.
