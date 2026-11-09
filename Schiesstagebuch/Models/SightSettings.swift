@@ -200,6 +200,14 @@ enum FilterColor {
         .init(name: "G+E rot", rgb: 0xC8202A),
     ]
 
+    /// The filter wheels as they are sold: Wyss's one wheel, Grünig + Elmiger's cassette with one or two
+    /// wheels of six (Raven 2026-11-09). Each is owned as a whole.
+    static let wheels: [(name: String, filters: [Filter])] = [
+        ("Filterrad Wyss", wyss),
+        ("Grünig + Elmiger, Rad 1", Array(gruenigElmiger[..<6])),
+        ("Grünig + Elmiger, Rad 2", Array(gruenigElmiger[6...])),
+    ]
+
     /// Dioptre-changing lenses (+0.25 / -0.25), usually stacked with a colour filter.
     static let dioptre: [Filter] = [
         .init(name: "+0.25", rgb: 0xEEF1F3, polarised: false, dioptre: 0.25),
@@ -253,10 +261,18 @@ struct FilterCatalog: Codable, Equatable {
 
     func owns(_ name: String) -> Bool { owned.contains(name) }
 
+    /// A whole filter wheel: owned when every colour on it is.
+    func owns(_ filters: [FilterColor.Filter]) -> Bool { filters.allSatisfy { owned.contains($0.name) } }
+
     /// Ticks or unticks a built-in filter. Unknown names are ignored.
     mutating func setOwned(_ name: String, _ own: Bool) {
         guard FilterColor.filter(named: name) != nil else { return }
         if own { owned.insert(name) } else { owned.remove(name) }
+    }
+
+    /// Ticks or unticks a whole filter wheel.
+    mutating func setOwned(_ filters: [FilterColor.Filter], _ own: Bool) {
+        for f in filters { setOwned(f.name, own) }
     }
 
     enum NameProblem: Equatable { case empty, duplicate }

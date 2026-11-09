@@ -93,6 +93,22 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertEqual(catalog.problem(with: "wyss GELB"), .duplicate, "own filters can't take a built-in name")
     }
 
+    /// Wheels are bought whole (Raven 2026-11-09): one switch each, G+E's two wheels make the 12-colour cassette.
+    func testFilterWheelsAreOwnedWhole() {
+        XCTAssertEqual(FilterColor.wheels.map(\.filters.count), [6, 6, 6])
+        XCTAssertEqual(FilterColor.wheels.flatMap(\.filters).map(\.name), (FilterColor.wyss + FilterColor.gruenigElmiger).map(\.name))
+        var catalog = FilterCatalog()
+        let wheel1 = FilterColor.wheels[1].filters
+        catalog.setOwned(wheel1, true)
+        XCTAssertTrue(catalog.owns(wheel1))
+        XCTAssertFalse(catalog.owns(FilterColor.wheels[2].filters))
+        XCTAssertEqual(catalog.visible.map(\.name), wheel1.map(\.name))
+        catalog.setOwned("G+E hellgelb", false)
+        XCTAssertFalse(catalog.owns(wheel1), "a wheel missing one colour is not owned")
+        catalog.setOwned(wheel1, false)
+        XCTAssertTrue(catalog.visible.isEmpty)
+    }
+
     func testFilterListMatchesTheShop() {
         XCTAssertEqual(FilterColor.filters.count, 17)
         XCTAssertEqual(FilterColor.all.count, 37, "17 glasses filters, 6 Wyss, 12 G+E, plus +0.25 and -0.25")

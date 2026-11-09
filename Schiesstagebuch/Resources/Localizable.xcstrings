@@ -1841,25 +1841,25 @@
         }
       }
     },
-    "Brillenfilter (AXIA)": {
+    "Brillenfilter": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Glasses filters (AXIA)"
+            "value": "Glasses filters"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtres de lunettes (AXIA)"
+            "value": "Filtres de lunettes"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Filtri per occhiali (AXIA)"
+            "value": "Filtri per occhiali"
           }
         }
       }
@@ -3572,48 +3572,48 @@
         }
       }
     },
-    "Filterrad Wyss (Stgw 90)": {
+    "Filterrad Wyss": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wyss filter wheel (Stgw 90)"
+            "value": "Wyss filter wheel"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Roue à filtres Wyss (Fass 90)"
+            "value": "Roue à filtres Wyss"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ruota filtri Wyss (Fass 90)"
+            "value": "Ruota filtri Wyss"
           }
         }
       }
     },
-    "Filterräder Grünig + Elmiger (Stgw 90)": {
+    "Filterräder im Diopter (Stgw 90)": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grünig + Elmiger filter wheels (Stgw 90)"
+            "value": "Filter wheels in the diopter (Stgw 90)"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Roues à filtres Grünig + Elmiger (Fass 90)"
+            "value": "Roues à filtres dans la dioptre (Fass 90)"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ruote filtri Grünig + Elmiger (Fass 90)"
+            "value": "Ruote filtri nella diottra (Fass 90)"
           }
         }
       }
@@ -4281,6 +4281,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fusto"
+          }
+        }
+      }
+    },
+    "Grünig + Elmiger, Rad 1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger, wheel 1"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger, roue 1"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger, ruota 1"
+          }
+        }
+      }
+    },
+    "Grünig + Elmiger, Rad 2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger, wheel 2"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger, roue 2"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger, ruota 2"
           }
         }
       }
@@ -6420,6 +6466,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Minor"
+          }
+        }
+      }
+    },
+    "Mit beiden Rädern von Grünig + Elmiger hast du die 12-Farben-Kassette.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With both Grünig + Elmiger wheels you have the 12-colour cassette."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec les deux roues Grünig + Elmiger, tu as la cassette à 12 couleurs."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con entrambe le ruote Grünig + Elmiger hai la cassetta a 12 colori."
           }
         }
       }
@@ -11921,25 +11990,25 @@
         }
       }
     },
-    "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.": {
+    "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Andere Filter kannst du von Hand anlegen.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Select the filters you own. Only these appear in the picker. Existing entries keep their filter."
+            "value": "Select the filters you own. Only these appear in the picker. Existing entries keep their filter. Other filters you can add by hand."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre."
+            "value": "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre. Tu peux ajouter d'autres filtres à la main."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro."
+            "value": "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro. Altri filtri puoi aggiungerli a mano."
           }
         }
       }

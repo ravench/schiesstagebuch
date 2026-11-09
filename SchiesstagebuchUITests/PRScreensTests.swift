@@ -94,6 +94,8 @@ final class PRScreensTests: XCTestCase {
                 record.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
                 snap("09c-Filter-ein")
             }
+            // The filter wheels, one switch each with its colours, below the glasses filters.
+            topStop(app.staticTexts["Filterräder im Diopter (Stgw 90)"].firstMatch, "09d-Filterraeder")
             back()
         }
     }
