@@ -183,7 +183,7 @@ enum FilterColor {
         .init(name: "Wyss blau", rgb: 0x3C6EC8),
     ]
 
-    /// Grünig + Elmiger filter cassette for the Stgw 90: two wheels with six colours each, wheel 1 first.
+    /// Grünig + Elmiger filter cassette for the Stgw 90 as sold until 2022: two wheels with six colours each, wheel 1 first.
     static let gruenigElmiger: [Filter] = [
         .init(name: "G+E hellblau", rgb: 0x9CC4F0),
         .init(name: "G+E dunkelblau", rgb: 0x1F3C8C),
@@ -199,12 +199,89 @@ enum FilterColor {
         .init(name: "G+E rot", rgb: 0xC8202A),
     ]
 
-    /// The filter wheels as they are sold: Wyss's one wheel, Grünig + Elmiger's cassette with one or two
-    /// wheels of six (Raven 2026-11-09). Each is owned as a whole.
+    /// Grünig + Elmiger «2023» cassette for the Stgw 90: two wheels of six colours and a neutral position,
+    /// wheel 1 first (gruenel.ch 16.2140).
+    static let gruenigElmiger2023: [Filter] = [
+        .init(name: "G+E 2023 dunkelgrau", rgb: 0x545454),
+        .init(name: "G+E 2023 grau", rgb: 0x7C7C7C),
+        .init(name: "G+E 2023 hellgrau", rgb: 0xADADAD),
+        .init(name: "G+E 2023 hell-hellgrau", rgb: 0xD9D9D9),
+        .init(name: "G+E 2023 UV", rgb: 0xE9E2F2),
+        .init(name: "G+E 2023 blau", rgb: 0x3F6FCF),
+        .init(name: "G+E 2023 grün", rgb: 0x66B35A),
+        .init(name: "G+E 2023 gelb", rgb: 0xF4D63A),
+        .init(name: "G+E 2023 peach", rgb: 0xF9BE9A),
+        .init(name: "G+E 2023 orange", rgb: 0xF08A38),
+        .init(name: "G+E 2023 rot", rgb: 0xD03030),
+        .init(name: "G+E 2023 braun", rgb: 0x8B5E3C),
+    ]
+
+    /// Gehmann's filter glasses, named as gehmann.com names them. The 6-colour wheel (566, 563, 565, 570, 575,
+    /// «Iris 6 Farben K31») is the first six; the 568's second wheel and the 569's two wheels pick from the rest.
+    static let gehmann: [Filter] = [
+        .init(name: "Gehmann gelb", rgb: 0xF5D800),
+        .init(name: "Gehmann hellgrün", rgb: 0x9BD36A),
+        .init(name: "Gehmann orange", rgb: 0xF39A2B),
+        .init(name: "Gehmann amethyst", rgb: 0x9A5BC2),
+        .init(name: "Gehmann dunkelgrau", rgb: 0x606060),
+        .init(name: "Gehmann hellgrau", rgb: 0xBDBDBD),
+        .init(name: "Gehmann hellblau", rgb: 0x8FC3F0),
+        .init(name: "Gehmann dunkelblau", rgb: 0x2A4FA8),
+        .init(name: "Gehmann zitronengelb", rgb: 0xF0F060),
+        .init(name: "Gehmann signalrot", rgb: 0xE0231E),
+        .init(name: "Gehmann dunkelgrün", rgb: 0x2F7A3C),
+        .init(name: "Gehmann türkis", rgb: 0x3BC8C8),
+        .init(name: "Gehmann mittelblau", rgb: 0x4F86D6),
+        .init(name: "Gehmann mittelgrau", rgb: 0x8A8A8A),
+        .init(name: "Gehmann weissblau", rgb: 0xD6E8F8),
+    ]
+
+    /// Centra's filter glasses: the 5-colour wheel (Sight 3.0 Filter and Combi, Sight Filter K31, Sight 1.8
+    /// Indoor, Senior, Tiny) is the first five; the 10-colour wheel (Sight 1.8 Competition, Twin, Super AR II) all ten.
+    static let centra: [Filter] = [
+        .init(name: "Centra grau", rgb: 0x9E9E9E),
+        .init(name: "Centra dunkelgrau", rgb: 0x585858),
+        .init(name: "Centra gelb", rgb: 0xF2DC3C),
+        .init(name: "Centra grün", rgb: 0x58B04E),
+        .init(name: "Centra C41 blau", rgb: 0x4A78C8),
+        .init(name: "Centra hellgrau", rgb: 0xC8C8C8),
+        .init(name: "Centra C41 UV", rgb: 0xEDE6F5),
+        .init(name: "Centra orange", rgb: 0xF2A040),
+        .init(name: "Centra braun", rgb: 0x8C5A32),
+        .init(name: "Centra C41 peach", rgb: 0xF7B890),
+    ]
+
+    /// Anschütz 9560 iris with its 5-colour wheel.
+    static let anschuetz: [Filter] = [
+        .init(name: "Anschütz gelb", rgb: 0xF0D040),
+        .init(name: "Anschütz grün", rgb: 0x50A850),
+        .init(name: "Anschütz braun", rgb: 0x7E5A3C),
+        .init(name: "Anschütz grau", rgb: 0x929292),
+        .init(name: "Anschütz hellgrau", rgb: 0xC4C4C4),
+    ]
+
+    private static func named(_ names: String..., in list: [Filter]) -> [Filter] {
+        names.map { n in list.first { $0.name == n }! }
+    }
+
+    /// The filter wheels as they are sold (Raven 2026-11-09, from shop.indoorswiss.ch and the makers' pages;
+    /// Wyss publishes no colour list, its six are as remembered). Each is owned as a whole.
     static let wheels: [(name: String, filters: [Filter])] = [
-        ("Filterrad Wyss", wyss),
-        ("Grünig + Elmiger, Rad 1", Array(gruenigElmiger[..<6])),
-        ("Grünig + Elmiger, Rad 2", Array(gruenigElmiger[6...])),
+        ("Wyss 6-Farbenfilter (Stgw 90)", wyss),
+        ("Grünig + Elmiger 2023, Rad 1 (Stgw 90)", Array(gruenigElmiger2023[..<6])),
+        ("Grünig + Elmiger 2023, Rad 2 (Stgw 90)", Array(gruenigElmiger2023[6...])),
+        ("Grünig + Elmiger bis 2022, Rad 1 (Stgw 90)", Array(gruenigElmiger[..<6])),
+        ("Grünig + Elmiger bis 2022, Rad 2 (Stgw 90)", Array(gruenigElmiger[6...])),
+        ("Gehmann 6-Farbfilter (566, 563, 565, 570, 575)", Array(gehmann[..<6])),
+        ("Gehmann 568, Rad 2", named("Gehmann hellblau", "Gehmann dunkelblau", "Gehmann zitronengelb", "Gehmann signalrot",
+                                    "Gehmann dunkelgrün", "Gehmann türkis", in: gehmann)),
+        ("Gehmann 569, Rad 1", named("Gehmann hellblau", "Gehmann signalrot", "Gehmann gelb", "Gehmann amethyst",
+                                    "Gehmann orange", "Gehmann hellgrün", in: gehmann)),
+        ("Gehmann 569, Rad 2", named("Gehmann mittelblau", "Gehmann mittelgrau", "Gehmann dunkelgrau", "Gehmann hellgrau",
+                                    "Gehmann weissblau", "Gehmann dunkelblau", in: gehmann)),
+        ("Centra 5-Farbfilter (Sight 3.0 Filter, 1.8 Indoor)", Array(centra[..<5])),
+        ("Centra 10-Farbfilter (Sight 1.8 Competition)", centra),
+        ("Anschütz 9560", anschuetz),
     ]
 
     /// Dioptre-changing lenses (+0.25 / -0.25), usually stacked with a colour filter.
@@ -213,8 +290,8 @@ enum FilterColor {
         .init(name: "-0.25", rgb: 0xE6E9EC, polarised: false, dioptre: -0.25),
     ]
 
-    /// Every built-in filter: glasses filters, the diopter filter wheels, then the dioptre lenses.
-    static var builtIn: [Filter] { filters + wyss + gruenigElmiger + dioptre }
+    /// Every built-in filter: glasses filters, the filter wheels, then the dioptre lenses.
+    static var builtIn: [Filter] { filters + wyss + gruenigElmiger2023 + gruenigElmiger + gehmann + centra + anschuetz + dioptre }
 
     static var all: [String] { builtIn.map(\.name) }
 

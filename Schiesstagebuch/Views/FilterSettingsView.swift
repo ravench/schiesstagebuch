@@ -66,7 +66,8 @@ struct FilterSettingsView: View {
                 Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Andere Filter kannst du von Hand anlegen.")
             }
 
-            // A wheel is bought whole, so it is owned whole: one switch, its colours shown beneath.
+            // A wheel is bought whole, so it is owned whole: one switch, its colours shown beneath. Wheels of
+            // one maker share their glasses, so the 568's or 569's wheels light up colours of the 6-colour wheel too.
             Section {
                 ForEach(FilterColor.wheels, id: \.name) { wheel in
                     Toggle(isOn: Binding(get: { catalog.owns(wheel.filters) },
@@ -80,9 +81,9 @@ struct FilterSettingsView: View {
                     }
                 }
             } header: {
-                Text("Filterräder im Diopter (Stgw 90)")
+                Text("Filterräder in Irisblenden")
             } footer: {
-                Text("Mit beiden Rädern von Grünig + Elmiger hast du die 12-Farben-Kassette.")
+                Text("Je ein Schalter pro Rad; mit beiden Rädern von Grünig + Elmiger hast du die 12-Farben-Kassette. Die Farben sind so benannt wie beim Hersteller.")
             }
 
             Section {
