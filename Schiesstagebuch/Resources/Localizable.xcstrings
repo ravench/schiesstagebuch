@@ -4998,6 +4998,29 @@
         }
       }
     },
+    "Kaliberdaten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calibre data"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Données des calibres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dati dei calibri"
+          }
+        }
+      }
+    },
     "Kartenposition entfernen": {
       "extractionState": "manual",
       "localizations": {

@@ -47,14 +47,30 @@ enum CaliberCatalog {
         let outline: Outline
     }
 
-    private struct File: Decodable { let calibers: [Item] }
+    /// The calibre-data commit the catalogue was generated from (tools/generate_assets.py), shown in Settings.
+    struct Source: Decodable {
+        let commit: String
+        let date: Date
 
-    static let items: [Item] = {
-        guard let url = Bundle.main.url(forResource: "Calibers", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let file = try? JSONDecoder().decode(File.self, from: data) else { return [] }
-        return file.calibers
-    }()
+        /// Short commit and its day, e.g. "04653a8 · 8.11.2026".
+        var text: String { "\(commit.prefix(7)) · \(date.formatted(date: .numeric, time: .omitted))" }
+    }
+
+    struct File: Decodable {
+        let calibreData: Source?
+        let calibers: [Item]
+    }
+
+    private static let file = Bundle.main.url(forResource: "Calibers", withExtension: "json")
+        .flatMap { try? Data(contentsOf: $0) }.flatMap(decodeFile)
+    static let items: [Item] = file?.calibers ?? []
+    static let source: Source? = file?.calibreData
+
+    static func decodeFile(_ data: Data) -> File? {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try? decoder.decode(File.self, from: data)
+    }
 
     private static let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
 
