@@ -143,11 +143,7 @@ extension WeatherField {
             o("sleet", "Schneeregen", "cloud.sleet"),
             o("hail", "Hagel", "cloud.hail"),
         ])),
-        .init(key: "weather_impact", label: "Einfluss aufs Resultat", icon: "chart.line.downtrend.xyaxis", kind: .select([
-            o("0", "keiner", "checkmark.circle"),
-            o("1", "spürbar", "exclamationmark.circle"),
-            o("2", "deutlich", "exclamationmark.triangle"),
-        ])),
+        // «Einfluss aufs Resultat» was dropped (Raven 2026-11-09); stored values stay unread.
         .init(key: "weather_note", label: "Bemerkung Wetter", icon: "text.bubble", kind: .text),
         // Measured values (the spec's source "weather_api"): stored when Apple Weather fills the record and
         // shown read-only in one line, but no input by hand for now (Raven 2026-11-06).

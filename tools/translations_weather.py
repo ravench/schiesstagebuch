@@ -48,7 +48,6 @@ W = {
     "Lufttemperatur": ("Air temperature", "Température de l'air", "Temperatura dell'aria"),
     "Luftfeuchtigkeit": ("Humidity", "Humidité", "Umidità"),
     "Luftdruck (Wetter)": ("Air pressure", "Pression atmosphérique", "Pressione atmosferica"),
-    "Einfluss aufs Resultat": ("Impact on the result", "Influence sur le résultat", "Influenza sul risultato"),
     "Bemerkung Wetter": ("Weather note", "Remarque météo", "Nota meteo"),
     # Options
     "ideal": ("ideal", "idéal", "ideale"),
@@ -109,7 +108,4 @@ W = {
     "Schnee": ("snow", "neige", "neve"),
     "Schneeregen": ("sleet", "neige fondue", "nevischio"),
     "Hagel": ("hail", "grêle", "grandine"),
-    "keiner": ("none", "aucune", "nessuna"),
-    "spürbar": ("noticeable", "sensible", "percepibile"),
-    "deutlich": ("clear", "nette", "netta"),
 }

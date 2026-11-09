@@ -2784,29 +2784,6 @@
         }
       }
     },
-    "Einfluss aufs Resultat": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impact on the result"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Influence sur le résultat"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Influenza sul risultato"
-          }
-        }
-      }
-    },
     "Einstellungen": {
       "extractionState": "manual",
       "localizations": {
@@ -12381,29 +12358,6 @@
         }
       }
     },
-    "deutlich": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "clear"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "nette"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "netta"
-          }
-        }
-      }
-    },
     "diffus": {
       "extractionState": "manual",
       "localizations": {
@@ -12841,29 +12795,6 @@
         }
       }
     },
-    "keiner": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "none"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "aucune"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "nessuna"
-          }
-        }
-      }
-    },
     "klar": {
       "extractionState": "manual",
       "localizations": {
@@ -13228,29 +13159,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "soleggiato"
-          }
-        }
-      }
-    },
-    "spürbar": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "noticeable"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "sensible"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "percepibile"
           }
         }
       }
