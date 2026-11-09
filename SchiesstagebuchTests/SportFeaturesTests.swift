@@ -48,9 +48,20 @@ final class SportFeaturesTests: ModelTestCase {
         XCTAssertEqual(SportFeatures.stored(in: defaults), .all)
     }
 
+    /// Until 2026-11-09 one switch (bit 1) covered diopter, ring and iris: it switches all three on, once.
+    func testTheOldSightSwitchBecomesThreeSwitches() {
+        defaults.set(0b0010, forKey: SportFeatures.key)
+        XCTAssertEqual(SportFeatures.stored(in: defaults), [.diopter, .ring, .iris])
+        var features = SportFeatures(rawValue: 0b0010) // as @AppStorage reads it
+        XCTAssertEqual(features, .sight)
+        features.set(.ring, false)
+        XCTAssertEqual(SportFeatures(rawValue: features.rawValue), [.diopter, .iris], "the old bit is gone, so ring stays off")
+        XCTAssertEqual(SportFeatures.each.count, 6)
+    }
+
     func testEachFeatureHasItsOwnBitTitleAndIcon() {
-        XCTAssertEqual(SportFeatures.each.count, 4)
-        XCTAssertEqual(Set(SportFeatures.each.map(\.rawValue)).count, 4)
+        XCTAssertEqual(SportFeatures.each.count, 6)
+        XCTAssertEqual(Set(SportFeatures.each.map(\.rawValue)).count, 6)
         XCTAssertEqual(SportFeatures(SportFeatures.each), .all)
         for feature in SportFeatures.each {
             XCTAssertEqual(feature.rawValue.nonzeroBitCount, 1)
@@ -63,7 +74,7 @@ final class SportFeaturesTests: ModelTestCase {
     /// Subtitles explain the app, not shooting (Raven 2026-11-06): shooters know filters, diopters and irises.
     func testSubtitlesOnlyWhereTheAppHandlesTheFieldItsOwnWay() {
         XCTAssertNil(SportFeatures.filter.detail)
-        XCTAssertNil(SportFeatures.sight.detail)
+        for field in [SportFeatures.diopter, .ring, .iris] { XCTAssertNil(field.detail) }
         XCTAssertNotNil(SportFeatures.bipod.detail, "the field shows for rifles only")
         XCTAssertNotNil(SportFeatures.weather.detail, "recorded per event")
     }
@@ -76,8 +87,8 @@ final class SportFeaturesTests: ModelTestCase {
 
     func testPistolsNeverShowTheBipod() {
         let all = SportFeatures.all
-        XCTAssertEqual(all.sightFields(for: .both), [.filter, .sight, .bipod])
-        XCTAssertEqual(all.sightFields(for: .iris), [.filter, .sight])
+        XCTAssertEqual(all.sightFields(for: .both), [.filter, .diopter, .ring, .iris, .bipod])
+        XCTAssertEqual(all.sightFields(for: .iris), [.filter, .diopter, .iris], "pistols: no ring, no bipod")
         XCTAssertEqual(SportFeatures.bipod.sightFields(for: .iris), [], "nothing left: the section is hidden")
         XCTAssertEqual(SportFeatures.weather.sightFields(for: .both), [], "weather has its own section")
     }
@@ -92,6 +103,7 @@ final class SportFeaturesTests: ModelTestCase {
         XCTAssertEqual(full.only([]), SightSettings())
         XCTAssertEqual(full.only(.filter), SightSettings(filter: "Citron", secondFilter: "+0.25"))
         XCTAssertEqual(full.only(.sight), SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1))
+        XCTAssertEqual(full.only(.ring), SightSettings(ringSize: 3.4))
         XCTAssertEqual(full.only(.bipod), SightSettings(bipodLength: 25))
         XCTAssertTrue(SightSettings(bipodLength: 25).only([.filter, .sight]).isEmpty)
     }

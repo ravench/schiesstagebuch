@@ -64,7 +64,7 @@ final class RulerScaleTests: XCTestCase {
         XCTAssertEqual(bipod.value(from: 20, translation: -15, width: 300), 20.5)
         XCTAssertEqual(bipod.value(from: 20, translation: -20, width: 300), 20.5, "rounds to the nearest half")
         XCTAssertEqual(bipod.value(from: 20, translation: 300, width: 300), 10)
-        XCTAssertEqual(bipod.value(from: 6, translation: 3_000, width: 300), 5)
+        XCTAssertEqual(bipod.value(from: 6, translation: 3_000, width: 300), 0, "down to the shortest length")
         XCTAssertEqual(bipod.value(from: 58, translation: -3_000, width: 300), 60)
     }
 
