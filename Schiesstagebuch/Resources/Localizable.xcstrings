@@ -875,6 +875,29 @@
         }
       }
     },
+    "Anschütz 9560": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anschütz 9560"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anschütz 9560"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anschütz 9560"
+          }
+        }
+      }
+    },
     "Anteil A": {
       "extractionState": "manual",
       "localizations": {
@@ -1883,6 +1906,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colpi C"
+          }
+        }
+      }
+    },
+    "Centra 10-Farbfilter (Sight 1.8 Competition)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Centra 10-colour filter (Sight 1.8 Competition)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtre 10 couleurs Centra (Sight 1.8 Competition)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtro a 10 colori Centra (Sight 1.8 Competition)"
+          }
+        }
+      }
+    },
+    "Centra 5-Farbfilter (Sight 3.0 Filter, 1.8 Indoor)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Centra 5-colour filter (Sight 3.0 Filter, 1.8 Indoor)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtre 5 couleurs Centra (Sight 3.0 Filter, 1.8 Indoor)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtro a 5 colori Centra (Sight 3.0 Filter, 1.8 Indoor)"
           }
         }
       }
@@ -3595,48 +3664,25 @@
         }
       }
     },
-    "Filterrad Wyss": {
+    "Filterräder in Irisblenden": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wyss filter wheel"
+            "value": "Filter wheels in irises"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Roue à filtres Wyss"
+            "value": "Roues à filtres des iris"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ruota filtri Wyss"
-          }
-        }
-      }
-    },
-    "Filterräder im Diopter (Stgw 90)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Filter wheels in the diopter (Stgw 90)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Roues à filtres dans la dioptre (Fass 90)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ruote filtri nella diottra (Fass 90)"
+            "value": "Ruote filtri negli iris"
           }
         }
       }
@@ -4078,6 +4124,98 @@
         }
       }
     },
+    "Gehmann 568, Rad 2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 568, wheel 2"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 568, roue 2"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 568, ruota 2"
+          }
+        }
+      }
+    },
+    "Gehmann 569, Rad 1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 569, wheel 1"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 569, roue 1"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 569, ruota 1"
+          }
+        }
+      }
+    },
+    "Gehmann 569, Rad 2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 569, wheel 2"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 569, roue 2"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 569, ruota 2"
+          }
+        }
+      }
+    },
+    "Gehmann 6-Farbfilter (566, 563, 565, 570, 575)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehmann 6-colour filter (566, 563, 565, 570, 575)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtre 6 couleurs Gehmann (566, 563, 565, 570, 575)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtro a 6 colori Gehmann (566, 563, 565, 570, 575)"
+          }
+        }
+      }
+    },
     "Gehäuse": {
       "extractionState": "manual",
       "localizations": {
@@ -4308,48 +4446,94 @@
         }
       }
     },
-    "Grünig + Elmiger, Rad 1": {
+    "Grünig + Elmiger 2023, Rad 1 (Stgw 90)": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grünig + Elmiger, wheel 1"
+            "value": "Grünig + Elmiger 2023, wheel 1 (Stgw 90)"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grünig + Elmiger, roue 1"
+            "value": "Grünig + Elmiger 2023, roue 1 (Fass 90)"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grünig + Elmiger, ruota 1"
+            "value": "Grünig + Elmiger 2023, ruota 1 (Fass 90)"
           }
         }
       }
     },
-    "Grünig + Elmiger, Rad 2": {
+    "Grünig + Elmiger 2023, Rad 2 (Stgw 90)": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grünig + Elmiger, wheel 2"
+            "value": "Grünig + Elmiger 2023, wheel 2 (Stgw 90)"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grünig + Elmiger, roue 2"
+            "value": "Grünig + Elmiger 2023, roue 2 (Fass 90)"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grünig + Elmiger, ruota 2"
+            "value": "Grünig + Elmiger 2023, ruota 2 (Fass 90)"
+          }
+        }
+      }
+    },
+    "Grünig + Elmiger bis 2022, Rad 1 (Stgw 90)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger up to 2022, wheel 1 (Stgw 90)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger jusqu'en 2022, roue 1 (Fass 90)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger fino al 2022, ruota 1 (Fass 90)"
+          }
+        }
+      }
+    },
+    "Grünig + Elmiger bis 2022, Rad 2 (Stgw 90)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger up to 2022, wheel 2 (Stgw 90)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger jusqu'en 2022, roue 2 (Fass 90)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grünig + Elmiger fino al 2022, ruota 2 (Fass 90)"
           }
         }
       }
@@ -4902,6 +5086,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anno"
+          }
+        }
+      }
+    },
+    "Je ein Schalter pro Rad; mit beiden Rädern von Grünig + Elmiger hast du die 12-Farben-Kassette. Die Farben sind so benannt wie beim Hersteller.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One switch per wheel; with both Grünig + Elmiger wheels you have the 12-colour cassette. The colours are named as the maker names them."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un interrupteur par roue ; avec les deux roues Grünig + Elmiger, tu as la cassette à 12 couleurs. Les couleurs portent les noms du fabricant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un interruttore per ruota; con entrambe le ruote Grünig + Elmiger hai la cassetta a 12 colori. I colori hanno i nomi del produttore."
           }
         }
       }
@@ -6466,29 +6673,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Minor"
-          }
-        }
-      }
-    },
-    "Mit beiden Rädern von Grünig + Elmiger hast du die 12-Farben-Kassette.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "With both Grünig + Elmiger wheels you have the 12-colour cassette."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avec les deux roues Grünig + Elmiger, tu as la cassette à 12 couleurs."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Con entrambe le ruote Grünig + Elmiger hai la cassetta a 12 colori."
           }
         }
       }
@@ -11986,6 +12170,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Forza del vento al poligono"
+          }
+        }
+      }
+    },
+    "Wyss 6-Farbenfilter (Stgw 90)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss 6-colour filter (Stgw 90)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtre 6 couleurs Wyss (Fass 90)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtro a 6 colori Wyss (Fass 90)"
           }
         }
       }

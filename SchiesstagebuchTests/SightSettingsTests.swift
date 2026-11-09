@@ -95,10 +95,20 @@ final class SightSettingsTests: ModelTestCase {
 
     /// Wheels are bought whole (Raven 2026-11-09): one switch each, G+E's two wheels make the 12-colour cassette.
     func testFilterWheelsAreOwnedWhole() {
-        XCTAssertEqual(FilterColor.wheels.map(\.filters.count), [6, 6, 6])
-        XCTAssertEqual(FilterColor.wheels.flatMap(\.filters).map(\.name), (FilterColor.wyss + FilterColor.gruenigElmiger).map(\.name))
+        XCTAssertEqual(FilterColor.wheels.map(\.filters.count), [6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 10, 5])
+        for wheel in FilterColor.wheels {
+            XCTAssertEqual(Set(wheel.filters.map(\.name)).count, wheel.filters.count, "\(wheel.name): no colour twice")
+            XCTAssertTrue(wheel.filters.allSatisfy { FilterColor.filter(named: $0.name) != nil }, "\(wheel.name): all built in")
+        }
+        // The researched sets (2026-11-09): the G+E 2023 cassette, Gehmann's 6-colour wheel, Centra's 5 and 10, Anschütz.
+        XCTAssertEqual(FilterColor.wheels[1].filters.map(\.name),
+                       ["G+E 2023 dunkelgrau", "G+E 2023 grau", "G+E 2023 hellgrau", "G+E 2023 hell-hellgrau", "G+E 2023 UV", "G+E 2023 blau"])
+        XCTAssertEqual(FilterColor.wheels[5].filters.map(\.name),
+                       ["Gehmann gelb", "Gehmann hellgrün", "Gehmann orange", "Gehmann amethyst", "Gehmann dunkelgrau", "Gehmann hellgrau"])
+        XCTAssertEqual(FilterColor.wheels[10].filters.prefix(5).map(\.name), FilterColor.wheels[9].filters.map(\.name), "the 10-colour wheel holds the five")
+        XCTAssertEqual(FilterColor.wheels[11].filters.map(\.name), ["Anschütz gelb", "Anschütz grün", "Anschütz braun", "Anschütz grau", "Anschütz hellgrau"])
         var catalog = FilterCatalog()
-        let wheel1 = FilterColor.wheels[1].filters
+        let wheel1 = FilterColor.wheels[3].filters
         catalog.setOwned(wheel1, true)
         XCTAssertTrue(catalog.owns(wheel1))
         XCTAssertFalse(catalog.owns(FilterColor.wheels[2].filters))
@@ -111,7 +121,7 @@ final class SightSettingsTests: ModelTestCase {
 
     func testFilterListMatchesTheShop() {
         XCTAssertEqual(FilterColor.filters.count, 17)
-        XCTAssertEqual(FilterColor.all.count, 37, "17 glasses filters, 6 Wyss, 12 G+E, plus +0.25 and -0.25")
+        XCTAssertEqual(FilterColor.all.count, 79, "17 glasses filters, 6 Wyss, 12 G+E 2023, 12 G+E, 15 Gehmann, 10 Centra, 5 Anschütz, +0.25 and -0.25")
         XCTAssertEqual(Set(FilterColor.all).count, FilterColor.all.count, "names are unique")
         XCTAssertEqual(Set(FilterColor.builtIn.map(\.rgb)).count, FilterColor.builtIn.count, "swatches are distinct")
         XCTAssertTrue(FilterColor.all.contains("Eidgenoss polarisiert"))
