@@ -61,21 +61,28 @@ struct FilterSettingsView: View {
             Section {
                 ownToggles(FilterColor.filters)
             } header: {
-                Text("Brillenfilter (AXIA)")
+                Text("Brillenfilter")
             } footer: {
-                Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter.")
+                Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Die Namen folgen der AXIA-Liste; dieselben Filter gibt es auch von anderen Herstellern.")
             }
 
+            // A wheel is bought whole, so it is owned whole: one switch, its colours shown beneath.
             Section {
-                ownToggles(FilterColor.wyss)
+                ForEach(FilterColor.wheels, id: \.name) { wheel in
+                    Toggle(isOn: Binding(get: { catalog.owns(wheel.filters) },
+                                         set: { on in update { $0.setOwned(wheel.filters, on) } })) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(wheel.name.loc)
+                            HStack(spacing: 4) {
+                                ForEach(wheel.filters, id: \.name) { FilterSwatch(filter: $0, size: 14) }
+                            }
+                        }
+                    }
+                }
             } header: {
-                Text("Filterrad Wyss (Stgw 90)")
-            }
-
-            Section {
-                ownToggles(FilterColor.gruenigElmiger)
-            } header: {
-                Text("Filterräder Grünig + Elmiger (Stgw 90)")
+                Text("Filterräder im Diopter (Stgw 90)")
+            } footer: {
+                Text("Mit beiden Rädern von Grünig + Elmiger hast du die 12-Farben-Kassette.")
             }
 
             Section {
