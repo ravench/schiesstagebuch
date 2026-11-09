@@ -104,8 +104,11 @@ final class PRScreensTests: XCTestCase {
         let extra = app.staticTexts["Zusätzliche Felder"].firstMatch
         reveal(extra, up: false)
         holdAtTop(extra)
+        pullDown(ifHidden: extra)
         snap("09a-Zusaetzliche-Felder")
-        if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Filter")).firstMatch) {
+        let filter = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Filter")).firstMatch
+        reveal(filter, up: false)
+        if open(filter) {
             snap("09b-Filter")
             let record = app.switches["Filter erfassen"].firstMatch
             if record.waitForExistence(timeout: 5) {
@@ -238,6 +241,19 @@ final class PRScreensTests: XCTestCase {
         reveal(element, swipes: 10)
         holdAtTop(element, besideRow: besideRow)
         snap(name)
+    }
+
+    /// A drag can glide on and leave `element` under the navigation bar (seen on CI with a long list below it):
+    /// pulls the list back down by the missing distance, in the margin beside the rows.
+    private func pullDown(ifHidden element: XCUIElement) {
+        guard element.exists else { return }
+        let top = app.navigationBars.firstMatch.frame.maxY + 8
+        let missing = top - element.frame.minY
+        guard missing > 0 else { return }
+        let from = CGVector(dx: 0.03, dy: 0.5)
+        app.coordinate(withNormalizedOffset: from)
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: 0.5 + missing / app.frame.height)),
+                   withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
     /// Drags `element` near the top of the screen, so what follows it shows. `besideRow` drags in the list's
