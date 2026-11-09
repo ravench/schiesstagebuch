@@ -7,7 +7,7 @@ Resources/WeaponIcons.json from calibre-data/cartridges.py and tools/weapon_icon
 Outlines are side views in millimetres, base at the bottom, as SVG path data
 (M/L/Z only) so the app can draw them with a tiny parser.
 """
-import json, os, sys
+import json, os, subprocess, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 # The calibre catalogue and the outline drawing live in the calibre-data submodule
@@ -19,10 +19,17 @@ from weapon_icons import ICONS  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "Schiesstagebuch", "Resources")
+DATA = os.path.join(ROOT, "calibre-data")
 
 # Measurements that define the chamber. Cartridges that agree on all of them fit the same
 # barrel (e.g. .308 Win / 7.62 NATO), so the app suggests the others when one is picked.
 CHAMBER_KEYS = ("kind", "rim", "base", "shoulder", "neck", "case", "sh_at", "bullet")
+
+
+def calibre_data():
+    """The calibre-data commit the catalogue is read from and its date, shown in the app's settings."""
+    commit, date = subprocess.check_output(["git", "log", "-1", "--format=%H %cI"], cwd=DATA, text=True).split()
+    return {"commit": commit, "date": date}
 
 
 def dimension_groups():
@@ -95,7 +102,7 @@ def preview(calibers, icons, path):
 if __name__ == "__main__":
     calibers, icons = build()
     os.makedirs(OUT, exist_ok=True)
-    json.dump({"version": 2, "calibers": calibers}, open(os.path.join(OUT, "Calibers.json"), "w"), ensure_ascii=False, separators=(",", ":"))
+    json.dump({"version": 2, "calibreData": calibre_data(), "calibers": calibers}, open(os.path.join(OUT, "Calibers.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     json.dump({"icons": icons}, open(os.path.join(OUT, "WeaponIcons.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     if "--preview" in sys.argv:
         preview(calibers, icons, sys.argv[sys.argv.index("--preview") + 1])

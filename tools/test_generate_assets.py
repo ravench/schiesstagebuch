@@ -1,5 +1,5 @@
 """Tests for the calibre catalogue generator: python3 -m unittest discover -s tools -p 'test_*.py'"""
-import json, os, sys, unittest
+import json, os, subprocess, sys, unittest
 
 sys.path.insert(0, os.path.dirname(__file__))
 import generate_assets  # noqa: E402
@@ -115,6 +115,15 @@ class DimensionGroupTests(unittest.TestCase):
         with open(os.path.join(ROOT, "Schiesstagebuch", "Resources", "Calibers.json")) as f:
             stored = json.load(f)["calibers"]
         self.assertEqual(stored, json.loads(json.dumps(calibers)), "run python3 tools/generate_assets.py")
+
+    def test_generated_file_names_the_calibre_data_commit(self):
+        """Settings show the calibre-data commit of the app's catalogue (CaliberCatalog.source)."""
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=generate_assets.DATA, text=True).strip()
+        with open(os.path.join(ROOT, "Schiesstagebuch", "Resources", "Calibers.json")) as f:
+            stored = json.load(f)["calibreData"]
+        self.assertEqual(stored["commit"], head, "run python3 tools/generate_assets.py")
+        # The committer date with its offset, which the app decodes as ISO 8601.
+        self.assertRegex(stored["date"], r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(Z|[+-]\d\d:\d\d)$")
 
 
 if __name__ == "__main__":

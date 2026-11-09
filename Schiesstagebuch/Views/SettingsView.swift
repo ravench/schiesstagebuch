@@ -148,7 +148,10 @@ struct SettingsView: View {
 
                 Section {
                     NavigationLink { AppIconView() } label: { Label("App-Icon", systemImage: "app.badge") }
-                    LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "–")
+                    LabeledContent("Version", value: Bundle.main.versionText)
+                    if let source = CaliberCatalog.source {
+                        LabeledContent("Kaliberdaten", value: source.text)
+                    }
                 }
             }
             .navigationTitle("Einstellungen")
