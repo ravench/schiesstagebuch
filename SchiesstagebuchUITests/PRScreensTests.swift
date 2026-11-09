@@ -148,7 +148,7 @@ final class PRScreensTests: XCTestCase {
         snap("14-Eintrag-Wetter")
         // The switch for it in Settings, with what it sends to Apple.
         tab("Einstellungen")
-        topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
+        topStop(app.switches["Wetterdaten von Apple Weather übernehmen"].firstMatch, "15-Einstellungen-Apple-Wetter")
     }
 
     /// Without Apple Weather: the fields from the wind down, with the footer on what the app still fills in,

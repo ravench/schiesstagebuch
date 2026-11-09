@@ -48,7 +48,7 @@ struct SportFeatures: OptionSet, Hashable {
         switch self {
         case .filter: "Filter (Mehrzahl)"
         case .diopter: "Diopter"
-        case .ring: "Ringgrösse"
+        case .ring: "Ringkorn"
         case .iris: "Iris"
         case .bipod: "Zweibeinstütze"
         case .weather: "Wetter"
@@ -66,14 +66,14 @@ struct SportFeatures: OptionSet, Hashable {
         }
     }
 
-    /// SF Symbol for the switch; nil for colour filters, which use the drawn filter holder (FilterHolderIcon).
+    /// SF Symbol for the switch; nil for the drawn icons: the filter holder (FilterHolderIcon) and the bipod (BipodIcon).
+    /// Raven 2026-11-09: the diopter's clicks as arrows, the iris as an aperture, the bipod as a bipod.
     var systemImage: String? {
         switch self {
-        case .filter: nil
-        case .diopter: "scope"
+        case .filter, .bipod: nil
+        case .diopter: "arrow.up.and.down.and.arrow.left.and.right"
         case .ring: "circle.circle"
-        case .iris: "eye"
-        case .bipod: "ruler"
+        case .iris: "camera.aperture"
         case .weather: "cloud.sun"
         default: "questionmark"
         }

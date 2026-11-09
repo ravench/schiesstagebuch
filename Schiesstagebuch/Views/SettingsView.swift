@@ -21,21 +21,28 @@ struct SettingsView: View {
     @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
     @AppStorage(ScoringSystem.enabledKey) private var scoringSystems = ""
+    @Query private var licenceCards: [LicenceCard]
 
     var body: some View {
         NavigationStack {
             List {
                 Section {
                     NavigationLink { WeaponsListView() } label: { Label(term("Waffen").loc, systemImage: "scope") }
-                    NavigationLink { CaliberListView() } label: { Label("Kaliber", systemImage: "circle.dotted") }
-                    NavigationLink { AmmunitionListView() } label: { Label("Munition", systemImage: "shippingbox") }
-                    NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "mappin.and.ellipse") }
+                    NavigationLink { CaliberListView() } label: {
+                        // A cartridge from the catalogue, like the calibre list draws them.
+                        Label { Text("Kaliber (Mehrzahl)") } icon: { CartridgeView(catalogID: "9x19 mm").frame(width: 22, height: 22) }
+                    }
+                    NavigationLink { AmmunitionListView() } label: { Label("Munition", systemImage: "circle.grid.3x3.fill") }
+                    NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "target") }
                 } header: {
                     Text("Stammdaten")
                 }
 
-                Section {
-                    NavigationLink { LicenceCardScreen() } label: { Label("SSV-Lizenz", systemImage: "person.text.rectangle") }
+                // Once a card is entered it has its own tab (RootView); this row would show it twice.
+                if !LicenceCard.hasCard(licenceCards) {
+                    Section {
+                        NavigationLink { LicenceCardScreen() } label: { Label("SSV-Lizenz", systemImage: "person.text.rectangle") }
+                    }
                 }
 
                 Section {
@@ -67,19 +74,8 @@ struct SettingsView: View {
                     Toggle(isOn: $rangeByLocation) {
                         Label("Schiessanlage nach Standort wählen", systemImage: "location")
                     }
-                    // Only while weather is recorded at all; the editor has nothing to fill otherwise.
-                    if features.contains(.weather) {
-                        Toggle(isOn: $appleWeather) {
-                            Label("Wetterdaten von Apple Weather übernehmen", systemImage: "icloud.and.arrow.down")
-                        }
-                    }
                 } footer: {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
-                        if features.contains(.weather) {
-                            Text("Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
-                        }
-                    }
+                    Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
                 }
 
                 Section {
@@ -107,10 +103,21 @@ struct SettingsView: View {
                             SportFeatureToggle(feature: feature, features: $features, showsDetail: false)
                         }
                     }
+                    // Under the weather switch it belongs to (Raven 2026-11-09); only while weather is recorded at all.
+                    if features.contains(.weather) {
+                        Toggle(isOn: $appleWeather) {
+                            Label("Wetterdaten von Apple Weather übernehmen", systemImage: "icloud.and.arrow.down")
+                        }
+                    }
                 } header: {
                     Text("Zusätzliche Felder")
                 } footer: {
-                    Text("Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.")
+                        if features.contains(.weather) {
+                            Text("Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
+                        }
+                    }
                 }
 
                 Section {
@@ -245,7 +252,7 @@ struct CaliberListView: View {
             .swipeActions { ArchiveButton(item: c) }
         }
         .searchable(text: $search, prompt: "Kaliber suchen")
-        .navigationTitle("Kaliber")
+        .navigationTitle("Kaliber (Mehrzahl)")
         .toolbar {
             Toggle(isOn: $showArchived) { Label("Archivierte", systemImage: "archivebox") }.toggleStyle(.button)
             Button { adding = true } label: { Label("Hinzufügen", systemImage: "plus") }

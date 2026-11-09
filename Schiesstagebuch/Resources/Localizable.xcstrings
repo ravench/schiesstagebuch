@@ -4952,6 +4952,35 @@
         }
       }
     },
+    "Kaliber (Mehrzahl)": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaliber"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calibres"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calibres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calibri"
+          }
+        }
+      }
+    },
     "Kaliber bearbeiten": {
       "extractionState": "manual",
       "localizations": {
@@ -9111,6 +9140,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dimensione dell'anello"
+          }
+        }
+      }
+    },
+    "Ringkorn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ring"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anneau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anello"
           }
         }
       }
