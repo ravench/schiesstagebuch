@@ -190,6 +190,8 @@ struct SportFeatureIcon: View {
     var body: some View {
         if let symbol = feature.systemImage {
             Image(systemName: symbol)
+        } else if feature == .bipod {
+            BipodIcon()
         } else {
             FilterHolderIcon()
         }

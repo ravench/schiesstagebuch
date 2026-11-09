@@ -6,21 +6,35 @@ import Foundation
 struct SportFeatures: OptionSet, Hashable {
     let rawValue: Int
 
+    /// Bit 1 was one switch for diopter, ring and iris until 2026-11-09 (Raven: three switches); a stored
+    /// value with it switches all three on, and is written back without it.
+    init(rawValue: Int) {
+        let legacySight = 1 << 1
+        self.rawValue = rawValue & legacySight != 0
+            ? (rawValue & ~legacySight) | Self.sight.rawValue
+            : rawValue
+    }
+
     /// Filters (up to two per entry: colour, polarising or correction), on the glasses or built into a rifle's diopter,
     /// and the filter list in Settings.
     static let filter = SportFeatures(rawValue: 1 << 0)
-    /// Diopter, plus the ring on a rifle's sight or the iris on the glasses for pistols.
-    static let sight = SportFeatures(rawValue: 1 << 1)
     /// Bipod length; rifles only.
     static let bipod = SportFeatures(rawValue: 1 << 2)
     /// Weather per event.
     static let weather = SportFeatures(rawValue: 1 << 3)
+    static let diopter = SportFeatures(rawValue: 1 << 4)
+    /// The ring on a rifle's sight.
+    static let ring = SportFeatures(rawValue: 1 << 5)
+    /// The iris on the glasses, used with pistols.
+    static let iris = SportFeatures(rawValue: 1 << 6)
+    /// The three sight fields together.
+    static let sight: SportFeatures = [.diopter, .ring, .iris]
 
     /// Each feature on its own, in the order the welcome screen and Settings list them.
-    static let each: [SportFeatures] = [.filter, .sight, .bipod, .weather]
-    static let all: SportFeatures = [.filter, .sight, .bipod, .weather]
+    static let each: [SportFeatures] = [.filter, .diopter, .ring, .iris, .bipod, .weather]
+    static let all: SportFeatures = [.filter, .diopter, .ring, .iris, .bipod, .weather]
     /// The fields of the entry's «Einstellungen für Sportschützen» section.
-    static let sightFields: SportFeatures = [.filter, .sight, .bipod]
+    static let sightFields: SportFeatures = [.filter, .diopter, .ring, .iris, .bipod]
 
     /// UserDefaults key; stored per device like the other display settings.
     static let key = "sportFeatures.v1"
@@ -33,7 +47,9 @@ struct SportFeatures: OptionSet, Hashable {
     var title: String {
         switch self {
         case .filter: "Filter (Mehrzahl)"
-        case .sight: "Diopter, Ring und Iris"
+        case .diopter: "Diopter"
+        case .ring: "Ringkorn"
+        case .iris: "Iris"
         case .bipod: "Zweibeinstütze"
         case .weather: "Wetter"
         default: ""
@@ -50,12 +66,14 @@ struct SportFeatures: OptionSet, Hashable {
         }
     }
 
-    /// SF Symbol for the switch; nil for colour filters, which use the drawn filter holder (FilterHolderIcon).
+    /// SF Symbol for the switch; nil for the drawn icons: the filter holder (FilterHolderIcon) and the bipod (BipodIcon).
+    /// Raven 2026-11-09: the diopter's clicks as arrows, the iris as an aperture, the bipod as a bipod.
     var systemImage: String? {
         switch self {
-        case .filter: nil
-        case .sight: "scope"
-        case .bipod: "ruler"
+        case .filter, .bipod: nil
+        case .diopter: "arrow.up.and.down.and.arrow.left.and.right"
+        case .ring: "circle.circle"
+        case .iris: "camera.aperture"
         case .weather: "cloud.sun"
         default: "questionmark"
         }
@@ -64,10 +82,10 @@ struct SportFeatures: OptionSet, Hashable {
     /// Settings shows this feature as one row that opens the filter page, with its switch above the filter list.
     var hasFilterList: Bool { self == .filter }
 
-    /// Sight-section fields an entry shows for this kind of weapon: pistols have no bipod.
+    /// Sight-section fields an entry shows for this kind of weapon: pistols have no ring and no bipod.
     func sightFields(for aperture: SightSettings.Aperture) -> SportFeatures {
         var fields = intersection(Self.sightFields)
-        if aperture == .iris { fields.remove(.bipod) }
+        if aperture == .iris { fields.subtract([.ring, .bipod]) }
         return fields
     }
 
@@ -81,7 +99,9 @@ extension SightSettings {
     func only(_ fields: SportFeatures) -> SightSettings {
         var s = self
         if !fields.contains(.filter) { s.filter = ""; s.secondFilter = "" }
-        if !fields.contains(.sight) { s.diopter = nil; s.ringSize = nil; s.irisSize = nil }
+        if !fields.contains(.diopter) { s.diopter = nil }
+        if !fields.contains(.ring) { s.ringSize = nil }
+        if !fields.contains(.iris) { s.irisSize = nil }
         if !fields.contains(.bipod) { s.bipodLength = nil }
         return s
     }
@@ -91,7 +111,9 @@ extension SightSettings {
     func keeping(_ stored: SightSettings, outside fields: SportFeatures) -> SightSettings {
         var s = self
         if !fields.contains(.filter) { s.filter = stored.filter; s.secondFilter = stored.secondFilter }
-        if !fields.contains(.sight) { s.diopter = stored.diopter; s.ringSize = stored.ringSize; s.irisSize = stored.irisSize }
+        if !fields.contains(.diopter) { s.diopter = stored.diopter }
+        if !fields.contains(.ring) { s.ringSize = stored.ringSize }
+        if !fields.contains(.iris) { s.irisSize = stored.irisSize }
         if !fields.contains(.bipod) { s.bipodLength = stored.bipodLength }
         return s
     }

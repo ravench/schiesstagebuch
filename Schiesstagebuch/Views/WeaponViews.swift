@@ -264,19 +264,14 @@ struct WeaponEditorView: View {
                     TextField("Name, z. B. SIG P210", text: $name)
                     TextField("Hersteller (optional)", text: $manufacturer)
                         .textInputAutocapitalization(.words)
-                    Picker(selection: $category) {
+                    // The picker shows the chosen row (icon and name) itself; an icon in the label doubled it.
+                    Picker("Kategorie", selection: $category) {
                         ForEach(WeaponCategory.allCases) { c in
                             HStack(spacing: 12) {
                                 WeaponIcon(category: c).frame(width: 48, height: 18)
                                 Text(c.title)
                             }
                             .tag(c)
-                        }
-                    } label: {
-                        HStack {
-                            Text("Kategorie")
-                            Spacer()
-                            WeaponIcon(category: category).frame(width: 48, height: 18).foregroundStyle(.secondary)
                         }
                     }
                     .pickerStyle(.navigationLink)

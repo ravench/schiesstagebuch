@@ -62,8 +62,15 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
-            stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
-            stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
+            // The figures are their own screen (the tab bar has a «Statistik» button too, so by the cell).
+            let statistics = app.cells.containing(.staticText, identifier: "Statistik").firstMatch
+            reveal(statistics)
+            if open(statistics) {
+                snap("07e-Waffe-Statistik")
+                stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
+                stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
+                back()
+            }
             back()
         }
 
@@ -106,6 +113,8 @@ final class PRScreensTests: XCTestCase {
                 record.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
                 snap("09c-Filter-ein")
             }
+            // The filter wheels, one switch each with its colours, below the glasses filters.
+            topStop(app.staticTexts["Filterräder im Diopter (Stgw 90)"].firstMatch, "09d-Filterraeder")
             back()
         }
     }
@@ -158,7 +167,7 @@ final class PRScreensTests: XCTestCase {
         snap("14-Eintrag-Wetter")
         // The switch for it in Settings, with what it sends to Apple.
         tab("Einstellungen")
-        topStop(app.switches["Schiessanlage nach Standort wählen"].firstMatch, "15-Einstellungen-Apple-Wetter")
+        topStop(app.switches["Wetterdaten von Apple Weather übernehmen"].firstMatch, "15-Einstellungen-Apple-Wetter")
     }
 
     /// Without Apple Weather: the fields from the wind down, with the footer on what the app still fills in,

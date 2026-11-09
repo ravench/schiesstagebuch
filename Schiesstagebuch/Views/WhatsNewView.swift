@@ -13,9 +13,7 @@ struct WhatsNewView: View {
                         Text(verbatim: bullet)
                     }
                 } footer: {
-                    let info = Bundle.main.infoDictionary ?? [:]
-                    let versionText = "\(info["CFBundleShortVersionString"] ?? "?") (\(info["CFBundleVersion"] ?? "?"))"
-                    Text(verbatim: "\("Version".loc) \(versionText)")
+                    Text(verbatim: "\("Version".loc) \(Bundle.main.versionText)")
                 }
             }
             .navigationTitle("Neu in dieser Version")

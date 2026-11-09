@@ -7,35 +7,24 @@ struct SightSection: View {
     @Binding var sight: SightSettings
     var aperture: SightSettings.Aperture = .both
     var fields: SportFeatures = SportFeatures.sightFields
-    @State private var expanded = false
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
 
     var body: some View {
         Section {
-            DisclosureGroup(isExpanded: $expanded) {
-                if fields.contains(.filter) {
-                    filterPicker("Filter", index: 0)
-                    // A second filter can be stacked on the first, e.g. +0.25 or -0.25.
-                    if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
-                }
-                if fields.contains(.sight) {
-                    rulerRow("Iris", value: $sight.irisSize)
-                    rulerRow("Diopter", value: $sight.diopter)
-                    if aperture != .iris { rulerRow("Ringgrösse", value: $sight.ringSize) }
-                }
-                if fields.contains(.bipod), aperture != .iris {
-                    rulerRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm", start: 20,
-                             scale: SightSettings.bipodRulerScale, clamp: SightSettings.clampBipod)
-                }
-            } label: {
-                HStack {
-                    Text("Einstellungen für Sportschützen")
-                    Spacer()
-                    if !expanded, !shown.isEmpty {
-                        Text(summary).font(.callout).foregroundStyle(.secondary).lineLimit(1)
-                    }
-                }
+            if fields.contains(.filter) {
+                filterPicker("Filter", index: 0)
+                // A second filter can be stacked on the first, e.g. +0.25 or -0.25.
+                if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
             }
+            if fields.contains(.iris) { rulerRow("Iris", value: $sight.irisSize) }
+            if fields.contains(.diopter) { rulerRow("Diopter", value: $sight.diopter) }
+            if fields.contains(.ring), aperture != .iris { rulerRow("Ringkorn", value: $sight.ringSize) }
+            if fields.contains(.bipod), aperture != .iris {
+                rulerRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm", start: 20,
+                         scale: SightSettings.bipodRulerScale, clamp: SightSettings.clampBipod)
+            }
+        } header: {
+            Text("Einstellungen für Sportschützen")
         } footer: {
             if fields.contains(.filter), FilterCatalog(data: catalogData).visible.isEmpty {
                 Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.").loc)
@@ -43,20 +32,6 @@ struct SightSection: View {
                 Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.").loc)
             }
         }
-    }
-
-    /// The values of the fields on show; hidden ones stay out of the summary.
-    private var shown: SightSettings { sight.only(fields) }
-
-    private var summary: String {
-        let sight = shown
-        var parts: [String] = []
-        if !sight.filters.isEmpty { parts.append(FilterColor.title(sight.filters)) }
-        if let i = sight.irisSize { parts.append("I \(SightSettings.format(i))") }
-        if let d = sight.diopter { parts.append("D \(SightSettings.format(d))") }
-        if let r = sight.ringSize, aperture != .iris { parts.append("R \(SightSettings.format(r))") }
-        if let b = sight.bipodLength, aperture != .iris { parts.append("\(SightSettings.format(b)) cm") }
-        return parts.joined(separator: " · ")
     }
 
     /// Picker for the first (index 0) or second (index 1) filter. The same filter may be picked twice.

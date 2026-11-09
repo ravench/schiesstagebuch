@@ -45,7 +45,8 @@ struct SightSettings: Equatable {
     static let rulerScale = RulerScale(range: range, step: step, halfSpan: 0.5, majorEvery: 5)
 
     /// Bipod ruler range in cm, in steps of 0.5.
-    static let bipodRange: ClosedRange<Double> = 5...60
+    /// From 0: the markings on a bipod count from its shortest length (Raven 2026-11-09).
+    static let bipodRange: ClosedRange<Double> = 0...60
     static let bipodStep = 0.5
 
     /// Bipod ruler: ±5 cm on screen, 0.5 cm steps, numbers every 2 cm.
@@ -199,6 +200,14 @@ enum FilterColor {
         .init(name: "G+E rot", rgb: 0xC8202A),
     ]
 
+    /// The filter wheels as they are sold: Wyss's one wheel, Grünig + Elmiger's cassette with one or two
+    /// wheels of six (Raven 2026-11-09). Each is owned as a whole.
+    static let wheels: [(name: String, filters: [Filter])] = [
+        ("Filterrad Wyss", wyss),
+        ("Grünig + Elmiger, Rad 1", Array(gruenigElmiger[..<6])),
+        ("Grünig + Elmiger, Rad 2", Array(gruenigElmiger[6...])),
+    ]
+
     /// Dioptre-changing lenses (+0.25 / -0.25), usually stacked with a colour filter.
     static let dioptre: [Filter] = [
         .init(name: "+0.25", rgb: 0xEEF1F3, polarised: false, dioptre: 0.25),
@@ -252,10 +261,18 @@ struct FilterCatalog: Codable, Equatable {
 
     func owns(_ name: String) -> Bool { owned.contains(name) }
 
+    /// A whole filter wheel: owned when every colour on it is.
+    func owns(_ filters: [FilterColor.Filter]) -> Bool { filters.allSatisfy { owned.contains($0.name) } }
+
     /// Ticks or unticks a built-in filter. Unknown names are ignored.
     mutating func setOwned(_ name: String, _ own: Bool) {
         guard FilterColor.filter(named: name) != nil else { return }
         if own { owned.insert(name) } else { owned.remove(name) }
+    }
+
+    /// Ticks or unticks a whole filter wheel.
+    mutating func setOwned(_ filters: [FilterColor.Filter], _ own: Bool) {
+        for f in filters { setOwned(f.name, own) }
     }
 
     enum NameProblem: Equatable { case empty, duplicate }
