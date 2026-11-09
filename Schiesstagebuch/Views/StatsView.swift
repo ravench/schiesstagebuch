@@ -26,7 +26,7 @@ struct StatsView: View {
                 Section(term("Waffen").loc) {
                     ForEach(weapons) { w in
                         NavigationLink {
-                            WeaponDetailView(weapon: w)
+                            WeaponStatsView(weapon: w)
                         } label: {
                             HStack {
                                 WeaponIcon(category: w.category).frame(width: 40, height: 16).foregroundStyle(.secondary)
@@ -141,6 +141,8 @@ struct ItemStatsList<Header: View, Extra: View>: View {
     }
 }
 
+/// The firearm's own data (Waffen tab): what it is, its barrels and maintenance; its figures are one
+/// row further, in `WeaponStatsView`. Raven 2026-11-09: settings and statistics on separate screens.
 struct WeaponDetailView: View {
     @Bindable var weapon: Weapon
     @Environment(\.modelContext) private var context
@@ -159,7 +161,7 @@ struct WeaponDetailView: View {
     @State private var deleting = false
 
     var body: some View {
-        ItemStatsList(entries: weapon.entries ?? []) {
+        List {
             Section {
                 WeaponIcon(category: weapon.category)
                     .frame(maxWidth: .infinity).frame(height: 70)
@@ -181,14 +183,11 @@ struct WeaponDetailView: View {
                 BarrelSection(weapon: weapon, present: { barrelSheet = $0 }, delete: { swipedBarrel = $0 })
             }
             MaintenanceSection(weapon: weapon) { maintenanceSheet = $0 }
-        } breakdowns: { entries in
-            if weapon.hasSeveralBarrels {
-                Section { BreakdownChart(title: "Pro Lauf", entries: entries, key: \.effectiveBarrel, label: \.displayName) }
+            Section {
+                NavigationLink { WeaponStatsView(weapon: weapon) } label: {
+                    Label("Statistik", systemImage: "chart.bar.xaxis")
+                }
             }
-            Section { BreakdownChart(title: "Pro Kaliber", entries: entries, key: \.caliber, label: \.name) }
-            Section { BreakdownChart(title: "Pro Schiessanlage", entries: entries, key: \.range, label: \.name) }
-            Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.displayName) }
-            if LotResultsChart.shows(entries) { Section { LotResultsChart(entries: entries) } }
         }
         .navigationTitle(weapon.name)
         .toolbar { Button("Bearbeiten") { editing = true } }
@@ -223,6 +222,25 @@ struct WeaponDetailView: View {
         guard let b = pendingBarrelDelete else { return }
         pendingBarrelDelete = nil
         try? Deletion.delete(b, in: context)
+    }
+}
+
+/// The firearm's figures and charts alone (Statistik tab, or from the firearm's screen).
+struct WeaponStatsView: View {
+    let weapon: Weapon
+
+    var body: some View {
+        ItemStatsList(entries: weapon.entries ?? []) {
+        } breakdowns: { entries in
+            if weapon.hasSeveralBarrels {
+                Section { BreakdownChart(title: "Pro Lauf", entries: entries, key: \.effectiveBarrel, label: \.displayName) }
+            }
+            Section { BreakdownChart(title: "Pro Kaliber", entries: entries, key: \.caliber, label: \.name) }
+            Section { BreakdownChart(title: "Pro Schiessanlage", entries: entries, key: \.range, label: \.name) }
+            Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.displayName) }
+            if LotResultsChart.shows(entries) { Section { LotResultsChart(entries: entries) } }
+        }
+        .navigationTitle(weapon.name)
     }
 }
 
