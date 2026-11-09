@@ -45,7 +45,8 @@ struct SightSettings: Equatable {
     static let rulerScale = RulerScale(range: range, step: step, halfSpan: 0.5, majorEvery: 5)
 
     /// Bipod ruler range in cm, in steps of 0.5.
-    static let bipodRange: ClosedRange<Double> = 5...60
+    /// From 0: the markings on a bipod count from its shortest length (Raven 2026-11-09).
+    static let bipodRange: ClosedRange<Double> = 0...60
     static let bipodStep = 0.5
 
     /// Bipod ruler: ±5 cm on screen, 0.5 cm steps, numbers every 2 cm.

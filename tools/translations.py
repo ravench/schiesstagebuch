@@ -439,7 +439,6 @@ T = {
     "Filterräder Grünig + Elmiger (Stgw 90)": ("Grünig + Elmiger filter wheels (Stgw 90)", "Roues à filtres Grünig + Elmiger (Fass 90)", "Ruote filtri Grünig + Elmiger (Fass 90)"),
     "Zusätzliche Felder": ("Extra fields", "Champs supplémentaires", "Campi aggiuntivi"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
-    "Diopter, Ring und Iris": ("Diopter, ring and iris", "Dioptre, anneau et iris", "Diottra, anello e iride"),
     "Länge in cm, nur bei Gewehren": ("Length in cm, rifles only", "Longueur en cm, fusils uniquement", "Lunghezza in cm, solo fucili"),
     "Licht, Wind und Temperatur pro Anlass": (
         "Light, wind and temperature per event",

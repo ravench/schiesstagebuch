@@ -148,7 +148,8 @@ final class SightSettingsTests: ModelTestCase {
     }
 
     func testBipodClampsToHalfCentimetres() {
-        XCTAssertEqual(SightSettings.clampBipod(1), 5)
+        XCTAssertEqual(SightSettings.clampBipod(-1), 0)
+        XCTAssertEqual(SightSettings.clampBipod(1), 1)
         XCTAssertEqual(SightSettings.clampBipod(80), 60)
         XCTAssertEqual(SightSettings.clampBipod(23.3), 23.5)
         XCTAssertEqual(SightSettings.clampBipod(23.2), 23)
