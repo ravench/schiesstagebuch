@@ -178,6 +178,21 @@ def what_to_test(notes, build_number, key_path, key_id, issuer, bundle_id, wait=
         print(f"{method} {body['data']['attributes'].get('locale', path)}")
 
 
+def has_notes(path):
+    """Whether the Changelog.json at `path` carries any bullet."""
+    with open(path) as f:
+        return any(json.load(f).get("notes", {}).values())
+
+
+def build_exists(build_number, key_path, key_id, issuer, bundle_id):
+    """Whether App Store Connect already has a build with that number (any processing state)."""
+    apps = asc("GET", f"/apps?filter[bundleId]={bundle_id}", token(key_path, key_id, issuer))["data"]
+    if not apps:
+        return False
+    builds = asc("GET", f"/builds?filter[app]={apps[0]['id']}&filter[version]={build_number}", token(key_path, key_id, issuer))["data"]
+    return bool(builds)
+
+
 def main(argv):
     if len(argv) == 3 and argv[1] == "notes":
         write_notes(argv[2])
@@ -186,6 +201,12 @@ def main(argv):
         with open(os.path.join(ROOT, "project.yml")) as f:
             bundle_id = re.search(r"PRODUCT_BUNDLE_IDENTIFIER:\s*(\S+)", f.read()).group(1)
         what_to_test(notes, argv[3], argv[2], os.environ["ASC_KEY_ID"], os.environ["ASC_ISSUER_ID"], bundle_id)
+    elif argv[1:2] == ["has-notes"] and len(argv) == 3:
+        sys.exit(0 if has_notes(argv[2]) else 1)
+    elif argv[1:2] == ["build-exists"] and len(argv) == 4:
+        with open(os.path.join(ROOT, "project.yml")) as f:
+            bundle_id = re.search(r"PRODUCT_BUNDLE_IDENTIFIER:\s*(\S+)", f.read()).group(1)
+        sys.exit(0 if build_exists(argv[3], argv[2], os.environ["ASC_KEY_ID"], os.environ["ASC_ISSUER_ID"], bundle_id) else 1)
     else:
         sys.exit(__doc__)
 

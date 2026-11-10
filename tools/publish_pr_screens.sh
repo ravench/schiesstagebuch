@@ -37,8 +37,9 @@ cd ..
 python3 "$TOOLS/pr_screens.py" comment "$CHANGED" "$BASE_URL" "$RUN_URL" $DEVICE > comment.md
 # One comment per pull request and device (its marker is the first line), updated on every run.
 MARKER=$(head -1 comment.md)
-ID=$(gh api "repos/$REPO/issues/$PR/comments" --paginate \
-  --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+# --slurp: one array over all pages; `| head -1` would cut gh off mid-page and fail the pipeline (pipefail).
+ID=$(gh api "repos/$REPO/issues/$PR/comments" --paginate --slurp \
+  --jq "[.[][] | select(.body | startswith(\"$MARKER\"))][0].id // empty")
 if [ -n "$ID" ]; then
   gh api -X PATCH "repos/$REPO/issues/comments/$ID" -F body=@comment.md >/dev/null
 else

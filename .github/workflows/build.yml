@@ -222,6 +222,7 @@ jobs:
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
         with:
           name: pr-screens
+          overwrite: true # a re-run of the job uploads again
           path: |
             ${{ env.SCREENS }}/after
             ${{ env.SCREENS }}/before
@@ -342,6 +343,7 @@ jobs:
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
         with:
           name: ipad-screens
+          overwrite: true
           path: |
             ${{ env.SCREENS }}/after
             ${{ env.SCREENS }}/before

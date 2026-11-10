@@ -156,7 +156,10 @@ jobs:
           fi
           if python3 -m venv "$RUNNER_TEMP/venv" && "$RUNNER_TEMP/venv/bin/pip" install -q anthropic \
              && "$RUNNER_TEMP/venv/bin/python" tools/changelog.py notes Schiesstagebuch/Resources/Changelog.json; then
-            echo "notes=$(cat Schiesstagebuch/Resources/Changelog.json)" >> "$GITHUB_OUTPUT"
+            # Only with bullets: the same commit again writes {"notes": {}}, and what-to-test would poll for nothing.
+            if python3 tools/changelog.py has-notes Schiesstagebuch/Resources/Changelog.json; then
+              echo "notes=$(cat Schiesstagebuch/Resources/Changelog.json)" >> "$GITHUB_OUTPUT"
+            fi
           else
             echo "::warning::Release notes skipped: tools/changelog.py failed."
           fi
@@ -207,16 +210,22 @@ jobs:
       - name: Upload to TestFlight
         if: steps.secrets.outputs.ready == 'true'
         run: |
-          xcodebuild -exportArchive \
-            -archivePath "$RUNNER_TEMP/Schiesstagebuch.xcarchive" \
-            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
-            -exportPath "$RUNNER_TEMP/upload" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
-            -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
-          echo "### Build $BUILD_NUMBER uploaded to TestFlight" >> "$GITHUB_STEP_SUMMARY"
-          git tag "testflight/$BUILD_NUMBER"
+          # A re-run keeps the build number: when the first attempt uploaded and failed after (the tag push),
+          # App Store Connect would reject the build again; then only the tag is missing.
+          if python3 tools/changelog.py build-exists "$RUNNER_TEMP/AuthKey.p8" "$BUILD_NUMBER"; then
+            echo "::notice::Build $BUILD_NUMBER is on App Store Connect already; not uploaded again."
+          else
+            xcodebuild -exportArchive \
+              -archivePath "$RUNNER_TEMP/Schiesstagebuch.xcarchive" \
+              -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+              -exportPath "$RUNNER_TEMP/upload" \
+              -allowProvisioningUpdates \
+              -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8" \
+              -authenticationKeyID "$ASC_KEY_ID" \
+              -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+            echo "### Build $BUILD_NUMBER uploaded to TestFlight" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          git tag -f "testflight/$BUILD_NUMBER"
           git push origin "refs/tags/testflight/$BUILD_NUMBER"
   what-to-test:
     # Puts the release notes into the build's «What to Test» once App Store Connect has processed
