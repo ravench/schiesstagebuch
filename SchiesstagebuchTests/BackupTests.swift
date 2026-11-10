@@ -108,6 +108,14 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(calibers.map(\.name), ["9mm Luger"], "the first spelling wins")
     }
 
+    func testFailedRestoreLeavesNothingBehind() throws {
+        // Whatever is pending in the context when a restore fails is rolled back with it.
+        let pending = Weapon(name: "Unsaved"); context.insert(pending)
+        XCTAssertThrowsError(try Backup.restore(from: Data("not a backup".utf8), into: context))
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Weapon>()), 0, "rolled back, not persisted")
+        XCTAssertFalse(context.hasChanges)
+    }
+
     func testRestoringTwiceDoesNotDuplicate() throws {
         let ammo = Ammunition(name: "GP 11"); context.insert(ammo)
         let lot = AmmoLot(number: "X1"); context.insert(lot); lot.ammunition = ammo

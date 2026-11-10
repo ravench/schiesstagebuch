@@ -318,7 +318,18 @@ enum Backup {
         if !d.isArchived { r.isArchived = false }
     }
 
+    /// Restores a backup, or leaves the store as it was: a failure half-way (a fetch, the save) would
+    /// otherwise persist what was inserted so far, and a retry would skip those ids (review 2026-11-10).
     static func restore(from data: Data, into context: ModelContext) throws -> String {
+        do {
+            return try restoreOrThrow(from: data, into: context)
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    private static func restoreOrThrow(from data: Data, into context: ModelContext) throws -> String {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom { decoder in
             let c = try decoder.singleValueContainer()
