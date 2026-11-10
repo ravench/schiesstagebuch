@@ -10,9 +10,29 @@ struct EntryEditorView: View {
     let entry: Entry?
     let addingTo: ShootingEvent?
 
+    /// The entry's values go into the state here, not in `onAppear`: a change made there fires every
+    /// `.onChange` once with `didLoad` already true, and the handlers rewrote what was loaded (an entry
+    /// with 3 Probe and 15 Wertung came back as 0 and 18; review 2026-11-10).
     init(entry: Entry) {
         self.entry = entry
         addingTo = nil
+        _date = State(initialValue: entry.date); _range = State(initialValue: entry.range); _event = State(initialValue: entry.eventName)
+        _stich = State(initialValue: entry.stich); _weapon = State(initialValue: entry.weapon); _caliber = State(initialValue: entry.caliber)
+        _ammunition = State(initialValue: entry.ammunition); _lot = State(initialValue: entry.lot); _barrel = State(initialValue: entry.effectiveBarrel)
+        _shotCount = State(initialValue: entry.shotCount); _result = State(initialValue: entry.result); _maxPoints = State(initialValue: entry.maxPoints)
+        _position = State(initialValue: entry.position); _sight = State(initialValue: SightSettings(entry: entry)); _weather = State(initialValue: entry.weather)
+        _passes = State(initialValue: entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) })
+        _sighterBoxes = State(initialValue: ShotBoxes(text: entry.sighterValuesText))
+        _passeTotals = State(initialValue: entry.passeTotals.map { PasseTotalDraft(shots: $0.shots, points: $0.points) })
+        _mode = State(initialValue: ShotEntryMode(of: entry))
+        if let s = entry.sighterCount { _sighters = State(initialValue: s); _scored = State(initialValue: max(0, entry.shotCount - s)) }
+        _notes = State(initialValue: entry.notes); _photos = State(initialValue: entry.sortedPhotos.compactMap(\.imageData))
+        if let shootingEvent = entry.shootingEvent {
+            _scoring = State(initialValue: shootingEvent.scoringSystem); _division = State(initialValue: shootingEvent.ipscDivision)
+            _powerFactor = State(initialValue: shootingEvent.ipscPowerFactor)
+        }
+        _ipsc = State(initialValue: entry.ipscStage ?? IPSCStage())
+        _didLoad = State(initialValue: true)
     }
 
     /// A new Stich of `event`; a Stich never starts an event of its own.
@@ -442,23 +462,11 @@ struct EntryEditorView: View {
         NumberStepperRow(title: title, value: value, step: step)
     }
 
+    /// A new Stich of `addingTo` (an edited entry is loaded in `init`). The `.onChange` handlers fire once
+    /// after this; for a new Stich they only suggest what is still open.
     private func load() {
         guard !didLoad else { return }
-        if let entry {
-            date = entry.date; range = entry.range; event = entry.eventName; stich = entry.stich; weapon = entry.weapon
-            caliber = entry.caliber; ammunition = entry.ammunition; lot = entry.lot; barrel = entry.effectiveBarrel; shotCount = entry.shotCount; result = entry.result
-            maxPoints = entry.maxPoints; position = entry.position
-            sight = SightSettings(entry: entry)
-            weather = entry.weather
-            passes = entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) }
-            sighterBoxes = ShotBoxes(text: entry.sighterValuesText)
-            passeTotals = entry.passeTotals.map { PasseTotalDraft(shots: $0.shots, points: $0.points) }
-            mode = ShotEntryMode(of: entry)
-            if let s = entry.sighterCount { sighters = s; scored = max(0, entry.shotCount - s) }
-            notes = entry.notes; photos = entry.sortedPhotos.compactMap(\.imageData)
-            if let shootingEvent = entry.shootingEvent { loadScoring(of: shootingEvent) }
-            ipsc = entry.ipscStage ?? IPSCStage()
-        } else if let addingTo {
+        if let addingTo {
             // A Stich of the event: the shared part as it is.
             date = addingTo.date; range = addingTo.range; event = addingTo.name; weather = addingTo.weather
             loadScoring(of: addingTo)
