@@ -121,20 +121,6 @@ class DimensionGroupTests(unittest.TestCase):
             self.assertNotIn(rimfire, groups)
             self.assertNotIn(centrefire, groups)
 
-    def test_catalogue_only_data_stays_out(self):
-        """calibre-data eafed3b: the cannon rounds (Kanone), tip colours and fired-by lists are for the
-        catalogue only; the app knows six categories and reads none of them."""
-        from cartridges import ALL_CATALOGUE, FIRED_BY, TIP_COLOURS
-        calibers = generate_assets.build()[0]
-        cannon = {s["name"] for cat, items in ALL_CATALOGUE if cat == "Kanone" for s in items}
-        self.assertTrue(cannon)
-        self.assertFalse(cannon & {c["name"] for c in calibers})
-        self.assertEqual({c["category"] for c in calibers},
-                         {"Randfeuer", "Kurzwaffe", "Langwaffe", "Schwarzpulver", "Flinte", "Luftdruck"})
-        self.assertTrue(TIP_COLOURS and FIRED_BY)
-        self.assertEqual(set().union(*calibers), {"id", "name", "category", "kind", "aliases", "displayAliases",
-                                                  "dimensionGroup", "outline"})
-
     def test_generated_file_is_up_to_date(self):
         calibers, _ = generate_assets.build()
         with open(os.path.join(ROOT, "Schiesstagebuch", "Resources", "Calibers.json")) as f:
@@ -149,6 +135,22 @@ class DimensionGroupTests(unittest.TestCase):
         self.assertEqual(stored["commit"], head, "run python3 tools/generate_assets.py")
         # The committer date with its offset, which the app decodes as ISO 8601.
         self.assertRegex(stored["date"], r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(Z|[+-]\d\d:\d\d)$")
+
+
+class CatalogueOnlyDataTests(unittest.TestCase):
+    def test_catalogue_only_data_stays_out(self):
+        """calibre-data eafed3b: the cannon rounds (Kanone), tip colours and fired-by lists are for the
+        catalogue only; the app knows six categories and reads none of them."""
+        from cartridges import ALL_CATALOGUE, FIRED_BY, TIP_COLOURS
+        calibers = generate_assets.build()[0]
+        cannon = {s["name"] for cat, items in ALL_CATALOGUE if cat == "Kanone" for s in items}
+        self.assertTrue(cannon)
+        self.assertFalse(cannon & {c["name"] for c in calibers})
+        self.assertEqual({c["category"] for c in calibers},
+                         {"Randfeuer", "Kurzwaffe", "Langwaffe", "Schwarzpulver", "Flinte", "Luftdruck"})
+        self.assertTrue(TIP_COLOURS and FIRED_BY)
+        self.assertEqual(set().union(*calibers), {"id", "name", "category", "kind", "aliases", "displayAliases",
+                                                  "dimensionGroup", "outline"})
 
 
 if __name__ == "__main__":
