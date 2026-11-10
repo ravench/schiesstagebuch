@@ -202,10 +202,13 @@ enum Backup {
     private static func restoreCalibers(_ dtos: [CaliberDTO], into context: ModelContext) throws -> [UUID: Caliber] {
         var calibers = Dictionary(uniqueKeysWithValues: try all(Caliber.self, context).map { ($0.id, $0) })
         var calibersByName = Dictionary(calibers.values.map { (Caliber.normalized($0.name), $0) }, uniquingKeysWith: { a, _ in a })
+        // A seeded calibre renamed on this device still is the backup's by its catalogue id.
+        let calibersByCatalog = Dictionary(calibers.values.filter { !$0.catalogID.isEmpty }.map { ($0.catalogID, $0) }, uniquingKeysWith: { a, _ in a })
         var caliberMap: [UUID: Caliber] = [:]
         for d in dtos {
             let key = Caliber.normalized(d.name)
-            if let c = calibers[d.id] ?? calibersByName[key] { caliberMap[d.id] = c; continue }
+            let byCatalog = d.catalogID.flatMap { $0.isEmpty ? nil : calibersByCatalog[$0] }
+            if let c = calibers[d.id] ?? byCatalog ?? calibersByName[key] { caliberMap[d.id] = c; continue }
             let c = Caliber(name: d.name, category: d.category); c.id = d.id; c.isArchived = d.isArchived
             c.catalogID = d.catalogID ?? ""
             if let created = d.createdAt { c.createdAt = created }
@@ -418,11 +421,16 @@ enum Backup {
         return f
     }()
 
-    static func csv(_ context: ModelContext) -> Data {
-        let entries = ((try? all(Entry.self, context)) ?? []).sorted { $0.date < $1.date }
-        func field(_ s: String) -> String {
+    static func csv(_ context: ModelContext) throws -> Data {
+        let entries = try all(Entry.self, context).sorted { $0.date < $1.date }
+        func field(_ text: String) -> String {
+            // A cell that starts like a formula (=, +, @, or - before a letter) gets a leading apostrophe,
+            // which spreadsheets show as text instead of evaluating it; negative numbers stay as they are.
+            let formula = text.hasPrefix("=") || text.hasPrefix("+") || text.hasPrefix("@")
+                || (text.hasPrefix("-") && !(text.dropFirst().first?.isNumber ?? true))
+            let s = formula ? "'" + text : text
             // Scalars, not Characters: "\r\n" is one Character and would slip past a Character check.
-            s.unicodeScalars.contains(where: { ";\"\n\r".unicodeScalars.contains($0) })
+            return s.unicodeScalars.contains(where: { ";\"\n\r".unicodeScalars.contains($0) })
                 ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
         }
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.

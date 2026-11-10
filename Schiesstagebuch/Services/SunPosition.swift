@@ -82,6 +82,7 @@ enum Compass {
 
     /// Normalises to 0..<360.
     static func normalized(_ degrees: Double) -> Double {
+        guard degrees.isFinite else { return 0 } // Int(NaN) in point(for:) would trap
         let d = degrees.truncatingRemainder(dividingBy: 360)
         return d < 0 ? d + 360 : d
     }

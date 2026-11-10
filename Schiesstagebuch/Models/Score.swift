@@ -26,9 +26,15 @@ struct Score {
     /// A result written as a percentage ("87,5 %", "92%"), as programs scored in percent of the
     /// maximum report it (e.g. an IPSC match percentage). Stored as a fraction: 0.875.
     var resultPercent: Double? {
-        guard percentFromResult, result.contains("%"), let first = Score.numbers(in: result).first else { return nil }
-        return first / 100
+        guard percentFromResult, let match = Self.percentRegex.firstMatch(in: result, range: NSRange(location: 0, length: (result as NSString).length)) else { return nil }
+        let text = (result as NSString).substring(with: match.range(at: 1)).replacingOccurrences(of: ",", with: ".")
+        return Double(text).map { $0 / 100 }
     }
+
+    /// The number right before the «%», so "57/60 (95%)" is 95 %, not 57 % (review 2026-11-10).
+    private static let percentRegex = try! NSRegularExpression(pattern: #"(\d+(?:[.,]\d+)?)\s*%"#) // swiftlint:disable:this force_try
+    /// Compiled once: `numbers(in:)` runs for every score shown, several times per entry.
+    private static let numberRegex = try! NSRegularExpression(pattern: #"\d+(?:[.,]\d+)?"#) // swiftlint:disable:this force_try
 
     /// Points from the result text ("96", "96,4", "96/100"); the sum of the shot values when the result has no number.
     /// A percentage result has no points of its own, only the shot values when they are entered.
@@ -80,9 +86,8 @@ struct Score {
     }
 
     static func numbers(in text: String) -> [Double] {
-        guard let regex = try? NSRegularExpression(pattern: #"\d+(?:[.,]\d+)?"#) else { return [] }
         let ns = text as NSString
-        return regex.matches(in: text, range: NSRange(location: 0, length: ns.length)).compactMap {
+        return numberRegex.matches(in: text, range: NSRange(location: 0, length: ns.length)).compactMap {
             Double(ns.substring(with: $0.range).replacingOccurrences(of: ",", with: "."))
         }
     }

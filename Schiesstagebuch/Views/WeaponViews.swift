@@ -16,7 +16,7 @@ struct WeaponsListView: View {
 
     var body: some View {
         Group {
-                if weapons.isEmpty {
+                if visible.isEmpty {
                     ContentUnavailableView {
                         Label(term("Keine Waffen").loc, systemImage: "scope")
                     } description: {
