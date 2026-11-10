@@ -350,5 +350,6 @@ enum ShotEntryMode: String, CaseIterable, Identifiable {
 
 enum ScoreFormat {
     static func percent(_ v: Double) -> String { v.formatted(.percent.precision(.fractionLength(0...1))) }
-    static func points(_ v: Double) -> String { v.formatted(.number.precision(.fractionLength(0...2))) }
+    /// Never grouped: the text is stored as a result and exported, and «1'150» would read as 1 point (Raven 2026-11-10).
+    static func points(_ v: Double) -> String { v.formatted(.number.precision(.fractionLength(0...2)).grouping(.never)) }
 }
