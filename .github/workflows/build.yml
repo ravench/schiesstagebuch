@@ -56,7 +56,8 @@ jobs:
       - name: Check translations
         run: python3 tools/localize.py && git diff --exit-code Schiesstagebuch/Resources/Localizable.xcstrings
       - name: Tool tests
-        run: python3 -m unittest discover -s tools -p 'test_*.py'
+        # Pillow, so the PR screens comparison (tools/pr_screens.py) is tested, not skipped.
+        run: pip3 install --quiet pillow && python3 -m unittest discover -s tools -p 'test_*.py'
   build:
     needs: changes
     if: needs.changes.outputs.mac == 'true'
