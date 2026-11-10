@@ -364,6 +364,21 @@ final class PRScreensTests: XCTestCase {
         snap("11d-Kaliber-Kadettenpatrone")
     }
 
+    /// The Vetterli in the calibre list: the rimfire original and its centrefire version, a calibre of
+    /// its own with the same measurements (calibre-data, Raven 2026-11-09).
+    func testRimfireAndCentrefireVetterli() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        if search.waitForExistence(timeout: 5) {
+            search.tap()
+            search.typeText("Vetterli\n") // return hides the keyboard
+        }
+        XCTAssertTrue(app.staticTexts["10.4x38 mm R Vetterli Centrefire"].waitForExistence(timeout: 5), "No Vetterli Centrefire row")
+        snap("11e-Kaliber-Vetterli")
+    }
+
     private func tab(_ name: String) {
         let button = app.tabBars.buttons[name]
         XCTAssertTrue(button.waitForExistence(timeout: 10), "No tab \(name)")

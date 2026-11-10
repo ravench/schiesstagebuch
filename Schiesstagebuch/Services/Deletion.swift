@@ -12,9 +12,12 @@ enum Deletion {
         try context.save()
     }
 
-    /// Deletes a barrel. Entries that named it explicitly fall back to matching by calibre and date.
+    /// Deletes a barrel. Entries that named it explicitly fall back to matching by calibre and date; the
+    /// firearm's default passes to its next barrel, so it never has none.
     static func delete(_ barrel: Barrel, in context: ModelContext) throws {
+        let weapon = barrel.weapon, wasDefault = barrel.isDefault
         context.delete(barrel)
+        if wasDefault, let weapon, let next = weapon.sortedBarrels.first(where: { $0 != barrel }) { weapon.makeDefault(next) }
         try context.save()
     }
 

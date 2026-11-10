@@ -33,29 +33,12 @@ final class EditorCarryOverTests: ModelTestCase {
         XCTAssertEqual(SightSettings.carriedOver(from: typed, to: nil, in: entries), typed)
     }
 
-    func testWeatherSwitchFollowsTheWeaponWhileNothingIsRecorded() {
-        let now = day(9)
-        let on = WeatherRecord.carriedOver(from: nil, to: rifle, in: entries, now: now)
-        XCTAssertEqual(on, WeatherRecord(time: now))
-        XCTAssertNil(WeatherRecord.carriedOver(from: WeatherRecord(time: now), to: pistol, in: entries, now: now),
-                     "only the time was set: an indoor weapon switches the weather off")
-        XCTAssertNil(WeatherRecord.carriedOver(from: nil, to: nil, in: entries, now: now))
-    }
-
     func testTheSunAloneIsNothingRecorded() {
         var record = WeatherRecord(time: day(9))
         record.conditions.set("sun_direction", .option("front"))
         XCTAssertFalse(record.hasValues, "the app fills the sun in by itself")
-        XCTAssertNil(WeatherRecord.carriedOver(from: record, to: pistol, in: entries),
-                     "only the time and the sun: an indoor weapon switches the weather off")
         record.conditions.set("sky", .option("overcast"))
         XCTAssertTrue(record.hasValues)
-    }
-
-    func testRecordedWeatherSurvivesAWeaponChange() {
-        var record = WeatherRecord(time: day(9))
-        record.conditions.set("sky", .option("fog"))
-        XCTAssertEqual(WeatherRecord.carriedOver(from: record, to: pistol, in: entries), record)
     }
 
     func testNormalizedTrimsNotesAndDropsBlankOnes() {

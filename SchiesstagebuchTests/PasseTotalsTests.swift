@@ -32,6 +32,11 @@ final class PasseTotalsTests: ModelTestCase {
         XCTAssertEqual(example.points, 279, accuracy: 1e-9)
         XCTAssertEqual(example.resultText, ScoreFormat.points(279))
         XCTAssertEqual([PasseTotal]().resultText, "")
+        // A result of 1000 or more is stored without a grouping separator, so the parser reads it back whole.
+        let big = [PasseTotal(shots: 10, points: 600), PasseTotal(shots: 10, points: 550)]
+        XCTAssertEqual(big.resultText, "1150")
+        XCTAssertEqual(Score(result: big.resultText, maxPoints: 1200, shotValuesText: "", scoredShots: 20).points, 1150)
+        XCTAssertEqual(ScoreFormat.points(1234.5), "1234.5")
     }
 
     func testEmptyPassenAreDroppedAndNegativesClamped() {

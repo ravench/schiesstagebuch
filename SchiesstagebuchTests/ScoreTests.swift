@@ -18,6 +18,8 @@ final class ScoreTests: XCTestCase {
         let s = score("87,5 %")
         XCTAssertEqual(s.percentage!, 0.875, accuracy: 1e-9)
         XCTAssertEqual(score("92%").percentage!, 0.92, accuracy: 1e-9)
+        XCTAssertEqual(score("57/60 (95%)").percentage!, 0.95, accuracy: 1e-9, "the number before the %, not the first")
+        XCTAssertEqual(score("2. Rang, 87,5 %").percentage!, 0.875, accuracy: 1e-9)
         XCTAssertNil(s.points, "a percentage is not a point total")
         XCTAssertNil(s.meanPerShot, "no per-shot average from a percentage")
     }
