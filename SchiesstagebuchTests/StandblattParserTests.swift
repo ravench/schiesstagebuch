@@ -438,6 +438,8 @@ final class StandblattParserTests: XCTestCase {
                        DateComponents(year: 2026, month: 5, day: 2, hour: 8, minute: 14))
         XCTAssertEqual(components(StandblattParser.date(in: "11.4.2026"))?.day, 11)
         XCTAssertNil(StandblattParser.date(in: "45.13.2026 10:00"))
+        XCTAssertNil(StandblattParser.date(in: "31.4.2026"), "April has no 31st: no date rather than 1 May")
+        XCTAssertNil(StandblattParser.date(in: "30.2.2026 10:00"))
     }
 
     func testDatesAreGregorianWhateverThePhoneCalendar() throws {

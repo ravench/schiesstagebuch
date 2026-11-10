@@ -194,9 +194,12 @@ struct SettingsView: View {
     }
 
     private func exportCSV() {
-        exportType = .commaSeparatedText
-        exportName = "Schiesstagebuch"
-        exportDoc = BackupDocument(data: Backup.csv(context))
+        do {
+            exportType = .commaSeparatedText
+            exportName = "Schiesstagebuch"
+            exportDoc = BackupDocument(data: try Backup.csv(context))
+        }
+        catch { message = String(localized: "Export fehlgeschlagen: \(error.localizedDescription)") }
     }
 
     private func restore(from url: URL) {

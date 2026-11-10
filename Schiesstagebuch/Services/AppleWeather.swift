@@ -60,7 +60,8 @@ extension WeatherReading {
         let strength = [(6.0, "calm"), (20, "light"), (39, "moderate"), (62, "strong")].first { windSpeed < $0.0 }?.1 ?? "stormy"
         c.set("wind_strength", .option(strength))
         if strength != "calm" {
-            if let bearing, let directions = WeatherField.field("wind_direction")?.options {
+            // A direction WeatherKit does not know comes as NaN; Int(NaN) traps.
+            if let bearing, windFrom.isFinite, let directions = WeatherField.field("wind_direction")?.options {
                 // The nearest of eight directions, clockwise from the targets: 90° more is wind from the right.
                 c.set("wind_direction", .option(directions[Int((Compass.normalized(windFrom - bearing) / 45).rounded()) % 8].key))
             }
