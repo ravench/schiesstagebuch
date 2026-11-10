@@ -14,6 +14,25 @@ final class PRScreensTests: XCTestCase {
         app.launch()
     }
 
+    /// What the drags measured, kept with the screens as «tour-log.txt»: CI lands the lists differently from a Mac.
+    private static var log: [String] = []
+
+    override func tearDown() {
+        if !Self.log.isEmpty {
+            let attachment = XCTAttachment(string: Self.log.joined(separator: "\n"))
+            attachment.name = "tour-log.txt"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            Self.log = []
+        }
+        super.tearDown()
+    }
+
+    private func note(_ line: String) {
+        Self.log.append(line)
+        NSLog("tour: %@", line)
+    }
+
     func testTour() {
         tab("Tagebuch")
         snap("01-Tagebuch")
@@ -289,20 +308,27 @@ final class PRScreensTests: XCTestCase {
                        thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: min(0.98, max(0.02, (from - distance) / height)))),
                        withVelocity: attempt == 0 ? .slow : XCUIGestureVelocity(40), thenHoldForDuration: 0.5)
             let moved = y - element.frame.midY
+            note("holdAtTop «\(element.label.prefix(30))» attempt \(attempt): y \(Int(y)) delta \(Int(delta)) slop \(Int(slop)) "
+                 + "distance \(Int(distance)) moved \(Int(moved)) now \(Int(element.frame.midY))")
             // The list stopped short only at its end; otherwise what the finger moved more is the slop.
             if attempt == 0, abs(moved) > abs(delta) / 2 { slop = max(0, abs(distance) - abs(moved)) }
         }
+        note("holdAtTop «\(element.label.prefix(30))» gave up at \(Int(element.frame.midY)), target \(Int(target))")
     }
 
     /// Waits until `element` stops moving (a swipe decelerates for a while), so a drag starts from where it is.
     private func settle(_ element: XCUIElement) {
         var last = element.frame
-        for _ in 0..<10 {
+        for i in 0..<10 {
             usleep(200_000)
             let now = element.frame
-            if now == last { return }
+            if now == last {
+                if i > 0 { note("settle «\(element.label.prefix(30))» moved for \(i * 200) ms") }
+                return
+            }
             last = now
         }
+        note("settle «\(element.label.prefix(30))» still moving after 2 s")
     }
 
     /// The firearm menu in the Stich editor, ending with «Waffe hinzufügen».
