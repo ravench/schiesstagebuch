@@ -207,8 +207,8 @@ build artifact and publishes them to the `range-data` branch. Run it from the Ac
 tab. The app ships the result as `Schiesstagebuch/Resources/SwissRanges.json`, made with
 `python3 tools/range_catalogue.py app-json out/ranges.json Schiesstagebuch/Resources/SwissRanges.json`.
 
-The generated data is not covered by the app licence: swissTLM3D is © swisstopo
-(open government data, free for commercial use with attribution). The app must show
+The generated data has its own licence (see [LICENSE.md](LICENSE.md)): swissTLM3D is
+© swisstopo (open government data, free for commercial use with attribution). The app must show
 «© swisstopo» wherever it uses the catalogue. No OpenStreetMap data is used, so
 don't copy positions from OSM into the indoor list.
 
