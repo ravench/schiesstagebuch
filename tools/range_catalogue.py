@@ -1008,7 +1008,6 @@ def app_catalogue(catalogue):
             "swissTLM3D": catalogue.get("swissTLM3D", ""), "ranges": items}
 
 
-STAC_ITEMS = "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swisstlm3d/items"
 
 
 def latest_gpkg(stac):

@@ -92,6 +92,25 @@ class SummariseTests(unittest.TestCase):
         self.assertGreaterEqual(request["max_tokens"], 16000)
         self.assertEqual(request["output_config"]["effort"], "low")
 
+    def test_has_notes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "Changelog.json")
+            with open(path, "w") as f:
+                json.dump({"notes": {}}, f)
+            self.assertFalse(changelog.has_notes(path))
+            with open(path, "w") as f:
+                json.dump({"notes": NOTES}, f)
+            self.assertTrue(changelog.has_notes(path))
+
+    def test_build_exists_asks_app_store_connect(self):
+        answers = {"/apps?filter[bundleId]=ch.giotta.schiesstagebuch": {"data": [{"id": "A1"}]},
+                   "/builds?filter[app]=A1&filter[version]=1234": {"data": [{"id": "B1"}]},
+                   "/builds?filter[app]=A1&filter[version]=1235": {"data": []}}
+        with mock.patch.object(changelog, "asc", lambda method, path, token, body=None, timeout=60: answers[path]), \
+                mock.patch.object(changelog, "token", lambda *a: "t"):
+            self.assertTrue(changelog.build_exists("1234", "key.p8", "K", "I", "ch.giotta.schiesstagebuch"))
+            self.assertFalse(changelog.build_exists("1235", "key.p8", "K", "I", "ch.giotta.schiesstagebuch"))
+
     def test_what_to_test_retries_after_a_network_error(self):
         calls = []
 
@@ -201,7 +220,7 @@ class WorkflowTests(unittest.TestCase):
 
     def test_upload_tags_the_build(self):
         self.assertIn("contents: write", self.upload)
-        self.assertLess(self.upload.index("Upload to TestFlight"), self.upload.index('git tag "testflight/$BUILD_NUMBER"'))
+        self.assertLess(self.upload.index("Upload to TestFlight"), self.upload.index('git tag -f "testflight/$BUILD_NUMBER"'))
         self.assertIn('git push origin "refs/tags/testflight/$BUILD_NUMBER"', self.upload)
 
     def test_what_to_test_waits_on_linux(self):

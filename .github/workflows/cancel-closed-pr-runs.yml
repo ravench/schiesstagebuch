@@ -23,7 +23,7 @@ jobs:
           BRANCH: ${{ github.event.pull_request.head.ref }}
           RUN: ${{ github.run_id }}
         run: |
-          for ID in $(gh api "repos/$REPO/actions/runs?branch=$BRANCH&event=pull_request&per_page=100" --paginate \
+          for ID in $(gh api -X GET "repos/$REPO/actions/runs" -f branch="$BRANCH" -f event=pull_request -F per_page=100 --paginate \
                         --jq '.workflow_runs[]' | python3 tools/ci_runs.py open-pr-runs "$RUN"); do
             echo "Cancelling run $ID"
             gh api -X POST "repos/$REPO/actions/runs/$ID/cancel" >/dev/null || echo "::notice::Run $ID already finished."

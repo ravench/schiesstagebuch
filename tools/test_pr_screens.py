@@ -231,8 +231,10 @@ class PublishTests(unittest.TestCase):
                                         "122/ipad/before/portrait-2-Statistik.png"])
         with open(self.gh_log) as f:
             calls = f.read()
-        self.assertIn(f'startswith("{pr_screens.MARKER}")', calls)
-        self.assertIn(f'startswith("{pr_screens.IPAD_MARKER}")', calls)
+        # The comment is looked up over all pages at once; the marker selection runs in jq, outside the stub.
+        self.assertIn('comments --paginate --slurp', calls)
+        # The comment is looked up over all pages at once; the marker selection runs in jq, outside the stub.
+        self.assertIn('comments --paginate --slurp', calls)
         self.assertEqual(calls.count("-F body=@comment.md"), 3)  # no comment found, so each posts one
         with open(os.path.join(self.tmp.name, "comment.md")) as f:
             body = f.read()

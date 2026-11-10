@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 # (github.com/ravench/calibre-data), shared with Kaliberfinder and the calibre poster.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "calibre-data"))
 from cartridges import CATALOGUE, DISPLAY_ALIASES, PRIMERS, RIMFIRE, BALL, MINIE, PELLET  # noqa: E402
-from outline import outline, bullet_profile, patch_profile, PATCH_BAND  # noqa: E402,F401  (re-exported for tests)
+from outline import outline, bullet_profile  # noqa: E402
 from weapon_icons import ICONS  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

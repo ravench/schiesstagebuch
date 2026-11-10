@@ -23,6 +23,15 @@ class BuildWorkflowTests(unittest.TestCase):
             self.assertIn(f'-resultBundlePath "$RUNNER_TEMP/{bundle}.xcresult"', text)
         self.assertIn("python3 tools/test_summary.py", text)
 
+    def test_every_ui_test_class_runs_in_ci(self):
+        # The Build job names the UI test classes one by one; a new class must be added there (the two
+        # tours run as the PR screens instead).
+        text = BUILD.read_text()
+        listed = set(re.findall(r"-only-testing:SchiesstagebuchUITests/(\w+UITests)", text))
+        folder = BUILD.parent.parent.parent / "SchiesstagebuchUITests"
+        classes = {m for f in folder.glob("*.swift") for m in re.findall(r"final class (\w+UITests)\b", f.read_text())}
+        self.assertEqual(classes - {"PRScreensTests", "IPadScreensTests"}, listed)
+
 
 if __name__ == "__main__":
     unittest.main()
