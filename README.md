@@ -105,11 +105,12 @@ without it the weather fields still work, and the row that fills them says Apple
 The calibre catalogue lives in the shared [calibre-data](https://github.com/ravench/calibre-data)
 repository, included as a git submodule at `calibre-data/` (also used by Kaliberfinder and the
 [calibre poster](https://github.com/ravench/calibre-poster)). After cloning, run
-`git submodule update --init`. To change calibres, edit `cartridges.py` there, then bump the
-submodule here (`git -C calibre-data pull origin main && git add calibre-data`).
+`git submodule update --init`. To change calibres, edit their TOML files there (one per calibre,
+see its README), then bump the submodule here (`git -C calibre-data pull origin main && git add
+calibre-data`).
 
 Calibres and icons are generated assets. After bumping `calibre-data` or editing
-`tools/weapon_icons.py`, run:
+`tools/weapon_icons.py`, run (Python 3.11 or newer):
 
 ```sh
 python3 tools/generate_assets.py --preview /tmp/preview.html   # preview is optional
