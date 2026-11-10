@@ -275,10 +275,10 @@ struct EntryEditorView: View {
             }
             .onChange(of: mode) { old, new in
                 guard didLoad else { return }
-                // Carry the count over so switching modes never loses what was typed. Einzelschüsse
-                // with none typed carry nothing: the counts from before stay.
+                // Carry the count over so switching modes never loses what was typed. Einzelschüsse or
+                // Passen with none typed carry nothing: the counts from before stay.
                 let total = shotTotal(in: old)
-                if old != .shots || total > 0 {
+                if (old != .shots && old != .passeTotals) || total > 0 {
                     if old == .shots { sighters = sighterShotCount }
                     // The automatic total of the Passen stays as the result in the other modes.
                     if old == .passeTotals, !enteredPasseTotals.isEmpty { result = enteredPasseTotals.resultText }
@@ -524,10 +524,14 @@ struct EntryEditorView: View {
 
     /// Fills the form from a scanned Standblatt; nothing is saved until "Sichern".
     private func applyScan(_ scanned: StandblattImport, photos scannedPhotos: [Data]) {
-        if let scannedDate = scanned.date { date = scannedDate }
+        // A new Stich shows neither the date nor the Anlass (they are the Anlass's): the scan must not
+        // move or rename the Anlass behind the form (review 2026-11-10); the strip's title names the Stich.
+        if entry != nil, let scannedDate = scanned.date { date = scannedDate }
         if !scanned.event.isEmpty {
-            // In an event with several Stiche the strip usually names the Stich, e.g. "Sektionsstich".
-            if stichCount > 1, !event.isEmpty, scanned.event.caseInsensitiveCompare(event) != .orderedSame {
+            if entry == nil {
+                if stich.isEmpty, scanned.event.caseInsensitiveCompare(event) != .orderedSame { stich = scanned.event }
+            } else if stichCount > 1, !event.isEmpty, scanned.event.caseInsensitiveCompare(event) != .orderedSame {
+                // In an event with several Stiche the strip usually names the Stich, e.g. "Sektionsstich".
                 stich = scanned.event
             } else {
                 event = scanned.event
