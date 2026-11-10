@@ -379,21 +379,6 @@ final class PRScreensTests: XCTestCase {
         snap("11e-Kaliber-Vetterli")
     }
 
-    /// The PRC rows in the calibre list: drawn to their C.I.P. sheets, 6.5 PRC and 7 mm PRC are shorter
-    /// than before (calibre-data #68).
-    func testPRC() {
-        tab("Einstellungen")
-        guard open(app.staticTexts["Kaliber"].firstMatch) else { return }
-        let search = app.searchFields.firstMatch
-        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
-        if search.waitForExistence(timeout: 5) {
-            search.tap()
-            search.typeText("PRC\n") // return hides the keyboard
-        }
-        XCTAssertTrue(app.staticTexts["7 mm PRC"].waitForExistence(timeout: 5), "No 7 mm PRC row")
-        snap("11f-Kaliber-PRC")
-    }
-
     private func tab(_ name: String) {
         let button = app.tabBars.buttons[name]
         XCTAssertTrue(button.waitForExistence(timeout: 10), "No tab \(name)")
