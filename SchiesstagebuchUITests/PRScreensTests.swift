@@ -203,6 +203,17 @@ final class PRScreensTests: XCTestCase {
         if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") } else { closeMenu() }
     }
 
+    /// The sport shooter fields of a new Stich: filters, iris, ring, diopter and bipod, with the footer.
+    func testSightStops() {
+        relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch) else { return }
+        let add = app.buttons["Weiteren Stich hinzufügen"].firstMatch
+        reveal(add)
+        guard open(add) else { return }
+        topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17-Sportschuetzen-Felder")
+    }
+
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
     func testWelcome() {
         relaunch(adding: ["-welcome"])

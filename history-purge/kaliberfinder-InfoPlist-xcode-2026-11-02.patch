@@ -1,0 +1,87 @@
+diff --git a/Kaliberfinder/Resources/InfoPlist.xcstrings b/Kaliberfinder/Resources/InfoPlist.xcstrings
+index 5b4a3c3..4b16725 100644
+--- a/Kaliberfinder/Resources/InfoPlist.xcstrings
++++ b/Kaliberfinder/Resources/InfoPlist.xcstrings
+@@ -1,35 +1,59 @@
+ {
+-  "sourceLanguage": "de",
+-  "strings": {
+-    "NSCameraUsageDescription": {
+-      "extractionState": "manual",
+-      "localizations": {
+-        "de": {
+-          "stringUnit": {
+-            "state": "translated",
+-            "value": "Patronen fotografieren, um das Kaliber zu erkennen."
++  "sourceLanguage" : "de",
++  "strings" : {
++    "CFBundleDisplayName" : {
++      "comment" : "Bundle display name",
++      "extractionState" : "extracted_with_value",
++      "localizations" : {
++        "de" : {
++          "stringUnit" : {
++            "state" : "new",
++            "value" : "Kaliberfinder"
++          }
++        }
++      }
++    },
++    "CFBundleName" : {
++      "comment" : "Bundle name",
++      "extractionState" : "extracted_with_value",
++      "localizations" : {
++        "de" : {
++          "stringUnit" : {
++            "state" : "new",
++            "value" : "Kaliberfinder"
++          }
++        }
++      }
++    },
++    "NSCameraUsageDescription" : {
++      "extractionState" : "manual",
++      "localizations" : {
++        "de" : {
++          "stringUnit" : {
++            "state" : "translated",
++            "value" : "Patronen fotografieren, um das Kaliber zu erkennen."
+           }
+         },
+-        "en": {
+-          "stringUnit": {
+-            "state": "translated",
+-            "value": "Take photos of cartridges to recognise the calibre."
++        "en" : {
++          "stringUnit" : {
++            "state" : "translated",
++            "value" : "Take photos of cartridges to recognise the calibre."
+           }
+         },
+-        "fr": {
+-          "stringUnit": {
+-            "state": "translated",
+-            "value": "Photographier des cartouches pour reconnaître le calibre."
++        "fr" : {
++          "stringUnit" : {
++            "state" : "translated",
++            "value" : "Photographier des cartouches pour reconnaître le calibre."
+           }
+         },
+-        "it": {
+-          "stringUnit": {
+-            "state": "translated",
+-            "value": "Fotografare cartucce per riconoscere il calibro."
++        "it" : {
++          "stringUnit" : {
++            "state" : "translated",
++            "value" : "Fotografare cartucce per riconoscere il calibro."
+           }
+         }
+       }
+     }
+   },
+-  "version": "1.0"
++  "version" : "1.0"
+ }
+\ No newline at end of file

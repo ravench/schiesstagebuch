@@ -187,7 +187,7 @@ final class LocalizationTests: XCTestCase {
 
     /// The entry's filter hint points to the row that opens the filters, in both wordings and every language.
     func testFilterHintNamesTheFiltersRow() throws {
-        let key = "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter."
+        let key = "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter."
         XCTAssertNotEqual(Terms(sportsEquipment: true)(key), key, "no Sportgerät variant")
         let germanRow = try localized(SportFeatures.filter.title, "de")
         for terms in [Terms(), Terms(sportsEquipment: true)] {

@@ -7948,94 +7948,94 @@
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät.": {
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät, ausser den Filtern.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this equipment."
+            "value": "Optional. New entries take the values of the last entry with this equipment, except the filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement, sauf les filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo, tranne i filtri."
           }
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen › Filter.": {
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this equipment. Choose your filters under Settings › Filters."
+            "value": "Optional. New entries take the values of the last entry with this equipment, except the filters. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement, sauf les filtres. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo, tranne i filtri. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.": {
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this firearm."
+            "value": "Optional. New entries take the values of the last entry with this firearm, except the filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme, sauf les filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma, tranne i filtri."
           }
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.": {
+    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this firearm. Choose your filters under Settings › Filters."
+            "value": "Optional. New entries take the values of the last entry with this firearm, except the filters. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres."
+            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme, sauf les filtres. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri."
+            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma, tranne i filtri. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
