@@ -289,13 +289,6 @@ struct WeatherRecord: Codable, Hashable {
     /// nothing is, the switch follows the weapon's default and Apple Weather fills the fields by itself.
     var hasValues: Bool { conditions.values.keys.contains { $0 != "sun_direction" } }
 
-    /// What a new entry shows after the weapon changed: recorded weather stays whatever the new
-    /// weapon's habit is; an empty record follows the weapon's default (on outdoors, off indoors).
-    static func carriedOver(from current: WeatherRecord?, to weapon: Weapon?, in entries: [Entry], now: Date = .now) -> WeatherRecord? {
-        if let current, current.hasValues { return current }
-        return recordsByDefault(for: weapon, in: entries) ? (current ?? WeatherRecord(time: now)) : nil
-    }
-
     /// The record as it is stored: every value re-checked against its field, so a note typed with
     /// surrounding spaces is trimmed and a blank one dropped.
     func normalized() -> WeatherRecord {
