@@ -25,7 +25,8 @@ enum LegacyImport {
 
         /// Stable key so the same row isn't imported twice.
         var key: String {
-            let d = Calendar.current.dateComponents([.year, .month, .day], from: date)
+            // Gregorian whatever the phone's calendar: the key is stored on the entry and compared on every device.
+            let d = Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: date)
             return "legacy|\(d.year!)-\(d.month!)-\(d.day!)|\(weapon)|\(event)|\(range)|\(shots)|\(result)"
         }
 

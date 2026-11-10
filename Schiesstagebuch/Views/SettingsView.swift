@@ -194,9 +194,12 @@ struct SettingsView: View {
     }
 
     private func exportCSV() {
-        exportType = .commaSeparatedText
-        exportName = "Schiesstagebuch"
-        exportDoc = BackupDocument(data: Backup.csv(context))
+        do {
+            exportType = .commaSeparatedText
+            exportName = "Schiesstagebuch"
+            exportDoc = BackupDocument(data: try Backup.csv(context))
+        }
+        catch { message = String(localized: "Export fehlgeschlagen: \(error.localizedDescription)") }
     }
 
     private func restore(from url: URL) {
@@ -323,7 +326,7 @@ struct AmmunitionListView: View {
 
     var body: some View {
         Group {
-            if items.isEmpty {
+            if groups.isEmpty {
                 ContentUnavailableView {
                     Label("Keine Munition", systemImage: "shippingbox")
                 } description: {
@@ -437,6 +440,8 @@ struct AmmunitionEditorView: View {
                         Section(term("Deine Waffen").loc) { ForEach(inUse) { Text($0.name).tag(Optional($0)) } }
                     }
                     Section("Alle") { ForEach(others) { Text($0.name).tag(Optional($0)) } }
+                    // An archived calibre of an existing ammunition stays visible and selectable.
+                    if let caliber, !calibers.contains(caliber) { Text(caliber.name).tag(Optional(caliber)) }
                 }
                 .pickerStyle(.navigationLink)
                 lotSections

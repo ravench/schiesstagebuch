@@ -9,6 +9,8 @@ import subprocess
 import tempfile
 import types
 import unittest
+import urllib.error
+from unittest import mock
 
 import changelog
 
@@ -86,6 +88,30 @@ class SummariseTests(unittest.TestCase):
         schema = request["output_config"]["format"]["schema"]
         self.assertEqual(schema["required"], ["de", "en", "fr", "it"])
         self.assertFalse(schema["additionalProperties"])
+        # Thinking shares max_tokens on this model: enough for it and the bullets of a long batch, at low effort.
+        self.assertGreaterEqual(request["max_tokens"], 16000)
+        self.assertEqual(request["output_config"]["effort"], "low")
+
+    def test_what_to_test_retries_after_a_network_error(self):
+        calls = []
+
+        def fake_asc(method, path, token, body=None, timeout=60):
+            calls.append((method, path))
+            if path.startswith("/apps?"):
+                return {"data": [{"id": "A1"}]}
+            if path.startswith("/builds?"):
+                if sum(p.startswith("/builds?") for _, p in calls) == 1:
+                    raise urllib.error.URLError("connection reset")
+                return {"data": [{"id": "B1", "attributes": {"processingState": "VALID"}}]}
+            if path.endswith("/betaBuildLocalizations"):
+                return {"data": []}
+            return {}
+
+        with mock.patch.object(changelog, "asc", fake_asc), mock.patch.object(changelog, "token", lambda *a: "t"), \
+                mock.patch.object(changelog.time, "sleep", lambda s: None):
+            changelog.what_to_test(NOTES, 1234, "key.p8", "K", "I", "ch.giotta.schiesstagebuch", wait=10, poll=0)
+        self.assertEqual(sum(p.startswith("/builds?") for _, p in calls), 2, "polled again after the error")
+        self.assertEqual(sum(m == "POST" for m, _ in calls), 4, "then set the four languages")
 
     def test_missing_language_or_refusal_fails(self):
         with self.assertRaises(ValueError):

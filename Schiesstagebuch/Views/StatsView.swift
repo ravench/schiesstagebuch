@@ -8,10 +8,10 @@ struct StatsView: View {
     @State private var period: StatsPeriod = .all
     @State private var rangeSearch = ""
 
-    private var filtered: [Entry] { entries.filter { period.contains($0.date) } }
-
     var body: some View {
-        NavigationStack {
+        // Once per body, not once per use: the body re-evaluates on every keystroke of the range search.
+        let filtered = entries.filter { period.contains($0.date) }
+        return NavigationStack {
             List {
                 Section { PeriodPicker(period: $period, entries: entries) }
                 Section { KPIGrid(entries: filtered) }

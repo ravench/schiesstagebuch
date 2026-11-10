@@ -58,10 +58,12 @@ def summarise(text, client=None):
     if client is None:
         import anthropic  # only the TestFlight job installs it
         client = anthropic.Anthropic()
+    # Thinking counts against max_tokens on this model: room for it and four languages of bullets, at a low
+    # effort, so a long batch of commits does not stop at the limit (review 2026-11-10).
     response = client.messages.create(
-        model=MODEL, max_tokens=4096, system=SYSTEM,
+        model=MODEL, max_tokens=16000, system=SYSTEM,
         messages=[{"role": "user", "content": "The commit messages, newest first:\n\n" + text}],
-        output_config={"format": {"type": "json_schema", "schema": SCHEMA}})
+        output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}})
     if response.stop_reason != "end_turn":
         raise ValueError(f"the model stopped with {response.stop_reason}")
     notes = json.loads(next(b.text for b in response.content if b.type == "text"))
@@ -107,11 +109,12 @@ def token(key_path, key_id, issuer, now=None):
     return f"{signed}.{b64url(der_to_raw(der))}"
 
 
-def asc(method, path, token, body=None):
+def asc(method, path, token, body=None, timeout=60):
+    """One App Store Connect call; a URLError (no connection, timeout) is raised to the caller."""
     request = urllib.request.Request(ASC + path, method=method, data=json.dumps(body).encode() if body else None,
                                      headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
     try:
-        with urllib.request.urlopen(request) as response:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
             return json.load(response) if response.status != 204 else {}
     except urllib.error.HTTPError as e:
         sys.exit(f"{method} {path}: {e}\n{e.read().decode()}")
@@ -150,7 +153,15 @@ def what_to_test(notes, build_number, key_path, key_id, issuer, bundle_id, wait=
         sys.exit(f"No app {bundle_id} on App Store Connect")
     deadline = time.time() + wait
     while True:
-        builds = asc("GET", f"/builds?filter[app]={apps[0]['id']}&filter[version]={build_number}", fresh())["data"]
+        try:
+            builds = asc("GET", f"/builds?filter[app]={apps[0]['id']}&filter[version]={build_number}", fresh())["data"]
+        except urllib.error.URLError as e:
+            # One hiccup in an hour of polling must not lose the notes: try again at the next poll.
+            if time.time() > deadline:
+                sys.exit(f"Build {build_number}: App Store Connect not reachable: {e}")
+            print(f"Build {build_number}: retrying, {e}", flush=True)
+            time.sleep(poll)
+            continue
         states = [b["attributes"]["processingState"] for b in builds]
         if "VALID" in states:
             build = builds[states.index("VALID")]

@@ -220,9 +220,16 @@ struct BreakdownChart<Key: Hashable>: View {
     private struct Row: Identifiable { let key: Key; let name: String; let shots: Int; var id: Key { key } }
 
     private var rows: [Row] {
-        Dictionary(grouping: entries.compactMap { e in key(e).map { ($0, e) } }, by: { $0.0 })
+        let sorted = Dictionary(grouping: entries.compactMap { e in key(e).map { ($0, e) } }, by: { $0.0 })
             .map { Row(key: $0, name: label($0), shots: $1.map(\.1).totalShots) }
             .sorted { $0.shots > $1.shots }
+        // The chart plots by name: two keys with one name (two ranges «Schützenhaus») would merge into one bar.
+        var seen: [String: Int] = [:]
+        return sorted.map { row in
+            seen[row.name, default: 0] += 1
+            let n = seen[row.name] ?? 1
+            return n == 1 ? row : Row(key: row.key, name: "\(row.name) (\(n))", shots: row.shots)
+        }
     }
 
     var body: some View {

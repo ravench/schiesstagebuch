@@ -13,6 +13,15 @@ final class AppleWeatherTests: XCTestCase {
         return r
     }
 
+    func testUnknownWindDirectionSetsNone() {
+        // WeatherKit can report NaN for the direction; Int(NaN) would trap.
+        let c = reading { $0.windSpeed = 30; $0.windFrom = .nan }.conditions(facing: 45)
+        XCTAssertEqual(c.option("wind_strength"), "moderate")
+        XCTAssertNil(c["wind_direction"])
+        XCTAssertEqual(Compass.normalized(.nan), 0)
+        XCTAssertEqual(Compass.point(for: .infinity), "N")
+    }
+
     func testCalmSunnyAfternoon() {
         let c = reading().conditions(facing: 45)
         XCTAssertEqual(c.option("sky"), "sunny")
