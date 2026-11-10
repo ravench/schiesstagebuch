@@ -268,7 +268,8 @@ struct LicenceCardEditor: View {
     }
 
     private func delete() {
-        if let card { context.delete(card) }
+        // Every card: two devices can each have made one before they synced, and the tab stays while any has a number.
+        for card in (try? context.fetch(FetchDescriptor<LicenceCard>())) ?? [] { context.delete(card) }
         try? context.save()
         dismiss()
     }

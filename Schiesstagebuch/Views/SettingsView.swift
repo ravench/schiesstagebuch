@@ -323,7 +323,7 @@ struct AmmunitionListView: View {
 
     var body: some View {
         Group {
-            if items.isEmpty {
+            if groups.isEmpty {
                 ContentUnavailableView {
                     Label("Keine Munition", systemImage: "shippingbox")
                 } description: {
@@ -437,6 +437,8 @@ struct AmmunitionEditorView: View {
                         Section(term("Deine Waffen").loc) { ForEach(inUse) { Text($0.name).tag(Optional($0)) } }
                     }
                     Section("Alle") { ForEach(others) { Text($0.name).tag(Optional($0)) } }
+                    // An archived calibre of an existing ammunition stays visible and selectable.
+                    if let caliber, !calibers.contains(caliber) { Text(caliber.name).tag(Optional(caliber)) }
                 }
                 .pickerStyle(.navigationLink)
                 lotSections
