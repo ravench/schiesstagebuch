@@ -267,23 +267,41 @@ final class PRScreensTests: XCTestCase {
                    withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
-    /// Drags `element` near the top of the screen, so what follows it shows. `besideRow` drags in the list's
-    /// margin at the element's height: a press on a menu row opens its menu instead of scrolling.
+    /// Drags `element` near the top of the screen, so what follows it shows, in the list's margin at the
+    /// element's height: a press on the element itself opens a menu row, and under the tab bar it hits
+    /// a tab (#168's 09d landed on Waffen). Held at the end, so the list does not glide on. On CI the
+    /// list landed up to 8 pt off from run to run (the pan's first event past its slop lands anywhere
+    /// when events come in batches): the landing is measured and put right with a slow second drag.
     private func holdAtTop(_ element: XCUIElement, besideRow: Bool = false) {
         guard element.exists && element.isHittable else { return }
-        guard besideRow else {
-            // Held at the end, so the list does not glide on past it.
-            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
-                       withVelocity: .slow, thenHoldForDuration: 0.5)
-            return
+        let height = app.frame.height, target = 0.2 * height
+        var slop: CGFloat = 10 // what a pan swallows before the list moves; measured on the first drag
+        for attempt in 0..<4 {
+            settle(element)
+            let y = element.frame.midY, delta = y - target
+            if abs(delta) < 1 { return }
+            // From no lower than three quarters down: a drag from the bottom edge goes to the system, not the list.
+            let from = min(y, 0.75 * height)
+            let distance = delta + (delta > 0 ? slop : -slop)
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: from / height))
+                .press(forDuration: 0.1,
+                       thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: min(0.98, max(0.02, (from - distance) / height)))),
+                       withVelocity: attempt == 0 ? .slow : XCUIGestureVelocity(40), thenHoldForDuration: 0.5)
+            let moved = y - element.frame.midY
+            // The list stopped short only at its end; otherwise what the finger moved more is the slop.
+            if attempt == 0, abs(moved) > abs(delta) / 2 { slop = max(0, abs(distance) - abs(moved)) }
         }
-        // From no lower than three quarters down: a drag from the bottom edge goes to the system, not the list.
-        let y = element.frame.midY / app.frame.height
-        let from = min(y, 0.75)
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: from))
-            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: max(0.02, from - (y - 0.18)))),
-                   withVelocity: .slow, thenHoldForDuration: 0.5)
+    }
+
+    /// Waits until `element` stops moving (a swipe decelerates for a while), so a drag starts from where it is.
+    private func settle(_ element: XCUIElement) {
+        var last = element.frame
+        for _ in 0..<10 {
+            usleep(200_000)
+            let now = element.frame
+            if now == last { return }
+            last = now
+        }
     }
 
     /// The firearm menu in the Stich editor, ending with «Waffe hinzufügen».
@@ -451,6 +469,9 @@ final class PRScreensTests: XCTestCase {
 
     private func snap(_ name: String) {
         sleep(2) // let animations settle and scroll indicators fade
+        // On CI the tab bar was still greyed out from a sheet's dismissal on some runs (03e): wait for it.
+        let tab = app.tabBars.buttons.firstMatch
+        if tab.exists { _ = tab.wait(for: \.isEnabled, toEqual: true, timeout: 3) }
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name
         attachment.lifetime = .keepAlways
