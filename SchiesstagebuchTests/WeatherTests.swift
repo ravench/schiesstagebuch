@@ -9,7 +9,7 @@ final class WeatherTests: ModelTestCase {
     func testFieldKeys() {
         let keys = ["overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
                     "wind_strength", "wind_direction", "wind_character", "temp_feel", "precipitation",
-                    "weather_impact", "weather_note", "air_temp_c", "humidity_pct", "pressure_hpa"]
+                    "weather_note", "air_temp_c", "humidity_pct", "pressure_hpa"]
         XCTAssertEqual(WeatherField.all.map(\.key), keys, "no duplicates, in this order")
     }
 
@@ -18,7 +18,7 @@ final class WeatherTests: ModelTestCase {
         XCTAssertEqual(WeatherField.inputs.map(\.key), [
             "overall", "sky", "light", "sun_direction", "target_light", "glare", "visibility",
             "wind_strength", "wind_direction", "wind_character", "temp_feel", "precipitation",
-            "weather_impact", "weather_note",
+            "weather_note",
         ])
     }
 
@@ -29,7 +29,9 @@ final class WeatherTests: ModelTestCase {
         XCTAssertEqual(keys("sun_direction"), SunDirection.allCases.map(\.rawValue))
         XCTAssertEqual(keys("glare"), ["0", "1", "2"])
         XCTAssertEqual(keys("precipitation"), ["none", "drizzle", "light_rain", "rain", "heavy_rain", "showers", "snow", "sleet", "hail"])
-        XCTAssertEqual(keys("visibility"), ["clear", "light_haze", "fog"])
+        XCTAssertEqual(keys("visibility"), ["clear", "light_haze", "fog", "mirage"], "mirage added 2026-11-09")
+        XCTAssertEqual(keys("target_light"), ["sun", "shade", "partial_shade"], "«Sonne direkt in den Stand» dropped 2026-11-09")
+        XCTAssertEqual(WeatherField.field("light")?.option("constant")?.icon, "arrow.right", "same icon as steady wind")
         XCTAssertEqual(keys("wind_character"), ["steady", "variable", "gusty"])
         // Clockwise from the targets, 45° apart, as Apple Weather's wind is mapped onto them.
         XCTAssertEqual(keys("wind_direction"), ["front", "front_right", "right", "back_right", "back", "back_left", "left", "front_left"])
@@ -41,8 +43,8 @@ final class WeatherTests: ModelTestCase {
     func testRemovedFieldsAreGone() {
         // Raven 2026-11-03/04: no stand temperature or wind type; the temperature is entered only as felt.
         // Raven 2026-11-07: no haze switch, ammunition, ground or aids, and no Ablösungen; the wind
-        // direction has eight directions instead of clock hours.
-        for key in ["stand_temp", "wind_type", "haze_rising_moisture", "ammo_temp", "ground", "aids", "rain_during_relay", "wind_clock"] {
+        // direction has eight directions instead of clock hours. Raven 2026-11-09: no «Einfluss aufs Resultat».
+        for key in ["stand_temp", "wind_type", "haze_rising_moisture", "ammo_temp", "ground", "aids", "rain_during_relay", "wind_clock", "weather_impact"] {
             XCTAssertNil(WeatherField.field(key), key)
         }
         XCTAssertNotNil(WeatherField.field("temp_feel"))

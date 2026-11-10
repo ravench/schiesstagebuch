@@ -35,6 +35,7 @@ W = {
     "Gesamteindruck": ("Overall impression", "Impression générale", "Impressione generale"),
     "Himmel": ("Sky", "Ciel", "Cielo"),
     "Lichtverhältnisse": ("Light", "Luminosité", "Luce"),
+    "Flimmern": ("mirage", "mirage", "tremolio"),
     "Sonne zum Schützen": ("Sun relative to shooter", "Soleil par rapport au tireur", "Sole rispetto al tiratore"),
     "Scheibe": ("Target", "Cible", "Bersaglio"),
     "Blendung": ("Glare", "Éblouissement", "Abbagliamento"),
@@ -47,7 +48,6 @@ W = {
     "Lufttemperatur": ("Air temperature", "Température de l'air", "Temperatura dell'aria"),
     "Luftfeuchtigkeit": ("Humidity", "Humidité", "Umidità"),
     "Luftdruck (Wetter)": ("Air pressure", "Pression atmosphérique", "Pressione atmosferica"),
-    "Einfluss aufs Resultat": ("Impact on the result", "Influence sur le résultat", "Influenza sul risultato"),
     "Bemerkung Wetter": ("Weather note", "Remarque météo", "Nota meteo"),
     # Options
     "ideal": ("ideal", "idéal", "ideale"),
@@ -81,7 +81,6 @@ W = {
     "in der Sonne": ("in the sun", "au soleil", "al sole"),
     "im Schatten": ("in the shade", "à l'ombre", "all'ombra"),
     "Teilschatten / Schattenwurf": ("partial shade / shadows", "ombre partielle / ombres portées", "ombra parziale / ombre"),
-    "Sonne direkt in den Stand": ("sun straight into the stand", "soleil directement dans le stand", "sole dritto nel poligono"),
     "leicht": ("slight", "légère", "leggero"),
     "stark": ("strong", "fort", "forte"),
     "klar": ("clear", "claire", "chiara"),
@@ -109,7 +108,4 @@ W = {
     "Schnee": ("snow", "neige", "neve"),
     "Schneeregen": ("sleet", "neige fondue", "nevischio"),
     "Hagel": ("hail", "grêle", "grandine"),
-    "keiner": ("none", "aucune", "nessuna"),
-    "spürbar": ("noticeable", "sensible", "percepibile"),
-    "deutlich": ("clear", "nette", "netta"),
 }

@@ -66,7 +66,7 @@ extension WeatherField {
             o("haze", "Dunst", "sun.haze"),
         ])),
         .init(key: "light", label: "Lichtverhältnisse", icon: "lightbulb", kind: .select([
-            o("constant", "gleichbleibend", "lightbulb"),
+            o("constant", "gleichbleibend", "arrow.right"), // like «konstant» wind; the bulb looked odd (Raven 2026-11-09)
             o("changing", "wechselnd", "arrow.triangle.2.circlepath"),
             o("glaring", "grell", "sun.max.fill"),
             o("diffuse", "diffus", "sun.dust"),
@@ -86,7 +86,7 @@ extension WeatherField {
             o("sun", "in der Sonne", "sun.max"),
             o("shade", "im Schatten", "tree"),
             o("partial_shade", "Teilschatten / Schattenwurf", "circle.lefthalf.filled"),
-            o("sun_into_stand", "Sonne direkt in den Stand", "rays"),
+            // «Sonne direkt in den Stand» was dropped (Raven 2026-11-09): it is about the shooter, see sun_direction.
         ])),
         .init(key: "glare", label: "Blendung", icon: "eye", kind: .select([
             o("0", "keine", "eye"),
@@ -97,6 +97,7 @@ extension WeatherField {
             o("clear", "klar", "eye"),
             o("light_haze", "leichter Dunst", "sun.haze"),
             o("fog", "Nebel", "eye.slash"),
+            o("mirage", "Flimmern", "water.waves"), // heat shimmer over the range (Raven 2026-11-09)
         ])),
         .init(key: "wind_strength", label: "Windstärke am Stand", icon: "wind", kind: .select([
             o("calm", "windstill", "leaf"),
@@ -142,11 +143,7 @@ extension WeatherField {
             o("sleet", "Schneeregen", "cloud.sleet"),
             o("hail", "Hagel", "cloud.hail"),
         ])),
-        .init(key: "weather_impact", label: "Einfluss aufs Resultat", icon: "chart.line.downtrend.xyaxis", kind: .select([
-            o("0", "keiner", "checkmark.circle"),
-            o("1", "spürbar", "exclamationmark.circle"),
-            o("2", "deutlich", "exclamationmark.triangle"),
-        ])),
+        // «Einfluss aufs Resultat» was dropped (Raven 2026-11-09); stored values stay unread.
         .init(key: "weather_note", label: "Bemerkung Wetter", icon: "text.bubble", kind: .text),
         // Measured values (the spec's source "weather_api"): stored when Apple Weather fills the record and
         // shown read-only in one line, but no input by hand for now (Raven 2026-11-06).

@@ -36,7 +36,7 @@ final class AppleWeatherTests: XCTestCase {
         XCTAssertEqual(c.number("air_temp_c"), 21)
         XCTAssertEqual(c.values.count, 8)
         // How it felt at the stand stays with the shooter.
-        for key in ["overall", "light", "sun_direction", "target_light", "glare", "weather_impact"] {
+        for key in ["overall", "light", "sun_direction", "target_light", "glare"] {
             XCTAssertNil(c[key], key)
         }
     }
