@@ -220,7 +220,7 @@ class WorkflowTests(unittest.TestCase):
 
     def test_upload_tags_the_build(self):
         self.assertIn("contents: write", self.upload)
-        self.assertLess(self.upload.index("Upload to TestFlight"), self.upload.index('git tag "testflight/$BUILD_NUMBER"'))
+        self.assertLess(self.upload.index("Upload to TestFlight"), self.upload.index('git tag -f "testflight/$BUILD_NUMBER"'))
         self.assertIn('git push origin "refs/tags/testflight/$BUILD_NUMBER"', self.upload)
 
     def test_what_to_test_waits_on_linux(self):
