@@ -102,7 +102,6 @@ T = {
     "Eigenes Kaliber": ("Custom calibre", "Calibre personnalisé", "Calibro personalizzato"),
     "Einstellungen": ("Settings", "Réglages", "Impostazioni"),
     "Eintrag bearbeiten": ("Edit entry", "Modifier l'entrée", "Modifica voce"),
-    "Eintrag erfassen": ("Log entry", "Saisir une entrée", "Registra voce"),
     "Eintrag löschen?": ("Delete entry?", "Supprimer l'entrée ?", "Eliminare la voce?"),
     "Einträge": ("Entries", "Entrées", "Voci"),
     "Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.": (
@@ -193,7 +192,13 @@ T = {
     "Neue Schiessanlagen": ("New ranges", "Nouveaux stands de tir", "Nuovi poligoni"),
     "Neue Waffe": ("New firearm", "Nouvelle arme", "Nuova arma"),
     "Neue Waffen": ("New firearms", "Nouvelles armes", "Nuove armi"),
-    "Neuer Eintrag": ("New entry", "Nouvelle entrée", "Nuova voce"),
+    "Neuer Anlass": ("New event", "Nouvel événement", "Nuovo evento"),
+    "Anlass erfassen": ("Log event", "Saisir un événement", "Registra evento"),
+    "Neuer Stich": ("New match", "Nouvelle cible", "Nuovo bersaglio"),
+    "Die Stiche erfasst du anschliessend im Anlass.": (
+        "You add the matches in the event afterwards.",
+        "Tu saisis ensuite les cibles dans l'événement.",
+        "I bersagli li registri poi nell'evento."),
     "Neues Kaliber": ("New calibre", "Nouveau calibre", "Nuovo calibro"),
     "Nicht alle Fotos konnten geladen werden.": ("Not all photos could be loaded.", "Toutes les photos n'ont pas pu être chargées.", "Non è stato possibile caricare tutte le foto."),
     "Noch keine Einträge": ("No entries yet", "Pas encore d'entrées", "Ancora nessuna voce"),

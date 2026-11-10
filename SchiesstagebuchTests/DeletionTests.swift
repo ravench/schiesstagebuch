@@ -49,7 +49,7 @@ final class DeletionTests: ModelTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<Entry>()).map(\.shotCount).sorted(), [5, 6])
     }
 
-    func testDeletingAWholeJournalRowDropsTheEvent() throws {
+    func testDeletingAWholeJournalRowKeepsTheEventWithoutStiche() throws {
         let event = ShootingEvent(date: day(1)); context.insert(event)
         let a = addStich(to: event, nil, shots: 10)
         let b = addStich(to: event, nil, shots: 6)
@@ -57,7 +57,7 @@ final class DeletionTests: ModelTestCase {
 
         try Deletion.delete(JournalItem.group([a, b]).flatMap(\.entries), in: context)
 
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 0)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 1, "the Anlass stays and is deleted on its own")
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Entry>()), 0)
     }
 

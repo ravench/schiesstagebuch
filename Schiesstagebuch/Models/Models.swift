@@ -308,6 +308,12 @@ final class ShootingEvent {
     var stichCount: Int { entries?.count ?? 0 }
     var totalShots: Int { (entries ?? []).totalShots }
 
+    /// The journal's search over an event without Stiche: its name and range.
+    func matches(_ query: String) -> Bool {
+        guard !query.isEmpty else { return true }
+        return [name, range?.name ?? "", range?.place ?? ""].contains { $0.localizedCaseInsensitiveContains(query) }
+    }
+
     /// Moves the event and all its Stiche to a new day.
     func setDate(_ newDate: Date) {
         date = newDate

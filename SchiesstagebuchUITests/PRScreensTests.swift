@@ -21,13 +21,25 @@ final class PRScreensTests: XCTestCase {
             snap("02-Eintrag")
             back()
         }
-        if open(app.buttons["Neuer Eintrag"].firstMatch) {
-            snap("03-Neuer-Eintrag")
-            pickerStops()
-            positionStop()
-            scroll()
-            snap("04-Neuer-Eintrag-unten")
-            app.buttons["Abbrechen"].firstMatch.tap()
+        // The Anlass first (date, range, name), then its screen with no Stich yet, then the first Stich.
+        if open(app.buttons["Neuer Anlass"].firstMatch) {
+            snap("03-Neuer-Anlass")
+            rangeStop()
+            app.buttons["Sichern"].firstMatch.tap()
+            let addStich = app.buttons["Stich hinzufügen"].firstMatch
+            if addStich.waitForExistence(timeout: 5) {
+                snap("03e-Anlass-ohne-Stiche")
+                addStich.tap()
+                snap("03f-Neuer-Stich")
+                weaponStop()
+                positionStop()
+                scroll()
+                snap("04-Neuer-Stich-unten")
+                app.buttons["Abbrechen"].firstMatch.tap()
+            } else {
+                XCTFail("The new Anlass did not open")
+            }
+            back()
         }
 
         tab("Statistik")
@@ -92,8 +104,11 @@ final class PRScreensTests: XCTestCase {
         let extra = app.staticTexts["Zusätzliche Felder"].firstMatch
         reveal(extra, up: false)
         holdAtTop(extra)
+        pullDown(ifHidden: extra)
         snap("09a-Zusaetzliche-Felder")
-        if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Filter")).firstMatch) {
+        let filter = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Filter")).firstMatch
+        reveal(filter, up: false)
+        if open(filter) {
             snap("09b-Filter")
             let record = app.switches["Filter erfassen"].firstMatch
             if record.waitForExistence(timeout: 5) {
@@ -198,10 +213,12 @@ final class PRScreensTests: XCTestCase {
         snap("20-Neu-in-dieser-Version")
     }
 
-    /// A new entry with only IPSC scoring switched on: the stage and the hits with their footer.
+    /// A new stage with only IPSC scoring switched on: the stage and the hits with their footer.
     func testIPSCEntry() {
         relaunch(adding: ["-scoringSystems.v1", "ipsc"])
-        if open(app.buttons["Neuer Eintrag"].firstMatch) {
+        guard open(app.buttons["Neuer Anlass"].firstMatch) else { return }
+        app.buttons["Sichern"].firstMatch.tap()
+        if open(app.buttons["Stage hinzufügen"].firstMatch) {
             topStop(app.staticTexts["Zeit"].firstMatch, "03d-IPSC-Eintrag")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
@@ -226,6 +243,19 @@ final class PRScreensTests: XCTestCase {
         snap(name)
     }
 
+    /// A drag can glide on and leave `element` under the navigation bar (seen on CI with a long list below it):
+    /// pulls the list back down by the missing distance, in the margin beside the rows.
+    private func pullDown(ifHidden element: XCUIElement) {
+        guard element.exists else { return }
+        let top = app.navigationBars.firstMatch.frame.maxY + 8
+        let missing = top - element.frame.minY
+        guard missing > 0 else { return }
+        let from = CGVector(dx: 0.03, dy: 0.5)
+        app.coordinate(withNormalizedOffset: from)
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: 0.5 + missing / app.frame.height)),
+                   withVelocity: .slow, thenHoldForDuration: 0.5)
+    }
+
     /// Drags `element` near the top of the screen, so what follows it shows. `besideRow` drags in the list's
     /// margin at the element's height: a press on a menu row opens its menu instead of scrolling.
     private func holdAtTop(_ element: XCUIElement, besideRow: Bool = false) {
@@ -245,12 +275,16 @@ final class PRScreensTests: XCTestCase {
                    withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
-    /// The firearm menu and the range list, both ending with «… hinzufügen».
-    private func pickerStops() {
+    /// The firearm menu in the Stich editor, ending with «Waffe hinzufügen».
+    private func weaponStop() {
         if open(app.buttons["Waffe"].firstMatch) {
             snap("03a-Waffe-Auswahl")
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
         }
+    }
+
+    /// The range list in the Anlass editor, ending with «Schiessanlage hinzufügen».
+    private func rangeStop() {
         if open(app.staticTexts["Schiessanlage"].firstMatch) {
             let search = app.searchFields.firstMatch
             if search.waitForExistence(timeout: 5) {

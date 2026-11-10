@@ -147,6 +147,29 @@ final class ShootingEventTests: ModelTestCase {
         XCTAssertTrue(items[2].isSingle)
     }
 
+    func testEventWithoutStichGetsARowByDate() {
+        let older = ShootingEvent(date: day(2), name: "Training"); context.insert(older)
+        let range = ShootingRange(name: "Albisgüetli", place: "Zürich"); context.insert(range)
+        let planned = ShootingEvent(date: day(6), name: "", range: range); context.insert(planned)
+        let mid = ShootingEvent(date: day(4)); context.insert(mid)
+        let a = addStich(to: mid, nil, shots: 10)
+        let b = addEntry(nil, on: day(8), shots: 3)
+
+        let items = JournalItem.group([b, a], emptyEvents: [older, planned])
+        XCTAssertEqual(items.map(\.date), [day(8), day(6), day(4), day(2)], "newest first, empty events among the rest")
+        XCTAssertEqual(items[1].event, planned)
+        XCTAssertTrue(items[1].entries.isEmpty)
+        XCTAssertFalse(items[1].isSingle, "shown as an Anlass, which opens its list of Stiche")
+        XCTAssertEqual(items[1].totalShots, 0)
+        XCTAssertEqual(JournalItem.group([b, a]).count, 2, "nothing changes without empty events")
+
+        XCTAssertTrue(planned.matches("albis"))
+        XCTAssertTrue(planned.matches("zürich"))
+        XCTAssertTrue(older.matches("train"))
+        XCTAssertFalse(older.matches("albis"))
+        XCTAssertTrue(older.matches(""))
+    }
+
     func testFilteredStichStillShowsAsItsEvent() {
         let event = ShootingEvent(date: day(5)); context.insert(event)
         let a = addStich(to: event, nil, shots: 10)
@@ -169,11 +192,13 @@ final class ShootingEventTests: ModelTestCase {
         XCTAssertEqual(event.totalShots, 20)
     }
 
-    func testDeletingTheLastStichDeletesTheEvent() throws {
+    func testDeletingTheLastStichKeepsTheEvent() throws {
+        // Raven 2026-11-09: an Anlass is recorded on its own and deleted on its own.
         let e = addEntry(nil, on: day(1), shots: 10)
         try context.save()
         try Deletion.delete(e, in: context)
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingEvent>()), 0)
+        let events = try context.fetch(FetchDescriptor<ShootingEvent>())
+        XCTAssertEqual(events.map(\.stichCount), [0])
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Entry>()), 0)
     }
 
