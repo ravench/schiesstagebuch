@@ -91,8 +91,12 @@ struct RootView: View {
         }
         .task {
             showWelcome = ScreenshotData.isActive ? ScreenshotData.showsWelcome : FirstRun.shouldShow()
-            guard !showWelcome else { return } // a first start shows the welcome screen; the notes wait
             let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+            guard !showWelcome else {
+                // A first start shows the welcome screen; the notes of this build are not news to a new user.
+                UserDefaults.standard.set(build, forKey: Changelog.shownBuildKey)
+                return
+            }
             if let notes = Changelog.toShow(build: build, language: Bundle.main.preferredLocalizations.first ?? "de") {
                 whatsNew = notes
                 showWhatsNew = true

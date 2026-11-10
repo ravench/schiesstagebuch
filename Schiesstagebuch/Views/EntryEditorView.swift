@@ -534,6 +534,7 @@ struct EntryEditorView: View {
     }
 
     private func loadPhotos(_ items: [PhotosPickerItem]) async {
+        guard !items.isEmpty else { return } // the reset below fires onChange again; it must not clear the alert
         var loaded: [Data?] = []
         for item in items { loaded.append(try? await item.loadTransferable(type: Data.self)) }
         (photos, photoLoadFailed) = ImageCompressor.adding(loaded, to: photos)

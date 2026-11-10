@@ -35,5 +35,6 @@ final class BarrelDeletionTests: ModelTestCase {
         try Deletion.delete(old, in: context)
 
         XCTAssertEqual(weapon.preferredBarrel(on: day(1)), new)
+        XCTAssertTrue(new.isDefault, "the default passes on, so the firearm never has none")
     }
 }
