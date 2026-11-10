@@ -108,6 +108,17 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(calibers.map(\.name), ["9mm Luger"], "the first spelling wins")
     }
 
+    func testRenamedSeededCalibreIsFoundByItsCatalogueID() throws {
+        let renamed = Caliber(name: "9 mm Para"); renamed.catalogID = "9x19 mm"; context.insert(renamed)
+        try context.save()
+        let json = """
+        {"version":1,"exportedAt":"2026-01-01T00:00:00Z","weapons":[],"ammunition":[],"ranges":[],"maintenance":[],"entries":[],
+         "calibers":[{"id":"6A1C5E3E-0000-4000-8000-000000000003","name":"9x19 mm","category":"Kurzwaffe","isArchived":false,"catalogID":"9x19 mm"}]}
+        """
+        try Backup.restore(from: Data(json.utf8), into: context)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<Caliber>()).map(\.name), ["9 mm Para"], "no twin of the renamed calibre")
+    }
+
     func testRestoringTwiceDoesNotDuplicate() throws {
         let ammo = Ammunition(name: "GP 11"); context.insert(ammo)
         let lot = AmmoLot(number: "X1"); context.insert(lot); lot.ammunition = ammo
@@ -214,6 +225,16 @@ final class BackupTests: ModelTestCase {
         let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         XCTAssertTrue(csv.contains("\"Zeile 1\r\nZeile 2\""), "a note with a Windows line break stays one quoted field")
         XCTAssertEqual(csv.components(separatedBy: "\r\n").count, 3, "header, one row, and the break inside the quoted note")
+    }
+
+    func testCSVDoesNotLetACellRunAsAFormula() throws {
+        let e = addEntry(nil, on: day(1), shots: 1); e.notes = "=HYPERLINK(\"x\")"; e.stich = "-Vorderlader"; e.result = "-5"
+        try context.save()
+        let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
+        let cols = csv.components(separatedBy: "\r\n")[1].components(separatedBy: ";")
+        XCTAssertTrue(cols.contains("\"'=HYPERLINK(\"\"x\"\")\""), "an apostrophe keeps it text: \(cols)")
+        XCTAssertTrue(cols.contains("'-Vorderlader"))
+        XCTAssertTrue(cols.contains("-5"), "a negative number stays a number")
     }
 
     func testCSVWritesGregorianDates() throws {
