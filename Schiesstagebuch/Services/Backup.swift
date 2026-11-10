@@ -100,7 +100,11 @@ enum Backup {
         var shotValuesText: String?
         var sighterValuesText: String?
         var passeTotals: [PasseTotal]?
-        var filterColor: String?; var secondFilterColor: String?; var diopter: Double?; var ringSize: Double?; var irisSize: Double?
+        var filterColor: String?; var secondFilterColor: String?; var ringSize: Double?; var irisSize: Double?
+        /// Backups from before 2026-11-10: a lens value, not restored.
+        var diopter: Double?
+        /// Clicks turned during the Stich, up and right (negative: down and left).
+        var diopterUp: Int?; var diopterRight: Int?
         var bipodLength: Double?
         /// IPSC stage: time and hits.
         var ipsc: IPSCStage?
@@ -158,7 +162,8 @@ enum Backup {
                       sighterValuesText: $0.sighterValuesText.isEmpty ? nil : $0.sighterValuesText,
                       passeTotals: $0.passeTotals.isEmpty ? nil : $0.passeTotals,
                       filterColor: $0.filterColor, secondFilterColor: $0.secondFilterColor,
-                      diopter: $0.diopter, ringSize: $0.ringSize, irisSize: $0.irisSize, bipodLength: $0.bipodLength,
+                      ringSize: $0.ringSize, irisSize: $0.irisSize, diopterUp: $0.diopterUp, diopterRight: $0.diopterRight,
+                      bipodLength: $0.bipodLength,
                       ipsc: $0.ipscStage,
                       photos: $0.sortedPhotos.compactMap(\.imageData),
                       importKey: $0.importKey, createdAt: $0.createdAt)
@@ -404,13 +409,13 @@ enum Backup {
             (d.eventID.flatMap { events[$0] } ?? versionOneEvent(of: d, ranges: ranges, into: context)).add(e)
             e.lot = d.lotID.flatMap { lots[$0] }
             e.barrel = d.barrelID.flatMap { barrels[$0] }
-            e.sighterCount = d.sighterCount
-            e.maxPoints = d.maxPoints
+            e.sighterCount = d.sighterCount; e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
             e.sighterValuesText = d.sighterValuesText ?? ""
             e.passeTotals = d.passeTotals ?? []
             e.ipscStage = d.ipsc
-            SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "", diopter: d.diopter,
+            SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "",
+                          diopter: d.diopterUp.map { DiopterClicks(up: $0, right: d.diopterRight ?? 0) },
                           ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
@@ -449,7 +454,7 @@ enum Backup {
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
                                 "Prozent", "Einzelschüsse", "Probeschüsse einzeln", "Punkte pro Passe",
                                 "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
-                                "Filter", "Diopter", "Ringgrösse", "Iris", "Zweibeinstütze (cm)", "Wetter", "Bemerkungen"]
+                                "Filter", "Iris", "Ringgrösse", "Diopterkorrekturen", "Zweibeinstütze (cm)", "Wetter", "Bemerkungen"]
         var lines: [String] = [header.map { $0.loc }.joined(separator: ";")]
         for e in entries {
             let score = e.score
@@ -481,9 +486,9 @@ enum Backup {
             cols.append(stage?.hitSummary ?? "")
             cols.append(e.hitFactor.map { IPSCFormat.hitFactor($0) } ?? "")
             cols.append(SightSettings(entry: e).filters.joined(separator: " + "))
-            cols.append(e.diopter.map { SightSettings.format($0) } ?? "")
-            cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")
             cols.append(e.irisSize.map { SightSettings.format($0) } ?? "")
+            cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")
+            cols.append(SightSettings(entry: e).diopter?.text ?? "")
             cols.append(e.bipodLength.map { SightSettings.format($0) } ?? "")
             cols.append(e.weather?.summary { $0.formatted(date: .omitted, time: .shortened) } ?? "")
             cols.append(e.notes)

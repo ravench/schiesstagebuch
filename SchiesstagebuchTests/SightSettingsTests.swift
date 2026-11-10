@@ -19,17 +19,27 @@ final class SightSettingsTests: ModelTestCase {
 
     func testApplyAndReadBack() {
         let e = addEntry(nil, on: day(1), shots: 10)
-        SightSettings(filter: "Citron", diopter: 2.34, ringSize: 15).apply(to: e)
+        SightSettings(filter: "Citron", diopter: DiopterClicks(up: 2, right: -1), ringSize: 15).apply(to: e)
         XCTAssertEqual(e.filterColor, "Citron")
-        XCTAssertEqual(e.diopter, 2.3)
+        XCTAssertEqual([e.diopterUp, e.diopterRight], [2, -1])
         XCTAssertEqual(e.ringSize, 9.9)
-        XCTAssertEqual(SightSettings(entry: e), SightSettings(filter: "Citron", diopter: 2.3, ringSize: 9.9))
+        XCTAssertEqual(SightSettings(entry: e), SightSettings(filter: "Citron", diopter: DiopterClicks(up: 2, right: -1), ringSize: 9.9))
+        SightSettings().apply(to: e)
+        XCTAssertNil(e.diopterUp); XCTAssertNil(e.diopterRight)
+    }
+
+    /// «2 hoch, 1 links»: the clicks of each direction, nothing for 0.
+    func testDiopterClicksText() {
+        XCTAssertEqual(DiopterClicks().text, "0")
+        XCTAssertEqual(DiopterClicks(up: 2).text, String(format: "%lld hoch".loc, 2))
+        XCTAssertEqual(DiopterClicks(up: -3, right: 1).text, String(format: "%lld tief".loc, 3) + ", " + String(format: "%lld rechts".loc, 1))
+        XCTAssertEqual(DiopterClicks(right: -1).text, String(format: "%lld links".loc, 1))
     }
 
     func testLastUsedComesFromNewestEntryWithSameWeapon() throws {
         let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
         let p210 = Weapon(name: "P210"); context.insert(p210)
-        let old = addEntry(stgw, on: day(1), shots: 10); old.filterColor = "Saphire"; old.diopter = 1.5
+        let old = addEntry(stgw, on: day(1), shots: 10); old.filterColor = "Saphire"; old.diopterUp = 2
         let newer = addEntry(stgw, on: day(5), shots: 10); newer.filterColor = "Citron"; newer.ringSize = 3.2
         addEntry(stgw, on: day(8), shots: 10)                         // nothing recorded: skipped
         let other = addEntry(p210, on: day(9), shots: 10); other.filterColor = "CALM"
@@ -37,6 +47,7 @@ final class SightSettingsTests: ModelTestCase {
         let entries = try context.fetch(FetchDescriptor<Entry>())
         XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries), SightSettings(ringSize: 3.2), "without the filter")
         XCTAssertNil(SightSettings.lastUsed(for: p210, in: entries), "a filter alone is nothing to carry over")
+        XCTAssertNil(SightSettings.lastUsed(for: stgw, in: entries.filter { $0.date == day(1) }), "nor are the diopter corrections")
         XCTAssertNil(SightSettings.lastUsed(for: nil, in: entries))
     }
 
@@ -52,14 +63,14 @@ final class SightSettingsTests: ModelTestCase {
     }
 
     func testRiflesKeepTheIris() {
-        let s = SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
+        let s = SightSettings(diopter: DiopterClicks(up: 1), ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
         XCTAssertEqual(s.fitted(to: SightSettings.aperture(for: .sportRifle)).irisSize, 2.1)
         XCTAssertEqual(s.fitted(to: SightSettings.aperture(for: .serviceRifle)).ringSize, 3.4)
     }
 
     func testFittingDropsTheApertureTheWeaponDoesNotHave() {
-        let s = SightSettings(filter: "Citron", diopter: 1.2, ringSize: 3.4, irisSize: 2.1)
-        XCTAssertEqual(s.fitted(to: .iris), SightSettings(filter: "Citron", diopter: 1.2, irisSize: 2.1))
+        let s = SightSettings(filter: "Citron", diopter: DiopterClicks(up: 1), ringSize: 3.4, irisSize: 2.1)
+        XCTAssertEqual(s.fitted(to: .iris), SightSettings(filter: "Citron", diopter: DiopterClicks(up: 1), irisSize: 2.1))
         XCTAssertEqual(s.fitted(to: .both), s)
     }
 
@@ -68,7 +79,8 @@ final class SightSettingsTests: ModelTestCase {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
             for key in ["Kein Filter", "Einstellungen für Sportschützen", "Für Sportschützen", "Filter (Mehrzahl)",
-                                             "Diopter", "Ringgrösse", "Iris", "Zweibeinstütze", "Zweibeinstütze (cm)"] {
+                                             "Diopterkorrekturen", "Höhenverstellung", "Seitenverstellung", "%lld hoch", "%lld tief",
+                                             "%lld rechts", "%lld links", "Ringgrösse", "Iris", "Zweibeinstütze", "Zweibeinstütze (cm)"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }
@@ -141,7 +153,8 @@ final class SightSettingsTests: ModelTestCase {
 
     func testBackupAndCSVKeepSightSettings() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
-        SightSettings(filter: "ACE", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5).apply(to: e)
+        let clicks = DiopterClicks(up: 3, right: -2)
+        SightSettings(filter: "ACE", diopter: clicks, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5).apply(to: e)
         try context.save()
 
         let data = try Backup.export(context)
@@ -150,14 +163,14 @@ final class SightSettingsTests: ModelTestCase {
         let target = ModelContext(other)
         try Backup.restore(from: data, into: target)
         let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
-        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "ACE", diopter: 4.2, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5))
+        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "ACE", diopter: clicks, ringSize: 3.6, irisSize: 1.8, bipodLength: 32.5))
 
         let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         let lines = csv.components(separatedBy: "\r\n")
         let header = lines[0].components(separatedBy: ";")
         let row = lines[1].components(separatedBy: ";")
         XCTAssertEqual(header.count, row.count)
-        XCTAssertTrue(row.contains(SightSettings.format(4.2)))
+        XCTAssertTrue(row.contains(clicks.text))
         XCTAssertTrue(row.contains(SightSettings.format(3.6)))
         XCTAssertTrue(row.contains(SightSettings.format(1.8)))
         XCTAssertTrue(row.contains(SightSettings.format(32.5)))
@@ -174,7 +187,7 @@ final class SightSettingsTests: ModelTestCase {
     }
 
     func testBipodIsRifleOnly() {
-        let s = SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
+        let s = SightSettings(diopter: DiopterClicks(up: 1), ringSize: 3.4, irisSize: 2.1, bipodLength: 30)
         XCTAssertNil(s.fitted(to: .iris).bipodLength)
         XCTAssertEqual(s.fitted(to: .both).bipodLength, 30)
     }
