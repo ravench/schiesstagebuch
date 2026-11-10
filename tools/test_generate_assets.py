@@ -110,6 +110,17 @@ class DimensionGroupTests(unittest.TestCase):
         self.assertNotIn(".38 Special", groups, "a .357 chamber takes .38 Spl, but the cases differ")
         self.assertNotEqual(groups[".308 Winchester"], groups[".223 Remington"])
 
+    def test_rimfire_and_centrefire_versions_are_not_grouped(self):
+        """calibre-data f049201: the Vetterli is rimfire and its centrefire version a calibre of its own,
+        with the same measurements; a rimfire gun cannot fire the centrefire one."""
+        groups = generate_assets.dimension_groups()
+        kinds = {c["name"]: c["kind"] for c in generate_assets.build()[0]}
+        for rimfire, centrefire in [("10.4x38 mm R Vetterli", "10.4x38 mm R Vetterli Centrefire"),
+                                    (".44 Henry", ".44 Henry Centrefire"), (".32 Long Rimfire", ".32 Long Centrefire")]:
+            self.assertEqual((kinds[rimfire], kinds[centrefire]), ("rimfire", "rimmed"))
+            self.assertNotIn(rimfire, groups)
+            self.assertNotIn(centrefire, groups)
+
     def test_generated_file_is_up_to_date(self):
         calibers, _ = generate_assets.build()
         with open(os.path.join(ROOT, "Schiesstagebuch", "Resources", "Calibers.json")) as f:
