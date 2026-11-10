@@ -204,8 +204,9 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
+    /// The fields are pinned off: 09c of the tour switches the filters on, and a run that misses it does not.
     func testWelcome() {
-        relaunch(adding: ["-welcome"])
+        relaunch(adding: ["-welcome", "-sportFeatures.v1", "0"])
         let fields = app.staticTexts["Für Sportschützen"].firstMatch
         if fields.waitForExistence(timeout: 10) {
             reveal(fields)
