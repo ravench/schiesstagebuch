@@ -455,10 +455,10 @@ T = {
     "Zusätzliche Felder": ("Extra fields", "Champs supplémentaires", "Campi aggiuntivi"),
     "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
     "Länge in cm, nur bei Gewehren": ("Length in cm, rifles only", "Longueur en cm, fusils uniquement", "Lunghezza in cm, solo fucili"),
-    "Licht, Wind und Temperatur pro Anlass": (
-        "Light, wind and temperature per event",
-        "Lumière, vent et température par événement",
-        "Luce, vento e temperatura per evento"),
+    "Licht, Wind und Temperatur pro Stich": (
+        "Light, wind and temperature per match",
+        "Lumière, vent et température par cible",
+        "Luce, vento e temperatura per bersaglio"),
     "Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.": (
         "Switch each field on separately. Hidden values stay saved.",
         "Chaque champ s'active séparément. Les valeurs masquées restent enregistrées.",

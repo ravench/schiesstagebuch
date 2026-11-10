@@ -5809,25 +5809,25 @@
         }
       }
     },
-    "Licht, Wind und Temperatur pro Anlass": {
+    "Licht, Wind und Temperatur pro Stich": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Light, wind and temperature per event"
+            "value": "Light, wind and temperature per match"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lumière, vent et température par événement"
+            "value": "Lumière, vent et température par cible"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Luce, vento e temperatura per evento"
+            "value": "Luce, vento e temperatura per bersaglio"
           }
         }
       }

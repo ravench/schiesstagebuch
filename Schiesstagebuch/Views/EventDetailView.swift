@@ -7,7 +7,6 @@ struct EventDetailView: View {
     let event: ShootingEvent
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var editing = false
     @State private var addingStich = false
     @State private var confirmDelete = false
@@ -62,10 +61,6 @@ struct EventDetailView: View {
                 } footer: {
                     Text("Für Stiche, die an diesem Anlass mehrmals geschossen wurden.")
                 }
-            }
-
-            if features.contains(.weather), let weather = event.weather {
-                WeatherDetailSection(record: weather)
             }
         }
         .navigationTitle(event.date.formatted(date: .abbreviated, time: .omitted))
@@ -169,7 +164,7 @@ struct RepeatedStichRow: View {
 }
 
 /// Records an event (event == nil; its Stiche are added on its screen afterwards) or edits what all
-/// Stiche of an event share: date, range, Anlass, scoring and weather. Nothing is written before «Sichern».
+/// Stiche of an event share: date, range, Anlass and scoring. Nothing is written before «Sichern».
 struct EventEditorView: View {
     let event: ShootingEvent?
     /// Called with the event just recorded, after the sheet is dismissed.
@@ -180,7 +175,6 @@ struct EventEditorView: View {
     @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @Query(sort: \Entry.date, order: .reverse) private var allEntries: [Entry]
     @Query private var allEvents: [ShootingEvent]
-    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @AppStorage(ScoringSystem.enabledKey) private var enabledScoring = ""
     @AppStorage(NearbyRanges.enabledKey) private var rangeByLocation = true
 
@@ -191,7 +185,6 @@ struct EventEditorView: View {
     @State private var here = OneShotLocation()
     @State private var name = ""
     @FocusState private var nameFocused: Bool
-    @State private var weather: WeatherRecord?
     @State private var scoring: ScoringSystem = .rings
     @State private var division = ""
     @State private var powerFactor: IPSCPowerFactor = .minor
@@ -244,9 +237,6 @@ struct EventEditorView: View {
                         Text("Die Stiche erfasst du anschliessend im Anlass.")
                     }
                 }
-                if features.contains(.weather) {
-                    WeatherSection(weather: $weather, day: date, range: range)
-                }
             }
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(event == nil ? "Neuer Anlass".loc : "Anlass bearbeiten".loc)
@@ -269,15 +259,13 @@ struct EventEditorView: View {
         guard !didLoad else { return }
         didLoad = true
         if let event {
-            date = event.date; range = event.range; name = event.name; weather = event.weather
+            date = event.date; range = event.range; name = event.name
             scoring = event.scoringSystem; division = event.ipscDivision; powerFactor = event.ipscPowerFactor
             return
         }
         // A new match starts with the division and power factor of the last one.
         if let last = ShootingEvent.lastIPSC(in: allEvents) { division = last.ipscDivision; powerFactor = last.ipscPowerFactor }
         scoring = ScoringSystem.forNewEvent(enabled: ScoringSystem.enabled(from: enabledScoring))
-        // Weather starts on when the last entry with the weapon shot last had it (off for indoor shooting).
-        weather = WeatherRecord.recordsByDefault(for: allEntries.first?.weapon, in: allEntries) ? WeatherRecord(time: WeatherRecord.startTime) : nil
         if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges) {
             here.request()
         }
@@ -300,7 +288,6 @@ struct EventEditorView: View {
             context.insert(event)
             event.scoringSystem = scoring
             if scoring == .ipsc { event.setIPSC(division: division, powerFactor: powerFactor) }
-            if features.contains(.weather) { event.weather = weather?.normalized() }
             try? context.save()
             dismiss()
             onCreate?(event)
@@ -312,7 +299,6 @@ struct EventEditorView: View {
         event.setDate(date)
         event.scoringSystem = scoring
         if scoring == .ipsc { event.setIPSC(division: division, powerFactor: powerFactor) }
-        if features.contains(.weather) { event.weather = weather?.normalized() }
         try? context.save()
         // Day-based reminders count from entry dates.
         if moved { Set((event.entries ?? []).compactMap(\.weapon)).forEach { MaintenanceNotifier.refresh($0) } }

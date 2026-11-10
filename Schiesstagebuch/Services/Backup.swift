@@ -22,8 +22,8 @@ struct BackupDocument: FileDocument {
 /// JSON backup of everything, including photos (base64). Restore merges by id, so
 /// importing the same file twice does not create duplicates.
 enum Backup {
-    /// 2: events (Anlass, range, weather) hold the entries, one per Stich.
-    static let currentVersion = 2
+    /// 2: events (Anlass, range) hold the entries, one per Stich. 3: the weather is on the entry again.
+    static let currentVersion = 3
 
     struct File: Codable {
         var version: Int
@@ -80,6 +80,7 @@ enum Backup {
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
     struct EventDTO: Codable {
         var id: UUID; var date: Date; var name: String; var rangeID: UUID?
+        /// Version 2 only; restoring carries it to the Stiche.
         var weather: WeatherRecord?
         var createdAt: Date
         /// Optional so backups from before scoring systems still load (point scoring).
@@ -91,7 +92,9 @@ enum Backup {
         /// `ShootingPosition` raw value; nil when none was entered.
         var position: String?
         /// Version 1 only: what the event holds now.
-        var event: String?; var rangeID: UUID?; var weather: WeatherRecord?
+        var event: String?; var rangeID: UUID?
+        /// Not in version 2, which kept the weather on the event.
+        var weather: WeatherRecord?
         var weaponID: UUID?; var caliberID: UUID?; var ammunitionID: UUID?
         var lotID: UUID?
         var barrelID: UUID?
@@ -151,7 +154,7 @@ enum Backup {
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
-                      eventID: $0.shootingEvent?.id, stich: $0.stich, position: $0.position?.rawValue,
+                      eventID: $0.shootingEvent?.id, stich: $0.stich, position: $0.position?.rawValue, weather: $0.weather,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, barrelID: $0.barrel?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
@@ -278,7 +281,6 @@ enum Backup {
     /// Version 1 backups had no events: each entry becomes an event of its own.
     private static func versionOneEvent(of d: EntryDTO, ranges: [UUID: ShootingRange], into context: ModelContext) -> ShootingEvent {
         let event = ShootingEvent(date: d.date, name: d.event ?? "")
-        event.weather = d.weather
         context.insert(event); event.range = d.rangeID.flatMap { ranges[$0] }
         return event
     }
@@ -404,17 +406,17 @@ enum Backup {
             (d.eventID.flatMap { events[$0] } ?? versionOneEvent(of: d, ranges: ranges, into: context)).add(e)
             e.lot = d.lotID.flatMap { lots[$0] }
             e.barrel = d.barrelID.flatMap { barrels[$0] }
-            e.sighterCount = d.sighterCount
-            e.maxPoints = d.maxPoints
+            e.sighterCount = d.sighterCount; e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""
             e.sighterValuesText = d.sighterValuesText ?? ""
             e.passeTotals = d.passeTotals ?? []
-            e.ipscStage = d.ipsc
+            e.ipscStage = d.ipsc; e.weather = d.weather
             SightSettings(filter: d.filterColor ?? "", secondFilter: d.secondFilterColor ?? "", diopter: d.diopter,
                           ringSize: d.ringSize, irisSize: d.irisSize, bipodLength: d.bipodLength).apply(to: e)
             e.photos = d.photos.prefix(Limits.maxPhotos).enumerated().map { EntryPhoto(imageData: $1, position: $0) }
             added += 1
         }
+        WeatherRecord.moveToStiche(in: context) // version 2 backups kept the weather on the event
         try context.save()
         weapons.values.forEach { MaintenanceNotifier.refresh($0) }
         let skipped = file.entries.count - added

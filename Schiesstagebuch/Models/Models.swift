@@ -12,8 +12,8 @@ import SwiftData
 // Journal data:
 //   ShootingEvent -> ShootingRange; ShootingEvent -> Entry (one per Stich, at least one)
 //   Entry -> Weapon, Caliber, Ammunition, AmmoLot; Entry -> EntryPhoto (max 4)
-// The event holds what the Stiche share (date, range, Anlass, weather); each entry holds what
-// one Stich was shot with and how it went.
+// The event holds what the Stiche share (date, range, Anlass); each entry holds what one Stich
+// was shot with, how it went and the weather while it was shot.
 // Shots per calibre are counted from Entry.caliber.
 // Shots per barrel: Entry -> Barrel, or matched by calibre and date (see Barrel.swift).
 // Maintenance: Weapon -> MaintenanceRecord (cleaning / service), with optional
@@ -368,6 +368,8 @@ final class Entry {
     var irisSize: Double?
     /// Bipod length in cm, rifles only.
     var bipodLength: Double?
+    /// Weather while the Stich was shot, as JSON (`WeatherRecord`); nil when none was recorded, e.g. indoors.
+    var weatherData: Data?
     /// Optional individual shot values as entered, one Passe per line, e.g. "10 9 10 8 9\n10 10 9 8 7".
     var shotValuesText: String = ""
     /// Optional values of the sighters (Probeschüsse) as entered, on one line, e.g. "9 10 8". They never count

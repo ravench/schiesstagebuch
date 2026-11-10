@@ -13,7 +13,7 @@ final class EditorCarryOverTests: ModelTestCase {
         rifle = Weapon(name: "Stgw 90"); context.insert(rifle)
         pistol = Weapon(name: "P210"); context.insert(pistol)
         let outdoors = addEntry(rifle, on: day(1), shots: 20)
-        outdoors.shootingEvent?.weather = WeatherRecord(time: day(1))
+        outdoors.weather = WeatherRecord(time: day(1))
         SightSettings(filter: "Citron", diopter: 1.5, ringSize: 4.2).apply(to: outdoors)
         addEntry(pistol, on: day(2), shots: 30)      // indoors, no weather, no sight settings
         try context.save()
@@ -31,6 +31,20 @@ final class EditorCarryOverTests: ModelTestCase {
         let typed = SightSettings(filter: "ACE", irisSize: 1.2)
         XCTAssertEqual(SightSettings.carriedOver(from: typed, to: rifle, in: entries), typed)
         XCTAssertEqual(SightSettings.carriedOver(from: typed, to: nil, in: entries), typed)
+    }
+
+    func testWeatherSwitchFollowsTheWeaponWhileNothingIsRecorded() {
+        let now = day(9)
+        XCTAssertEqual(WeatherRecord.carriedOver(from: nil, to: rifle, in: entries, now: now), WeatherRecord(time: now))
+        XCTAssertNil(WeatherRecord.carriedOver(from: WeatherRecord(time: now), to: pistol, in: entries, now: now),
+                     "only the time was set: an indoor weapon switches the weather off")
+        XCTAssertNil(WeatherRecord.carriedOver(from: nil, to: nil, in: entries, now: now))
+    }
+
+    func testRecordedWeatherSurvivesAWeaponChange() {
+        var record = WeatherRecord(time: day(9))
+        record.conditions.set("sky", .option("fog"))
+        XCTAssertEqual(WeatherRecord.carriedOver(from: record, to: pistol, in: entries), record)
     }
 
     func testTheSunAloneIsNothingRecorded() {

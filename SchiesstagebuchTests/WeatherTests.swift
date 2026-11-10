@@ -199,18 +199,35 @@ final class WeatherTests: ModelTestCase {
 
     // MARK: Record and entry storage
 
-    func testEventStoresWeatherAsJSONAndNilMeansNone() throws {
+    func testEntryStoresWeatherAsJSONAndNilMeansNone() {
         let e = addEntry(nil, on: day(1), shots: 10)
-        let event = try XCTUnwrap(e.shootingEvent)
         XCTAssertNil(e.weather)
         var record = WeatherRecord(time: day(1))
         record.conditions.set("sky", .option("fog"))
-        event.weather = record
-        XCTAssertNotNil(event.weatherData)
-        XCTAssertEqual(e.weather, record, "a Stich shows its event's weather")
-        event.weather = nil
+        e.weather = record
+        XCTAssertNotNil(e.weatherData)
+        XCTAssertEqual(e.weather, record)
+        e.weather = nil
+        XCTAssertNil(e.weatherData)
+    }
+
+    /// Until 2026-11-10 the weather sat on the Anlass: at start it moves to the Stiche that have none
+    /// of their own (Raven: weather belongs to the Stich), and the Anlass keeps none.
+    func testWeatherOfAnEventMovesToItsStiche() throws {
+        let event = ShootingEvent(date: day(1), name: "Feldschiessen"); context.insert(event)
+        var shared = WeatherRecord(time: day(1)); shared.conditions.set("sky", .option("fog"))
+        var own = WeatherRecord(time: day(1)); own.conditions.set("sky", .option("sunny"))
+        event.weather = shared
+        let a = addStich(to: event, nil, shots: 10)
+        let b = addStich(to: event, nil, shots: 6); b.weather = own
+        let other = addEntry(nil, on: day(2), shots: 5)
+        try context.save()
+        XCTAssertTrue(WeatherRecord.moveToStiche(in: context))
+        XCTAssertEqual(a.weather, shared)
+        XCTAssertEqual(b.weather, own, "a Stich with its own weather keeps it")
         XCTAssertNil(event.weatherData)
-        XCTAssertNil(e.weather)
+        XCTAssertNil(other.weather)
+        XCTAssertFalse(WeatherRecord.moveToStiche(in: context), "nothing left to move")
     }
 
     func testCombineTakesDayFromEntryAndTimeFromWeather() {
@@ -226,7 +243,7 @@ final class WeatherTests: ModelTestCase {
     func testWeatherSwitchCarriesOverFromLastEntryWithSameWeapon() throws {
         let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
         let lg = Weapon(name: "Luftgewehr"); context.insert(lg)
-        let outdoor = addEntry(stgw, on: day(1), shots: 10); outdoor.shootingEvent?.weather = WeatherRecord()
+        let outdoor = addEntry(stgw, on: day(1), shots: 10); outdoor.weather = WeatherRecord()
         addEntry(lg, on: day(2), shots: 40)                              // indoors, no weather
         try context.save()
         let entries = try context.fetch(FetchDescriptor<Entry>())
@@ -242,7 +259,7 @@ final class WeatherTests: ModelTestCase {
         let e = addEntry(nil, on: day(1), shots: 10)
         var record = WeatherRecord(time: day(1))
         record.conditions.set("wind_strength", .option("strong"))
-        e.shootingEvent?.weather = record
+        e.weather = record
         try context.save()
 
         let data = try Backup.export(context)

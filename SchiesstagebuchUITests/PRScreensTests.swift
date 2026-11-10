@@ -128,6 +128,11 @@ final class PRScreensTests: XCTestCase {
     func testWeatherStops() {
         relaunch(adding: ["-sportFeatures.v1", "8"]) // only the weather switch of the sport shooter fields
         tab("Tagebuch")
+        // The Anlass has no weather of its own (Raven 2026-11-10): the Stiche record it.
+        if open(app.buttons["Neuer Anlass"].firstMatch) {
+            snap("12b-Neuer-Anlass-bei-Wetter-ein")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        }
         guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         reveal(weatherSwitch)
