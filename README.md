@@ -156,15 +156,20 @@ as a comment from the **Build** workflow's `ipad-screens` job.
 ## CI on your own Mac
 
 The Mac jobs (Build with its iPad screens, TestFlight, iPad screens) run on GitHub's macOS
-runner, or on a self-hosted Mac once the repo is private and the repository variable
-`MAC_RUNNER` names it. On a public repo they never use it, since anyone's pull request could
-then run code on it. The Linux jobs stay on GitHub.
+runner, or on a self-hosted Mac while the repo is private and the repository variable
+`MAC_RUNNER` names it. Register the runner only once the repo is private, and remove it
+(`./svc.sh uninstall`, then `./config.sh remove`) before the repo ever goes public again: on a
+public repo, a pull request could change its own workflow to run code on that Mac. The Linux
+jobs stay on GitHub. While the Mac is off or its runner user is logged out, the Mac jobs wait
+(up to 24 hours) instead of falling back to GitHub's runner.
 
 1. On the Mac, make a standard macOS user just for the runner: CI erases and restarts its
    simulators on every run, and a user of its own keeps your simulators, keys and keychain
    out of reach.
-2. As an admin, install Xcode 26 with the iOS simulator, `brew install xcodegen git-lfs gh` and
-   `sudo gem install xcpretty`. As the runner user, run `git lfs install` and add
+2. As an admin, install Xcode 26 with the iOS simulator and open it once. Then run
+   `brew install xcodegen git-lfs gh`, `sudo gem install xcpretty`, `sudo DevToolsSecurity -enable`
+   and `sudo dseditgroup -o edit -a <runner user> -t user _developer`, so the runner user can run
+   tests without a password prompt. As the runner user, run `git lfs install` and add
    `eval "$(/opt/homebrew/bin/brew shellenv)"` to `~/.zprofile`, then open a new Terminal window.
 3. Under Settings › Actions › Runners › New self-hosted runner (macOS, ARM64), run the commands it
    shows in that window, then `./svc.sh install && ./svc.sh start`. The runner works while its
@@ -172,7 +177,7 @@ then run code on it. The Linux jobs stay on GitHub.
    runner takes the Mac jobs one after another; a second one, set up the same way in another
    folder, lets a pull request's build and iPad screens run side by side.
 4. Under Settings › Secrets and variables › Actions › Variables, set `MAC_RUNNER` to
-   `self-hosted`. Delete the variable to go back to GitHub's runner.
+   `self-hosted`. Delete the variable to send the Mac jobs back to GitHub's runner.
 
 ## Code style
 

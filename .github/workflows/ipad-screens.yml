@@ -27,6 +27,7 @@ jobs:
         run: |
           UDID=$(xcrun simctl list devices available -j | python3 tools/ipad_screens.py pick-ipad)
           echo "Screenshots on $UDID"
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
           # Erased first, so a Mac that keeps its simulators starts as clean as GitHub's.
           xcrun simctl shutdown "$UDID" 2>/dev/null || true
           xcrun simctl erase "$UDID"
@@ -65,7 +66,7 @@ jobs:
           KEY="${RUNNER_TEMP:?}/app-screens" HOSTS="$RUNNER_TEMP/known_hosts"
           printf '%s\n' "$SCREENS_DEPLOY_KEY" > "$KEY" && chmod 600 "$KEY"
           echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" > "$HOSTS"
-          export GIT_SSH_COMMAND="ssh -i $KEY -o IdentitiesOnly=yes -o UserKnownHostsFile=$HOSTS"
+          export GIT_SSH_COMMAND="ssh -i '$KEY' -o IdentitiesOnly=yes -o UserKnownHostsFile='$HOSTS'"
           cd ipad-screens
           git init -q -b screens
           git config user.name "github-actions[bot]"
@@ -74,3 +75,7 @@ jobs:
           git commit -q -m "iPad screens for ${{ github.sha }}"
           git push -q -f "git@github.com:${SCREENS_REPO}.git" "HEAD:refs/heads/$SCREENS_BRANCH"
           echo "Screenshots: https://github.com/${SCREENS_REPO}/tree/${SCREENS_BRANCH}" >> "$GITHUB_STEP_SUMMARY"
+      - name: Shut down the simulator
+        # A self-hosted Mac would otherwise keep it running until the next run.
+        if: always()
+        run: xcrun simctl shutdown "$UDID" 2>/dev/null || true

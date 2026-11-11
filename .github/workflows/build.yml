@@ -244,6 +244,10 @@ jobs:
           SCREENS_BRANCH: ${{ github.event.repository.name }}/pr-screens
           SCREENS_DEPLOY_KEY: ${{ secrets.SCREENS_DEPLOY_KEY }}
         run: cd "$SCREENS" && bash publish_pr_screens.sh changed
+      - name: Shut down the simulator
+        # A self-hosted Mac would otherwise keep it running until the next run.
+        if: always()
+        run: xcrun simctl shutdown "$UDID" 2>/dev/null || true
   ipad-screens:
     # The iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift, every tab in portrait and
     # landscape) of pull requests that change the GUI, on the pull request and on its base branch,
@@ -369,3 +373,7 @@ jobs:
           SCREENS_BRANCH: ${{ github.event.repository.name }}/pr-screens
           SCREENS_DEPLOY_KEY: ${{ secrets.SCREENS_DEPLOY_KEY }}
         run: cd "$SCREENS" && bash publish_pr_screens.sh changed ipad
+      - name: Shut down the simulator
+        # A self-hosted Mac would otherwise keep it running until the next run.
+        if: always()
+        run: xcrun simctl shutdown "$IPAD" 2>/dev/null || true

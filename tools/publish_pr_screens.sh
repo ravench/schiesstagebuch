@@ -18,7 +18,7 @@ DEST="$PR${DEVICE:+/$DEVICE}"
 KEY="${RUNNER_TEMP:?}/app-screens" HOSTS="$RUNNER_TEMP/known_hosts"
 printf '%s\n' "$SCREENS_DEPLOY_KEY" > "$KEY" && chmod 600 "$KEY"
 echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" > "$HOSTS"
-export GIT_SSH_COMMAND="ssh -i $KEY -o IdentitiesOnly=yes -o UserKnownHostsFile=$HOSTS"
+export GIT_SSH_COMMAND="ssh -i '$KEY' -o IdentitiesOnly=yes -o UserKnownHostsFile='$HOSTS'"
 # Each pull request has its own folder on the branch; retry if another run pushed first.
 for attempt in 1 2 3 4 5 fail; do
   [ "$attempt" != fail ] || { echo "Could not push to $SCREENS_REPO"; exit 1; }

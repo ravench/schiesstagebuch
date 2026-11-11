@@ -321,7 +321,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("pr_screens.py changes before after changed", compare)
         self.assertIn("name: ipad-screens", self.ipad)
         self.assertIn("bash publish_pr_screens.sh changed ipad", self.ipad)
-        self.assertTrue(self.build.rstrip().endswith("bash publish_pr_screens.sh changed"))
+        self.assertRegex(self.build, r"bash publish_pr_screens\.sh changed\n")  # the iPhone, no device argument
 
     def test_tools_copied_before_the_base_checkout(self):
         for job in (self.build, self.ipad):
