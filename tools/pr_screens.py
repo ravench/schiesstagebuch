@@ -45,7 +45,7 @@ def _pngs(folder):
     return set(n for n in os.listdir(folder) if n.endswith(".png")) if os.path.isdir(folder) else set()
 
 
-def same(a, b, tolerance=48, max_pixels=20, blur=4):
+def same(a, b, tolerance=48, max_pixels=20, blur=4, tab_bar=0.12, tab_bar_tolerance=150):
     """True if two screenshots look the same.
 
     Identical files are the same. Otherwise, with Pillow, both are blurred a little and a few
@@ -71,7 +71,14 @@ def same(a, b, tolerance=48, max_pixels=20, blur=4):
         ia, ib = ia.filter(ImageFilter.GaussianBlur(blur)), ib.filter(ImageFilter.GaussianBlur(blur))
     r, g, bl = ImageChops.difference(ia, ib).split()
     worst = ImageChops.lighter(ImageChops.lighter(r, g), bl)
-    return sum(worst.histogram()[tolerance + 1:]) <= max_pixels
+    # The tab bar's unselected icons come out black on one run and grey on another (about 95 levels
+    # apart; 03e and the firearm screens on 2026-11-10): in its band only a bigger difference counts,
+    # which a changed icon or title still is.
+    w, h = worst.size
+    bar = int(h * (1 - tab_bar))
+    over = sum(worst.crop((0, 0, w, bar)).histogram()[tolerance + 1:])
+    over += sum(worst.crop((0, bar, w, h)).histogram()[tab_bar_tolerance + 1:])
+    return over <= max_pixels
 
 
 def changes(before_dir, after_dir):
