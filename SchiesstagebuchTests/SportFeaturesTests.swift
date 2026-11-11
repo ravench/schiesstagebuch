@@ -87,31 +87,32 @@ final class SportFeaturesTests: ModelTestCase {
 
     func testPistolsNeverShowTheBipod() {
         let all = SportFeatures.all
-        XCTAssertEqual(all.sightFields(for: .both), [.filter, .diopter, .ring, .iris, .bipod])
-        XCTAssertEqual(all.sightFields(for: .iris), [.filter, .diopter, .iris], "pistols: no ring, no bipod")
+        XCTAssertEqual(all.sightFields(for: .both), [.filter, .iris, .ring, .diopter, .bipod])
+        XCTAssertEqual(all.sightFields(for: .iris), [.filter, .iris, .diopter], "pistols: no ring, no bipod")
+        XCTAssertEqual(SportFeatures.each, [.filter, .iris, .ring, .diopter, .bipod, .weather], "iris and ring next to each other")
         XCTAssertEqual(SportFeatures.bipod.sightFields(for: .iris), [], "nothing left: the section is hidden")
         XCTAssertEqual(SportFeatures.weather.sightFields(for: .both), [], "weather has its own section")
     }
 
     // MARK: Showing and saving only the switched-on fields
 
-    private let full = SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: 1.2, ringSize: 3.4,
+    private let full = SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: DiopterClicks(up: 1, right: 2), ringSize: 3.4,
                                      irisSize: 2.1, bipodLength: 25)
 
     func testOnlyBlanksTheFieldsThatAreOff() {
         XCTAssertEqual(full.only(.all), full)
         XCTAssertEqual(full.only([]), SightSettings())
         XCTAssertEqual(full.only(.filter), SightSettings(filter: "Citron", secondFilter: "+0.25"))
-        XCTAssertEqual(full.only(.sight), SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1))
+        XCTAssertEqual(full.only(.sight), SightSettings(diopter: DiopterClicks(up: 1, right: 2), ringSize: 3.4, irisSize: 2.1))
         XCTAssertEqual(full.only(.ring), SightSettings(ringSize: 3.4))
         XCTAssertEqual(full.only(.bipod), SightSettings(bipodLength: 25))
         XCTAssertTrue(SightSettings(bipodLength: 25).only([.filter, .sight]).isEmpty)
     }
 
     func testSavingKeepsTheStoredValuesOfHiddenFields() {
-        let edited = SightSettings(filter: "CALM", diopter: 2.0, ringSize: 4.0, bipodLength: 30)
+        let edited = SightSettings(filter: "CALM", diopter: DiopterClicks(up: 2), ringSize: 4.0, bipodLength: 30)
         let saved = edited.keeping(full, outside: [.sight])
-        XCTAssertEqual(saved, SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: 2.0, ringSize: 4.0,
+        XCTAssertEqual(saved, SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: DiopterClicks(up: 2), ringSize: 4.0,
                                             irisSize: nil, bipodLength: 25))
         XCTAssertEqual(edited.keeping(full, outside: .all), edited)
         XCTAssertEqual(edited.keeping(full, outside: []), full)
@@ -128,7 +129,7 @@ final class SportFeaturesTests: ModelTestCase {
         form.setFilter("", at: 0)
         form.setFilter("", at: 0)
         form.keeping(SightSettings(entry: e), outside: .filter).apply(to: e)
-        XCTAssertEqual(SightSettings(entry: e), SightSettings(diopter: 1.2, ringSize: 3.4, irisSize: 2.1, bipodLength: 25))
+        XCTAssertEqual(SightSettings(entry: e), SightSettings(diopter: DiopterClicks(up: 1, right: 2), ringSize: 3.4, irisSize: 2.1, bipodLength: 25))
     }
 
     // MARK: First run

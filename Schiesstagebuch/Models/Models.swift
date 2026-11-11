@@ -357,11 +357,15 @@ final class Entry {
     var result: String = ""
     /// Highest possible score, e.g. 100; nil when not entered.
     var maxPoints: Double?
-    /// Optional sight / glasses settings: filter colour key ("" = none), diopter and ring size (0.1–9.9).
+    /// Optional sight / glasses settings: filter colour key ("" = none), ring and iris size (0.1–9.9).
     var filterColor: String = ""
     /// Second filter stacked with `filterColor` ("" = none), e.g. +0.25.
     var secondFilterColor: String = ""
+    /// Until 2026-11-10 a lens value; kept for stores and iCloud, no longer shown.
     var diopter: Double?
+    /// Diopter corrections of this Stich in clicks: up (negative: down) and right (negative: left); both nil when none.
+    var diopterUp: Int?
+    var diopterRight: Int?
     /// Ring (aperture) on a rifle's sight.
     var ringSize: Double?
     /// Iris on the shooting glasses, used with pistols.

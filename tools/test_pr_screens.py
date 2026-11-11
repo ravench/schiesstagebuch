@@ -126,11 +126,13 @@ class SameTests(unittest.TestCase):
         self.assertFalse(pr_screens.same(self.png("a.png", line(3)), self.png("b.png")), "a line appearing is a change")
 
     def test_tab_bar_icons_grey_instead_of_black_are_the_same(self):
-        # An icon in the tab bar band (the bottom 12 %) drawn black on one run, grey on the other.
-        icon = lambda colour, top: [((x, y), colour) for x in range(8, 32) for y in range(top, top + 12)]
-        a = self.png("a.png", icon((10, 10, 10), 88), size=(40, 100))
-        self.assertTrue(pr_screens.same(a, self.png("b.png", icon((104, 104, 104), 88), size=(40, 100))))
+        # An icon in the tab bar band (the bottom 9 %) drawn black on one run, grey on the other.
+        icon = lambda colour, top: [((x, y), colour) for x in range(8, 32) for y in range(top, top + 8)]
+        a = self.png("a.png", icon((10, 10, 10), 92), size=(40, 100))
+        b = self.png("b.png", icon((104, 104, 104), 92), size=(40, 100))
+        self.assertTrue(pr_screens.same(a, b))
         self.assertFalse(pr_screens.same(a, self.png("c.png", size=(40, 100))), "an icon that is gone")
+        self.assertFalse(pr_screens.same(a, b, tab_bar=0), "on the iPad there is no tab bar")
         self.assertFalse(pr_screens.same(self.png("d.png", icon((10, 10, 10), 50), size=(40, 100)),
                                          self.png("e.png", icon((104, 104, 104), 50), size=(40, 100))), "not in the bar: a change")
 
@@ -209,7 +211,9 @@ class PublishTests(unittest.TestCase):
         with open(gh, "w") as f:  # logs each call; lists no comments yet
             f.write(f'#!/bin/sh\necho "$@" >> {self.gh_log}\n')
         os.chmod(gh, 0o755)
+        os.makedirs(os.path.join(t, "runner-temp"))
         self.env = dict(os.environ, HOME=os.path.join(t, "home"), GIT_CONFIG_GLOBAL=os.path.join(t, "gitconfig"),
+                        RUNNER_TEMP=os.path.join(t, "runner-temp"),
                         PATH=os.path.join(t, "bin") + os.pathsep + os.environ["PATH"], GH_TOKEN="x",
                         REPO="ravench/schiesstagebuch", PR="122", HEAD_SHA="abc", RUN_URL="https://run",
                         SCREENS_REPO="ravench/app-screens", SCREENS_BRANCH="schiesstagebuch/pr-screens",
@@ -226,6 +230,12 @@ class PublishTests(unittest.TestCase):
             json.dump({"changes": [[name, "changed"]], "total": 3, "base": 3}, f)
         subprocess.run(["bash", os.path.join(ROOT, "tools", "publish_pr_screens.sh"), changed, *device],
                        cwd=self.tmp.name, env=self.env, check=True, capture_output=True)
+
+    def test_key_stays_out_of_the_home_folder(self):
+        # A self-hosted Mac keeps its home folder; RUNNER_TEMP is emptied after every job.
+        self.publish("01-Tagebuch.png")
+        self.assertFalse(os.path.exists(os.path.join(self.tmp.name, "home", ".ssh")))
+        self.assertTrue(os.path.exists(os.path.join(self.tmp.name, "runner-temp", "app-screens")))
 
     def files(self):
         return subprocess.run(["git", "--git-dir", self.remote, "ls-tree", "-r", "--name-only",
@@ -265,7 +275,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("pull_request:", self.workflow)
         self.assertIn("SCREENS_TOUR: ${{ needs.changes.outputs.screens }}", self.workflow)
         self.assertIn("env.SCREENS_TOUR == 'true'", self.workflow)
-        self.assertRegex(self.workflow, r"runs-on: macos-2[6-9]")
+        self.assertRegex(self.workflow, r"runs-on: .*macos-2[6-9]")
 
     def test_reuses_the_build_and_its_simulator(self):
         # No second Mac runner: the tour runs on the Build job's build, without compiling it again.
@@ -290,7 +300,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertNotIn("IPadScreensTests", self.build)
         self.assertIn("needs: changes", self.ipad)
         self.assertIn("if: needs.changes.outputs.screens == 'true'", self.ipad)
-        self.assertRegex(self.ipad, r"runs-on: macos-2[6-9]")
+        self.assertRegex(self.ipad, r"runs-on: .*macos-2[6-9]")
         self.assertIn("fetch-depth: 2", self.ipad)
         # The iPad boots while the app compiles, so the first tour meets a settled simulator.
         self.assertLess(self.ipad.index('xcrun simctl boot "$IPAD"'), self.ipad.index("xcodebuild build-for-testing"))
@@ -310,10 +320,11 @@ class WorkflowTests(unittest.TestCase):
     def test_ipad_screens_compared_and_commented(self):
         compare = self.ipad.split("name: Compare")[1].split("- uses:")[0]
         self.assertIn('sips -r 270 "$f"', compare)  # landscape screens upright, as in ipad-screens.yml
-        self.assertIn("pr_screens.py changes before after changed", compare)
+        self.assertIn("pr_screens.py changes before after changed ipad", compare)
+        self.assertNotIn("changes before after changed ipad", self.build.split("ipad-screens:")[0])
         self.assertIn("name: ipad-screens", self.ipad)
         self.assertIn("bash publish_pr_screens.sh changed ipad", self.ipad)
-        self.assertTrue(self.build.rstrip().endswith("bash publish_pr_screens.sh changed"))
+        self.assertRegex(self.build, r"bash publish_pr_screens\.sh changed\n")  # the iPhone, no device argument
 
     def test_tools_copied_before_the_base_checkout(self):
         for job in (self.build, self.ipad):

@@ -231,6 +231,19 @@ final class PRScreensTests: XCTestCase {
         reveal(add)
         guard open(add) else { return }
         topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17-Sportschuetzen-Felder")
+        // The diopter corrections switched on: the clicks up or down and right or left.
+        let diopter = app.switches.matching(NSPredicate(format: "label BEGINSWITH %@", "Diopterkorrekturen")).firstMatch
+        if diopter.exists {
+            diopter.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+            // Two clicks up, one left: «2 hoch, 1 links».
+            let height = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Höhenverstellung")).firstMatch
+            let side = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Seitenverstellung")).firstMatch
+            if height.waitForExistence(timeout: 3), side.exists {
+                height.buttons["Increment"].tap(); height.buttons["Increment"].tap()
+                side.buttons["Decrement"].tap()
+            }
+            snap("17b-Diopterkorrekturen")
+        }
     }
 
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
@@ -306,13 +319,14 @@ final class PRScreensTests: XCTestCase {
     private func holdAtTop(_ element: XCUIElement, besideRow: Bool = false) {
         guard element.exists && element.isHittable else { return }
         let height = app.frame.height, target = 0.2 * height
-        var slop: CGFloat = 10 // what a pan swallows before the list moves; measured on the first drag
+        let slop: CGFloat = 10 // what a pan swallows before the list moves
         for attempt in 0..<4 {
             settle(element)
             let y = element.frame.midY, delta = y - target
             if abs(delta) < 1 { return }
-            // From no lower than three quarters down: a drag from the bottom edge goes to the system, not the list.
-            let from = min(y, 0.75 * height)
+            // From no lower than three quarters down (the bottom edge goes to the system, not the list)
+            // and no higher than a quarter down (the navigation bar does not scroll).
+            let from = delta > 0 ? min(y, 0.75 * height) : max(y, 0.25 * height)
             let distance = delta + (delta > 0 ? slop : -slop)
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: from / height))
                 .press(forDuration: 0.1,
@@ -321,8 +335,6 @@ final class PRScreensTests: XCTestCase {
             let moved = y - element.frame.midY
             note("holdAtTop «\(element.label.prefix(30))» attempt \(attempt): y \(Int(y)) delta \(Int(delta)) slop \(Int(slop)) "
                  + "distance \(Int(distance)) moved \(Int(moved)) now \(Int(element.frame.midY))")
-            // The list stopped short only at its end; otherwise what the finger moved more is the slop.
-            if attempt == 0, abs(moved) > abs(delta) / 2 { slop = max(0, abs(distance) - abs(moved)) }
         }
         note("holdAtTop «\(element.label.prefix(30))» gave up at \(Int(element.frame.midY)), target \(Int(target))")
     }

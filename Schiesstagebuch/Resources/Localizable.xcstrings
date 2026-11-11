@@ -346,6 +346,98 @@
         }
       }
     },
+    "%lld hoch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld up"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld en haut"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld in alto"
+          }
+        }
+      }
+    },
+    "%lld links": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld left"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld à gauche"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld a sinistra"
+          }
+        }
+      }
+    },
+    "%lld rechts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld right"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld à droite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld a destra"
+          }
+        }
+      }
+    },
+    "%lld tief": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld down"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld en bas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld in basso"
+          }
+        }
+      }
+    },
     "%lld× geschossen": {
       "extractionState": "manual",
       "localizations": {
@@ -2577,6 +2669,29 @@
         }
       }
     },
+    "Diopterkorrekturen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diopter corrections"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corrections du dioptre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correzioni della diottra"
+          }
+        }
+      }
+    },
     "Division": {
       "extractionState": "manual",
       "localizations": {
@@ -4626,6 +4741,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Altitudine"
+          }
+        }
+      }
+    },
+    "Höhenverstellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elevation"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hauteur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alzo"
           }
         }
       }
@@ -7948,94 +8086,94 @@
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät, ausser den Filtern.": {
+    "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit diesem Sportgerät.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this equipment, except the filters."
+            "value": "Optional. New entries take the iris, ring and bipod of the last entry with this equipment."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement, sauf les filtres."
+            "value": "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cet équipement."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo, tranne i filtri."
+            "value": "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con questo attrezzo."
           }
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter.": {
+    "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen › Filter.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this equipment, except the filters. Choose your filters under Settings › Filters."
+            "value": "Optional. New entries take the iris, ring and bipod of the last entry with this equipment. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement, sauf les filtres. Choisis tes filtres sous Réglages › Filtres."
+            "value": "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo, tranne i filtri. Scegli i tuoi filtri in Impostazioni › Filtri."
+            "value": "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern.": {
+    "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this firearm, except the filters."
+            "value": "Optional. New entries take the iris, ring and bipod of the last entry with this firearm."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme, sauf les filtres."
+            "value": "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cette arme."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma, tranne i filtri."
+            "value": "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con quest'arma."
           }
         }
       }
     },
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter.": {
+    "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. New entries take the values of the last entry with this firearm, except the filters. Choose your filters under Settings › Filters."
+            "value": "Optional. New entries take the iris, ring and bipod of the last entry with this firearm. Choose your filters under Settings › Filters."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cette arme, sauf les filtres. Choisis tes filtres sous Réglages › Filtres."
+            "value": "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con quest'arma, tranne i filtri. Scegli i tuoi filtri in Impostazioni › Filtri."
+            "value": "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri."
           }
         }
       }
@@ -9876,6 +10014,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colpi nel tempo"
+          }
+        }
+      }
+    },
+    "Seitenverstellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windage"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dérive"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deriva"
           }
         }
       }

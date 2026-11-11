@@ -22,6 +22,7 @@ struct SportFeatures: OptionSet, Hashable {
     static let bipod = SportFeatures(rawValue: 1 << 2)
     /// Weather per event.
     static let weather = SportFeatures(rawValue: 1 << 3)
+    /// Clicks turned on the diopter during the Stich.
     static let diopter = SportFeatures(rawValue: 1 << 4)
     /// The ring on a rifle's sight.
     static let ring = SportFeatures(rawValue: 1 << 5)
@@ -31,10 +32,11 @@ struct SportFeatures: OptionSet, Hashable {
     static let sight: SportFeatures = [.diopter, .ring, .iris]
 
     /// Each feature on its own, in the order the welcome screen and Settings list them.
-    static let each: [SportFeatures] = [.filter, .diopter, .ring, .iris, .bipod, .weather]
-    static let all: SportFeatures = [.filter, .diopter, .ring, .iris, .bipod, .weather]
+    /// Iris and ring next to each other (Raven 2026-11-10).
+    static let each: [SportFeatures] = [.filter, .iris, .ring, .diopter, .bipod, .weather]
+    static let all: SportFeatures = [.filter, .iris, .ring, .diopter, .bipod, .weather]
     /// The fields of the entry's «Einstellungen für Sportschützen» section.
-    static let sightFields: SportFeatures = [.filter, .diopter, .ring, .iris, .bipod]
+    static let sightFields: SportFeatures = [.filter, .iris, .ring, .diopter, .bipod]
 
     /// UserDefaults key; stored per device like the other display settings.
     static let key = "sportFeatures.v1"
@@ -47,7 +49,7 @@ struct SportFeatures: OptionSet, Hashable {
     var title: String {
         switch self {
         case .filter: "Filter (Mehrzahl)"
-        case .diopter: "Diopter"
+        case .diopter: "Diopterkorrekturen"
         case .ring: "Ringkorn"
         case .iris: "Iris"
         case .bipod: "Zweibeinstütze"
