@@ -14,7 +14,7 @@ final class EditorCarryOverTests: ModelTestCase {
         pistol = Weapon(name: "P210"); context.insert(pistol)
         let outdoors = addEntry(rifle, on: day(1), shots: 20)
         outdoors.weather = WeatherRecord(time: day(1))
-        SightSettings(filter: "Citron", diopter: 1.5, ringSize: 4.2).apply(to: outdoors)
+        SightSettings(filter: "Citron", diopter: DiopterClicks(up: 2), ringSize: 4.2).apply(to: outdoors)
         addEntry(pistol, on: day(2), shots: 30)      // indoors, no weather, no sight settings
         try context.save()
         entries = try context.fetch(FetchDescriptor<Entry>())
@@ -23,8 +23,10 @@ final class EditorCarryOverTests: ModelTestCase {
     func testEmptySightTakesTheWeaponsLastValues() {
         let s = SightSettings.carriedOver(from: SightSettings(), to: rifle, in: entries)
         XCTAssertEqual(s.filter, "", "filters start empty on every Stich")
-        XCTAssertEqual(s.diopter, 1.5)
-        XCTAssertEqual(SightSettings(filter: "Citron", secondFilter: "+0.25", ringSize: 4.2).withoutFilters, SightSettings(ringSize: 4.2))
+        XCTAssertNil(s.diopter, "the corrections were that Stich's")
+        XCTAssertEqual(s.ringSize, 4.2)
+        XCTAssertEqual(SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: DiopterClicks(up: 1), ringSize: 4.2).forNewStich,
+                       SightSettings(ringSize: 4.2))
         XCTAssertEqual(SightSettings.carriedOver(from: SightSettings(), to: pistol, in: entries), SightSettings())
     }
 

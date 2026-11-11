@@ -481,7 +481,7 @@ struct EntryEditorView: View {
                 ammunition = last.ammunition?.isArchived == false && last.ammunition?.fits(caliber) == true
                     ? last.ammunition : suggestedAmmunition(weapon: weapon, caliber: caliber)
                 lot = ammunition == last.ammunition && last.lot?.isArchived == false ? last.lot : suggestedLot(for: ammunition)
-                sight = SightSettings(entry: last).withoutFilters
+                sight = SightSettings(entry: last).forNewStich
                 weather = last.weather
             } else if let last = allEntries.first {
                 // The first Stich starts from the most recent weapon and ammo: usually what you shoot next.

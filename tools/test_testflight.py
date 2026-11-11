@@ -213,7 +213,7 @@ class WorkflowTests(unittest.TestCase):
         # App Store Connect rejects builds made with an SDK older than iOS 26 (Xcode 26).
         for name in ("build.yml", "testflight.yml"):
             with open(os.path.join(testflight.ROOT, ".github", "workflows", name)) as f:
-                runners = re.findall(r"runs-on:\s*macos-(\d+)", f.read())
+                runners = re.findall(r"runs-on:.*macos-(\d+)", f.read())
             self.assertTrue(runners, name)
             for version in runners:
                 self.assertGreaterEqual(int(version), 26, name)
