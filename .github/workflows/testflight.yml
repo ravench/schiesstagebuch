@@ -179,6 +179,7 @@ jobs:
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/Schiesstagebuch.xcarchive" \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
             CODE_SIGNING_ALLOWED=NO \
             CURRENT_PROJECT_VERSION="$BUILD_NUMBER" | tee "$RUNNER_TEMP/archive.log" | xcpretty
           # The export keeps the entitlements the archived app is signed with, and an unsigned app has

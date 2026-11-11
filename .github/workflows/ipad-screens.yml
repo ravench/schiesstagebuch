@@ -37,6 +37,7 @@ jobs:
             -destination "id=$UDID" \
             -only-testing:SchiesstagebuchUITests/IPadScreensTests \
             -resultBundlePath "$RUNNER_TEMP/Screens.xcresult" \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
       - name: Export screenshots
         if: always()

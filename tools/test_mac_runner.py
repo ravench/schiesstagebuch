@@ -12,6 +12,18 @@ def workflow(name):
     return (WORKFLOWS / name).read_text()
 
 
+def xcodebuild_builds(text):
+    """Each xcodebuild call that builds or tests, with its continuation lines."""
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        if re.search(r"xcodebuild (build-for-testing|test-without-building|test|archive|build)\b", line):
+            command = [line]
+            while command[-1].rstrip().endswith("\\"):
+                i += 1
+                command.append(lines[i])
+            yield "\n".join(command)
+
+
 def job(text, name):
     """One job of a workflow, up to the next job."""
     return re.split(r"\n  [\w-]+:\n", text.split(f"\n  {name}:\n", 1)[1], 1)[0]
@@ -34,7 +46,7 @@ class MacRunnerTests(unittest.TestCase):
             self.assertIsNone(re.search(r"~/|\$HOME\b|\$\{HOME\}", path.read_text()), path.name)
         for text in (workflow("ipad-screens.yml"), (ROOT / "tools" / "publish_pr_screens.sh").read_text()):
             self.assertIn("UserKnownHostsFile='$HOSTS'", text)
-        # xcodebuild's distribution logs, which the failure step lists, go there too.
+        # So do xcodebuild's temporary files in TestFlight.
         testflight = workflow("testflight.yml")
         self.assertLess(testflight.index('echo "TMPDIR=$RUNNER_TEMP" >> "$GITHUB_ENV"'),
                         testflight.index("xcodebuild archive"))
@@ -44,7 +56,8 @@ class MacRunnerTests(unittest.TestCase):
         build = workflow("build.yml")
         for text, var in ((job(build, "build"), "UDID"), (job(build, "ipad-screens"), "IPAD"),
                           (job(workflow("ipad-screens.yml"), "screens"), "UDID")):
-            self.assertIn(f'xcrun simctl erase "${var}"', text)
+            # Shut down first: erase fails on a simulator a crashed run left booted.
+            self.assertLess(text.index(f'xcrun simctl shutdown "${var}"'), text.index(f'xcrun simctl erase "${var}"'))
             if f'xcrun simctl boot "${var}"' in text:
                 self.assertLess(text.index(f'xcrun simctl erase "${var}"'), text.index(f'xcrun simctl boot "${var}"'))
             last_step = text.rstrip().rsplit("\n      - ", 1)[1]
@@ -54,6 +67,15 @@ class MacRunnerTests(unittest.TestCase):
             for line in path.read_text().splitlines():
                 if "brew install xcodegen" in line:
                     self.assertIn("command -v xcodegen >/dev/null ||", line, path.name)
+
+    def test_builds_go_to_runner_temp(self):
+        # Xcode's default DerivedData is in the home folder, where a self-hosted Mac would keep it.
+        builds = 0
+        for path in sorted(WORKFLOWS.glob("*.yml")):
+            for command in xcodebuild_builds(path.read_text()):
+                builds += 1
+                self.assertIn("-derivedDataPath", command, f"{path.name}: {command.splitlines()[0].strip()}")
+        self.assertGreaterEqual(builds, 5)
 
 
 if __name__ == "__main__":
