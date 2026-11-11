@@ -14,6 +14,25 @@ final class PRScreensTests: XCTestCase {
         app.launch()
     }
 
+    /// What the drags measured, kept with the screens as «tour-log.txt»: CI lands the lists differently from a Mac.
+    private static var log: [String] = []
+
+    override func tearDown() {
+        if !Self.log.isEmpty {
+            let attachment = XCTAttachment(string: Self.log.joined(separator: "\n"))
+            attachment.name = "tour-log.txt"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            Self.log = []
+        }
+        super.tearDown()
+    }
+
+    private func note(_ line: String) {
+        Self.log.append(line)
+        NSLog("tour: %@", line)
+    }
+
     func testTour() {
         tab("Tagebuch")
         snap("01-Tagebuch")
@@ -208,9 +227,21 @@ final class PRScreensTests: XCTestCase {
         if pick("windstill") { snap("16c-Windstill-ohne-Apple-Wetter") } else { closeMenu() }
     }
 
+    /// The sport shooter fields of a new Stich: filters, iris, ring, diopter and bipod, with the footer.
+    func testSightStops() {
+        relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch) else { return }
+        let add = app.buttons["Weiteren Stich hinzufügen"].firstMatch
+        reveal(add)
+        guard open(add) else { return }
+        topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17-Sportschuetzen-Felder")
+    }
+
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
+    /// The fields are pinned off: 09c of the tour switches the filters on, and a run that misses it does not.
     func testWelcome() {
-        relaunch(adding: ["-welcome"])
+        relaunch(adding: ["-welcome", "-sportFeatures.v1", "0"])
         let fields = app.staticTexts["Für Sportschützen"].firstMatch
         if fields.waitForExistence(timeout: 10) {
             reveal(fields)
@@ -272,23 +303,48 @@ final class PRScreensTests: XCTestCase {
                    withVelocity: .slow, thenHoldForDuration: 0.5)
     }
 
-    /// Drags `element` near the top of the screen, so what follows it shows. `besideRow` drags in the list's
-    /// margin at the element's height: a press on a menu row opens its menu instead of scrolling.
+    /// Drags `element` near the top of the screen, so what follows it shows, in the list's margin at the
+    /// element's height: a press on the element itself opens a menu row, and under the tab bar it hits
+    /// a tab (#168's 09d landed on Waffen). Held at the end, so the list does not glide on. On CI the
+    /// list landed up to 8 pt off from run to run (the pan's first event past its slop lands anywhere
+    /// when events come in batches): the landing is measured and put right with a slow second drag.
     private func holdAtTop(_ element: XCUIElement, besideRow: Bool = false) {
         guard element.exists && element.isHittable else { return }
-        guard besideRow else {
-            // Held at the end, so the list does not glide on past it.
-            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.18)),
-                       withVelocity: .slow, thenHoldForDuration: 0.5)
-            return
+        let height = app.frame.height, target = 0.2 * height
+        var slop: CGFloat = 10 // what a pan swallows before the list moves; measured on the first drag
+        for attempt in 0..<4 {
+            settle(element)
+            let y = element.frame.midY, delta = y - target
+            if abs(delta) < 1 { return }
+            // From no lower than three quarters down: a drag from the bottom edge goes to the system, not the list.
+            let from = min(y, 0.75 * height)
+            let distance = delta + (delta > 0 ? slop : -slop)
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: from / height))
+                .press(forDuration: 0.1,
+                       thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: min(0.98, max(0.02, (from - distance) / height)))),
+                       withVelocity: attempt == 0 ? .slow : XCUIGestureVelocity(40), thenHoldForDuration: 0.5)
+            let moved = y - element.frame.midY
+            note("holdAtTop «\(element.label.prefix(30))» attempt \(attempt): y \(Int(y)) delta \(Int(delta)) slop \(Int(slop)) "
+                 + "distance \(Int(distance)) moved \(Int(moved)) now \(Int(element.frame.midY))")
+            // The list stopped short only at its end; otherwise what the finger moved more is the slop.
+            if attempt == 0, abs(moved) > abs(delta) / 2 { slop = max(0, abs(distance) - abs(moved)) }
         }
-        // From no lower than three quarters down: a drag from the bottom edge goes to the system, not the list.
-        let y = element.frame.midY / app.frame.height
-        let from = min(y, 0.75)
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: from))
-            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.03, dy: max(0.02, from - (y - 0.18)))),
-                   withVelocity: .slow, thenHoldForDuration: 0.5)
+        note("holdAtTop «\(element.label.prefix(30))» gave up at \(Int(element.frame.midY)), target \(Int(target))")
+    }
+
+    /// Waits until `element` stops moving (a swipe decelerates for a while), so a drag starts from where it is.
+    private func settle(_ element: XCUIElement) {
+        var last = element.frame
+        for i in 0..<10 {
+            usleep(200_000)
+            let now = element.frame
+            if now == last {
+                if i > 0 { note("settle «\(element.label.prefix(30))» moved for \(i * 200) ms") }
+                return
+            }
+            last = now
+        }
+        note("settle «\(element.label.prefix(30))» still moving after 2 s")
     }
 
     /// The firearm menu in the Stich editor, ending with «Waffe hinzufügen».
@@ -456,6 +512,9 @@ final class PRScreensTests: XCTestCase {
 
     private func snap(_ name: String) {
         sleep(2) // let animations settle and scroll indicators fade
+        // On CI the tab bar was still greyed out from a sheet's dismissal on some runs (03e): wait for it.
+        let tab = app.tabBars.buttons.firstMatch
+        if tab.exists { _ = tab.wait(for: \.isEnabled, toEqual: true, timeout: 3) }
         let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name
         attachment.lifetime = .keepAlways

@@ -27,9 +27,9 @@ struct SightSection: View {
             Text("Einstellungen für Sportschützen")
         } footer: {
             if fields.contains(.filter), FilterCatalog(data: catalogData).visible.isEmpty {
-                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.").loc)
+                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter.").loc)
             } else {
-                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe.").loc)
+                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern.").loc)
             }
         }
     }

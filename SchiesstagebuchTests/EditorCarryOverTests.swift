@@ -22,8 +22,9 @@ final class EditorCarryOverTests: ModelTestCase {
 
     func testEmptySightTakesTheWeaponsLastValues() {
         let s = SightSettings.carriedOver(from: SightSettings(), to: rifle, in: entries)
-        XCTAssertEqual(s.filter, "Citron")
+        XCTAssertEqual(s.filter, "", "filters start empty on every Stich")
         XCTAssertEqual(s.diopter, 1.5)
+        XCTAssertEqual(SightSettings(filter: "Citron", secondFilter: "+0.25", ringSize: 4.2).withoutFilters, SightSettings(ringSize: 4.2))
         XCTAssertEqual(SightSettings.carriedOver(from: SightSettings(), to: pistol, in: entries), SightSettings())
     }
 
