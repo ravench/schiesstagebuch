@@ -6,7 +6,8 @@ import SwiftUI
 struct CartridgeView: View {
     let catalogID: String?
     private let name: String
-    /// One silhouette in the accent colour, like a symbol next to the other symbols (Raven, build 1147).
+    /// A symbol in the accent colour next to the other symbols: the bullet filled, case and rim one
+    /// outline without a fill (Raven, build 1147 and his sketch on PR 181).
     private let monochrome: Bool
 
     init(caliber: Caliber?) {
@@ -78,8 +79,20 @@ struct CartridgeView: View {
                     ctx.fill(f, with: .color(monochrome ? .accentColor : fill))
                     if !monochrome { ctx.stroke(f, with: .color(.primary.opacity(0.55)), style: stroke) }
                 }
-                draw(parts.hull, parts.hullFill)
-                draw(parts.head, parts.headFill)
+                if monochrome {
+                    // Case and rim as one outline: the inner half of a thick stroke, a wall inside the shape.
+                    let shell = [parts.hull, parts.head].compactMap { $0 }.map { fitted($0, box: parts.box, in: rect) }
+                    if let first = shell.first {
+                        let outline = shell.dropFirst().reduce(first) { $0.union($1) }
+                        ctx.drawLayer { layer in
+                            layer.clip(to: outline)
+                            layer.stroke(outline, with: .color(.accentColor), style: StrokeStyle(lineWidth: min(size.width, size.height) / 9))
+                        }
+                    }
+                } else {
+                    draw(parts.hull, parts.hullFill)
+                    draw(parts.head, parts.headFill)
+                }
                 draw(parts.bullet, parts.bulletFill)
                 draw(parts.patch, .paper)
                 draw(parts.tip, parts.tipFill)

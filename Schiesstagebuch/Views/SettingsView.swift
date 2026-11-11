@@ -30,7 +30,7 @@ struct SettingsView: View {
                     NavigationLink { WeaponsListView() } label: { Label(term("Waffen").loc, systemImage: "scope") }
                     NavigationLink { CaliberListView() } label: {
                         // A cartridge from the catalogue as a tinted symbol, like the rows around it.
-                        Label { Text("Kaliber (Mehrzahl)") } icon: { CartridgeView(catalogID: "9x19 mm", monochrome: true).frame(width: 22, height: 22) }
+                        Label { Text("Kaliber (Mehrzahl)") } icon: { CartridgeView(catalogID: ".45 ACP", monochrome: true).frame(width: 22, height: 22) }
                     }
                     NavigationLink { AmmunitionListView() } label: { Label("Munition", systemImage: "circle.grid.3x3.fill") }
                     NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "target") }
