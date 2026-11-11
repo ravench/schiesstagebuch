@@ -34,7 +34,9 @@ for attempt in 1 2 3 4 5 fail; do
   git push -q origin "HEAD:refs/heads/$SCREENS_BRANCH" && break
   cd .. && sleep $((attempt * 3))
 done
-BASE_URL="https://raw.githubusercontent.com/${SCREENS_REPO}/$(git rev-parse HEAD)/$DEST"
+# github.com/…/raw/… rather than raw.githubusercontent.com: it also works once app-screens is
+# private, for viewers who are signed in and can read it (not in notification emails).
+BASE_URL="https://github.com/${SCREENS_REPO}/raw/$(git rev-parse HEAD)/$DEST"
 cd ..
 python3 "$TOOLS/pr_screens.py" comment "$CHANGED" "$BASE_URL" "$RUN_URL" $DEVICE > comment.md
 # One comment per pull request and device (its marker is the first line), updated on every run.
