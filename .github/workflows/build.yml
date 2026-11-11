@@ -61,7 +61,9 @@ jobs:
   build:
     needs: changes
     if: needs.changes.outputs.mac == 'true'
-    runs-on: macos-26
+    # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
+    # private (README, CI on your own Mac).
+    runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
     permissions:
       contents: read # the PR screens below push their images to ravench/app-screens with a deploy key
       pull-requests: write # and comment on the pull request
@@ -76,7 +78,7 @@ jobs:
           lfs: true
           # The merge commit and its first parent, the base branch, for the PR screens.
           fetch-depth: 2
-      - run: brew install xcodegen
+      - run: command -v xcodegen >/dev/null || brew install xcodegen
       - run: xcodegen generate
       - name: Pick an iPhone simulator and a build folder
         run: |
@@ -86,7 +88,10 @@ jobs:
           echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
           # Outside the checkout, which the base branch tour replaces; upload-artifact rejects '..' paths.
           echo "SCREENS=$RUNNER_TEMP/screens" >> "$GITHUB_ENV"
-          # A fresh simulator takes minutes to boot; it boots while the app compiles.
+          # Erased first, so a Mac that keeps its simulators starts as clean as GitHub's. A fresh
+          # simulator takes minutes to boot; it boots while the app compiles.
+          xcrun simctl shutdown "$UDID" 2>/dev/null || true
+          xcrun simctl erase "$UDID"
           xcrun simctl boot "$UDID"
       # Compiled once in the two build steps; the unit and UI tests below run on that build
       # (test-without-building). The unit test scheme goes last: building the app for
@@ -239,6 +244,10 @@ jobs:
           SCREENS_BRANCH: ${{ github.event.repository.name }}/pr-screens
           SCREENS_DEPLOY_KEY: ${{ secrets.SCREENS_DEPLOY_KEY }}
         run: cd "$SCREENS" && bash publish_pr_screens.sh changed
+      - name: Shut down the simulator
+        # A self-hosted Mac would otherwise keep it running until the next run.
+        if: always()
+        run: xcrun simctl shutdown "$UDID" 2>/dev/null || true
   ipad-screens:
     # The iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift, every tab in portrait and
     # landscape) of pull requests that change the GUI, on the pull request and on its base branch,
@@ -247,7 +256,9 @@ jobs:
     # and one after the other made build 14 minutes longer.
     needs: changes
     if: needs.changes.outputs.screens == 'true'
-    runs-on: macos-26
+    # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
+    # private (README, CI on your own Mac).
+    runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
     permissions:
       contents: read # the screens go to ravench/app-screens with a deploy key
       pull-requests: write # and the comment to the pull request
@@ -259,7 +270,7 @@ jobs:
           lfs: true
           # The merge commit and its first parent, the base branch.
           fetch-depth: 2
-      - run: brew install xcodegen
+      - run: command -v xcodegen >/dev/null || brew install xcodegen
       - run: xcodegen generate
       - name: Pick an iPad and a build folder
         run: |
@@ -268,8 +279,11 @@ jobs:
           echo "IPAD=$IPAD" >> "$GITHUB_ENV"
           echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
           echo "SCREENS=$RUNNER_TEMP/screens" >> "$GITHUB_ENV"
-          # A fresh simulator takes minutes to boot; it boots while the app compiles, so the
-          # first tour does not meet a simulator that is still settling.
+          # Erased first, so a Mac that keeps its simulators starts as clean as GitHub's. A fresh
+          # simulator takes minutes to boot; it boots while the app compiles, so the first tour
+          # does not meet a simulator that is still settling.
+          xcrun simctl shutdown "$IPAD" 2>/dev/null || true
+          xcrun simctl erase "$IPAD"
           xcrun simctl boot "$IPAD"
       - name: Build
         run: |
@@ -359,3 +373,7 @@ jobs:
           SCREENS_BRANCH: ${{ github.event.repository.name }}/pr-screens
           SCREENS_DEPLOY_KEY: ${{ secrets.SCREENS_DEPLOY_KEY }}
         run: cd "$SCREENS" && bash publish_pr_screens.sh changed ipad
+      - name: Shut down the simulator
+        # A self-hosted Mac would otherwise keep it running until the next run.
+        if: always()
+        run: xcrun simctl shutdown "$IPAD" 2>/dev/null || true
