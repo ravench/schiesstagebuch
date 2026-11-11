@@ -76,16 +76,18 @@ final class CombinedFilterTests: ModelTestCase {
         XCTAssertEqual(SightSettings.maxFilters, 2)
     }
 
-    func testBothFiltersAreStoredOnTheEntryAndCarriedOver() throws {
+    func testBothFiltersAreStoredOnTheEntryButNotCarriedOver() throws {
         let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
         let e = addEntry(stgw, on: day(1), shots: 10)
         SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: 1.5).apply(to: e)
         XCTAssertEqual(e.filterColor, "Citron")
         XCTAssertEqual(e.secondFilterColor, "+0.25")
+        XCTAssertEqual(SightSettings(entry: e).filters, ["Citron", "+0.25"])
         try context.save()
         let entries = try context.fetch(FetchDescriptor<Entry>())
-        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries)?.filters, ["Citron", "+0.25"])
-        XCTAssertEqual(SightSettings.carriedOver(from: SightSettings(), to: stgw, in: entries).secondFilter, "+0.25")
+        // Raven 2026-11-10: a new Stich starts without filters.
+        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries)?.filters, [])
+        XCTAssertEqual(SightSettings.carriedOver(from: SightSettings(), to: stgw, in: entries).filters, [])
     }
 
     func testFittingKeepsBothFilters() {

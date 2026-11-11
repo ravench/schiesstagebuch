@@ -104,12 +104,20 @@ struct SightSettings: Equatable {
         entry.bipodLength = bipodLength.map(Self.clampBipod)
     }
 
-    /// Settings of the newest entry with this weapon that recorded any; nil if none.
+    /// The same settings without the filters: a new Stich starts without any, the light decides them
+    /// each time (Raven 2026-11-10).
+    var withoutFilters: SightSettings {
+        var s = self
+        s.filter = ""; s.secondFilter = ""
+        return s
+    }
+
+    /// Settings of the newest entry with this weapon that recorded any (filters aside); nil if none.
     static func lastUsed(for weapon: Weapon?, in entries: [Entry]) -> SightSettings? {
         guard let weapon else { return nil }
         return entries.filter { $0.weapon == weapon }
             .sorted { $0.date > $1.date }
-            .lazy.map(SightSettings.init(entry:))
+            .lazy.map { SightSettings(entry: $0).withoutFilters }
             .first { !$0.isEmpty }
     }
 

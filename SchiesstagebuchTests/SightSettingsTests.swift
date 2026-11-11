@@ -35,8 +35,8 @@ final class SightSettingsTests: ModelTestCase {
         let other = addEntry(p210, on: day(9), shots: 10); other.filterColor = "CALM"
         try context.save()
         let entries = try context.fetch(FetchDescriptor<Entry>())
-        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries), SightSettings(filter: "Citron", ringSize: 3.2))
-        XCTAssertEqual(SightSettings.lastUsed(for: p210, in: entries)?.filter, "CALM")
+        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries), SightSettings(ringSize: 3.2), "without the filter")
+        XCTAssertNil(SightSettings.lastUsed(for: p210, in: entries), "a filter alone is nothing to carry over")
         XCTAssertNil(SightSettings.lastUsed(for: nil, in: entries))
     }
 
