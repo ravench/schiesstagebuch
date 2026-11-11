@@ -83,7 +83,7 @@ class WorkflowTests(unittest.TestCase):
 
     def test_runs_by_hand_on_ios_26(self):
         self.assertIn("workflow_dispatch:", self.workflow)
-        self.assertRegex(self.workflow, r"runs-on: macos-2[6-9]")
+        self.assertRegex(self.workflow, r"runs-on: .*macos-2[6-9]")
 
     def test_pull_requests_get_them_in_the_build_job(self):
         # Pull requests get them, before and after, from the Build workflow's ipad-screens job.

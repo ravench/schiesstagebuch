@@ -14,9 +14,11 @@ DEVICE=$2
 DEST="$PR${DEVICE:+/$DEVICE}"
 # ravench/app-screens accepts this repo's deploy key; the host key is GitHub's published one.
 [ -n "$SCREENS_DEPLOY_KEY" ] || { echo "::error::The SCREENS_DEPLOY_KEY secret is missing"; exit 1; }
-mkdir -p ~/.ssh && printf '%s\n' "$SCREENS_DEPLOY_KEY" > ~/.ssh/app-screens && chmod 600 ~/.ssh/app-screens
-echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> ~/.ssh/known_hosts
-export GIT_SSH_COMMAND="ssh -i ~/.ssh/app-screens -o IdentitiesOnly=yes"
+# Both in RUNNER_TEMP, which is emptied after the job, not in the runner's home folder.
+KEY="${RUNNER_TEMP:?}/app-screens" HOSTS="$RUNNER_TEMP/known_hosts"
+printf '%s\n' "$SCREENS_DEPLOY_KEY" > "$KEY" && chmod 600 "$KEY"
+echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" > "$HOSTS"
+export GIT_SSH_COMMAND="ssh -i $KEY -o IdentitiesOnly=yes -o UserKnownHostsFile=$HOSTS"
 # Each pull request has its own folder on the branch; retry if another run pushed first.
 for attempt in 1 2 3 4 5 fail; do
   [ "$attempt" != fail ] || { echo "Could not push to $SCREENS_REPO"; exit 1; }

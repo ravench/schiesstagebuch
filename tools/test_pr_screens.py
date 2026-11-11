@@ -209,7 +209,9 @@ class PublishTests(unittest.TestCase):
         with open(gh, "w") as f:  # logs each call; lists no comments yet
             f.write(f'#!/bin/sh\necho "$@" >> {self.gh_log}\n')
         os.chmod(gh, 0o755)
+        os.makedirs(os.path.join(t, "runner-temp"))
         self.env = dict(os.environ, HOME=os.path.join(t, "home"), GIT_CONFIG_GLOBAL=os.path.join(t, "gitconfig"),
+                        RUNNER_TEMP=os.path.join(t, "runner-temp"),
                         PATH=os.path.join(t, "bin") + os.pathsep + os.environ["PATH"], GH_TOKEN="x",
                         REPO="ravench/schiesstagebuch", PR="122", HEAD_SHA="abc", RUN_URL="https://run",
                         SCREENS_REPO="ravench/app-screens", SCREENS_BRANCH="schiesstagebuch/pr-screens",
@@ -226,6 +228,12 @@ class PublishTests(unittest.TestCase):
             json.dump({"changes": [[name, "changed"]], "total": 3, "base": 3}, f)
         subprocess.run(["bash", os.path.join(ROOT, "tools", "publish_pr_screens.sh"), changed, *device],
                        cwd=self.tmp.name, env=self.env, check=True, capture_output=True)
+
+    def test_key_stays_out_of_the_home_folder(self):
+        # A self-hosted Mac keeps its home folder; RUNNER_TEMP is emptied after every job.
+        self.publish("01-Tagebuch.png")
+        self.assertFalse(os.path.exists(os.path.join(self.tmp.name, "home", ".ssh")))
+        self.assertTrue(os.path.exists(os.path.join(self.tmp.name, "runner-temp", "app-screens")))
 
     def files(self):
         return subprocess.run(["git", "--git-dir", self.remote, "ls-tree", "-r", "--name-only",
@@ -265,7 +273,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("pull_request:", self.workflow)
         self.assertIn("SCREENS_TOUR: ${{ needs.changes.outputs.screens }}", self.workflow)
         self.assertIn("env.SCREENS_TOUR == 'true'", self.workflow)
-        self.assertRegex(self.workflow, r"runs-on: macos-2[6-9]")
+        self.assertRegex(self.workflow, r"runs-on: .*macos-2[6-9]")
 
     def test_reuses_the_build_and_its_simulator(self):
         # No second Mac runner: the tour runs on the Build job's build, without compiling it again.
@@ -290,7 +298,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertNotIn("IPadScreensTests", self.build)
         self.assertIn("needs: changes", self.ipad)
         self.assertIn("if: needs.changes.outputs.screens == 'true'", self.ipad)
-        self.assertRegex(self.ipad, r"runs-on: macos-2[6-9]")
+        self.assertRegex(self.ipad, r"runs-on: .*macos-2[6-9]")
         self.assertIn("fetch-depth: 2", self.ipad)
         # The iPad boots while the app compiles, so the first tour meets a settled simulator.
         self.assertLess(self.ipad.index('xcrun simctl boot "$IPAD"'), self.ipad.index("xcodebuild build-for-testing"))
