@@ -126,11 +126,13 @@ class SameTests(unittest.TestCase):
         self.assertFalse(pr_screens.same(self.png("a.png", line(3)), self.png("b.png")), "a line appearing is a change")
 
     def test_tab_bar_icons_grey_instead_of_black_are_the_same(self):
-        # An icon in the tab bar band (the bottom 12 %) drawn black on one run, grey on the other.
-        icon = lambda colour, top: [((x, y), colour) for x in range(8, 32) for y in range(top, top + 12)]
-        a = self.png("a.png", icon((10, 10, 10), 88), size=(40, 100))
-        self.assertTrue(pr_screens.same(a, self.png("b.png", icon((104, 104, 104), 88), size=(40, 100))))
+        # An icon in the tab bar band (the bottom 9 %) drawn black on one run, grey on the other.
+        icon = lambda colour, top: [((x, y), colour) for x in range(8, 32) for y in range(top, top + 8)]
+        a = self.png("a.png", icon((10, 10, 10), 92), size=(40, 100))
+        b = self.png("b.png", icon((104, 104, 104), 92), size=(40, 100))
+        self.assertTrue(pr_screens.same(a, b))
         self.assertFalse(pr_screens.same(a, self.png("c.png", size=(40, 100))), "an icon that is gone")
+        self.assertFalse(pr_screens.same(a, b, tab_bar=0), "on the iPad there is no tab bar")
         self.assertFalse(pr_screens.same(self.png("d.png", icon((10, 10, 10), 50), size=(40, 100)),
                                          self.png("e.png", icon((104, 104, 104), 50), size=(40, 100))), "not in the bar: a change")
 
@@ -318,7 +320,8 @@ class WorkflowTests(unittest.TestCase):
     def test_ipad_screens_compared_and_commented(self):
         compare = self.ipad.split("name: Compare")[1].split("- uses:")[0]
         self.assertIn('sips -r 270 "$f"', compare)  # landscape screens upright, as in ipad-screens.yml
-        self.assertIn("pr_screens.py changes before after changed", compare)
+        self.assertIn("pr_screens.py changes before after changed ipad", compare)
+        self.assertNotIn("changes before after changed ipad", self.build.split("ipad-screens:")[0])
         self.assertIn("name: ipad-screens", self.ipad)
         self.assertIn("bash publish_pr_screens.sh changed ipad", self.ipad)
         self.assertRegex(self.build, r"bash publish_pr_screens\.sh changed\n")  # the iPhone, no device argument
