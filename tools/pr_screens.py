@@ -2,7 +2,7 @@
 
     xcrun simctl list devices available -j | python3 tools/pr_screens.py pick-iphone
     python3 tools/pr_screens.py rename <xcresulttool export dir> <out dir>
-    python3 tools/pr_screens.py changes <before dir> <after dir> <out dir>
+    python3 tools/pr_screens.py changes <before dir> <after dir> <out dir> [ipad]
     python3 tools/pr_screens.py comment <out dir> <image base url> <run url> [ipad]
 
 With `ipad`, the comment is the one for the iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift),
@@ -45,7 +45,7 @@ def _pngs(folder):
     return set(n for n in os.listdir(folder) if n.endswith(".png")) if os.path.isdir(folder) else set()
 
 
-def same(a, b, tolerance=48, max_pixels=20, blur=4, tab_bar=0.12, tab_bar_tolerance=150):
+def same(a, b, tolerance=48, max_pixels=20, blur=4, tab_bar=0.09, tab_bar_tolerance=110):
     """True if two screenshots look the same.
 
     Identical files are the same. Otherwise, with Pillow, both are blurred a little and a few
@@ -71,9 +71,10 @@ def same(a, b, tolerance=48, max_pixels=20, blur=4, tab_bar=0.12, tab_bar_tolera
         ia, ib = ia.filter(ImageFilter.GaussianBlur(blur)), ib.filter(ImageFilter.GaussianBlur(blur))
     r, g, bl = ImageChops.difference(ia, ib).split()
     worst = ImageChops.lighter(ImageChops.lighter(r, g), bl)
-    # The tab bar's unselected icons come out black on one run and grey on another (about 95 levels
-    # apart; 03e and the firearm screens on 2026-11-10): in its band only a bigger difference counts,
-    # which a changed icon or title still is.
+    # The tab bar's unselected icons come out black on one run and grey on another (rows 2410–2479
+    # of 2622, under 92 levels once blurred; 03e and the firearm screens on 2026-11-10): in its band
+    # only a bigger difference counts, which a changed word still is (148 and more). The iPad has no
+    # tab bar: tab_bar=0.
     w, h = worst.size
     bar = int(h * (1 - tab_bar))
     over = sum(worst.crop((0, 0, w, bar)).histogram()[tolerance + 1:])
@@ -81,7 +82,7 @@ def same(a, b, tolerance=48, max_pixels=20, blur=4, tab_bar=0.12, tab_bar_tolera
     return over <= max_pixels
 
 
-def changes(before_dir, after_dir):
+def changes(before_dir, after_dir, tab_bar=0.09):
     """[(name, status)] for screens that are new, changed or gone, by name.
 
     Both runs use the same simulator and status bar minutes apart, so an unchanged
@@ -94,14 +95,14 @@ def changes(before_dir, after_dir):
             result.append((name, "new"))
         elif name not in after:
             result.append((name, "gone"))
-        elif not same(os.path.join(before_dir, name), os.path.join(after_dir, name)):
+        elif not same(os.path.join(before_dir, name), os.path.join(after_dir, name), tab_bar=tab_bar):
             result.append((name, "changed"))
     return result
 
 
-def collect(before_dir, after_dir, out_dir):
+def collect(before_dir, after_dir, out_dir, ipad=False):
     """Copies the changed screens to out_dir/before and out_dir/after and writes out_dir/changes.json."""
-    found = changes(before_dir, after_dir)
+    found = changes(before_dir, after_dir, tab_bar=0 if ipad else 0.09)
     for side, folder in (("before", before_dir), ("after", after_dir)):
         os.makedirs(os.path.join(out_dir, side), exist_ok=True)
         for name, _ in found:
@@ -161,8 +162,8 @@ def main(argv):
     elif argv[1:2] == ["rename"] and len(argv) == 4:
         for name in rename(argv[2], argv[3]):
             print(name)
-    elif argv[1:2] == ["changes"] and len(argv) == 5:
-        summary = collect(argv[2], argv[3], argv[4])
+    elif argv[1:2] == ["changes"] and argv[5:] in ([], ["ipad"]) and len(argv) >= 5:
+        summary = collect(argv[2], argv[3], argv[4], ipad=argv[5:] == ["ipad"])
         for name, status in summary["changes"]:
             print(f"{status}: {name}")
     elif argv[1:2] == ["comment"] and argv[5:] in ([], ["ipad"]) and len(argv) >= 5:

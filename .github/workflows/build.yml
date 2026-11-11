@@ -337,7 +337,7 @@ jobs:
           done
           # Screenshots come in the device's portrait buffer; turn landscape ones upright.
           for f in after/landscape-*.png before/landscape-*.png; do [ -e "$f" ] && sips -r 270 "$f" >/dev/null; done
-          venv/bin/python pr_screens.py changes before after changed
+          venv/bin/python pr_screens.py changes before after changed ipad
           find changed -name '*.png' -exec sips -Z 1200 {} \; >/dev/null
       - uses: actions/upload-artifact@v5
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
