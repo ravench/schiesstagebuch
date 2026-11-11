@@ -1,5 +1,25 @@
 import Foundation
 
+/// The clicks turned on the diopter during a Stich (Raven 2026-11-10): up (negative: down) and
+/// right (negative: left).
+struct DiopterClicks: Equatable, Hashable {
+    var up = 0
+    var right = 0
+
+    static let range = -99...99
+
+    /// E.g. «2 hoch, 1 links»; «0» when nothing was turned.
+    var text: String {
+        let parts = [Self.text(up, "%lld hoch", "%lld tief"), Self.text(right, "%lld rechts", "%lld links")].compactMap { $0 }
+        return parts.isEmpty ? "0" : parts.joined(separator: ", ")
+    }
+
+    /// One direction, e.g. «2 hoch»; nil for 0.
+    static func text(_ clicks: Int, _ positive: String, _ negative: String) -> String? {
+        clicks == 0 ? nil : String(format: (clicks > 0 ? positive : negative).loc, abs(clicks))
+    }
+}
+
 /// Optional sport-shooter settings for an entry: sight, shooting glasses and bipod.
 struct SightSettings: Equatable {
     /// Filter name from the catalogue; "" means no filter (the default).
@@ -13,7 +33,8 @@ struct SightSettings: Equatable {
 
     /// The chosen filters in order, without blanks.
     var filters: [String] { [filter, secondFilter].filter { !$0.isEmpty } }
-    var diopter: Double?
+    /// Clicks turned during the Stich; nil when none were recorded.
+    var diopter: DiopterClicks?
     /// Ring on the rifle's sight; rifles only.
     var ringSize: Double?
     /// Iris on the rifle's diopter or on the shooting glasses.
@@ -32,7 +53,7 @@ struct SightSettings: Equatable {
         }
     }
 
-    /// Slider range for diopter and ring size, in steps of 0.1.
+    /// Slider range for iris and ring size, in steps of 0.1.
     static let range: ClosedRange<Double> = 0.1...9.9
     static let step = 0.1
 
@@ -41,7 +62,7 @@ struct SightSettings: Equatable {
         (min(max(v, range.lowerBound), range.upperBound) * 10).rounded() / 10
     }
 
-    /// Sliding ruler for diopter, iris and ring: ±0.5 on screen, 0.1 steps, numbers every 0.5.
+    /// Sliding ruler for iris and ring: ±0.5 on screen, 0.1 steps, numbers every 0.5.
     static let rulerScale = RulerScale(range: range, step: step, halfSpan: 0.5, majorEvery: 5)
 
     /// Bipod ruler range in cm, in steps of 0.5.
@@ -73,17 +94,18 @@ struct SightSettings: Equatable {
 
     var isEmpty: Bool { filters.isEmpty && diopter == nil && ringSize == nil && irisSize == nil && bipodLength == nil }
 
-    init(filter: String = "", secondFilter: String = "", diopter: Double? = nil, ringSize: Double? = nil,
+    init(filter: String = "", secondFilter: String = "", diopter: DiopterClicks? = nil, ringSize: Double? = nil,
          irisSize: Double? = nil, bipodLength: Double? = nil) {
         (self.filter, self.secondFilter) = Self.normalised(filter, secondFilter)
-        self.diopter = diopter.map(Self.clamp)
+        self.diopter = diopter
         self.ringSize = ringSize.map(Self.clamp)
         self.irisSize = irisSize.map(Self.clamp)
         self.bipodLength = bipodLength.map(Self.clampBipod)
     }
 
     init(entry: Entry) {
-        self.init(filter: entry.filterColor, secondFilter: entry.secondFilterColor, diopter: entry.diopter,
+        self.init(filter: entry.filterColor, secondFilter: entry.secondFilterColor,
+                  diopter: entry.diopterUp.map { DiopterClicks(up: $0, right: entry.diopterRight ?? 0) },
                   ringSize: entry.ringSize, irisSize: entry.irisSize, bipodLength: entry.bipodLength)
     }
 
@@ -98,26 +120,26 @@ struct SightSettings: Equatable {
         let (first, second) = Self.normalised(filter, secondFilter)
         entry.filterColor = first
         entry.secondFilterColor = second
-        entry.diopter = diopter.map(Self.clamp)
+        entry.diopterUp = diopter?.up; entry.diopterRight = diopter?.right
         entry.ringSize = ringSize.map(Self.clamp)
         entry.irisSize = irisSize.map(Self.clamp)
         entry.bipodLength = bipodLength.map(Self.clampBipod)
     }
 
-    /// The same settings without the filters: a new Stich starts without any, the light decides them
-    /// each time (Raven 2026-11-10).
-    var withoutFilters: SightSettings {
+    /// What a new Stich takes over: iris, ring and bipod. Not the filters (the light decides them each
+    /// time) and not the diopter corrections (they are what that Stich needed); Raven 2026-11-10.
+    var forNewStich: SightSettings {
         var s = self
-        s.filter = ""; s.secondFilter = ""
+        s.filter = ""; s.secondFilter = ""; s.diopter = nil
         return s
     }
 
-    /// Settings of the newest entry with this weapon that recorded any (filters aside); nil if none.
+    /// Settings of the newest entry with this weapon that recorded any of what a new Stich takes over; nil if none.
     static func lastUsed(for weapon: Weapon?, in entries: [Entry]) -> SightSettings? {
         guard let weapon else { return nil }
         return entries.filter { $0.weapon == weapon }
             .sorted { $0.date > $1.date }
-            .lazy.map { SightSettings(entry: $0).withoutFilters }
+            .lazy.map { SightSettings(entry: $0).forNewStich }
             .first { !$0.isEmpty }
     }
 

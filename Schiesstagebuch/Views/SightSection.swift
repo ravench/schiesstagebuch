@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Optional sport-shooter settings in the entry editor: filter, diopter, ring or iris, bipod.
+/// Optional sport-shooter settings in the entry editor: filter, iris, ring, diopter corrections, bipod.
 /// Only the fields switched on in Settings show (see SportFeatures).
 struct SightSection: View {
     @Environment(\.term) private var term
@@ -17,8 +17,8 @@ struct SightSection: View {
                 if !sight.filter.isEmpty { filterPicker("Zweiter Filter", index: 1) }
             }
             if fields.contains(.iris) { rulerRow("Iris", value: $sight.irisSize) }
-            if fields.contains(.diopter) { rulerRow("Diopter", value: $sight.diopter) }
             if fields.contains(.ring), aperture != .iris { rulerRow("Ringkorn", value: $sight.ringSize) }
+            if fields.contains(.diopter) { diopterRows }
             if fields.contains(.bipod), aperture != .iris {
                 rulerRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm", start: 20,
                          scale: SightSettings.bipodRulerScale, clamp: SightSettings.clampBipod)
@@ -27,9 +27,9 @@ struct SightSection: View {
             Text("Einstellungen für Sportschützen")
         } footer: {
             if fields.contains(.filter), FilterCatalog(data: catalogData).visible.isEmpty {
-                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter.").loc)
+                Text(term("Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.").loc)
             } else {
-                Text(term("Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit dieser Waffe, ausser den Filtern.").loc)
+                Text(term("Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe.").loc)
             }
         }
     }
@@ -51,7 +51,28 @@ struct SightSection: View {
         .pickerStyle(.navigationLink)
     }
 
-    /// Toggle plus a sliding ruler: ±0.5 in 0.1 steps for diopter, iris and ring, ±5 cm for the bipod.
+    /// Switch plus two steppers: the clicks turned up or down and right or left during the Stich.
+    @ViewBuilder private var diopterRows: some View {
+        Toggle("Diopterkorrekturen", isOn: Binding(get: { sight.diopter != nil }, set: { sight.diopter = $0 ? DiopterClicks() : nil }))
+        if sight.diopter != nil {
+            clickStepper("Höhenverstellung", value: Binding(get: { sight.diopter?.up ?? 0 }, set: { sight.diopter?.up = $0 }),
+                         up: "%lld hoch", down: "%lld tief")
+            clickStepper("Seitenverstellung", value: Binding(get: { sight.diopter?.right ?? 0 }, set: { sight.diopter?.right = $0 }),
+                         up: "%lld rechts", down: "%lld links")
+        }
+    }
+
+    private func clickStepper(_ title: String, value: Binding<Int>, up: String, down: String) -> some View {
+        Stepper(value: value, in: DiopterClicks.range) {
+            HStack {
+                Text(title.loc)
+                Spacer()
+                Text(DiopterClicks.text(value.wrappedValue, up, down) ?? "0").monospacedDigit().foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    /// Toggle plus a sliding ruler: ±0.5 in 0.1 steps for iris and ring, ±5 cm for the bipod.
     private func rulerRow(_ title: String, value: Binding<Double?>, unit: String = "", start: Double = 1.0,
                           scale: RulerScale = SightSettings.rulerScale,
                           clamp: @escaping (Double) -> Double = SightSettings.clamp) -> some View {
