@@ -145,7 +145,8 @@ class DimensionGroupTests(unittest.TestCase):
             stored = json.load(f)["calibreData"]
         self.assertEqual(stored["commit"], head, "run python3 tools/generate_assets.py")
         # The committer date with its offset, which the app decodes as ISO 8601.
-        self.assertRegex(stored["date"], r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(Z|[+-]\d\d:\d\d)$")
+        self.assertRegex(stored["date"], r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d[+-]\d\d:\d\d$",
+                         "a numeric offset, never Z, whichever git version wrote it")
 
 
 class CatalogueOnlyDataTests(unittest.TestCase):
