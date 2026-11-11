@@ -6,16 +6,21 @@ import SwiftUI
 struct CartridgeView: View {
     let catalogID: String?
     private let name: String
+    /// A symbol in the accent colour next to the other symbols: the bullet filled, case and rim one
+    /// outline without a fill (Raven, build 1147 and his sketch on PR 181).
+    private let monochrome: Bool
 
     init(caliber: Caliber?) {
         catalogID = caliber?.catalogID
         name = caliber?.name ?? ""
+        monochrome = false
     }
 
     /// A catalogue calibre without a record, e.g. as an icon.
-    init(catalogID: String) {
+    init(catalogID: String, monochrome: Bool = false) {
         self.catalogID = catalogID
         name = catalogID
+        self.monochrome = monochrome
     }
 
     private struct Parts { let box: CGSize; let hull: Path?; let head: Path?; let bullet: Path?; let patch: Path?
@@ -71,11 +76,23 @@ struct CartridgeView: View {
                 func draw(_ p: Path?, _ fill: Color) {
                     guard let p else { return }
                     let f = fitted(p, box: parts.box, in: rect)
-                    ctx.fill(f, with: .color(fill))
-                    ctx.stroke(f, with: .color(.primary.opacity(0.55)), style: stroke)
+                    ctx.fill(f, with: .color(monochrome ? .accentColor : fill))
+                    if !monochrome { ctx.stroke(f, with: .color(.primary.opacity(0.55)), style: stroke) }
                 }
-                draw(parts.hull, parts.hullFill)
-                draw(parts.head, parts.headFill)
+                if monochrome {
+                    // Case and rim as one outline: the inner half of a thick stroke, a wall inside the shape.
+                    let shell = [parts.hull, parts.head].compactMap { $0 }.map { fitted($0, box: parts.box, in: rect) }
+                    if let first = shell.first {
+                        let outline = shell.dropFirst().reduce(first) { $0.union($1) }
+                        ctx.drawLayer { layer in
+                            layer.clip(to: outline)
+                            layer.stroke(outline, with: .color(.accentColor), style: StrokeStyle(lineWidth: min(size.width, size.height) / 9))
+                        }
+                    }
+                } else {
+                    draw(parts.hull, parts.hullFill)
+                    draw(parts.head, parts.headFill)
+                }
                 draw(parts.bullet, parts.bulletFill)
                 draw(parts.patch, .paper)
                 draw(parts.tip, parts.tipFill)
