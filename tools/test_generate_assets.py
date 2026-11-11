@@ -121,6 +121,17 @@ class DimensionGroupTests(unittest.TestCase):
             self.assertNotIn(rimfire, groups)
             self.assertNotIn(centrefire, groups)
 
+    def test_swiss_match_is_its_own_cartridge(self):
+        """calibre-data #77: the 6x47 mm SM (Swiss Match) is a rifle calibre of its own, found by its
+        common names, and not the 6.5x47 mm Lapua's chamber."""
+        groups = generate_assets.dimension_groups()
+        sm = next(c for c in generate_assets.build()[0] if c["name"] == "6x47 mm SM")
+        self.assertEqual(sm["category"], "Langwaffe")
+        self.assertIn("6x47", sm["aliases"])
+        self.assertIn("swiss match", sm["aliases"])
+        self.assertNotIn("6x47 mm SM", groups)
+        self.assertNotIn("6.5x47 mm Lapua", groups)
+
     def test_generated_file_is_up_to_date(self):
         calibers, _ = generate_assets.build()
         with open(os.path.join(ROOT, "Schiesstagebuch", "Resources", "Calibers.json")) as f:
@@ -134,7 +145,8 @@ class DimensionGroupTests(unittest.TestCase):
             stored = json.load(f)["calibreData"]
         self.assertEqual(stored["commit"], head, "run python3 tools/generate_assets.py")
         # The committer date with its offset, which the app decodes as ISO 8601.
-        self.assertRegex(stored["date"], r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(Z|[+-]\d\d:\d\d)$")
+        self.assertRegex(stored["date"], r"^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d[+-]\d\d:\d\d$",
+                         "a numeric offset, never Z, whichever git version wrote it")
 
 
 class CatalogueOnlyDataTests(unittest.TestCase):
