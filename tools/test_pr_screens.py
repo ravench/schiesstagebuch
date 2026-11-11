@@ -257,7 +257,7 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(calls.count("-F body=@comment.md"), 3)  # no comment found, so each posts one
         with open(os.path.join(self.tmp.name, "comment.md")) as f:
             body = f.read()
-        self.assertIn("https://raw.githubusercontent.com/ravench/app-screens/", body)
+        self.assertIn("https://github.com/ravench/app-screens/raw/", body)
         self.assertIn("/122/after/05-Statistik.png", body)
 
 
@@ -348,7 +348,10 @@ class WorkflowTests(unittest.TestCase):
             self.assertIn("secrets.SCREENS_DEPLOY_KEY", comment)
             self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", comment)
         self.assertIn('git remote add origin "git@github.com:${SCREENS_REPO}.git"', self.publish)
-        self.assertIn("https://raw.githubusercontent.com/${SCREENS_REPO}/", self.publish)
+        # raw.githubusercontent.com answers 404 for a private repo; github.com/…/raw/… works for
+        # signed-in viewers who can read it.
+        self.assertIn("https://github.com/${SCREENS_REPO}/raw/", self.publish)
+        self.assertNotIn("https://raw.githubusercontent.com", self.publish)
         # Each device replaces only its own screens in the pull request's folder.
         self.assertIn('DEST="$PR${DEVICE:+/$DEVICE}"', self.publish)
         self.assertIn('rm -rf "$DEST/before" "$DEST/after"', self.publish)
