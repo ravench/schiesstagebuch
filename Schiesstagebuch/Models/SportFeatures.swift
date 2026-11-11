@@ -20,7 +20,7 @@ struct SportFeatures: OptionSet, Hashable {
     static let filter = SportFeatures(rawValue: 1 << 0)
     /// Bipod length; rifles only.
     static let bipod = SportFeatures(rawValue: 1 << 2)
-    /// Weather per event.
+    /// Weather per Stich.
     static let weather = SportFeatures(rawValue: 1 << 3)
     /// Clicks turned on the diopter during the Stich.
     static let diopter = SportFeatures(rawValue: 1 << 4)
@@ -63,7 +63,7 @@ struct SportFeatures: OptionSet, Hashable {
     var detail: String? {
         switch self {
         case .bipod: "Länge in cm, nur bei Gewehren"
-        case .weather: "Licht, Wind und Temperatur pro Anlass"
+        case .weather: "Licht, Wind und Temperatur pro Stich"
         default: nil
         }
     }

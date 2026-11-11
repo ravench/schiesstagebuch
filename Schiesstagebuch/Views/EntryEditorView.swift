@@ -392,7 +392,10 @@ struct EntryEditorView: View {
         if entry == nil { position = ShootingPosition.following(position, from: old?.category, to: new?.category) }
         // The first Stich takes the sight settings of the last entry with this weapon, but never
         // throws away values the user has typed already.
-        if firstStich { sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries) }
+        if firstStich {
+            sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
+            weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)
+        }
         // The weapon's default barrel (or the one for the current calibre) with its calibre.
         if let barrel, barrel.weapon == new { return }
         barrel = caliber.flatMap { new?.barrel(for: $0, on: date) } ?? new?.preferredBarrel(on: date)
@@ -468,7 +471,7 @@ struct EntryEditorView: View {
         guard !didLoad else { return }
         if let addingTo {
             // A Stich of the event: the shared part as it is.
-            date = addingTo.date; range = addingTo.range; event = addingTo.name; weather = addingTo.weather
+            date = addingTo.date; range = addingTo.range; event = addingTo.name
             loadScoring(of: addingTo)
             if let last = addingTo.sortedEntries.last {
                 // Another Stich of the same event: the rest from its last Stich.
@@ -479,6 +482,7 @@ struct EntryEditorView: View {
                     ? last.ammunition : suggestedAmmunition(weapon: weapon, caliber: caliber)
                 lot = ammunition == last.ammunition && last.lot?.isArchived == false ? last.lot : suggestedLot(for: ammunition)
                 sight = SightSettings(entry: last).forNewStich
+                weather = last.weather
             } else if let last = allEntries.first {
                 // The first Stich starts from the most recent weapon and ammo: usually what you shoot next.
                 weapon = last.weapon?.isArchived == false ? last.weapon : nil
@@ -487,6 +491,8 @@ struct EntryEditorView: View {
                 ammunition = suggestedAmmunition(weapon: weapon, caliber: caliber)
                 lot = suggestedLot(for: ammunition)
                 sight = SightSettings.lastUsed(for: weapon, in: allEntries) ?? SightSettings()
+                // Weather starts on when the last entry with the weapon had it (off for indoor shooting).
+                weather = WeatherRecord.carriedOver(from: nil, to: weapon, in: allEntries)
             }
             mode = defaultMode
             if mode == .shots { passes = [PassDraft(text: "")] }
@@ -593,7 +599,7 @@ struct EntryEditorView: View {
         sight.fitted(to: SightSettings.aperture(for: weapon?.category))
             .keeping(SightSettings(entry: target), outside: features)
             .apply(to: target)
-        if features.contains(.weather) { shootingEvent.weather = weather?.normalized() }
+        if features.contains(.weather) { target.weather = weather?.normalized() }
         if scoring == .rings {
             target.position = position
             target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }

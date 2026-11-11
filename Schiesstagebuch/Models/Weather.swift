@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 // Weather block of the sport shooter settings, built from wetter-felder.json
 // («Der Stadtschütz» 2015–2026) and trimmed to Raven's list (2026-11-07). Field and option keys
@@ -279,7 +280,27 @@ struct WeatherRecord: Codable, Hashable {
     /// Whether a new entry with this weapon starts with weather on: as in the newest entry with it.
     static func recordsByDefault(for weapon: Weapon?, in entries: [Entry]) -> Bool {
         guard let weapon else { return false }
-        return entries.filter { $0.weapon == weapon }.max { $0.date < $1.date }?.shootingEvent?.weatherData != nil
+        return entries.filter { $0.weapon == weapon }.max { $0.date < $1.date }?.weatherData != nil
+    }
+
+    /// What a new entry shows after the weapon changed: recorded weather stays whatever the new
+    /// weapon's habit is; an empty record follows the weapon's default (on outdoors, off indoors).
+    static func carriedOver(from current: WeatherRecord?, to weapon: Weapon?, in entries: [Entry], now: Date = startTime) -> WeatherRecord? {
+        if let current, current.hasValues { return current }
+        return recordsByDefault(for: weapon, in: entries) ? (current ?? WeatherRecord(time: now)) : nil
+    }
+
+    /// Until 2026-11-10 the weather was recorded per Anlass (Raven: it belongs to the Stich). Carries what
+    /// an event still holds to its Stiche without weather of their own, then clears it; returns whether
+    /// anything moved. Runs at every start and after a restore, so data from older devices follows too.
+    @discardableResult
+    static func moveToStiche(in context: ModelContext) -> Bool {
+        let events = (try? context.fetch(FetchDescriptor<ShootingEvent>(predicate: #Predicate { $0.weatherData != nil }))) ?? []
+        for event in events {
+            for entry in event.entries ?? [] where entry.weatherData == nil { entry.weatherData = event.weatherData }
+            event.weatherData = nil
+        }
+        return !events.isEmpty
     }
 
     /// Something recorded apart from the time and the sun, which the app fills in by itself. While
@@ -296,7 +317,7 @@ struct WeatherRecord: Codable, Hashable {
 }
 
 extension ShootingEvent {
-    /// Decoded weather; nil when the event records none.
+    /// The weather of backups and stores from before 2026-11-10, until `WeatherRecord.moveToStiche` carries it to the Stiche.
     var weather: WeatherRecord? {
         get { weatherData.flatMap { try? JSONDecoder().decode(WeatherRecord.self, from: $0) } }
         set { weatherData = newValue.flatMap { try? JSONEncoder().encode($0) } }
@@ -304,6 +325,9 @@ extension ShootingEvent {
 }
 
 extension Entry {
-    /// The weather of the event this Stich belongs to.
-    var weather: WeatherRecord? { shootingEvent?.weather }
+    /// Decoded weather; nil when the Stich records none.
+    var weather: WeatherRecord? {
+        get { weatherData.flatMap { try? JSONDecoder().decode(WeatherRecord.self, from: $0) } }
+        set { weatherData = newValue.flatMap { try? JSONEncoder().encode($0) } }
+    }
 }

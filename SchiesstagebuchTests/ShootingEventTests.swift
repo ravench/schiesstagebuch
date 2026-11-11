@@ -25,13 +25,10 @@ final class ShootingEventTests: ModelTestCase {
     func testSharedFieldsComeFromTheEvent() {
         let range = ShootingRange(name: "Albisgüetli"); context.insert(range)
         let event = ShootingEvent(date: day(1), name: "Schützenfest", range: range); context.insert(event)
-        var record = WeatherRecord(time: day(1)); record.conditions.set("sky", .option("fog"))
-        event.weather = record
         let a = addStich(to: event, nil, shots: 10, stich: "Sektionsstich")
         let b = addStich(to: event, nil, shots: 6)
         XCTAssertEqual(a.range, range)
         XCTAssertEqual(b.eventName, "Schützenfest")
-        XCTAssertEqual(b.weather, record)
         XCTAssertEqual(a.title, "Schützenfest · Sektionsstich")
         XCTAssertEqual(b.title, "Schützenfest")
     }
@@ -222,6 +219,7 @@ final class ShootingEventTests: ModelTestCase {
         let pistol = Weapon(name: "P210"); context.insert(pistol)
         let range = ShootingRange(name: "Albisgüetli"); context.insert(range)
         let event = ShootingEvent(date: day(6), name: "Knabenschiessen", range: range); context.insert(event)
+        // As a version 2 backup has it: the weather on the event. Restoring moves it to the Stiche.
         event.weather = WeatherRecord(time: day(6))
         addStich(to: event, stgw, shots: 18, stich: "Sektionsstich")
         addStich(to: event, pistol, shots: 10, stich: "Kunststich")
@@ -239,7 +237,8 @@ final class ShootingEventTests: ModelTestCase {
         let restored = try XCTUnwrap(events.first { $0.name == "Knabenschiessen" })
         XCTAssertEqual(restored.id, event.id)
         XCTAssertEqual(restored.range?.name, "Albisgüetli")
-        XCTAssertEqual(restored.weather, WeatherRecord(time: day(6)))
+        XCTAssertNil(restored.weather)
+        XCTAssertTrue(restored.sortedEntries.allSatisfy { $0.weather == WeatherRecord(time: day(6)) })
         XCTAssertEqual(Set(restored.sortedEntries.map(\.stich)), ["Sektionsstich", "Kunststich"])
         XCTAssertEqual(Set(restored.sortedEntries.compactMap(\.weapon?.name)), ["Stgw 90", "P210"])
         XCTAssertTrue(restored.sortedEntries.allSatisfy { $0.date == day(6) })
