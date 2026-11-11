@@ -79,14 +79,14 @@ final class CombinedFilterTests: ModelTestCase {
     func testBothFiltersAreStoredOnTheEntryButNotCarriedOver() throws {
         let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
         let e = addEntry(stgw, on: day(1), shots: 10)
-        SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: 1.5).apply(to: e)
+        SightSettings(filter: "Citron", secondFilter: "+0.25", diopter: DiopterClicks(up: 1)).apply(to: e)
         XCTAssertEqual(e.filterColor, "Citron")
         XCTAssertEqual(e.secondFilterColor, "+0.25")
         XCTAssertEqual(SightSettings(entry: e).filters, ["Citron", "+0.25"])
         try context.save()
         let entries = try context.fetch(FetchDescriptor<Entry>())
         // Raven 2026-11-10: a new Stich starts without filters.
-        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries)?.filters, [])
+        XCTAssertEqual(SightSettings.lastUsed(for: stgw, in: entries)?.filters ?? [], [])
         XCTAssertEqual(SightSettings.carriedOver(from: SightSettings(), to: stgw, in: entries).filters, [])
     }
 
@@ -98,7 +98,7 @@ final class CombinedFilterTests: ModelTestCase {
 
     func testBackupAndCSVKeepBothFilters() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
-        SightSettings(filter: "Citron", secondFilter: "-0.25", diopter: 2).apply(to: e)
+        SightSettings(filter: "Citron", secondFilter: "-0.25", diopter: DiopterClicks(right: 2)).apply(to: e)
         try context.save()
 
         let other = try ModelContainer(for: SchiesstagebuchApp.schema,
@@ -106,7 +106,7 @@ final class CombinedFilterTests: ModelTestCase {
         let target = ModelContext(other)
         try Backup.restore(from: try Backup.export(context), into: target)
         let restored = try XCTUnwrap(try target.fetch(FetchDescriptor<Entry>()).first)
-        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "Citron", secondFilter: "-0.25", diopter: 2))
+        XCTAssertEqual(SightSettings(entry: restored), SightSettings(filter: "Citron", secondFilter: "-0.25", diopter: DiopterClicks(right: 2)))
 
         let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         let lines = csv.components(separatedBy: "\r\n")

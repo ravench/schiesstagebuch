@@ -55,14 +55,14 @@ S = {
         "The date of sale can't be before the date of purchase. Sold equipment is archived.",
         "La date de vente ne peut pas précéder la date d'achat. Les équipements vendus sont archivés.",
         "La data di vendita non può precedere la data di acquisto. Gli attrezzi venduti vengono archiviati."),
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät, ausser den Filtern.": (
-        "Optional. New entries take the values of the last entry with this equipment, except the filters.",
-        "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement, sauf les filtres.",
-        "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo, tranne i filtri."),
-    "Optional. Neue Einträge übernehmen die Werte des letzten Eintrags mit diesem Sportgerät, ausser den Filtern. Deine Filter wählst du unter Einstellungen › Filter.": (
-        "Optional. New entries take the values of the last entry with this equipment, except the filters. Choose your filters under Settings › Filters.",
-        "Facultatif. Les nouvelles entrées reprennent les valeurs de la dernière entrée avec cet équipement, sauf les filtres. Choisis tes filtres sous Réglages › Filtres.",
-        "Facoltativo. Le nuove voci riprendono i valori dell'ultima voce con questo attrezzo, tranne i filtri. Scegli i tuoi filtri in Impostazioni › Filtri."),
+    "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit diesem Sportgerät.": (
+        "Optional. New entries take the iris, ring and bipod of the last entry with this equipment.",
+        "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cet équipement.",
+        "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con questo attrezzo."),
+    "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit diesem Sportgerät. Deine Filter wählst du unter Einstellungen › Filter.": (
+        "Optional. New entries take the iris, ring and bipod of the last entry with this equipment. Choose your filters under Settings › Filters.",
+        "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cet équipement. Choisis tes filtres sous Réglages › Filtres.",
+        "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con questo attrezzo. Scegli i tuoi filtri in Impostazioni › Filtri."),
     "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.": (
         "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your equipment.",
         "L'export ne contient pas de calibres. Chaque munition est attribuée à un calibre ; on en déduit les calibres de tes équipements.",
