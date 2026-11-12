@@ -111,14 +111,9 @@ enum CaliberCatalog {
             .trimmingCharacters(in: CharacterSet(charactersIn: "."))
     }
 
-    /// Catalogue ids are the calibres' names. A renamed calibre is listed here (old id: new id) so
-    /// the records that carry the old id follow it instead of getting a twin.
-    static let renamedIDs = ["5.6 mm GP 90 (Swiss)": "5.6 mm GP 90"]
-
-    /// Until 2026-11 every catalogue calibre was seeded as a record, which iCloud carried to every
-    /// device. A record that holds nothing of the user's (the catalogue's name and category, not
-    /// archived, no barrel, ammunition or entry) goes; the catalogue entry stands in for it. Runs
-    /// at every start, so records an old device, backup or a cancelled picker brings back go too.
+    /// A catalogue record that holds nothing of the user's (the catalogue's name and category, not
+    /// archived, no barrel, ammunition or entry) goes; the catalogue entry stands in for it. A
+    /// cancelled picker leaves such records, a backup can bring them back. Runs at every start.
     /// Judged by the relationships, never by a flag, so a record in use anywhere survives.
     /// Returns the number of records removed.
     @MainActor
@@ -127,14 +122,12 @@ enum CaliberCatalog {
         guard let all = try? context.fetch(FetchDescriptor<Caliber>()) else { return 0 }
         var removed = 0
         for c in all {
-            if let id = renamedIDs[c.catalogID] { c.catalogID = id }  // keeps its drawing after the rename
-            guard let item = item(id: c.catalogID), !c.isArchived, c.category == item.category,
-                  c.name == item.name || renamedIDs[c.name] == item.id,
+            guard let item = item(id: c.catalogID), !c.isArchived, c.category == item.category, c.name == item.name,
                   (c.barrels ?? []).isEmpty, (c.ammunitions ?? []).isEmpty, (c.entries ?? []).isEmpty else { continue }
             context.delete(c)
             removed += 1
         }
-        if context.hasChanges { try? context.save() }
+        if removed > 0 { try? context.save() }
         return removed
     }
 

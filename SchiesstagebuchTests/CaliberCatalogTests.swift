@@ -50,24 +50,6 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 5)
     }
 
-    func testRecordUnderARenamedIDFollowsTheRename() throws {
-        // calibre-data #13 renamed "5.6 mm GP 90 (Swiss)" to "5.6 mm GP 90" (2026-11-04).
-        func old() -> Caliber {
-            let c = Caliber(name: "5.6 mm GP 90 (Swiss)", category: CaliberCatalog.Category.rifle.rawValue)
-            c.catalogID = "5.6 mm GP 90 (Swiss)"
-            context.insert(c)
-            return c
-        }
-        let used = old()
-        let weapon = Weapon(name: "Stgw 90"); context.insert(weapon)
-        let barrel = Barrel(); context.insert(barrel); barrel.calibers = [used]; barrel.weapon = weapon
-        _ = old()
-        try context.save()
-        XCTAssertEqual(CaliberCatalog.removeUnused(context), 1, "the unused twin goes, named after the old id")
-        XCTAssertEqual(used.catalogID, "5.6 mm GP 90", "the drawing follows the rename")
-        XCTAssertEqual(used.name, "5.6 mm GP 90 (Swiss)", "the name stays the user's")
-    }
-
     // MARK: What the pickers offer
 
     func testChoicesAreTheCatalogueUntilTheUserPicks() throws {
