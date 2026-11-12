@@ -107,7 +107,7 @@ struct BarrelEditorView: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var allCalibers: [Caliber]
+    @Query(sort: \Caliber.name) private var allCalibers: [Caliber]
 
     @State private var name = ""
     @State private var serialNumber = ""

@@ -26,7 +26,7 @@ protocol ArchivableItem: PersistentModel {
 }
 
 @Model
-final class Caliber: ArchivableItem {
+final class Caliber: ArchivableItem, CaliberLike {
     var id: UUID = UUID()
     /// e.g. "9x19 mm", ".45 ACP", "7.5x55 mm Swiss"
     var name: String = ""
@@ -49,29 +49,44 @@ final class Caliber: ArchivableItem {
         self.category = category
     }
 
-    /// Alternative names from the catalogue, e.g. "9 mm Luger, 9 mm Para".
-    var aliasSummary: String {
-        (CaliberCatalog.item(id: catalogID)?.displayAliases ?? []).joined(separator: ", ")
-    }
-
     /// Firearms with a barrel for this calibre.
     var weapons: [Weapon] {
         var seen = Set<PersistentIdentifier>()
         return (barrels ?? []).compactMap(\.weapon).filter { seen.insert($0.persistentModelID).inserted }
     }
 
+    /// Name comparison key for restoring and importing: the same rules the catalogue
+    /// uses for its aliases, so ".45 ACP", "45 ACP" and "45 acp" are one calibre everywhere.
+    static func normalized(_ s: String) -> String { CaliberCatalog.normalizedAlias(s) }
+}
+
+/// A calibre as the pickers and lists show it: the user's record (`Caliber`) or a catalogue entry
+/// the user has no record of (`CaliberChoice`). What both can tell comes from the catalogue entry.
+protocol CaliberLike: Hashable {
+    var name: String { get }
+    var category: String { get }
+    /// Id of the built-in catalogue entry (drives the cartridge outline); empty for custom calibres.
+    var catalogID: String { get }
+}
+
+extension CaliberLike {
+    /// Alternative names from the catalogue, e.g. "9 mm Luger, 9 mm Para".
+    var aliasSummary: String {
+        (CaliberCatalog.item(id: catalogID)?.displayAliases ?? []).joined(separator: ", ")
+    }
+
     /// Catalogue group of cartridges with identical measurements (e.g. .308 Win and 7.62 NATO); nil when alone.
     var dimensionGroup: String? { CaliberCatalog.item(id: catalogID)?.dimensionGroup }
 
     /// Other calibres from `all` with the same measurements, so a barrel for one can take them too.
-    func sameDimensions(in all: [Caliber]) -> [Caliber] {
+    func sameDimensions(in all: [Self]) -> [Self] {
         guard let group = dimensionGroup else { return [] }
         return all.filter { $0 != self && $0.dimensionGroup == group }
     }
 
     /// "Gleiche Masse wie .308 Winchester" for a calibre whose twins are in `all`; nil otherwise.
     /// The calibres stay separate entries, the note only shows that they belong together.
-    func sameDimensionsNote(in all: [Caliber]) -> String? {
+    func sameDimensionsNote(in all: [Self]) -> String? {
         let names = sameDimensions(in: all).map(\.name).sorted { $0.localizedStandardCompare($1) == .orderedAscending }
         guard !names.isEmpty else { return nil }
         return String(format: "Gleiche Masse wie %@".loc, names.joined(separator: ", "))
@@ -79,14 +94,14 @@ final class Caliber: ArchivableItem {
 
     /// Keeps `list` in its order but moves calibres with identical measurements (e.g. .308 Win and
     /// 7.62 NATO) right behind the first of their group, so they are listed together.
-    static func keepingGroupsTogether(_ list: [Caliber]) -> [Caliber] {
-        var result: [Caliber] = []
-        var placed = Set<PersistentIdentifier>()
-        for c in list where !placed.contains(c.persistentModelID) {
+    static func keepingGroupsTogether(_ list: [Self]) -> [Self] {
+        var result: [Self] = []
+        var placed = Set<Self>()
+        for c in list where !placed.contains(c) {
             result.append(c)
-            placed.insert(c.persistentModelID)
+            placed.insert(c)
             guard let group = c.dimensionGroup else { continue }
-            for twin in list where twin.dimensionGroup == group && placed.insert(twin.persistentModelID).inserted {
+            for twin in list where twin.dimensionGroup == group && placed.insert(twin).inserted {
                 result.append(twin)
             }
         }
@@ -101,10 +116,6 @@ final class Caliber: ArchivableItem {
         guard !key.isEmpty else { return true }
         return Caliber.normalized(name).contains(key) || CaliberCatalog.searchKeys(id: catalogID).contains { $0.contains(key) }
     }
-
-    /// Name comparison key for seeding, restoring and importing: the same rules the catalogue
-    /// uses for its aliases, so ".45 ACP", "45 ACP" and "45 acp" are one calibre everywhere.
-    static func normalized(_ s: String) -> String { CaliberCatalog.normalizedAlias(s) }
 }
 
 @Model

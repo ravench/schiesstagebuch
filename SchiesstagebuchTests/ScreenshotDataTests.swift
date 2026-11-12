@@ -38,13 +38,13 @@ final class ScreenshotDataTests: ModelTestCase {
         }
     }
 
-    func testSeedReusesTheSeededCatalogue() throws {
-        CaliberCatalog.seedIfNeeded(context, always: true)
-        let before = try context.fetchCount(FetchDescriptor<Caliber>())
+    func testSeedReusesTheUsersCalibres() throws {
+        let nine = Caliber(name: "9 mm Para"); nine.catalogID = "9x19 mm"; context.insert(nine)
+        try context.save()
         ScreenshotData.seed(context)
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), before, "no second 9x19 next to the catalogue's")
+        XCTAssertEqual(try context.fetch(FetchDescriptor<Caliber>()).filter { $0.catalogID == "9x19 mm" }, [nine], "no second 9x19 next to the user's")
         let weapons = try context.fetch(FetchDescriptor<Weapon>())
-        XCTAssertEqual(Set(weapons.flatMap { $0.calibers.map(\.name) }), ["9x19 mm", "7.5x55 mm Swiss (GP 11)"])
+        XCTAssertEqual(Set(weapons.flatMap { $0.calibers.map(\.name) }), ["9 mm Para", "7.5x55 mm Swiss (GP 11)"])
     }
 
     func testSeedComparesLotsPerFirearmAndPosition() throws {

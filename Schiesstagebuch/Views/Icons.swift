@@ -16,6 +16,12 @@ struct CartridgeView: View {
         monochrome = false
     }
 
+    init(choice: CaliberChoice) {
+        catalogID = choice.catalogID
+        name = choice.name
+        monochrome = false
+    }
+
     /// A catalogue calibre without a record, e.g. as an icon.
     init(catalogID: String, monochrome: Bool = false) {
         self.catalogID = catalogID
