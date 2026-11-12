@@ -107,7 +107,7 @@ struct BarrelEditorView: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var allCalibers: [Caliber]
+    @Query(sort: \Caliber.name) private var allCalibers: [Caliber]
 
     @State private var name = ""
     @State private var serialNumber = ""
@@ -134,6 +134,7 @@ struct BarrelEditorView: View {
                     Button { choosingCalibers = true } label: {
                         LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
                     }
+                    .accessibilityIdentifier("chooseCalibers")
                     SelectedCaliberRows(selection: $calibers)
                 } footer: {
                     Text("Mindestens ein Kaliber, auch mehrere.")

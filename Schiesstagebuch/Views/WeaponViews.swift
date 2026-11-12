@@ -226,7 +226,7 @@ struct WeaponEditorView: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var allCalibers: [Caliber]
+    @Query(sort: \Caliber.name) private var allCalibers: [Caliber]
 
     @State private var name = ""
     @State private var manufacturer = ""
@@ -544,30 +544,36 @@ struct OptionalDateRow: View {
     }
 }
 
-/// Searchable, grouped multi-select over the calibre catalogue.
+/// Searchable, grouped multi-select over the user's calibres and the catalogue.
 struct CaliberMultiPicker: View {
+    /// The user's records, archived ones too: an archived record hides its catalogue entry.
     let all: [Caliber]
     @Binding var selection: Set<Caliber>
     /// Catalogue groups shown first (e.g. handgun calibres for a pistol).
     var preferred: [String] = []
+    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var search = ""
     @State private var adding = false
 
+    private var choices: [CaliberChoice] { CaliberChoice.all(all) }
+    private var selected: [CaliberChoice] { selection.map(CaliberChoice.init(record:)).sorted { $0.name < $1.name } }
+
     /// Calibres with the same measurements as a selected one (e.g. 7.62 NATO for .308 Win), not yet selected.
-    private var sameDimensions: [Caliber] {
-        var seen = Set<PersistentIdentifier>()
-        return selection.flatMap { $0.sameDimensions(in: all) }
-            .filter { !selection.contains($0) && seen.insert($0.persistentModelID).inserted }
+    private var sameDimensions: [CaliberChoice] {
+        var seen = Set<CaliberChoice>()
+        let selected = self.selected, choices = self.choices
+        return selected.flatMap { $0.sameDimensions(in: choices) }
+            .filter { !selected.contains($0) && seen.insert($0).inserted }
             .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 
-    private var groups: [(String, [Caliber])] {
-        let matches = all.filter { $0.matches(search) }
+    private var groups: [(String, [CaliberChoice])] {
+        let matches = choices.filter { $0.matches(search) }
         let order = preferred + CaliberCatalog.Category.allCases.map(\.rawValue).filter { !preferred.contains($0) }
         return Dictionary(grouping: matches) { $0.category.isEmpty ? CaliberCatalog.Category.other.rawValue : $0.category }
             .sorted { (order.firstIndex(of: $0.key) ?? 99) < (order.firstIndex(of: $1.key) ?? 99) }
-            .map { ($0.key, Caliber.keepingGroupsTogether($0.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending })) }
+            .map { ($0.key, CaliberChoice.keepingGroupsTogether($0.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending })) }
     }
 
     var body: some View {
@@ -575,7 +581,7 @@ struct CaliberMultiPicker: View {
             List {
                 if !selection.isEmpty && search.isEmpty {
                     Section("Ausgewählt") {
-                        ForEach(selection.sorted { $0.name < $1.name }) { row($0) }
+                        ForEach(selected) { row($0) }
                     }
                     if !sameDimensions.isEmpty {
                         Section {
@@ -606,23 +612,25 @@ struct CaliberMultiPicker: View {
         }
     }
 
-    private func row(_ c: Caliber) -> some View {
-        Button {
-            if selection.contains(c) { selection.remove(c) } else { selection.insert(c) }
+    private func row(_ c: CaliberChoice) -> some View {
+        let picked = c.record.map(selection.contains) ?? false
+        return Button {
+            // Picking a catalogue entry makes its record; a record left unused goes at the next start.
+            if picked, let r = c.record { selection.remove(r) } else { selection.insert(c.record(in: context)) }
         } label: {
             HStack {
-                CartridgeView(caliber: c).frame(width: 18, height: 30)
+                CartridgeView(choice: c).frame(width: 18, height: 30)
                 VStack(alignment: .leading) {
                     Text(c.name).foregroundStyle(.primary)
                     if !c.aliasSummary.isEmpty {
                         Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
                     }
-                    if let note = c.sameDimensionsNote(in: all) {
+                    if let note = c.sameDimensionsNote(in: choices) {
                         Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 Spacer()
-                if selection.contains(c) { Image(systemName: "checkmark").foregroundStyle(.tint) }
+                if picked { Image(systemName: "checkmark").foregroundStyle(.tint) }
             }
         }
     }

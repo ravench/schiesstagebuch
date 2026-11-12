@@ -231,28 +231,60 @@ struct CaliberListView: View {
             })
     }
 
+    /// The user's calibres and the catalogue, for the «same measurements» notes.
+    private var choices: [CaliberChoice] { CaliberChoice.all(calibers) }
+
+    /// The rest of the catalogue: a look at the cartridges, and the search finds them. No record
+    /// until the user picks one for a barrel, ammunition or entry.
+    private var catalogue: [CaliberChoice] {
+        CaliberChoice.keepingGroupsTogether(choices.filter { $0.record == nil && $0.matches(search) }
+            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending })
+    }
+
     var body: some View {
-        List(visible) { c in
-            NavigationLink { CaliberDetailView(caliber: c) } label: {
-                HStack {
-                    CartridgeView(caliber: c).frame(width: 20, height: 34)
-                    VStack(alignment: .leading) {
-                        Text(c.name).foregroundStyle(c.isArchived ? .secondary : .primary)
-                        if !c.aliasSummary.isEmpty {
-                            Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
+        List {
+            ForEach(visible) { c in
+                NavigationLink { CaliberDetailView(caliber: c) } label: {
+                    HStack {
+                        CartridgeView(caliber: c).frame(width: 20, height: 34)
+                        VStack(alignment: .leading) {
+                            Text(c.name).foregroundStyle(c.isArchived ? .secondary : .primary)
+                            if !c.aliasSummary.isEmpty {
+                                Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
+                            }
+                            if let note = CaliberChoice(record: c).sameDimensionsNote(in: choices) {
+                                Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
+                            }
+                            let weapons = c.weapons.map(\.name).sorted()
+                            if !weapons.isEmpty { Text(weapons.joined(separator: ", ")).font(.caption).foregroundStyle(.secondary) }
                         }
-                        if let note = c.sameDimensionsNote(in: calibers) {
-                            Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
-                        }
-                        let weapons = c.weapons.map(\.name).sorted()
-                        if !weapons.isEmpty { Text(weapons.joined(separator: ", ")).font(.caption).foregroundStyle(.secondary) }
+                        Spacer()
+                        let shots = (c.entries ?? []).totalShots
+                        if shots > 0 { Text(shots.formatted()).monospacedDigit().foregroundStyle(.secondary) }
                     }
-                    Spacer()
-                    let shots = (c.entries ?? []).totalShots
-                    if shots > 0 { Text(shots.formatted()).monospacedDigit().foregroundStyle(.secondary) }
                 }
+                .swipeActions { ArchiveButton(item: c) }
             }
-            .swipeActions { ArchiveButton(item: c) }
+            Section {
+                ForEach(catalogue) { c in
+                    HStack {
+                        CartridgeView(choice: c).frame(width: 20, height: 34)
+                        VStack(alignment: .leading) {
+                            Text(c.name)
+                            if !c.aliasSummary.isEmpty {
+                                Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
+                            }
+                            if let note = c.sameDimensionsNote(in: choices) {
+                                Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            } header: {
+                Text("Katalog")
+            } footer: {
+                Text("Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst.")
+            }
         }
         .searchable(text: $search, prompt: "Kaliber suchen")
         .navigationTitle("Kaliber (Mehrzahl)")
@@ -365,17 +397,20 @@ struct AmmunitionEditorView: View {
     var onCreate: ((Ammunition) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var calibers: [Caliber]
+    @Query(sort: \Caliber.name) private var calibers: [Caliber]
     @State private var name = ""
-    @State private var caliber: Caliber?
+    @State private var caliber: CaliberChoice?
     @State private var isArchived = false
     @State private var lots: [LotDraft] = []
     /// `onAppear` runs again when the Kaliber picker pops; loading then would drop every edit.
     @State private var didLoad = false
 
-    /// Calibres used by a weapon first, the rest of the catalogue below.
-    private var inUse: [Caliber] { Caliber.keepingGroupsTogether(calibers.filter { !$0.weapons.isEmpty }) }
-    private var others: [Caliber] { Caliber.keepingGroupsTogether(calibers.filter { $0.weapons.isEmpty }) }
+    /// Calibres used by a weapon first, the rest of the user's and the catalogue below.
+    private var choices: [CaliberChoice] {
+        CaliberChoice.all(calibers).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+    private var inUse: [CaliberChoice] { CaliberChoice.keepingGroupsTogether(choices.filter { !$0.weapons.isEmpty }) }
+    private var others: [CaliberChoice] { CaliberChoice.keepingGroupsTogether(choices.filter { $0.weapons.isEmpty }) }
 
     /// Lots in use (editable, with ✓ to mark one used up) and the used-up ones, which can be used again.
     @ViewBuilder private var lotSections: some View {
@@ -435,13 +470,13 @@ struct AmmunitionEditorView: View {
             Form {
                 TextField("Bezeichnung, z. B. GP 11 oder Geco FMJ 124gr", text: $name)
                 Picker("Kaliber", selection: $caliber) {
-                    Text("–").tag(Caliber?.none)
+                    Text("–").tag(CaliberChoice?.none)
                     if !inUse.isEmpty {
                         Section(term("Deine Waffen").loc) { ForEach(inUse) { Text($0.name).tag(Optional($0)) } }
                     }
                     Section("Alle") { ForEach(others) { Text($0.name).tag(Optional($0)) } }
                     // An archived calibre of an existing ammunition stays visible and selectable.
-                    if let caliber, !calibers.contains(caliber) { Text(caliber.name).tag(Optional(caliber)) }
+                    if let caliber, !choices.contains(caliber) { Text(caliber.name).tag(Optional(caliber)) }
                 }
                 .pickerStyle(.navigationLink)
                 lotSections
@@ -456,7 +491,7 @@ struct AmmunitionEditorView: View {
                     Button("Sichern") {
                         let target = ammunition ?? Ammunition(name: "")
                         target.name = name.trimmingCharacters(in: .whitespaces)
-                        target.caliber = caliber
+                        target.caliber = caliber?.record(in: context)
                         target.isArchived = isArchived
                         if ammunition == nil { context.insert(target); onCreate?(target) }
                         target.applyLotDrafts(lots, in: context)
@@ -470,7 +505,7 @@ struct AmmunitionEditorView: View {
                 guard !didLoad else { return }
                 didLoad = true
                 name = ammunition?.name ?? ""
-                caliber = ammunition?.caliber ?? suggestedCaliber
+                caliber = (ammunition?.caliber ?? suggestedCaliber).map(CaliberChoice.init(record:))
                 isArchived = ammunition?.isArchived ?? false
                 lots = ammunition?.lotDrafts() ?? []
             }

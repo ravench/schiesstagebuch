@@ -23,7 +23,7 @@ enum ScreenshotData {
         range.latitude = 46.956
         range.longitude = 7.497
         range.shootingBearing = 60
-        // Catalogue calibres show their cartridge drawing; a seeded catalogue already holds them.
+        // Catalogue calibres show their cartridge drawing.
         let gp11 = caliber("7.5x55 mm Swiss (GP 11)", in: context)
         let luger = caliber("9x19 mm", in: context)
         let rifle = Weapon(name: "Stgw 90")
@@ -75,7 +75,7 @@ enum ScreenshotData {
         try? context.save()
     }
 
-    /// The calibre with this catalogue id, inserted if the catalogue is not seeded.
+    /// The calibre with this catalogue id, inserted if the journal has no record of it.
     @MainActor
     private static func caliber(_ catalogID: String, in context: ModelContext) -> Caliber {
         let all = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []

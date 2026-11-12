@@ -158,6 +158,11 @@ T = {
     "Kaliber bearbeiten": ("Edit calibre", "Modifier le calibre", "Modifica calibro"),
     "Kaliber suchen": ("Search calibres", "Rechercher un calibre", "Cerca calibro"),
     "Kaliber wählen": ("Choose calibres", "Choisir les calibres", "Scegli i calibri"),
+    "Katalog": ("Catalogue", "Catalogue", "Catalogo"),
+    "Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst.": (
+        "A calibre from the catalogue joins your calibres as soon as you choose it for a barrel, an ammunition or an entry.",
+        "Un calibre du catalogue rejoint tes calibres dès que tu le choisis pour un canon, une munition ou une entrée.",
+        "Un calibro del catalogo si aggiunge ai tuoi calibri non appena lo scegli per una canna, una munizione o una voce."),
     "Historisches Ordonnanzgewehr": ("Historic service rifle", "Fusil d'ordonnance historique", "Fucile d'ordinanza storico"),
     "Kategorie": ("Category", "Catégorie", "Categoria"),
     "Kein Kaliber": ("No calibre", "Aucun calibre", "Nessun calibro"),
