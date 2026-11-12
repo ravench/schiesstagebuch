@@ -134,6 +134,7 @@ struct BarrelEditorView: View {
                     Button { choosingCalibers = true } label: {
                         LabeledContent("Kaliber", value: calibers.isEmpty ? "Wählen".loc : "\(calibers.count)")
                     }
+                    .accessibilityIdentifier("chooseCalibers")
                     SelectedCaliberRows(selection: $calibers)
                 } footer: {
                     Text("Mindestens ein Kaliber, auch mehrere.")

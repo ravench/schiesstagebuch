@@ -78,7 +78,7 @@ final class PRScreensTests: XCTestCase {
                 if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Kaliber")).firstMatch) {
                     snap("07b-Lauf-bearbeiten")
                     // The picker: the barrel's calibres on top, the user's and the catalogue below.
-                    if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Kaliber")).firstMatch) {
+                    if open(app.buttons["chooseCalibers"].firstMatch) {
                         snap("07bb-Kaliber-waehlen")
                         app.buttons["Fertig"].firstMatch.tap()
                     }
