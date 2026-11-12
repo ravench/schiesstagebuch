@@ -25,7 +25,9 @@ class PatchedBulletTests(unittest.TestCase):
         mouth = spec["oal"] - spec["case"]  # SVG y grows downwards from the tip
         ys = [float(p.split()[1]) for p in o["patch"].replace("Z", "").replace("M", "L").split("L") if p.strip()]
         self.assertAlmostEqual(max(ys), mouth, places=2)
-        self.assertLess(max(ys) - min(ys), mouth / 2, "most of the visible bullet is the steel cap")
+        # The army's 1892 drawing (calibre-data #113): 12.7 of the 23.7 mm out of the case are paper.
+        self.assertAlmostEqual(max(ys) - min(ys), 12.7, places=1)
+        self.assertLess(max(ys) - min(ys), mouth, "the capped nose shows")
 
     def test_profile_steps_in_where_the_paper_ends(self):
         spec = self.outline("7.5x53.5 mm Swiss (GP 1890)")[0]
@@ -38,9 +40,10 @@ class PatchedBulletTests(unittest.TestCase):
 
     def test_jacketed_bullets_have_no_patch(self):
         for name in ("7.5x55 mm Swiss (GP 11)", "9x19 mm"):
-            o = self.outline(name)[1]
-            self.assertNotIn("patch", o, name)
-            self.assertNotIn("bulletMaterial", o, name)
+            self.assertNotIn("patch", self.outline(name)[1], name)
+        self.assertNotIn("bulletMaterial", self.outline("9x19 mm")[1])
+        # calibre-data #115: the GP 11's first bullet had a cupronickel-plated steel jacket.
+        self.assertEqual(self.outline("7.5x55 mm Swiss (GP 11)")[1]["bulletMaterial"], "cupronickel")
 
     def test_original_bullets_and_cases(self):
         # Raven 2026-11-05: draw each calibre's original bullet and case (calibre-data #46).
@@ -61,7 +64,7 @@ class PatchedBulletTests(unittest.TestCase):
         self.assertLessEqual(materials, set(generate_assets.CASE_COLOURS))
         by_name = {c["name"]: c["outline"] for c in calibers}
         self.assertEqual(by_name[".45-70 Government"]["currentCaseMaterials"], ["brass"])
-        self.assertEqual(by_name["9x19 mm"]["currentCaseMaterials"], ["steel"])
+        self.assertEqual(by_name["9x19 mm"]["currentCaseMaterials"], ["steel", "aluminium"])
 
 
 class BlankTests(unittest.TestCase):
@@ -153,16 +156,44 @@ class CatalogueOnlyDataTests(unittest.TestCase):
     def test_catalogue_only_data_stays_out(self):
         """calibre-data eafed3b: the cannon rounds (Kanone), tip colours and fired-by lists are for the
         catalogue only; the app knows six categories and reads none of them."""
-        from cartridges import ALL_CATALOGUE, FIRED_BY, TIP_COLOURS
+        from cartridges import ALL_CATALOGUE, COLOUR_CODES, FIRED_BY
         calibers = generate_assets.build()[0]
         cannon = {s["name"] for cat, items in ALL_CATALOGUE if cat == "Kanone" for s in items}
         self.assertTrue(cannon)
         self.assertFalse(cannon & {c["name"] for c in calibers})
         self.assertEqual({c["category"] for c in calibers},
                          {"Randfeuer", "Kurzwaffe", "Langwaffe", "Schwarzpulver", "Flinte", "Luftdruck"})
-        self.assertTrue(TIP_COLOURS and FIRED_BY)
+        self.assertTrue(COLOUR_CODES and FIRED_BY)
         self.assertEqual(set().union(*calibers), {"id", "name", "category", "kind", "aliases", "displayAliases",
-                                                  "dimensionGroup", "outline"})
+                                                  "dimensionGroup", "outline", "obsolete", "rare"})
+
+    def test_obsolete_and_rare_are_flagged(self):
+        """calibre-data #114: `obsolete` and `rare` (cartridges.tags) go into the JSON so the app can keep
+        rare calibres behind the search; a current, common calibre has neither key."""
+        import cartridges
+        by_name = {c["name"]: c for c in generate_assets.build()[0]}
+        self.assertEqual({k for k in by_name["9x19 mm"] if k in ("obsolete", "rare")}, set())
+        self.assertEqual({n for n, c in by_name.items() if c.get("obsolete")}, cartridges.OBSOLETE & set(by_name))
+        self.assertEqual({n for n, c in by_name.items() if c.get("rare")}, cartridges.RARE & set(by_name))
+        self.assertTrue(cartridges.RARE & set(by_name), "the catalogue has rare calibres")
+
+    def test_bump_tool_regenerates_the_assets(self):
+        """tools/bump_data.py moves the submodule and runs the generators (ported from Kaliberfinder)."""
+        with open(os.path.join(ROOT, "tools", "bump_data.py")) as f:
+            source = f.read()
+        self.assertIn('("generate_assets.py", "localize.py")', source)
+        self.assertNotIn("fixture", source.lower().split("ported")[0].split("import")[0] + source.split('"""', 2)[2],
+                         "this repo has no catalogue fixture")
+
+    def test_ci_refuses_a_submodule_behind_main(self):
+        """A merge can keep a branch's older calibre-data pointer and so revert a bump once merged
+        (Kaliberfinder PR 188): the tools job checks the pointer against main's and regenerates."""
+        with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
+            tools_job = f.read().split("  tools:", 1)[1].split("  build:", 1)[0]
+        self.assertIn("merge-base --is-ancestor", tools_job)
+        self.assertIn("tools/bump_data.py", tools_job)
+        self.assertIn("python3 tools/generate_assets.py", tools_job)
+        self.assertIn("git diff --exit-code Schiesstagebuch/Resources", tools_job)
 
 
 if __name__ == "__main__":

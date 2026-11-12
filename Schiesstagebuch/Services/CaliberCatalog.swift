@@ -28,7 +28,8 @@ enum CaliberCatalog {
         let tipMaterial: String?
         /// "steel" for the steel head of a hybrid case (.277 SIG Fury); nil for brass.
         let headMaterial: String?
-        /// "steel" for a steel-capped nose, "lead" for a bare lead bullet; nil means a copper-coloured jacket.
+        /// "steel" for a steel-capped nose, "cupronickel" for a silver jacket, "lead" for a bare lead
+        /// bullet; nil means a copper-coloured jacket.
         let bulletMaterial: String?
         /// "copper", "steel" (lacquered), "nickel", "paper" or "hybrid" (brass body, steel head) where the case is not brass.
         let caseMaterial: String?
@@ -44,6 +45,10 @@ enum CaliberCatalog {
         let kind: String
         /// Shared by cartridges with identical measurements (e.g. .308 Win / 7.62 NATO); nil when alone.
         let dimensionGroup: String?
+        /// calibre-data: no longer in regular factory production (surplus, boutique loads, reloading).
+        let obsolete: Bool?
+        /// calibre-data: unlikely to be found; the pickers keep it behind the search.
+        let rare: Bool?
         let outline: Outline
     }
 
