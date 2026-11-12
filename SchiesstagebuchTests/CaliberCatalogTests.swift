@@ -86,6 +86,17 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CaliberCatalog.removeUnused(context), 1)
     }
 
+    func testRareCatalogueEntriesHideUntilTheUserHasThem() throws {
+        // Raven 2026-11-12: calibre-data's rare calibres stay behind the search; a record always shows.
+        let choices = CaliberChoice.all([])
+        let snider = try XCTUnwrap(choices.first { $0.catalogID == ".577 Snider" })
+        XCTAssertTrue(snider.hidden)
+        XCTAssertFalse(try XCTUnwrap(choices.first { $0.catalogID == "9x19 mm" }).hidden)
+        XCTAssertLessThan(choices.filter { !$0.hidden }.count, choices.count)
+        let owned = snider.record(in: context)
+        XCTAssertFalse(CaliberChoice(record: owned).hidden)
+    }
+
     func testChoicesKnowTwinsAndSearchNames() throws {
         let choices = CaliberChoice.all([])
         let win = try XCTUnwrap(choices.first { $0.catalogID == ".308 Winchester" })

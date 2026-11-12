@@ -234,10 +234,10 @@ struct CaliberListView: View {
     /// The user's calibres and the catalogue, for the «same measurements» notes.
     private var choices: [CaliberChoice] { CaliberChoice.all(calibers) }
 
-    /// The rest of the catalogue: a look at the cartridges, and the search finds them. No record
-    /// until the user picks one for a barrel, ammunition or entry.
+    /// The rest of the catalogue: a look at the cartridges, and the search finds them, the rare ones
+    /// only then. No record until the user picks one for a barrel, ammunition or entry.
     private var catalogue: [CaliberChoice] {
-        CaliberChoice.keepingGroupsTogether(choices.filter { $0.record == nil && $0.matches(search) }
+        CaliberChoice.keepingGroupsTogether(choices.filter { $0.record == nil && $0.matches(search) && (!search.isEmpty || !$0.hidden) }
             .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending })
     }
 
@@ -283,7 +283,7 @@ struct CaliberListView: View {
             } header: {
                 Text("Katalog")
             } footer: {
-                Text("Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst.")
+                Text("Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst. Seltene Kaliber zeigt erst die Suche.")
             }
         }
         .searchable(text: $search, prompt: "Kaliber suchen")
@@ -405,9 +405,10 @@ struct AmmunitionEditorView: View {
     /// `onAppear` runs again when the Kaliber picker pops; loading then would drop every edit.
     @State private var didLoad = false
 
-    /// Calibres used by a weapon first, the rest of the user's and the catalogue below.
+    /// Calibres used by a weapon first, the rest of the user's and the catalogue below; no search
+    /// here, so the rare catalogue entries stay out (a record of one shows).
     private var choices: [CaliberChoice] {
-        CaliberChoice.all(calibers).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        CaliberChoice.all(calibers).filter { !$0.hidden }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
     private var inUse: [CaliberChoice] { CaliberChoice.keepingGroupsTogether(choices.filter { !$0.weapons.isEmpty }) }
     private var others: [CaliberChoice] { CaliberChoice.keepingGroupsTogether(choices.filter { $0.weapons.isEmpty }) }

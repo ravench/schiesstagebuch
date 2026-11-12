@@ -2853,25 +2853,25 @@
         }
       }
     },
-    "Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst.": {
+    "Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst. Seltene Kaliber zeigt erst die Suche.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A calibre from the catalogue joins your calibres as soon as you choose it for a barrel, an ammunition or an entry."
+            "value": "A calibre from the catalogue joins your calibres as soon as you choose it for a barrel, an ammunition or an entry. Rare calibres appear only in the search."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un calibre du catalogue rejoint tes calibres dès que tu le choisis pour un canon, une munition ou une entrée."
+            "value": "Un calibre du catalogue rejoint tes calibres dès que tu le choisis pour un canon, une munition ou une entrée. Les calibres rares n'apparaissent que dans la recherche."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un calibro del catalogo si aggiunge ai tuoi calibri non appena lo scegli per una canna, una munizione o una voce."
+            "value": "Un calibro del catalogo si aggiunge ai tuoi calibri non appena lo scegli per una canna, una munizione o una voce. I calibri rari compaiono solo nella ricerca."
           }
         }
       }

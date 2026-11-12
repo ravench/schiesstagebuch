@@ -48,7 +48,7 @@ enum CaliberCatalog {
         let dimensionGroup: String?
         /// calibre-data: no longer in regular factory production (surplus, boutique loads, reloading).
         let obsolete: Bool?
-        /// calibre-data: unlikely to be found; the pickers keep it behind the search.
+        /// calibre-data: unlikely to be found; the pickers keep it behind the search (Raven, 2026-11-12).
         let rare: Bool?
         let outline: Outline
     }
@@ -202,6 +202,10 @@ struct CaliberChoice: CaliberLike, Identifiable {
 
     /// Firearms with a barrel for this calibre.
     var weapons: [Weapon] { record?.weapons ?? [] }
+
+    /// A catalogue entry calibre-data marks rare, without a record: the pickers and the Kaliber list
+    /// show it only when the search has text (Raven, 2026-11-12). The user's records always show.
+    var hidden: Bool { record == nil && CaliberCatalog.item(id: catalogID)?.rare == true }
 
     /// The record, made and inserted now for a catalogue entry: the user picked it.
     @MainActor
