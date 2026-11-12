@@ -40,7 +40,7 @@ struct SchiesstagebuchApp: App {
             RootView()
                 .environment(\.term, Terms(sportsEquipment: sportsEquipment))
                 .task {
-                    CaliberCatalog.seedIfNeeded(container.mainContext)
+                    CaliberCatalog.removeUnused(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
                     if WeatherRecord.moveToStiche(in: container.mainContext) { try? container.mainContext.save() }

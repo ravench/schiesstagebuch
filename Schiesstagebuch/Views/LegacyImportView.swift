@@ -7,7 +7,7 @@ struct LegacyImportView: View {
     @Environment(\.term) private var term
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Query(filter: #Predicate<Caliber> { !$0.isArchived }, sort: \Caliber.name) private var calibers: [Caliber]
+    @Query(sort: \Caliber.name) private var calibers: [Caliber]
 
     /// Not opened automatically: presenting the picker while the sheet animates in
     /// made it reopen the same folder instead of entering it.
@@ -19,6 +19,9 @@ struct LegacyImportView: View {
     @State private var running = false
     @State private var summary: LegacyImport.Summary?
     @State private var error: String?
+
+    /// The user's calibres and the catalogue; a catalogue calibre gets its record on import.
+    private var choices: [CaliberChoice] { CaliberChoice.all(calibers) }
 
     private static let types: [UTType] = [.tabSeparatedText, .plainText, .commaSeparatedText, .database]
         + [UTType(filenameExtension: "db"), UTType(filenameExtension: "tsv")].compactMap { $0 }
@@ -78,9 +81,9 @@ struct LegacyImportView: View {
                                 get: { self.plan?.ammoCaliber[ammo] ?? "" },
                                 set: { self.plan?.ammoCaliber[ammo] = $0.isEmpty ? nil : $0 })) {
                                 Text("Kein Kaliber").tag("")
-                                ForEach(calibers) { Text($0.name).tag($0.name) }
-                                // A catalogue calibre the user does not have: created on import.
-                                if let planned = self.plan?.ammoCaliber[ammo], !calibers.contains(where: { $0.name == planned }) {
+                                ForEach(choices) { Text($0.name).tag($0.name) }
+                                // A calibre the user deleted since the plan was made: created again on import.
+                                if let planned = self.plan?.ammoCaliber[ammo], !choices.contains(where: { $0.name == planned }) {
                                     Text(planned).tag(planned)
                                 }
                             }
