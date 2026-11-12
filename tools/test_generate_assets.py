@@ -109,9 +109,22 @@ class DimensionGroupTests(unittest.TestCase):
 
     def test_different_cartridges_are_not_grouped(self):
         groups = generate_assets.dimension_groups()
-        self.assertNotIn("9x19 mm", groups)
         self.assertNotIn(".38 Special", groups, "a .357 chamber takes .38 Spl, but the cases differ")
+        self.assertNotIn(".45 ACP", groups, "its lookalikes differ by rim and length (.45 Auto Rim, .45 HP)")
         self.assertNotEqual(groups[".308 Winchester"], groups[".223 Remington"])
+
+    def test_groups_are_the_lookalikes_that_differ_only_by_load(self):
+        """calibre-data's lookalike groups (lookalikes.toml) replace the identical-measurement test:
+        a group that differs only by `load` is one chamber with a caution; any other difference
+        (rim, bore, length, seating, ignition) is another cartridge."""
+        from cartridges import LOOKALIKES
+        groups = generate_assets.dimension_groups()
+        self.assertEqual(groups["9x19 mm"], groups["9 mm Glisenti"], "the same case, a weaker load")
+        self.assertEqual(groups["9x19 mm"], "9x19 mm", "the parent names the group")
+        self.assertNotIn("7.5 mm Kadettenpatrone", groups, "its group with the GP 1890 differs by length too")
+        self.assertNotIn(".22 LR", groups, "the .21 Sharp differs by bore")
+        expected = {n for differ, names in LOOKALIKES if tuple(differ) == ("load",) for n in names}
+        self.assertEqual(set(groups), expected)
 
     def test_rimfire_and_centrefire_versions_are_not_grouped(self):
         """calibre-data f049201: the Vetterli is rimfire and its centrefire version a calibre of its own,

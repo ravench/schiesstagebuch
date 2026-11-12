@@ -98,8 +98,8 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(win.sameDimensions(in: all), [nato])
         XCTAssertEqual(nato.sameDimensions(in: all), [win])
         XCTAssertTrue(rem.sameDimensions(in: all).isEmpty, "5.56 / GP 90 are not in this list")
-        XCTAssertNil(para.dimensionGroup)
-        XCTAssertTrue(para.sameDimensions(in: all).isEmpty)
+        XCTAssertEqual(para.dimensionGroup, "9x19 mm", "one chamber with the 9 mm Glisenti (calibre-data's lookalikes)")
+        XCTAssertTrue(para.sameDimensions(in: all).isEmpty, "the Glisenti is not in this list")
     }
 
     func testCalibresWithIdenticalMeasurementsAreListedTogetherButStaySeparate() throws {
