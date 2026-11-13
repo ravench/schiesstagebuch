@@ -405,13 +405,24 @@ struct AmmunitionEditorView: View {
     /// `onAppear` runs again when the Kaliber picker pops; loading then would drop every edit.
     @State private var didLoad = false
 
-    /// Calibres used by a weapon first, the rest of the user's and the catalogue below; no search
-    /// here, so the rare catalogue entries stay out (a record of one shows).
     private var choices: [CaliberChoice] {
-        CaliberChoice.all(calibers).filter { !$0.hidden }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        CaliberChoice.all(calibers).sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
     private var inUse: [CaliberChoice] { CaliberChoice.keepingGroupsTogether(choices.filter { !$0.weapons.isEmpty }) }
     private var others: [CaliberChoice] { CaliberChoice.keepingGroupsTogether(choices.filter { $0.weapons.isEmpty }) }
+
+    /// Calibres used by a weapon first, the rest of the user's and the catalogue below; the rare
+    /// catalogue entries show once the search has text.
+    private var caliberChoices: [PickerChoice<CaliberChoice?>] {
+        func choice(_ c: CaliberChoice, _ section: String?) -> PickerChoice<CaliberChoice?> {
+            PickerChoice(value: c, title: c.name, subtitle: c.aliasSummary.isEmpty ? nil : c.aliasSummary,
+                         section: section, searchOnly: c.hidden && c != caliber, matches: c.matches)
+        }
+        // An archived calibre of an existing ammunition stays visible and selectable.
+        let archived = caliber.map { choices.contains($0) ? [] : [$0] } ?? []
+        return [PickerChoice(value: nil, title: "–")] + inUse.map { choice($0, term("Deine Waffen").loc) }
+            + others.map { choice($0, "Alle".loc) } + archived.map { choice($0, nil) }
+    }
 
     /// Lots in use (editable, with ✓ to mark one used up) and the used-up ones, which can be used again.
     @ViewBuilder private var lotSections: some View {
@@ -470,16 +481,7 @@ struct AmmunitionEditorView: View {
         NavigationStack {
             Form {
                 TextField("Bezeichnung, z. B. GP 11 oder Geco FMJ 124gr", text: $name)
-                Picker("Kaliber", selection: $caliber) {
-                    Text("–").tag(CaliberChoice?.none)
-                    if !inUse.isEmpty {
-                        Section(term("Deine Waffen").loc) { ForEach(inUse) { Text($0.name).tag(Optional($0)) } }
-                    }
-                    Section("Alle") { ForEach(others) { Text($0.name).tag(Optional($0)) } }
-                    // An archived calibre of an existing ammunition stays visible and selectable.
-                    if let caliber, !choices.contains(caliber) { Text(caliber.name).tag(Optional(caliber)) }
-                }
-                .pickerStyle(.navigationLink)
+                SearchablePicker(title: "Kaliber".loc, selection: $caliber, choices: caliberChoices)
                 lotSections
                 if ammunition != nil { Toggle("Archiviert", isOn: $isArchived) }
             }

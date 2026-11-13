@@ -14,6 +14,10 @@ struct EntryListView: View {
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @State private var rangeFilter: ShootingRange?
     @State private var yearFilter: Int?
+    /// The filter whose choices are open under a search field: a menu has none.
+    @State private var searching: FilterField?
+
+    private enum FilterField: Identifiable { case weapon, range, year; var id: Self { self } }
     @State private var showingNewEvent = false
     /// The event just recorded: the journal opens it once its sheet is down, for the first Stich.
     @State private var created: ShootingEvent?
@@ -87,6 +91,18 @@ struct EntryListView: View {
             })
             .navigationDestination(for: Entry.self) { EntryDetailView(entry: $0) }
             .navigationDestination(for: ShootingEvent.self) { EventDetailView(event: $0) }
+            .sheet(item: $searching) { field in
+                NavigationStack {
+                    Group {
+                        switch field {
+                        case .weapon: SearchablePickerList(title: term("Waffe").loc, selection: $weaponFilter, choices: weaponChoices)
+                        case .range: SearchablePickerList(title: "Schiessanlage".loc, selection: $rangeFilter, choices: rangeChoices)
+                        case .year: SearchablePickerList(title: "Jahr".loc, selection: $yearFilter, choices: yearChoices)
+                        }
+                    }
+                    .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { searching = nil } } }
+                }
+            }
         }
     }
 
@@ -125,22 +141,33 @@ struct EntryListView: View {
         .listStyle(.insetGrouped)
     }
 
+    private var weaponChoices: [PickerChoice<Weapon?>] {
+        PickerChoice.optional(weapons, none: term("Alle Waffen").loc, title: \.name, subtitle: { $0.pickerSerial(show: showSerial) })
+    }
+    private var rangeChoices: [PickerChoice<ShootingRange?>] { PickerChoice.optional(ranges, none: "Alle Anlagen".loc, title: \.name) }
+    private var yearChoices: [PickerChoice<Int?>] { PickerChoice.optional(years, none: "Alle Jahre".loc, title: { String($0) }) }
+
+    /// The choices in the menu; more than ten become one row that opens them under a search field.
+    @ViewBuilder
+    private func filterPicker<V: Hashable>(_ title: String, _ field: FilterField, selection: Binding<V>,
+                                           choices: [PickerChoice<V>]) -> some View {
+        if choices.count > PickerSearch.limit {
+            Button { searching = field } label: {
+                Text(title)
+                Text(choices.first { $0.value == selection.wrappedValue }?.title ?? "")
+            }
+        } else {
+            Picker(title, selection: selection) {
+                ForEach(choices) { PickerOption(title: $0.title, subtitle: $0.subtitle).tag($0.value) }
+            }
+        }
+    }
+
     private var filterMenu: some View {
         Menu {
-            Picker(term("Waffe").loc, selection: $weaponFilter) {
-                Text(term("Alle Waffen").loc).tag(Weapon?.none)
-                ForEach(weapons) { w in
-                    PickerOption(title: w.name, subtitle: w.pickerSerial(show: showSerial)).tag(Optional(w))
-                }
-            }
-            Picker("Schiessanlage", selection: $rangeFilter) {
-                Text("Alle Anlagen").tag(ShootingRange?.none)
-                ForEach(ranges) { Text($0.name).tag(Optional($0)) }
-            }
-            Picker("Jahr", selection: $yearFilter) {
-                Text("Alle Jahre").tag(Int?.none)
-                ForEach(years, id: \.self) { Text(String($0)).tag(Optional($0)) }
-            }
+            filterPicker(term("Waffe").loc, .weapon, selection: $weaponFilter, choices: weaponChoices)
+            filterPicker("Schiessanlage".loc, .range, selection: $rangeFilter, choices: rangeChoices)
+            filterPicker("Jahr".loc, .year, selection: $yearFilter, choices: yearChoices)
             if isFiltering {
                 Button("Filter zurücksetzen", role: .destructive) {
                     weaponFilter = nil; rangeFilter = nil; yearFilter = nil

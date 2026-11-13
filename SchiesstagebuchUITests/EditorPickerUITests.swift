@@ -61,7 +61,10 @@ final class EditorPickerUITests: XCTestCase {
         name.typeText("Testmunition")
         app.cells.containing(.staticText, identifier: "Kaliber").firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Kaliber"].waitForExistence(timeout: 5), "The calibre list did not open")
-        app.buttons["7.5x55 mm Swiss (GP 11)"].firstMatch.tap() // the sample data's rifle calibre
+        // The sample data's rifle calibre; the row's label goes on with the calibre's other names.
+        let calibre = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "7.5x55 mm Swiss (GP 11)")).firstMatch
+        XCTAssertTrue(calibre.waitForExistence(timeout: 5), "The calibre is not in the list")
+        calibre.tap()
 
         XCTAssertTrue(app.navigationBars["Neue Munition"].waitForExistence(timeout: 5), "Picking a calibre closed the editor")
         XCTAssertEqual(app.textFields.firstMatch.value as? String, "Testmunition", "Picking a calibre dropped the name")

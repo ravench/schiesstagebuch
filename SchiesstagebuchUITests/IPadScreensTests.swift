@@ -41,6 +41,8 @@ final class IPadScreensTests: XCTestCase {
             return
         }
         row.tap()
+        // The tap is sometimes lost on the CI runner: the entry page has «Bearbeiten», the list has not.
+        if !app.buttons["Bearbeiten"].firstMatch.waitForExistence(timeout: 3) { row.tap() }
         snap("\(name)-1b-Eintrag")
     }
 

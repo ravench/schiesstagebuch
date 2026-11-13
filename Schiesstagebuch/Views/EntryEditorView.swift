@@ -156,26 +156,18 @@ struct EntryEditorView: View {
                     pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
                     if barrelChoices.count > 1 {
-                        Picker("Lauf", selection: $barrel) {
-                            ForEach(barrelChoices) { Text($0.displayName).tag(Optional($0)) }
-                            if let barrel, !barrelChoices.contains(barrel) { Text(barrel.displayName).tag(Optional(barrel)) }
-                        }
+                        SearchablePicker(title: "Lauf".loc, selection: $barrel,
+                                         choices: PickerChoice.optional(barrelChoices, keeping: barrel, none: nil, title: \.displayName))
                     }
                     if caliberChoices.count > 1 {
-                        Picker("Kaliber", selection: $caliber) {
-                            ForEach(caliberChoices) { Text($0.name).tag(Optional($0)) }
-                        }
+                        SearchablePicker(title: "Kaliber".loc, selection: $caliber,
+                                         choices: PickerChoice.optional(caliberChoices, none: nil, title: \.name))
                     }
                     pickerRow("Munition", selection: $ammunition, items: fittingAmmunition,
                               label: \.displayName, add: .ammunition)
                     if let ammunition, !ammunition.sortedLots().isEmpty || lot != nil {
-                        Picker("Los", selection: $lot) {
-                            Text("–").tag(AmmoLot?.none)
-                            ForEach(ammunition.sortedLots()) { Text($0.number).tag(Optional($0)) }
-                            if let lot, !ammunition.sortedLots().contains(lot) {
-                                Text(lot.number).tag(Optional(lot))
-                            }
-                        }
+                        SearchablePicker(title: "Los".loc, selection: $lot,
+                                         choices: PickerChoice.optional(ammunition.sortedLots(), keeping: lot, title: \.number))
                     }
                     if scoring != .ipsc { positionPicker }
                 } footer: {
@@ -402,23 +394,28 @@ struct EntryEditorView: View {
         if barrel == nil { caliber = nil }
     }
 
+    /// A menu ending with «… hinzufügen»; with more than ten choices a page with a search field instead.
+    @ViewBuilder
     private func pickerRow<T: PersistentModel>(_ title: String, selection: Binding<T?>, items: [T],
                                                label: KeyPath<T, String>, add: QuickAdd,
                                                subtitle: @escaping (T) -> String? = { _ in nil }) -> some View {
-        PickerValueRow(title: title.loc, value: selection.wrappedValue?[keyPath: label],
-                       addTitle: add == .weapon ? term("Waffe hinzufügen").loc : "Munition hinzufügen".loc,
-                       add: { quickAdd = add }, options: {
-            Picker(title.loc, selection: selection) {
-                Text("–").tag(T?.none)
-                ForEach(items) { item in
-                    PickerOption(title: item[keyPath: label], subtitle: subtitle(item)).tag(Optional(item))
-                }
-                // Keep an archived / non-matching selection visible when editing old entries.
-                if let current = selection.wrappedValue, !items.contains(current) {
-                    Text(current[keyPath: label]).tag(Optional(current))
-                }
+        let value = selection.wrappedValue?[keyPath: label]
+        let addTitle = add == .weapon ? term("Waffe hinzufügen").loc : "Munition hinzufügen".loc
+        // Keeps an archived / non-matching selection visible when editing old entries.
+        let choices = PickerChoice.optional(items, keeping: selection.wrappedValue, title: { $0[keyPath: label] }, subtitle: subtitle)
+        if choices.count > PickerSearch.limit {
+            NavigationLink {
+                SearchablePickerList(title: title.loc, selection: selection, choices: choices, add: (addTitle, { quickAdd = add }))
+            } label: {
+                LabeledContent(title.loc) { Text(PickerValueLabel.text(value)).lineLimit(1) }
             }
-        })
+        } else {
+            PickerValueRow(title: title.loc, value: value, addTitle: addTitle, add: { quickAdd = add }, options: {
+                Picker(title.loc, selection: selection) {
+                    ForEach(choices) { PickerOption(title: $0.title, subtitle: $0.subtitle).tag($0.value) }
+                }
+            })
+        }
     }
 
     private var enteredPasseTotals: [PasseTotal] { passeTotals.map(\.total).normalized }
