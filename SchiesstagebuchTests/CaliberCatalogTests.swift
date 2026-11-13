@@ -86,6 +86,17 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CaliberCatalog.removeUnused(context), 1)
     }
 
+    func testRareCatalogueEntriesHideUntilTheUserHasThem() throws {
+        // Raven 2026-11-12: calibre-data's rare calibres stay behind the search; a record always shows.
+        let choices = CaliberChoice.all([])
+        let snider = try XCTUnwrap(choices.first { $0.catalogID == ".577 Snider" })
+        XCTAssertTrue(snider.hidden)
+        XCTAssertFalse(try XCTUnwrap(choices.first { $0.catalogID == "9x19 mm" }).hidden)
+        XCTAssertLessThan(choices.filter { !$0.hidden }.count, choices.count)
+        let owned = snider.record(in: context)
+        XCTAssertFalse(CaliberChoice(record: owned).hidden)
+    }
+
     func testChoicesKnowTwinsAndSearchNames() throws {
         let choices = CaliberChoice.all([])
         let win = try XCTUnwrap(choices.first { $0.catalogID == ".308 Winchester" })
@@ -124,10 +135,12 @@ final class CaliberCatalogTests: ModelTestCase {
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
         XCTAssertEqual(gp1890.name, "7.5x53.5 mm Swiss (GP 1890)")
         XCTAssertEqual(gp1890.category, CaliberCatalog.Category.rifle.rawValue)
-        XCTAssertEqual(gp1890.displayAliases, ["GP 1890", "GP 90/23"])
-        for text in ["GP1890", "GP 90/23", "7,5 mm GP 90", "7.5mm GP90", "Patrone 1890", "gp 90/03", "7,5x53,5", "7.5×53.5 mm"] {
+        XCTAssertEqual(gp1890.displayAliases, ["GP 1890", "GP 90/03"])
+        for text in ["GP1890", "GP 90/03", "7,5 mm GP 90", "7.5mm GP90", "Patrone 1890", "Gewehrpatrone 1890", "7,5x53,5", "7.5×53.5 mm"] {
             XCTAssertEqual(CaliberCatalog.match(text)?.id, gp1890.id, text)
         }
+        // calibre-data #97: the 1923 round on its 54.6 mm case is a calibre of its own.
+        XCTAssertEqual(CaliberCatalog.match("GP 90/23")?.name, "7.5x54.5 mm Swiss (GP 90/23)")
         XCTAssertNotNil(gp1890.outline.case)
         XCTAssertNotNil(gp1890.outline.bullet)
     }
@@ -140,10 +153,13 @@ final class CaliberCatalogTests: ModelTestCase {
         let band = SVGPath.parse(patch).boundingRect
         let bullet = SVGPath.parse(bulletPath).boundingRect
         XCTAssertEqual(band.maxY, bullet.maxY, accuracy: 0.01, "the paper starts at the case mouth")
-        XCTAssertLessThan(band.height, bullet.height / 2, "most of the visible bullet is the steel cap")
+        // The army's 1892 drawing (calibre-data #113): 12.7 of the 23.7 mm out of the case are paper, the rest the cap.
+        XCTAssertEqual(band.height, 12.7, accuracy: 0.05, "the paper reaches the nose")
+        XCTAssertLessThan(band.height, bullet.height, "the capped nose shows")
         let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11"))
         XCTAssertNil(gp11.outline.patch)
-        XCTAssertNil(gp11.outline.bulletMaterial)
+        XCTAssertEqual(gp11.outline.bulletMaterial, "cupronickel", "a cupronickel-plated steel jacket (calibre-data #115)")
+        XCTAssertEqual(CartridgeView.bulletFill("cupronickel"), .nickel)
     }
 
     func testOriginalBulletsAndCasesAreDrawn() throws {
@@ -246,16 +262,16 @@ final class CaliberCatalogTests: ModelTestCase {
             XCTAssertEqual(CaliberCatalog.match(text)?.id, kp.id, text)
         }
         XCTAssertEqual(kp.displayAliases, ["Cart. 7,5 mm cadets", "Cart. 7,5 mm cadetti"])
+        // calibre-data #97: the 1964 Kadettenpatrone sits on the 54.6 mm case of the GP 90/23, so the
+        // two are one chamber; the GP 1890's 53.5 mm case (Raven's 1906 round, Poyer) is its own.
+        let gp9023 = try XCTUnwrap(CaliberCatalog.item(id: "7.5x54.5 mm Swiss (GP 90/23)"))
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
-        XCTAssertEqual(gp1890.name, "7.5x53.5 mm Swiss (GP 1890)")
-        // calibre-data #57: both are drawn on the 54.6 mm case Raven measured (the Kadettengewehr is
-        // sighted for both), so they are offered as one chamber; the bullets still tell them apart.
         XCTAssertNotNil(kp.dimensionGroup)
-        XCTAssertEqual(kp.dimensionGroup, gp1890.dimensionGroup)
+        XCTAssertEqual(kp.dimensionGroup, gp9023.dimensionGroup)
+        XCTAssertNil(gp1890.dimensionGroup)
         XCTAssertNotNil(kp.outline.bullet)
-        XCTAssertNotEqual(kp.outline.bullet, gp1890.outline.bullet)
         XCTAssertEqual(CaliberCatalog.items.filter { $0.dimensionGroup == kp.dimensionGroup }.map(\.id).sorted(),
-                       [kp.id, gp1890.id].sorted(), "no third calibre in that chamber")
+                       [kp.id, gp9023.id].sorted(), "no third calibre in that chamber")
     }
 
     func testFortyFiveSuperIsANameOfTheFortyFiveACP() {

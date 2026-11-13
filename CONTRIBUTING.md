@@ -14,8 +14,8 @@ See the [README](README.md#building). In short: `brew install xcodegen`,
   `tools/translations.py`, then run `python3 tools/localize.py`. A text that says
   «Waffe» also needs its «Sportgerät» variant (see the [README](README.md#languages)).
 - New calibres go into [calibre-data](https://github.com/ravench/calibre-data) (a submodule
-  here), icons into `tools/weapon_icons.py`; bump the submodule, run
-  `python3 tools/generate_assets.py` and commit the generated JSON.
+  here), icons into `tools/weapon_icons.py`; `python3 tools/bump_data.py` moves the submodule
+  to calibre-data's main and regenerates the JSON and strings, which you commit.
 - Every change comes with unit tests; CI runs them and SwiftLint on every push.
 - Keep pull requests small and focused, and describe what you changed and how you tested it.
 - A pull request that changes the GUI shows screenshots. CI comments with the screens that

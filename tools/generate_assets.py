@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 # The calibre catalogue and the outline drawing live in the calibre-data submodule
 # (github.com/ravench/calibre-data), shared with Kaliberfinder and the calibre poster.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "calibre-data"))
-from cartridges import CATALOGUE, DISPLAY_ALIASES, PRIMERS, RIMFIRE, BALL, MINIE, PELLET  # noqa: E402
+from cartridges import CATALOGUE, DISPLAY_ALIASES, PRIMERS, RIMFIRE, BALL, MINIE, PELLET, tags  # noqa: E402
 from outline import outline, bullet_profile  # noqa: E402
 from weapon_icons import ICONS  # noqa: E402
 
@@ -52,6 +52,10 @@ def build():
                     "kind": s["kind"], "outline": outline(s)}
             if s["name"] in groups:
                 item["dimensionGroup"] = groups[s["name"]]
+            # calibre-data's status: no longer in regular production, or unlikely to be found. The
+            # app keeps rare calibres behind the search; absent means current and common.
+            for tag in tags(s["name"]):
+                item[tag] = True
             calibers.append(item)
     names = {c["name"] for c in calibers}
     unknown = set(DISPLAY_ALIASES) - names
@@ -79,7 +83,7 @@ def preview(calibers, icons, path):
         if "head" in o:
             parts += f'<path d="{o["head"]}" fill="{"#a7adb4" if o.get("headMaterial") == "steel" else "#e3c16f"}" stroke="#333" stroke-width="0.25"/>'
         if "bullet" in o:
-            fill = {"steel": "#a7adb4", "plastic": "#edede6", "lead": "#8a8c91"}.get(o.get("bulletMaterial"), "#b87333" if "case" in o else "#8a8c91")
+            fill = {"steel": "#a7adb4", "cupronickel": "#c8cbce", "plastic": "#edede6", "lead": "#8a8c91"}.get(o.get("bulletMaterial"), "#b87333" if "case" in o else "#8a8c91")
             parts += f'<path d="{o["bullet"]}" fill="{fill}" stroke="#333" stroke-width="0.25"/>'
         if "patch" in o:
             parts += f'<path d="{o["patch"]}" fill="#f2ede0" stroke="#333" stroke-width="0.25"/>'

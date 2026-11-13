@@ -54,6 +54,7 @@ struct CartridgeView: View {
     static func bulletFill(_ material: String?, hasCase: Bool = true) -> Color {
         switch material {
         case "steel": .steel
+        case "cupronickel": .nickel  // the silver jackets of early service rounds (calibre-data #115)
         case "plastic": .plastic
         case "lead": .lead
         default: hasCase ? .copper : .lead

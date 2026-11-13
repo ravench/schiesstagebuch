@@ -569,7 +569,7 @@ struct CaliberMultiPicker: View {
     }
 
     private var groups: [(String, [CaliberChoice])] {
-        let matches = choices.filter { $0.matches(search) }
+        let matches = choices.filter { $0.matches(search) && (!search.isEmpty || !$0.hidden) }
         let order = preferred + CaliberCatalog.Category.allCases.map(\.rawValue).filter { !preferred.contains($0) }
         return Dictionary(grouping: matches) { $0.category.isEmpty ? CaliberCatalog.Category.other.rawValue : $0.category }
             .sorted { (order.firstIndex(of: $0.key) ?? 99) < (order.firstIndex(of: $1.key) ?? 99) }

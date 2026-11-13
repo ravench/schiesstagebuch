@@ -20,8 +20,9 @@ struct LegacyImportView: View {
     @State private var summary: LegacyImport.Summary?
     @State private var error: String?
 
-    /// The user's calibres and the catalogue; a catalogue calibre gets its record on import.
-    private var choices: [CaliberChoice] { CaliberChoice.all(calibers) }
+    /// The user's calibres and the catalogue without its rare entries (no search here); a catalogue
+    /// calibre gets its record on import. A planned rare one is listed below the choices.
+    private var choices: [CaliberChoice] { CaliberChoice.all(calibers).filter { !$0.hidden } }
 
     private static let types: [UTType] = [.tabSeparatedText, .plainText, .commaSeparatedText, .database]
         + [UTType(filenameExtension: "db"), UTType(filenameExtension: "tsv")].compactMap { $0 }

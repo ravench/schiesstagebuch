@@ -29,7 +29,8 @@ enum CaliberCatalog {
         let tipMaterial: String?
         /// "steel" for the steel head of a hybrid case (.277 SIG Fury); nil for brass.
         let headMaterial: String?
-        /// "steel" for a steel-capped nose, "lead" for a bare lead bullet; nil means a copper-coloured jacket.
+        /// "steel" for a steel-capped nose, "cupronickel" for a silver jacket, "lead" for a bare lead
+        /// bullet; nil means a copper-coloured jacket.
         let bulletMaterial: String?
         /// "copper", "steel" (lacquered), "nickel", "paper" or "hybrid" (brass body, steel head) where the case is not brass.
         let caseMaterial: String?
@@ -45,6 +46,10 @@ enum CaliberCatalog {
         let kind: String
         /// Shared by cartridges with identical measurements (e.g. .308 Win / 7.62 NATO); nil when alone.
         let dimensionGroup: String?
+        /// calibre-data: no longer in regular factory production (surplus, boutique loads, reloading).
+        let obsolete: Bool?
+        /// calibre-data: unlikely to be found; the pickers keep it behind the search (Raven, 2026-11-12).
+        let rare: Bool?
         let outline: Outline
     }
 
@@ -197,6 +202,10 @@ struct CaliberChoice: CaliberLike, Identifiable {
 
     /// Firearms with a barrel for this calibre.
     var weapons: [Weapon] { record?.weapons ?? [] }
+
+    /// A catalogue entry calibre-data marks rare, without a record: the pickers and the Kaliber list
+    /// show it only when the search has text (Raven, 2026-11-12). The user's records always show.
+    var hidden: Bool { record == nil && CaliberCatalog.item(id: catalogID)?.rare == true }
 
     /// The record, made and inserted now for a catalogue entry: the user picked it.
     @MainActor
