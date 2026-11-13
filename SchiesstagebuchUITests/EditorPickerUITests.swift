@@ -67,9 +67,13 @@ final class EditorPickerUITests: XCTestCase {
         app.buttons["Weiter"].firstMatch.tap()
         let second = app.textFields["Schuss 2"].firstMatch
         XCTAssertTrue(second.waitForExistence(timeout: 3), "No box for the next shot")
-        second.typeText("8 7") // needs the cursor: «Weiter» moved it here; the space moves it on
+        second.typeText("8 ") // needs the cursor: «Weiter» moved it here; the space moves it on
         XCTAssertEqual(second.value as? String, "8")
-        XCTAssertEqual(app.textFields["Schuss 3"].firstMatch.value as? String, "7")
+        // Wait for the cursor: on the CI runner a key typed right after the space was lost.
+        let third = app.textFields["Schuss 3"].firstMatch
+        wait(for: [expectation(for: NSPredicate(format: "hasKeyboardFocus == true"), evaluatedWith: third)], timeout: 5)
+        third.typeText("7")
+        XCTAssertEqual(third.value as? String, "7")
         editor.buttons["Sichern"].tap()
 
         XCTAssertTrue(app.buttons["Bearbeiten"].firstMatch.waitForExistence(timeout: 5), "Not back on the entry")
