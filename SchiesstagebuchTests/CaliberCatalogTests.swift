@@ -101,6 +101,9 @@ final class CaliberCatalogTests: ModelTestCase {
         let choices = CaliberChoice.all([])
         let win = try XCTUnwrap(choices.first { $0.catalogID == ".308 Winchester" })
         XCTAssertTrue(win.sameDimensions(in: choices).contains { $0.catalogID == "7.62x51 mm NATO" })
+        // calibre-data's lookalike groups that differ only by load (lookalikes.toml): one chamber.
+        let nine = try XCTUnwrap(choices.first { $0.catalogID == "9x19 mm" })
+        XCTAssertEqual(nine.sameDimensions(in: choices).map(\.catalogID), ["9 mm Glisenti"])
         XCTAssertEqual(CaliberChoice.keepingGroupsTogether(choices.sorted { $0.name < $1.name }).count, choices.count)
         XCTAssertTrue(choices.filter { $0.matches("K31") }.contains { $0.catalogID == "7.5x55 mm Swiss (GP 11)" })
     }
@@ -262,16 +265,14 @@ final class CaliberCatalogTests: ModelTestCase {
             XCTAssertEqual(CaliberCatalog.match(text)?.id, kp.id, text)
         }
         XCTAssertEqual(kp.displayAliases, ["Cart. 7,5 mm cadets", "Cart. 7,5 mm cadetti"])
-        // calibre-data #97: the 1964 Kadettenpatrone sits on the 54.6 mm case of the GP 90/23, so the
-        // two are one chamber; the GP 1890's 53.5 mm case (Raven's 1906 round, Poyer) is its own.
+        // calibre-data #97 puts it in one lookalike group with the GP 1890 and the GP 90/23, which
+        // differs by length too, so the app offers none of the three as one chamber.
         let gp9023 = try XCTUnwrap(CaliberCatalog.item(id: "7.5x54.5 mm Swiss (GP 90/23)"))
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
-        XCTAssertNotNil(kp.dimensionGroup)
-        XCTAssertEqual(kp.dimensionGroup, gp9023.dimensionGroup)
+        XCTAssertNil(kp.dimensionGroup)
+        XCTAssertNil(gp9023.dimensionGroup)
         XCTAssertNil(gp1890.dimensionGroup)
         XCTAssertNotNil(kp.outline.bullet)
-        XCTAssertEqual(CaliberCatalog.items.filter { $0.dimensionGroup == kp.dimensionGroup }.map(\.id).sorted(),
-                       [kp.id, gp9023.id].sorted(), "no third calibre in that chamber")
     }
 
     func testFortyFiveSuperIsANameOfTheFortyFiveACP() {

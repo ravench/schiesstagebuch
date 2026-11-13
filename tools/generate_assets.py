@@ -13,18 +13,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 # The calibre catalogue and the outline drawing live in the calibre-data submodule
 # (github.com/ravench/calibre-data), shared with Kaliberfinder and the calibre poster.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "calibre-data"))
-from cartridges import CATALOGUE, DISPLAY_ALIASES, PRIMERS, RIMFIRE, BALL, MINIE, PELLET, tags  # noqa: E402
+from cartridges import CATALOGUE, DISPLAY_ALIASES, LOOKALIKES, PRIMERS, RIMFIRE, BALL, MINIE, PELLET, tags  # noqa: E402
 from outline import outline, bullet_profile  # noqa: E402
 from weapon_icons import ICONS  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "Schiesstagebuch", "Resources")
 DATA = os.path.join(ROOT, "calibre-data")
-
-# Measurements that define the chamber. Cartridges that agree on all of them fit the same
-# barrel (e.g. .308 Win / 7.62 NATO), so the app suggests the others when one is picked.
-CHAMBER_KEYS = ("kind", "rim", "base", "shoulder", "neck", "case", "sh_at", "bullet")
-
 
 def calibre_data():
     """The calibre-data commit the catalogue is read from and its date, shown in the app's settings."""
@@ -34,12 +29,12 @@ def calibre_data():
 
 
 def dimension_groups():
-    """Calibre name -> group id (first name of the group) for cartridges with identical measurements."""
-    groups = {}
-    for _, items in CATALOGUE:
-        for s in items:
-            groups.setdefault(tuple(s[k] for k in CHAMBER_KEYS), []).append(s["name"])
-    return {name: names[0] for names in groups.values() if len(names) > 1 for name in names}
+    """Calibre name -> group id (the parent, first in its group) for calibre-data's lookalike groups
+    whose cases share one design and differ only by load (.308 Win / 7.62 NATO, 9x19 / Glisenti):
+    one chamber, where the maker's data says what a barrel may fire, so the app suggests the others
+    when one is picked. Groups that differ by rim, bore, length, seating or ignition are other
+    cartridges and stay apart."""
+    return {name: names[0] for differ, names in LOOKALIKES if tuple(differ) == ("load",) for name in names}
 
 
 def build():
