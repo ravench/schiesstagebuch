@@ -38,15 +38,12 @@ struct SightSection: View {
     private func filterPicker(_ title: String, index: Int) -> some View {
         let selected = index == 0 ? sight.filter : sight.secondFilter
         let visible = FilterCatalog(data: catalogData).visible
-        return Picker(title.loc, selection: Binding(get: { selected }, set: { sight.setFilter($0, at: index) })) {
-            Label { Text("Kein Filter") } icon: { FilterSwatch(name: "") }.tag("")
-            ForEach(visible, id: \.name) { f in
-                Label { Text(f.name) } icon: { FilterSwatch(filter: f) }.tag(f.name)
-            }
-            // Keep the entry's filter selectable even if it is hidden or was removed in Settings.
-            if !selected.isEmpty, !visible.contains(where: { $0.name == selected }) {
-                Label { Text(selected) } icon: { FilterSwatch(name: selected) }.tag(selected)
-            }
+        // Keeps the entry's filter selectable even if it is hidden or was removed in Settings.
+        let names = visible.map(\.name) + (selected.isEmpty || visible.contains { $0.name == selected } ? [] : [selected])
+        let choices = [PickerChoice(value: "", title: "Kein Filter".loc)] + names.map { PickerChoice(value: $0, title: $0) }
+        return SearchablePicker(title: title.loc, selection: Binding(get: { selected }, set: { sight.setFilter($0, at: index) }),
+                                choices: choices) { c in
+            Label { Text(c.title) } icon: { FilterSwatch(name: c.value) }
         }
         .pickerStyle(.navigationLink)
     }

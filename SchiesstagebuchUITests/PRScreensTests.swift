@@ -109,17 +109,28 @@ final class PRScreensTests: XCTestCase {
             }
             back()
         }
-        // The GP 11 lots, split by firearm and position.
-        if open(app.staticTexts["Munition"].firstMatch) {
-            if open(app.staticTexts["GP 11"].firstMatch) {
-                stop("12-Munition-Resultat-pro-Los", chart: "Resultat pro Los")
-                back()
-            }
-            back()
-        }
+        ammunitionStops()
         scroll()
         snap("09-Einstellungen-unten")
         filterStops()
+    }
+
+    /// The GP 11 lots, split by firearm and position, and the calibre of the cartridge: more than ten to
+    /// pick from, so a page with a search field instead of a menu.
+    private func ammunitionStops() {
+        guard open(app.staticTexts["Munition"].firstMatch) else { return }
+        if open(app.staticTexts["GP 11"].firstMatch) {
+            stop("12-Munition-Resultat-pro-Los", chart: "Resultat pro Los")
+            if open(app.buttons["Bearbeiten"].firstMatch) {
+                if open(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Kaliber")).firstMatch) {
+                    snap("12a-Munition-Kaliber-suchen")
+                    back()
+                }
+                app.buttons["Abbrechen"].firstMatch.tap()
+            }
+            back()
+        }
+        back()
     }
 
     /// «Zusätzliche Felder» with one «Filter» row, and the filter page it opens: the switch
