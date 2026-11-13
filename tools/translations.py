@@ -532,6 +532,7 @@ T = {
     "Kniend": ("Kneeling", "À genou", "In ginocchio"),
     "Stehend": ("Standing", "Debout", "In piedi"),
     "Aufgelegt": ("Rested", "Appuyé", "Appoggiato"),
+    "Weiter": ("Next", "Suivant", "Avanti"),
     "Weiteren Stich hinzufügen": ("Add another match", "Ajouter une autre cible", "Aggiungi un altro bersaglio"),
     "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
     "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": (

@@ -63,6 +63,21 @@ final class ShotBoxesTests: XCTestCase {
         XCTAssertEqual(boxes.values, ["10", "8", ""])
     }
 
+    func testOnlyNumbersGoIntoABox() {
+        var boxes = ShotBoxes(text: "")
+        XCTAssertNil(boxes.set("T", at: 0))
+        XCTAssertEqual(boxes.values, [""], "a letter is not a shot")
+        XCTAssertNil(boxes.set("9x", at: 0))
+        XCTAssertNil(boxes.set("9,5,", at: 0))
+        XCTAssertEqual(boxes.values, ["9,5", ""], "one decimal separator only")
+        XCTAssertEqual(boxes.set("Test 10.4 Shot 8 ", at: 1), 3)
+        XCTAssertEqual(boxes.text, "9,5 10.4 8")
+    }
+
+    func testLoadingDropsWhatIsNotANumber() {
+        XCTAssertEqual(ShotBoxes(text: "10 Test 9").values, ["10", "9", ""])
+    }
+
     func testOutOfRangeIndexIsIgnored() {
         var boxes = ShotBoxes(text: "10")
         XCTAssertNil(boxes.set("9", at: 5))

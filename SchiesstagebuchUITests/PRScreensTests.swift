@@ -54,6 +54,7 @@ final class PRScreensTests: XCTestCase {
                 positionStop()
                 scroll()
                 snap("04-Neuer-Stich-unten")
+                shotsStop()
                 app.buttons["Abbrechen"].firstMatch.tap()
             } else {
                 XCTFail("The new Anlass did not open")
@@ -297,6 +298,20 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
+    /// Einzelschüsse in the Stich editor: the Probeschüsse and the first Passe, the number pad with «Weiter» above it.
+    private func shotsStop() {
+        let shots = app.buttons["Einzelschüsse"].firstMatch
+        reveal(shots, up: false)
+        shots.tap()
+        let shot = app.textFields["Schuss 1"].firstMatch
+        guard shot.waitForExistence(timeout: 3) else {
+            XCTFail("No shot boxes after switching to Einzelschüsse")
+            return
+        }
+        shot.tap()
+        snap("04b-Einzelschuesse")
+    }
+
     private func stop(_ name: String, chart title: String) {
         topStop(app.staticTexts[title].firstMatch, name)
     }
