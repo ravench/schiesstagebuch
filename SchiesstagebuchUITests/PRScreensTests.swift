@@ -435,6 +435,8 @@ final class PRScreensTests: XCTestCase {
     /// The shooting position menu; a new entry with the Stgw 90 starts on «Liegend».
     private func positionStop() {
         let picker = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Stellung")).firstMatch
+        // The firearm menu is still closing on a slow runner: scrolling for the row then pushed it under the bar.
+        _ = picker.wait(for: \.isHittable, toEqual: true, timeout: 3)
         reveal(picker)
         if open(picker) {
             snap("03c-Stellung-Auswahl")

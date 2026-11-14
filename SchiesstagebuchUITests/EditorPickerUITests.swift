@@ -62,7 +62,9 @@ final class EditorPickerUITests: XCTestCase {
         let first = app.textFields["Schuss 1"].firstMatch
         XCTAssertTrue(scroll(to: first), "No shot box after switching")
         first.tap()
-        first.typeText("T9x")
+        // The letter on its own: the box drops it by resetting its text, and that reset also lost a key typed in the same instant.
+        first.typeText("T")
+        first.typeText("9x")
         XCTAssertEqual(first.value as? String, "9", "Only the number stays in the box")
         app.buttons["Weiter"].firstMatch.tap()
         let second = app.textFields["Schuss 2"].firstMatch
