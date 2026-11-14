@@ -83,10 +83,11 @@ struct RootView: View {
             WeaponsTab()
                 .tabItem { Label(term("Waffen").loc, systemImage: "scope") }
                 .badge(dueCount)
-            // The licence card gets its own tab once one has been entered (Einstellungen › SSV-Lizenz).
+            // The card gets its own tab once one has been entered, to show at the range; entering and
+            // editing it stays in Einstellungen › SSV-Lizenzkarte (Raven 2026-11-14).
             if LicenceCard.hasCard(licenceCards) {
-                NavigationStack { LicenceCardScreen() }
-                    .tabItem { Label("SSV-Lizenz", systemImage: "person.text.rectangle") }
+                NavigationStack { LicenceCardScreen(editable: false) }
+                    .tabItem { Label("Lizenzkarte", systemImage: "person.text.rectangle") }
             }
             SettingsView()
                 .tabItem { Label("Einstellungen", systemImage: "gearshape") }

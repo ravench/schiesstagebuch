@@ -39,7 +39,8 @@ T = {
     "Lizenz-Nr.": ("Licence no.", "N° de licence", "N. licenza"),
     "Lizenznummer": ("Licence number", "Numéro de licence", "Numero di licenza"),
     "SIUS-Barcode": ("SIUS barcode", "Code-barres SIUS", "Codice a barre SIUS"),
-    "SSV-Lizenz": ("SSV licence", "Licence FST", "Licenza FST"),
+    "SSV-Lizenzkarte": ("SSV licence card", "Carte de licence FST", "Tessera di licenza FST"),
+    "Lizenzkarte": ("Licence card", "Carte de licence", "Tessera di licenza"),
     "Tippe auf einen Barcode, um ihn gross und hell anzuzeigen.": (
         "Tap a barcode to show it large and bright.",
         "Touche un code-barres pour l'afficher en grand et en clair.",

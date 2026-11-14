@@ -11,8 +11,11 @@ enum LicenceCardStyle {
     static let aspectRatio: CGFloat = 85.6 / 53.98
 }
 
-/// Settings › SSV-Lizenz: the card on a red background, with both barcodes.
+/// The card on a red background, with both barcodes. From Einstellungen › SSV-Lizenzkarte it is
+/// entered and edited (`editable`); the tab «Lizenzkarte» only shows it.
 struct LicenceCardScreen: View {
+    /// Whether the screen offers «Lizenz erfassen» and «Bearbeiten»; false in the tab.
+    var editable = true
     @Query(sort: \LicenceCard.updatedAt, order: .reverse) private var cards: [LicenceCard]
     @State private var editing = false
     @State private var zoomed: LicenceBarcode?
@@ -41,14 +44,14 @@ struct LicenceCardScreen: View {
                 } description: {
                     Text("Erfasse deine SSV-Lizenz, um sie am Stand vorzuzeigen.")
                 } actions: {
-                    Button("Lizenz erfassen") { editing = true }.buttonStyle(.borderedProminent)
+                    if editable { Button("Lizenz erfassen") { editing = true }.buttonStyle(.borderedProminent) }
                 }
             }
         }
-        .navigationTitle("SSV-Lizenz")
+        .navigationTitle(editable ? "SSV-Lizenzkarte".loc : "Lizenzkarte".loc)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if !cards.isEmpty { Button("Bearbeiten") { editing = true } }
+            if editable, !cards.isEmpty { Button("Bearbeiten") { editing = true } }
         }
         .sheet(isPresented: $editing) { LicenceCardEditor(card: cards.first) }
     }
@@ -246,7 +249,7 @@ struct LicenceCardEditor: View {
                 }
             }
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
-            .navigationTitle("SSV-Lizenz")
+            .navigationTitle("SSV-Lizenzkarte")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
