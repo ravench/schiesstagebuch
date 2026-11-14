@@ -213,7 +213,13 @@ enum Backup {
         // A seeded calibre renamed on this device still is the backup's by its catalogue id.
         let calibersByCatalog = Dictionary(calibers.values.filter { !$0.catalogID.isEmpty }.map { ($0.catalogID, $0) }, uniquingKeysWith: { a, _ in a })
         var caliberMap: [UUID: Caliber] = [:]
-        for d in dtos {
+        for var d in dtos {
+            // An older backup can name a catalogue entry by an id calibre-data has since renamed.
+            if let old = d.catalogID {
+                let new = CaliberCatalog.currentID(old)
+                if d.name == old { d.name = new }
+                d.catalogID = new
+            }
             let key = Caliber.normalized(d.name)
             let byCatalog = d.catalogID.flatMap { $0.isEmpty ? nil : calibersByCatalog[$0] }
             if let c = calibers[d.id] ?? byCatalog ?? calibersByName[key] { caliberMap[d.id] = c; continue }
