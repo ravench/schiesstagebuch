@@ -323,14 +323,9 @@ final class PRScreensTests: XCTestCase {
         snap("04b-Einzelschuesse")
         // A shot in the first Passe: the result below is its sum and no longer a field.
         let passe = app.textFields.matching(identifier: "Schuss 1").element(boundBy: 1)
-        // On the CI runner the cursor was not in the box yet when the typing started.
-        let focused = NSPredicate(format: "hasKeyboardFocus == true")
-        for _ in 0..<3 {
-            passe.tap()
-            // A new expectation each time: one can only be waited on once.
-            let cursor = XCTNSPredicateExpectation(predicate: focused, object: passe)
-            if XCTWaiter().wait(for: [cursor], timeout: 3) == .completed { break }
-        }
+        // The number pad of the Probeschuss covers half of the Passe's box: on the CI runner a tap on it got no cursor.
+        app.buttons["Fertig"].firstMatch.tap()
+        passe.tap()
         passe.typeText("9")
         app.buttons["Fertig"].firstMatch.tap()
         reveal(app.staticTexts["Max. Punkte"].firstMatch)
