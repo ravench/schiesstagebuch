@@ -6223,6 +6223,29 @@
         }
       }
     },
+    "Lizenzkarte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licence card"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carte de licence"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tessera di licenza"
+          }
+        }
+      }
+    },
     "Lizenznummer": {
       "extractionState": "manual",
       "localizations": {
@@ -9489,25 +9512,25 @@
         }
       }
     },
-    "SSV-Lizenz": {
+    "SSV-Lizenzkarte": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "SSV licence"
+            "value": "SSV licence card"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licence FST"
+            "value": "Carte de licence FST"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licenza FST"
+            "value": "Tessera di licenza FST"
           }
         }
       }

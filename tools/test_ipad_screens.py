@@ -134,7 +134,7 @@ class WorkflowTests(unittest.TestCase):
         listed = re.search(r"static let tabs = \[([^\]]*)\]", self.uitest).group(1)
         # The licence tab only appears once a card is entered; the sample data has none.
         for tab in tabs:
-            if tab != "SSV-Lizenz":
+            if tab != "Lizenzkarte":
                 self.assertIn(f'"{tab}"', listed)
 
 

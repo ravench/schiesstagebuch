@@ -301,6 +301,13 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered.
+    func testLicenceCard() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["SSV-Lizenzkarte"].firstMatch) else { return }
+        snap("18-SSV-Lizenzkarte-leer")
+    }
+
     /// Starts the app again with `arguments` on top of the usual ones.
     private func relaunch(adding arguments: [String]) {
         app.terminate()

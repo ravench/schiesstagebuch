@@ -69,9 +69,9 @@ match (Stich).
 - **Swiss shooting ranges**: on first launch the app offers to fill the shooting range
   list with all Swiss ranges, with place, altitude, distances and shooting direction
   (data: © swisstopo). See [Shooting range catalogue](#shooting-range-catalogue).
-- **SSV licence** (SSV-Lizenz): enter the licence number to show the card with its
-  barcodes at the range; it gets its own tab once entered. The card's credit card
-  data is never stored.
+- **SSV licence card** (Einstellungen › SSV-Lizenzkarte): enter the licence number to show
+  the card with its barcodes at the range; once entered it gets its own tab «Lizenzkarte»,
+  while editing stays in Settings. The card's credit card data is never stored.
 - **Data** (Daten): JSON backup with photos (restore merges, no duplicates), CSV export
   for Excel. Backup copies are kept in the app's folder, visible in the Files app.
 - **Import** from «Schusszähler-Schiesstagebuch» by carusoNET: its

@@ -21,7 +21,6 @@ struct SettingsView: View {
     @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
     @AppStorage(ScoringSystem.enabledKey) private var scoringSystems = ""
-    @Query private var licenceCards: [LicenceCard]
 
     var body: some View {
         NavigationStack {
@@ -38,10 +37,10 @@ struct SettingsView: View {
                     Text("Stammdaten")
                 }
 
-                // Once a card is entered it has its own tab (RootView); this row would show it twice.
-                if !LicenceCard.hasCard(licenceCards) {
-                    Section {
-                        NavigationLink { LicenceCardScreen() } label: { Label("SSV-Lizenz", systemImage: "person.text.rectangle") }
+                // Entering and editing the card happens here only; the tab (RootView) just shows it.
+                Section {
+                    NavigationLink { LicenceCardScreen(editable: true) } label: {
+                        Label("SSV-Lizenzkarte", systemImage: "person.text.rectangle")
                     }
                 }
 
