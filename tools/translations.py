@@ -256,6 +256,8 @@ T = {
     "Schiessanlage suchen": ("Search ranges", "Rechercher un stand de tir", "Cerca poligono"),
     "Schiessanlage hinzufügen": ("Add range", "Ajouter un stand de tir", "Aggiungi poligono"),
     "Keine passende Schiessanlage": ("No matching range", "Aucun stand de tir correspondant", "Nessun poligono corrispondente"),
+    "Keine Treffer": ("No matches", "Aucun résultat", "Nessun risultato"),
+    "Suchen": ("Search", "Rechercher", "Cerca"),
     "Suche löschen": ("Clear search", "Effacer la recherche", "Cancella ricerca"),
     "Ordonnanzgewehr": ("Service rifle", "Fusil d'ordonnance", "Fucile d'ordinanza"),
     "Tagebuch": ("Log", "Journal", "Diario"),

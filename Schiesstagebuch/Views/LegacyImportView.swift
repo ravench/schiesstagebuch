@@ -20,9 +20,19 @@ struct LegacyImportView: View {
     @State private var summary: LegacyImport.Summary?
     @State private var error: String?
 
-    /// The user's calibres and the catalogue without its rare entries (no search here); a catalogue
-    /// calibre gets its record on import. A planned rare one is listed below the choices.
-    private var choices: [CaliberChoice] { CaliberChoice.all(calibers).filter { !$0.hidden } }
+    /// The user's calibres and the catalogue; a catalogue calibre gets its record on import.
+    private var choices: [CaliberChoice] { CaliberChoice.all(calibers) }
+
+    /// The rare catalogue entries show once the search has text.
+    private func caliberChoices(planned: String?) -> [PickerChoice<String>] {
+        let known = choices.map {
+            PickerChoice(value: $0.name, title: $0.name, subtitle: $0.aliasSummary.isEmpty ? nil : $0.aliasSummary,
+                         searchOnly: $0.hidden && $0.name != planned, matches: $0.matches)
+        }
+        // A calibre the user deleted since the plan was made: created again on import.
+        let gone = planned.map { p in choices.contains { $0.name == p } ? [] : [PickerChoice(value: p, title: p)] } ?? []
+        return [PickerChoice(value: "", title: "Kein Kaliber".loc)] + known + gone
+    }
 
     private static let types: [UTType] = [.tabSeparatedText, .plainText, .commaSeparatedText, .database]
         + [UTType(filenameExtension: "db"), UTType(filenameExtension: "tsv")].compactMap { $0 }
@@ -78,16 +88,10 @@ struct LegacyImportView: View {
                     }
                     Section {
                         ForEach(ammoKeys(plan), id: \.self) { ammo in
-                            Picker(ammo, selection: Binding(
+                            SearchablePicker(title: ammo, selection: Binding(
                                 get: { self.plan?.ammoCaliber[ammo] ?? "" },
-                                set: { self.plan?.ammoCaliber[ammo] = $0.isEmpty ? nil : $0 })) {
-                                Text("Kein Kaliber").tag("")
-                                ForEach(choices) { Text($0.name).tag($0.name) }
-                                // A calibre the user deleted since the plan was made: created again on import.
-                                if let planned = self.plan?.ammoCaliber[ammo], !choices.contains(where: { $0.name == planned }) {
-                                    Text(planned).tag(planned)
-                                }
-                            }
+                                set: { self.plan?.ammoCaliber[ammo] = $0.isEmpty ? nil : $0 }),
+                                             choices: caliberChoices(planned: self.plan?.ammoCaliber[ammo]))
                         }
                     } header: {
                         Text("Munition → Kaliber")
