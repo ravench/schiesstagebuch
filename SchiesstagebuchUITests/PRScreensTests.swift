@@ -298,7 +298,8 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
-    /// Einzelschüsse in the Stich editor: the Probeschüsse and the first Passe, the number pad with «Weiter» above it.
+    /// Einzelschüsse in the Stich editor: the Probeschüsse and the first Passe, the number pad with «Weiter» above it;
+    /// then the result below a shot.
     private func shotsStop() {
         let shots = app.buttons["Einzelschüsse"].firstMatch
         reveal(shots, up: false)
@@ -310,6 +311,13 @@ final class PRScreensTests: XCTestCase {
         }
         shot.tap()
         snap("04b-Einzelschuesse")
+        // A shot in the first Passe: the result below is its sum and no longer a field.
+        let passe = app.textFields.matching(identifier: "Schuss 1").element(boundBy: 1)
+        passe.tap()
+        passe.typeText("9")
+        app.buttons["Fertig"].firstMatch.tap()
+        reveal(app.staticTexts["Max. Punkte"].firstMatch)
+        snap("04c-Einzelschuesse-Resultat")
     }
 
     private func stop(_ name: String, chart title: String) {

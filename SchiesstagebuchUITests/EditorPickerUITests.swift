@@ -82,6 +82,31 @@ final class EditorPickerUITests: XCTestCase {
         XCTAssertTrue(scroll(to: app.staticTexts["Passe 1"].firstMatch), "No first Passe beside the Probeschüsse")
     }
 
+    /// The result sits below the shots and is a field only while no shots add up to it (tester feedback 2026-11-13).
+    func testResultIsTheSumOfTheShots() {
+        let entry = app.staticTexts["Feldschiessen"].firstMatch
+        XCTAssertTrue(entry.waitForExistence(timeout: 10))
+        entry.tap()
+        let editor = app.navigationBars["Eintrag bearbeiten"]
+        app.buttons["Bearbeiten"].firstMatch.tap()
+        XCTAssertTrue(editor.waitForExistence(timeout: 5))
+        let shots = app.buttons["Einzelschüsse"].firstMatch
+        XCTAssertTrue(scroll(to: shots), "No «Einzelschüsse» segment")
+        shots.tap()
+        let result = app.textFields["Resultat"].firstMatch
+        XCTAssertTrue(scroll(to: result), "Without shots the result is typed")
+        // The second «Schuss 1» is the first Passe's; the first is a Probeschuss.
+        let shot = app.textFields.matching(identifier: "Schuss 1").element(boundBy: 1)
+        XCTAssertTrue(shot.exists, "No box in the first Passe")
+        shot.tap()
+        shot.typeText("9")
+        app.buttons["Fertig"].firstMatch.tap()
+        XCTAssertTrue(scroll(to: app.staticTexts["Max. Punkte"].firstMatch), "No result rows below the shots")
+        XCTAssertFalse(result.exists, "With shots the result is their sum, not a field")
+        editor.buttons["Sichern"].tap()
+        XCTAssertTrue(app.staticTexts["9"].firstMatch.waitForExistence(timeout: 5), "The entry does not show the sum as its result")
+    }
+
     func testNewAmmunitionKeepsItsNameAfterPickingACalibre() {
         let settings = app.tabBars.buttons["Einstellungen"]
         XCTAssertTrue(settings.waitForExistence(timeout: 10))

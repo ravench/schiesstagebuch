@@ -118,6 +118,14 @@ final class ScoreTests: XCTestCase {
         XCTAssertEqual(Score.joinPasses([" 10 9 ", "  ", "8"]), "10 9\n8")
     }
 
+    /// The editor shows this sum as the result and lets the user type one only when it is nil.
+    func testSummedResultAddsTheShotsOfAllPassen() {
+        XCTAssertEqual(Score.summedResult(passes: ["10 9", "", "8"]), "27")
+        XCTAssertEqual(Score.summedResult(passes: ["10,5", "9.5"]), "20")
+        XCTAssertNil(Score.summedResult(passes: ["", "  "]), "no shots: nothing to add up")
+        XCTAssertNil(Score.summedResult(passes: []))
+    }
+
     func testResultOverMaximumIsFlaggedAndLeftOut() {
         let over = score("90/75")
         XCTAssertTrue(over.exceedsMax, "90 of 75 points would be 120 %")
