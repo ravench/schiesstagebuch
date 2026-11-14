@@ -26,6 +26,33 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CaliberCatalog.removeUnused(context), 0, "idempotent")
     }
 
+    // MARK: Renamed catalogue entries
+
+    private let renamed = ["Old name": "New name"]
+
+    func testARecordFollowsItsRenamedEntry() throws {
+        let c = Caliber(name: "Old name", category: "Langwaffe"); c.catalogID = "Old name"; context.insert(c)
+        let mine = Caliber(name: "Meine GP", category: "Langwaffe"); mine.catalogID = "Old name"; context.insert(mine)
+        try context.save()
+        XCTAssertEqual(CaliberCatalog.followRenames(context, renamed: renamed, inCatalogue: { $0 == "New name" }), 2)
+        XCTAssertEqual([c.catalogID, c.name], ["New name", "New name"])
+        XCTAssertEqual([mine.catalogID, mine.name], ["New name", "Meine GP"], "the user's own name stays")
+        XCTAssertEqual(CaliberCatalog.followRenames(context, renamed: renamed, inCatalogue: { $0 == "New name" }), 0, "idempotent")
+    }
+
+    func testNothingMovesBeforeTheCatalogueHasTheNewName() throws {
+        let c = Caliber(name: "Old name", category: "Langwaffe"); c.catalogID = "Old name"; context.insert(c)
+        try context.save()
+        XCTAssertEqual(CaliberCatalog.followRenames(context, renamed: renamed, inCatalogue: { $0 == "Old name" }), 0)
+        XCTAssertEqual(c.catalogID, "Old name")
+    }
+
+    func testEveryRenameLeadsToOneEntry() {
+        for (old, new) in CaliberCatalog.renamedIDs {
+            XCTAssertTrue(CaliberCatalog.item(id: old) != nil || CaliberCatalog.item(id: new) != nil, "\(old) → \(new)")
+        }
+    }
+
     func testRecordsInUseStay() throws {
         let forBarrel = catalogCaliber(nineMM, createdAt: day(1))
         let forAmmo = catalogCaliber(try XCTUnwrap(CaliberCatalog.match("GP 11")).id, createdAt: day(1))

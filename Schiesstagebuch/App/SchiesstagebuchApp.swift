@@ -40,6 +40,7 @@ struct SchiesstagebuchApp: App {
             RootView()
                 .environment(\.term, Terms(sportsEquipment: sportsEquipment))
                 .task {
+                    CaliberCatalog.followRenames(container.mainContext)
                     CaliberCatalog.removeUnused(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
@@ -48,6 +49,7 @@ struct SchiesstagebuchApp: App {
                 }
                 // Core Data posts this from a background queue; mainContext must only be used on the main thread.
                 .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: RunLoop.main)) { _ in
+                    CaliberCatalog.followRenames(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
                     if WeatherRecord.moveToStiche(in: container.mainContext) { try? container.mainContext.save() }

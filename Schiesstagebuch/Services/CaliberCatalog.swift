@@ -116,6 +116,32 @@ enum CaliberCatalog {
             .trimmingCharacters(in: CharacterSet(charactersIn: "."))
     }
 
+    /// Catalogue entries calibre-data renamed, old id to new id (the id is the name). A record on an
+    /// old id follows its entry, and takes the new name unless the user renamed it.
+    static let renamedIDs = [
+        // calibre-data #154: the army's 1892 drawing calls it «Patrone, Modell 1890».
+        "7.5x53.5 mm Swiss (GP 1890)": "7.5x53.5 mm Swiss (Patrone Modell 1890)",
+    ]
+
+    /// Moves records from a renamed entry's old id to its new one, once the catalogue has the new
+    /// one and lost the old one, so it can ship before the catalogue does. Runs at every start.
+    /// Returns the number of records moved.
+    @MainActor
+    @discardableResult
+    static func followRenames(_ context: ModelContext, renamed: [String: String] = renamedIDs,
+                              inCatalogue: (String) -> Bool = { item(id: $0) != nil }) -> Int {
+        guard let all = try? context.fetch(FetchDescriptor<Caliber>()) else { return 0 }
+        var moved = 0
+        for c in all {
+            guard let new = renamed[c.catalogID], inCatalogue(new), !inCatalogue(c.catalogID) else { continue }
+            if c.name == c.catalogID { c.name = new }
+            c.catalogID = new
+            moved += 1
+        }
+        if moved > 0 { try? context.save() }
+        return moved
+    }
+
     /// A catalogue record that holds nothing of the user's (the catalogue's name and category, not
     /// archived, no barrel, ammunition or entry) goes; the catalogue entry stands in for it. A
     /// cancelled picker leaves such records, a backup can bring them back. Runs at every start.
