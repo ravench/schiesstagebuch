@@ -308,8 +308,8 @@ final class PRScreensTests: XCTestCase {
         app.launch()
     }
 
-    /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
-    /// Einzelschüsse in the Stich editor: the Probeschüsse and the first Passe, the number pad with «Weiter» above it.
+    /// Einzelschüsse in the Stich editor: the Probeschüsse and the first Passe, the number pad with «Weiter» above it;
+    /// then the result below a shot.
     private func shotsStop() {
         let shots = app.buttons["Einzelschüsse"].firstMatch
         reveal(shots, up: false)
@@ -321,8 +321,18 @@ final class PRScreensTests: XCTestCase {
         }
         shot.tap()
         snap("04b-Einzelschuesse")
+        // A shot in the first Passe: the result below is its sum and no longer a field.
+        let passe = app.textFields.matching(identifier: "Schuss 1").element(boundBy: 1)
+        // The number pad of the Probeschuss covers half of the Passe's box: on the CI runner a tap on it got no cursor.
+        app.buttons["Fertig"].firstMatch.tap()
+        passe.tap()
+        passe.typeText("9")
+        app.buttons["Fertig"].firstMatch.tap()
+        reveal(app.staticTexts["Max. Punkte"].firstMatch)
+        snap("04c-Einzelschuesse-Resultat")
     }
 
+    /// Scrolls the chart titled `title` to the top of the screen, so all of it shows.
     private func stop(_ name: String, chart title: String) {
         topStop(app.staticTexts[title].firstMatch, name)
     }
@@ -425,6 +435,8 @@ final class PRScreensTests: XCTestCase {
     /// The shooting position menu; a new entry with the Stgw 90 starts on «Liegend».
     private func positionStop() {
         let picker = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Stellung")).firstMatch
+        // The firearm menu is still closing on a slow runner: scrolling for the row then pushed it under the bar.
+        _ = picker.wait(for: \.isHittable, toEqual: true, timeout: 3)
         reveal(picker)
         if open(picker) {
             snap("03c-Stellung-Auswahl")

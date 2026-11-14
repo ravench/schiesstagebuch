@@ -101,6 +101,12 @@ struct Score {
         passes.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }.joined(separator: "\n")
     }
 
+    /// The result the shots of all Passen add up to, as stored; nil without a shot.
+    static func summedResult(passes: [String]) -> String? {
+        let shots = passes.flatMap(parseShots)
+        return shots.isEmpty ? nil : ScoreFormat.points(shots.reduce(0, +))
+    }
+
     static func parseShots(_ text: String) -> [Double] {
         text.split(whereSeparator: { $0.isWhitespace || $0 == ";" || $0 == "+" })
             .compactMap { Double($0.replacingOccurrences(of: ",", with: ".")) }

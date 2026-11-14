@@ -272,8 +272,8 @@ struct EntryEditorView: View {
                 let total = shotTotal(in: old)
                 if (old != .shots && old != .passeTotals) || total > 0 {
                     if old == .shots { sighters = sighterShotCount }
-                    // The automatic total of the Passen stays as the result in the other modes.
-                    if old == .passeTotals, !enteredPasseTotals.isEmpty { result = enteredPasseTotals.resultText }
+                    // The sum of the Passen or Einzelschüsse stays as the result in the other modes.
+                    if let sum = summedResult(in: old) { result = sum }
                     switch new {
                     case .total: shotCount = total
                     case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
@@ -306,7 +306,7 @@ struct EntryEditorView: View {
     /// Shots and result of a Stich scored in points.
     @ViewBuilder
     private var ringSections: some View {
-        Section("Schüsse") {
+        Section {
             Picker("Erfassung", selection: $mode) {
                 ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
             }
@@ -337,11 +337,9 @@ struct EntryEditorView: View {
                 LabeledContent("Wertungsschüsse", value: passShotCount.formatted())
                 LabeledContent("Total", value: (sighterShotCount + passShotCount).formatted())
             }
-        }
-
-        Section {
-            if mode == .passeTotals {
-                LabeledContent("Resultat", value: enteredPasseTotals.isEmpty ? "–" : enteredPasseTotals.resultText)
+            // The result sits right below the shots, and is typed only when they do not add up to one.
+            if let sum = summedResult(in: mode) {
+                LabeledContent("Resultat", value: sum)
             } else {
                 TextField("Resultat", text: $result)
             }
@@ -360,14 +358,14 @@ struct EntryEditorView: View {
                     .foregroundStyle(.red)
             }
         } header: {
-            Text("Resultat")
+            Text("Schüsse")
         } footer: {
-            if mode == .passeTotals {
-                Text("Das Resultat ist die Summe der Passen; mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
-            } else if mode == .shots {
-                Text("Optional. Ohne Resultat zählt die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.")
-            } else {
+            if summedResult(in: mode) == nil {
                 Text("Optional. Mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
+            } else if mode == .passeTotals {
+                Text("Das Resultat ist die Summe der Passen; mit Max. Punkten berechnet die App den Prozentwert und den Schnitt pro Schuss.")
+            } else {
+                Text("Das Resultat ist die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.")
             }
         }
     }
@@ -422,9 +420,18 @@ struct EntryEditorView: View {
     private var enteredPasseTotals: [PasseTotal] { passeTotals.map(\.total).normalized }
 
     private var currentScore: Score {
-        Score(result: mode == .passeTotals ? enteredPasseTotals.resultText : result, maxPoints: maxPoints,
+        Score(result: summedResult(in: mode) ?? result, maxPoints: maxPoints,
               shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
               scoredShots: scoredShotsForScore)
+    }
+
+    /// The result added up from the Passen or Einzelschüsse; nil when there are none, so the user types it.
+    private func summedResult(in mode: ShotEntryMode) -> String? {
+        switch mode {
+        case .total, .split: nil
+        case .passeTotals: enteredPasseTotals.isEmpty ? nil : enteredPasseTotals.resultText
+        case .shots: Score.summedResult(passes: passes.map(\.text))
+        }
     }
 
     /// All shots as the point form in `mode` counts them.
@@ -591,7 +598,7 @@ struct EntryEditorView: View {
             target.shotCount = sighterShotCount + passShotCount; target.sighterCount = sighterShotCount
         }
         target.notes = notes
-        if scoring == .rings { target.result = mode == .passeTotals ? enteredPasseTotals.resultText : result }
+        if scoring == .rings { target.result = summedResult(in: mode) ?? result }
         // Fields switched off in Settings keep the values already stored.
         sight.fitted(to: SightSettings.aperture(for: weapon?.category))
             .keeping(SightSettings(entry: target), outside: features)
