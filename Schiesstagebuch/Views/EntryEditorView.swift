@@ -280,11 +280,12 @@ struct EntryEditorView: View {
                     case .passeTotals, .shots: break
                     }
                 }
-                switch new {
-                case .passeTotals: if passeTotals.isEmpty { passeTotals = [PasseTotalDraft()] }
-                case .shots: if passes.isEmpty { passes = [PassDraft(text: "")] }
-                case .total, .split: break
-                }
+                if new == .passeTotals, passeTotals.isEmpty { passeTotals = [PasseTotalDraft()] }
+            }
+            // Einzelschüsse always show a first Passe below the Probeschüsse: also in a Stich saved with
+            // Probeschüsse alone, after a scan that read no shots, or once the only Passe is deleted.
+            .onChange(of: mode == .shots && passes.isEmpty, initial: true) { _, missing in
+                if missing { passes = [PassDraft(text: "")] }
             }
             .onChange(of: pickerItems) { _, items in
                 Task { await loadPhotos(items) }
@@ -492,7 +493,6 @@ struct EntryEditorView: View {
                 weather = WeatherRecord.carriedOver(from: nil, to: weapon, in: allEntries)
             }
             mode = defaultMode
-            if mode == .shots { passes = [PassDraft(text: "")] }
             if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
         }
         if entry == nil { position = weapon?.category.defaultPosition }

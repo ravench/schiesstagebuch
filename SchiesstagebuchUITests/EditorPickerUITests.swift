@@ -46,6 +46,42 @@ final class EditorPickerUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["18"].exists, "Wertung changed by opening the editor")
     }
 
+    /// Einzelschüsse: a box takes numbers only, «Weiter» above the number pad moves to the next box, and a
+    /// Stich saved with Probeschüsse alone still shows its first Passe (tester feedback 2026-11-13).
+    func testShotBoxesTakeNumbersAndTheFirstPasseStays() {
+        let entry = app.staticTexts["Feldschiessen"].firstMatch
+        XCTAssertTrue(entry.waitForExistence(timeout: 10))
+        entry.tap()
+        let editor = app.navigationBars["Eintrag bearbeiten"]
+        app.buttons["Bearbeiten"].firstMatch.tap()
+        XCTAssertTrue(editor.waitForExistence(timeout: 5))
+        let shots = app.buttons["Einzelschüsse"].firstMatch
+        XCTAssertTrue(scroll(to: shots), "No «Einzelschüsse» segment")
+        shots.tap()
+        // The Probeschüsse are the first row of boxes.
+        let first = app.textFields["Schuss 1"].firstMatch
+        XCTAssertTrue(scroll(to: first), "No shot box after switching")
+        first.tap()
+        first.typeText("T9x")
+        XCTAssertEqual(first.value as? String, "9", "Only the number stays in the box")
+        app.buttons["Weiter"].firstMatch.tap()
+        let second = app.textFields["Schuss 2"].firstMatch
+        XCTAssertTrue(second.waitForExistence(timeout: 3), "No box for the next shot")
+        second.typeText("8 ") // needs the cursor: «Weiter» moved it here; the space moves it on
+        XCTAssertEqual(second.value as? String, "8")
+        // Wait for the cursor: on the CI runner a key typed right after the space was lost.
+        let third = app.textFields["Schuss 3"].firstMatch
+        wait(for: [expectation(for: NSPredicate(format: "hasKeyboardFocus == true"), evaluatedWith: third)], timeout: 5)
+        third.typeText("7")
+        XCTAssertEqual(third.value as? String, "7")
+        editor.buttons["Sichern"].tap()
+
+        XCTAssertTrue(app.buttons["Bearbeiten"].firstMatch.waitForExistence(timeout: 5), "Not back on the entry")
+        app.buttons["Bearbeiten"].firstMatch.tap()
+        XCTAssertTrue(editor.waitForExistence(timeout: 5))
+        XCTAssertTrue(scroll(to: app.staticTexts["Passe 1"].firstMatch), "No first Passe beside the Probeschüsse")
+    }
+
     func testNewAmmunitionKeepsItsNameAfterPickingACalibre() {
         let settings = app.tabBars.buttons["Einstellungen"]
         XCTAssertTrue(settings.waitForExistence(timeout: 10))

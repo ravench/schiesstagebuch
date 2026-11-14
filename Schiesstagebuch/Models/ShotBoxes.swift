@@ -16,7 +16,18 @@ struct ShotBoxes: Equatable {
 
     /// Shots the user typed into a box, split where `Score.parseShots` splits.
     static func tokens(_ text: String) -> [String] {
-        text.split(whereSeparator: isSeparator).map(String.init)
+        text.split(whereSeparator: isSeparator).map { numeric($0) }.filter { !$0.isEmpty }
+    }
+
+    /// A shot's value is a number: digits and one decimal separator. Anything else typed or pasted is dropped.
+    static func numeric(_ text: some StringProtocol) -> String {
+        var hasSeparator = false
+        return String(text.filter { c in
+            if ("0"..."9").contains(c) { return true }
+            guard c == "." || c == ",", !hasSeparator else { return false }
+            hasSeparator = true
+            return true
+        })
     }
 
     static func isSeparator(_ c: Character) -> Bool { c.isWhitespace || c == ";" || c == "+" }
@@ -30,7 +41,7 @@ struct ShotBoxes: Equatable {
         let parts = Self.tokens(input)
         let endsShot = input.last.map(Self.isSeparator) ?? false
         guard parts.count > 1 || endsShot else {
-            values[index] = input
+            values[index] = parts.first ?? ""
             keepTrailingBox()
             return nil
         }

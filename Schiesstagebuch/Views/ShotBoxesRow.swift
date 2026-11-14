@@ -2,7 +2,8 @@ import SwiftUI
 
 /// One Passe (or the sighters) in the entry editor: a box per shot with the shot number above it,
 /// the total on the right unless `showsTotal` is off.
-/// A space, ";" or "+" (or the keyboard's Next key) moves on to the next box. The empty box for the
+/// The boxes take numbers only and open the number pad; «Weiter» above it (a space, ";", "+" or the
+/// Next key on a full keyboard) moves on to the next box. The empty box for the
 /// next shot only shows while one of this Passe's boxes has the cursor.
 struct ShotBoxesRow: View {
     let title: Text
@@ -30,6 +31,16 @@ struct ShotBoxesRow: View {
         .onChange(of: focused) { _, now in
             if now == nil { boxes.removeEmptyBoxes() }
         }
+        // The number pad has no Next key.
+        .toolbar {
+            ToolbarItem(placement: .keyboard) {
+                if let i = focused { Button("Weiter") { next(after: i) } }
+            }
+        }
+    }
+
+    private func next(after i: Int) {
+        focused = i + 1 < boxes.values.count ? i + 1 : nil
     }
 
     private func box(_ i: Int) -> some View {
@@ -42,10 +53,10 @@ struct ShotBoxesRow: View {
                 .font(.caption2)
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
-            TextField("", text: value)
-                .keyboardType(.numbersAndPunctuation)
+            ShotField(value: value)
+                .keyboardType(.decimalPad)
                 .submitLabel(.next)
-                .onSubmit { focused = i + 1 < boxes.values.count ? i + 1 : nil }
+                .onSubmit { next(after: i) }
                 .focused($focused, equals: i)
                 .multilineTextAlignment(.center)
                 .monospacedDigit()
@@ -56,5 +67,25 @@ struct ShotBoxesRow: View {
                 )
                 .accessibilityLabel(Text("Schuss \(i + 1)"))
         }
+    }
+}
+
+/// One box's text field. SwiftUI leaves a field's text alone when its binding drops part of what was
+/// typed (a letter stayed on screen), so the field keeps the typed text itself and takes the box's value back.
+private struct ShotField: View {
+    @Binding var value: String
+    @State private var text = ""
+
+    var body: some View {
+        TextField("", text: $text)
+            .onChange(of: text) { _, typed in
+                value = typed
+                // What the box keeps of it; reading `value` back here still gives the old one.
+                let kept = ShotBoxes.tokens(typed).first ?? ""
+                if kept != typed { text = kept }
+            }
+            .onChange(of: value, initial: true) { _, new in
+                if new != text { text = new }
+            }
     }
 }
