@@ -47,10 +47,16 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(c.catalogID, "Old name")
     }
 
-    func testEveryRenameLeadsToOneEntry() {
+    func testEveryRenameLeadsToExactlyOneEntry() {
         for (old, new) in CaliberCatalog.renamedIDs {
-            XCTAssertTrue(CaliberCatalog.item(id: old) != nil || CaliberCatalog.item(id: new) != nil, "\(old) → \(new)")
+            XCTAssertNotEqual(CaliberCatalog.item(id: old) != nil, CaliberCatalog.item(id: new) != nil, "\(old) → \(new)")
         }
+    }
+
+    func testCurrentIDFollowsOnlyARenameTheCatalogueHas() {
+        XCTAssertEqual(CaliberCatalog.currentID("Old name", renamed: renamed, inCatalogue: { $0 == "New name" }), "New name")
+        XCTAssertEqual(CaliberCatalog.currentID("Old name", renamed: renamed, inCatalogue: { $0 == "Old name" }), "Old name")
+        XCTAssertEqual(CaliberCatalog.currentID("9x19 mm", renamed: renamed, inCatalogue: { _ in true }), "9x19 mm")
     }
 
     func testRecordsInUseStay() throws {

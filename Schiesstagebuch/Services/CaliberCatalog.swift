@@ -123,8 +123,15 @@ enum CaliberCatalog {
         "7.5x53.5 mm Swiss (GP 1890)": "7.5x53.5 mm Swiss (Patrone Modell 1890)",
     ]
 
-    /// Moves records from a renamed entry's old id to its new one, once the catalogue has the new
-    /// one and lost the old one, so it can ship before the catalogue does. Runs at every start.
+    /// The id an entry has now: the new id of a renamed entry once the catalogue has the new id and
+    /// lost the old one (so this can ship before the catalogue does), else `id` itself.
+    static func currentID(_ id: String, renamed: [String: String] = renamedIDs,
+                          inCatalogue: (String) -> Bool = { item(id: $0) != nil }) -> String {
+        guard let new = renamed[id], inCatalogue(new), !inCatalogue(id) else { return id }
+        return new
+    }
+
+    /// Moves records from a renamed entry's old id to its new one (`currentID`). Runs at every start.
     /// Returns the number of records moved.
     @MainActor
     @discardableResult
@@ -133,7 +140,8 @@ enum CaliberCatalog {
         guard let all = try? context.fetch(FetchDescriptor<Caliber>()) else { return 0 }
         var moved = 0
         for c in all {
-            guard let new = renamed[c.catalogID], inCatalogue(new), !inCatalogue(c.catalogID) else { continue }
+            let new = currentID(c.catalogID, renamed: renamed, inCatalogue: inCatalogue)
+            guard new != c.catalogID else { continue }
             if c.name == c.catalogID { c.name = new }
             c.catalogID = new
             moved += 1
