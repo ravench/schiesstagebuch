@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 import UserNotifications
 
 /// Where a weapon stands for one maintenance kind, derived from its records, entries and intervals.
@@ -152,6 +153,7 @@ enum MaintenanceNotifier {
             content.title = String(localized: "\(kind.title) fällig: \(weapon.name)")
             content.body = status.dueText ?? status.summary
             content.sound = .default
+            content.userInfo = ReminderLink.userInfo(weaponID: weapon.id, kind: kind)
 
             let trigger: UNNotificationTrigger
             switch planned[kind] ?? ReminderPlan.none {
@@ -166,5 +168,29 @@ enum MaintenanceNotifier {
             }
             center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
         }
+    }
+
+    /// Re-schedules the reminders of every firearm: after a sync from another device (a cleaning
+    /// recorded there must cancel the reminder still pending here) and when the app comes to the front.
+    /// Without `previouslyDue` nothing fires at once; only the pending reminders are put right.
+    static func refreshAll(in context: ModelContext) {
+        for weapon in (try? context.fetch(FetchDescriptor<Weapon>())) ?? [] { refresh(weapon) }
+    }
+}
+
+/// Shows reminders while the app is open and reports a tap on one. Without a delegate iOS drops a
+/// notification that arrives in the foreground, and a shot-based reminder fires one second after the
+/// entry is saved, so it was never seen.
+final class MaintenanceNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .list, .sound]
+    }
+
+    /// A tap on the reminder (not a dismissal): the firearm's page opens (`RootView`).
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+              let id = ReminderLink.weaponID(in: response.notification.request.content.userInfo) else { return }
+        await MainActor.run { ReminderTap.shared.weaponID = id }
     }
 }
