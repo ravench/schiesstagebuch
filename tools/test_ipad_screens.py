@@ -132,9 +132,10 @@ class WorkflowTests(unittest.TestCase):
             app = f.read()
         tabs = re.findall(r'\.tabItem \{ Label\("([^"]+)"', app)
         listed = re.search(r"static let tabs = \[([^\]]*)\]", self.uitest).group(1)
-        # The licence tab only appears once a card is entered; the sample data has none.
+        # The licence tab only appears once a card is entered, and «Mehr» only with it at narrow width;
+        # the sample data has no card.
         for tab in tabs:
-            if tab != "Lizenzkarte":
+            if tab not in ("Lizenzkarte", "Mehr"):
                 self.assertIn(f'"{tab}"', listed)
 
 
