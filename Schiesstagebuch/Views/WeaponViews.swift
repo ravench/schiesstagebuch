@@ -5,7 +5,7 @@ struct WeaponsTab: View {
     var body: some View { NavigationStack { WeaponsListView() } }
 }
 
-/// Weapons overview with maintenance status at a glance. Used as a tab and from Einstellungen.
+/// Weapons overview with maintenance status at a glance. The firearms tab.
 struct WeaponsListView: View {
     @Environment(\.term) private var term
     @Query(sort: \Weapon.name) private var weapons: [Weapon]

@@ -58,7 +58,7 @@ struct WelcomeView: View {
                     } header: {
                         Text("Schiessanlagen")
                     } footer: {
-                        Text("Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später unter Einstellungen › Schiessanlagen.")
+                        Text("Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später im Tab «Anlagen».")
                     }
                     .welcomeReveal(step: 3, shown: shown, reduceMotion: reduceMotion)
                 }

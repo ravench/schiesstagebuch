@@ -240,6 +240,8 @@ T = {
     "Schiessanlage": ("Range", "Stand de tir", "Poligono"),
     "Schiessanlage bearbeiten": ("Edit range", "Modifier le stand de tir", "Modifica poligono"),
     "Schiessanlagen": ("Ranges", "Stands de tir", "Poligoni"),
+    "Anlagen": ("Ranges", "Stands", "Poligoni"),
+    "Mehr": ("More", "Plus", "Altro"),
     "Schiessen": ("Shooting", "Tir", "Tiro"),
     "Schiesstagebuch": ("Shooting Log", "Journal de tir", "Diario di tiro"),
     "Schuss": ("shots", "coups", "colpi"),
@@ -489,10 +491,10 @@ T = {
         "Choose which extra fields your entries show.",
         "Choisis les champs supplémentaires de tes entrées.",
         "Scegli quali campi aggiuntivi mostrano le tue voci."),
-    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später unter Einstellungen › Schiessanlagen.": (
-        "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges.",
-        "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard sous Réglages › Stands de tir.",
-        "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi in Impostazioni › Poligoni."),
+    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später im Tab «Anlagen».": (
+        "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later in the Ranges tab.",
+        "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard dans l'onglet Stands.",
+        "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi nella scheda Poligoni."),
     "Eigene Filter": ("My filters", "Mes filtres", "I miei filtri"),
     "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
     "Filter erfassen": ("Record filters", "Saisir les filtres", "Registra i filtri"),
