@@ -523,13 +523,14 @@ struct RangeListView: View {
     @State private var showArchived = false
     @State private var adding = false
     @State private var importedCount: Int?
+    @State private var search = ""
 
     private var hasCatalogueRanges: Bool { ranges.contains { !$0.catalogID.isEmpty } }
 
     var body: some View {
         List {
             Section {
-                ForEach(ranges.filter { showArchived || !$0.isArchived }) { r in
+                ForEach(ranges.filter { (showArchived || !$0.isArchived) && RangeSearch.matches($0, search) }) { r in
                     NavigationLink { RangeDetailView(range: r) } label: {
                         StatsLinkRow(name: r.name, subtitle: r.place, archived: r.isArchived, shots: (r.entries ?? []).totalShots)
                     }
@@ -546,6 +547,7 @@ struct RangeListView: View {
             }
         }
         .navigationTitle("Schiessanlagen")
+        .searchable(text: $search, prompt: "Schiessanlage suchen")
         .toolbar {
             Toggle(isOn: $showArchived) { Label("Archivierte", systemImage: "archivebox") }.toggleStyle(.button)
             Menu {
