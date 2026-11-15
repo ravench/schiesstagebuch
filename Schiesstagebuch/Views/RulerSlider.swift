@@ -14,8 +14,10 @@ struct RulerScale: Equatable {
         var value: Double
         /// Gets a number.
         var isMajor: Bool
-        /// Whole units get a longer tick.
+        /// Whole units get the longest tick.
         var isWhole: Bool
+        /// Length of the stroke as a share of the ruler's height: longest at every whole unit, also one without a number.
+        var length: Double { isWhole ? 0.42 : isMajor ? 0.3 : 0.18 }
     }
 
     /// Points on screen for one unit when the ruler is `width` points wide.
@@ -127,11 +129,10 @@ private struct RulerTicks: View, Animatable {
             let ink = GraphicsContext.Shading.color(.secondary)
             for tick in scale.ticks(around: value) {
                 let x = scale.x(of: tick.value, at: value, width: w)
-                let len = tick.isWhole && tick.isMajor ? h * 0.42 : tick.isWhole || tick.isMajor ? h * 0.3 : h * 0.18
                 var p = Path()
                 p.move(to: CGPoint(x: x, y: 0))
-                p.addLine(to: CGPoint(x: x, y: len))
-                ctx.stroke(p, with: ink, lineWidth: tick.isMajor ? 1.5 : 1)
+                p.addLine(to: CGPoint(x: x, y: h * tick.length))
+                ctx.stroke(p, with: ink, lineWidth: tick.isMajor || tick.isWhole ? 1.5 : 1)
                 if tick.isMajor {
                     ctx.draw(Text(SightSettings.format(tick.value)).font(.caption2).monospacedDigit()
                                 .foregroundStyle(.secondary),

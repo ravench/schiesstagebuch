@@ -86,14 +86,40 @@ struct KPIGrid: View {
     }
 }
 
-/// Percentage, mean and median of one entry; rows only for what can be computed.
+/// A value under its caption. Several in an `HStack` share a row, so a block of numbers stays short.
+struct CaptionedValue<Value: View>: View {
+    let title: String
+    @ViewBuilder var value: Value
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title.loc).font(.caption).foregroundStyle(.secondary).lineLimit(1).minimumScaleFactor(0.7)
+            value.font(.body.monospacedDigit())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+extension CaptionedValue where Value == Text {
+    init(_ title: String, _ value: String) { self.init(title: title) { Text(value) } }
+}
+
+/// Percentage, mean and median of one entry on one row; only what can be computed, no row without any.
 struct ScoreSummary: View {
     let score: Score
 
     var body: some View {
-        if let p = score.percentage { LabeledContent("Prozent", value: ScoreFormat.percent(p)) }
-        if let m = score.meanPerShot { LabeledContent("Ø pro Schuss", value: ScoreFormat.points(m)) }
-        if let m = score.medianPerShot { LabeledContent("Median pro Schuss", value: ScoreFormat.points(m)) }
+        if score.percentage != nil || score.meanPerShot != nil || score.medianPerShot != nil {
+            HStack(alignment: .top) {
+                if let p = score.percentage { cell("Prozent", ScoreFormat.percent(p)) }
+                if let m = score.meanPerShot { cell("Ø pro Schuss", ScoreFormat.points(m)) }
+                if let m = score.medianPerShot { cell("Median pro Schuss", ScoreFormat.points(m)) }
+            }
+        }
+    }
+
+    private func cell(_ title: String, _ value: String) -> some View {
+        CaptionedValue(title, value).accessibilityElement(children: .combine)
     }
 }
 

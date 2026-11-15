@@ -599,6 +599,29 @@
         }
       }
     },
+    "Ablösung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relève"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turno"
+          }
+        }
+      }
+    },
     "Abzugsgehäuse": {
       "extractionState": "manual",
       "localizations": {
@@ -9236,6 +9259,29 @@
         }
       }
     },
+    "Resultat (Punkte)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result (points)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat (points)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato (punti)"
+          }
+        }
+      }
+    },
     "Resultat in Prozent": {
       "extractionState": "manual",
       "localizations": {
@@ -10060,6 +10106,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra i colpi come"
+          }
+        }
+      }
+    },
+    "Schüsse total": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total des coups"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totale colpi"
           }
         }
       }

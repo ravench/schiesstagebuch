@@ -91,6 +91,8 @@ enum Backup {
         var eventID: UUID?; var stich: String?
         /// `ShootingPosition` raw value; nil when none was entered.
         var position: String?
+        /// Ablösung and Scheibe; nil when not entered.
+        var relay: String?; var targetNumber: String?
         /// Version 1 only: what the event holds now.
         var event: String?; var rangeID: UUID?
         /// Not in version 2, which kept the weather on the event.
@@ -158,7 +160,8 @@ enum Backup {
             maintenance: try all(MaintenanceRecord.self, context).map { .init(id: $0.id, weaponID: $0.weapon?.id, kind: $0.kindRaw, date: $0.date, notes: $0.notes) },
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
-                      eventID: $0.shootingEvent?.id, stich: $0.stich, position: $0.position?.rawValue, weather: $0.weather,
+                      eventID: $0.shootingEvent?.id, stich: $0.stich, position: $0.position?.rawValue,
+                      relay: $0.relay.isEmpty ? nil : $0.relay, targetNumber: $0.targetNumber.isEmpty ? nil : $0.targetNumber, weather: $0.weather,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, barrelID: $0.barrel?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
@@ -411,6 +414,7 @@ enum Backup {
             e.id = d.id
             e.stich = d.stich ?? ""
             e.position = d.position.flatMap(ShootingPosition.init(rawValue:))
+            e.relay = d.relay ?? ""; e.targetNumber = d.targetNumber ?? ""
             e.importKey = d.importKey ?? ""
             if let created = d.createdAt { e.createdAt = created }
             context.insert(e)
@@ -458,7 +462,7 @@ enum Backup {
                 ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
         }
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Stellung", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
+        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Ablösung", "Scheibe", "Stellung", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
                                 "Prozent", "Einzelschüsse", "Probeschüsse einzeln", "Punkte pro Passe",
                                 "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
@@ -472,6 +476,8 @@ enum Backup {
             cols.append(e.range?.place ?? "")
             cols.append(e.eventName)
             cols.append(e.stich)
+            cols.append(e.relay)
+            cols.append(e.targetNumber)
             cols.append(e.position?.title ?? "")
             cols.append(e.weapon?.name ?? "")
             cols.append(e.caliber?.name ?? "")
