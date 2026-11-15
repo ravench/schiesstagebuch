@@ -412,9 +412,8 @@ enum Backup {
                           shotCount: d.shotCount, ammunition: d.ammunitionID.flatMap { ammo[$0] },
                           result: d.result, notes: d.notes)
             e.id = d.id
-            e.stich = d.stich ?? ""
+            e.stich = d.stich ?? ""; e.relay = d.relay ?? ""; e.targetNumber = d.targetNumber ?? ""
             e.position = d.position.flatMap(ShootingPosition.init(rawValue:))
-            e.relay = d.relay ?? ""; e.targetNumber = d.targetNumber ?? ""
             e.importKey = d.importKey ?? ""
             if let created = d.createdAt { e.createdAt = created }
             context.insert(e)
