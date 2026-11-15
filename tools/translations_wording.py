@@ -16,10 +16,6 @@ S = {
         "Entries count for the barrel of their calibre that was fitted on that day. Maintenance reminders count all shots of the equipment.",
         "Les entrées comptent pour le canon de leur calibre monté ce jour-là. Les rappels d'entretien comptent tous les coups de l'équipement.",
         "Le voci contano per la canna del loro calibro montata quel giorno. I promemoria di manutenzione contano tutti i colpi dell'attrezzo."),
-    "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": (
-        "For another programme at the same event, also with different equipment.",
-        "Pour un autre programme au même événement, aussi avec un autre équipement.",
-        "Per un altro programma allo stesso evento, anche con un altro attrezzo."),
     "Sportgeräte": ("Equipment", "Équipements", "Attrezzi"),
     "Alle Sportgeräte": ("All equipment", "Tous les équipements", "Tutti gli attrezzi"),
     "Deine Sportgeräte": ("Your equipment", "Tes équipements", "I tuoi attrezzi"),

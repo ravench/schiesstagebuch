@@ -36,8 +36,13 @@ final class PRScreensTests: XCTestCase {
     func testTour() {
         tab("Tagebuch")
         snap("01-Tagebuch")
-        if open(app.staticTexts["Obligatorisch"].firstMatch) {
-            snap("02-Eintrag")
+        // A journal row opens its Anlass, with each Stich's result; the Stich row opens the Stich.
+        if open(app.staticTexts["Obligatorisch"].firstMatch), app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5) {
+            snap("01b-Anlass")
+            if open(app.staticTexts["Stgw 90"].firstMatch) {
+                snap("02-Eintrag")
+                back()
+            }
             back()
         }
         // The Anlass first (date, range, name), then its screen with no Stich yet, then the first Stich.
@@ -169,7 +174,7 @@ final class PRScreensTests: XCTestCase {
             snap("12b-Neuer-Anlass-bei-Wetter-ein")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
-        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        guard openStich("Feldschiessen"), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         reveal(weatherSwitch)
         if (weatherSwitch.value as? String) != "1" {
@@ -230,7 +235,7 @@ final class PRScreensTests: XCTestCase {
     func testWeatherWithoutAppleWeather() {
         relaunch(adding: ["-sportFeatures.v1", "8", "-appleWeather.enabled", "0"])
         tab("Tagebuch")
-        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        guard openStich("Feldschiessen"), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         reveal(weatherSwitch)
         if (weatherSwitch.value as? String) != "1" {
@@ -248,10 +253,7 @@ final class PRScreensTests: XCTestCase {
     func testSightStops() {
         relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
         tab("Tagebuch")
-        guard open(app.staticTexts["Feldschiessen"].firstMatch) else { return }
-        let add = app.buttons["Weiteren Stich hinzufügen"].firstMatch
-        reveal(add)
-        guard open(add) else { return }
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
         topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17-Sportschuetzen-Felder")
         // The diopter corrections switched on: the clicks up or down and right or left.
         let diopter = app.switches.matching(NSPredicate(format: "label BEGINSWITH %@", "Diopterkorrekturen")).firstMatch
@@ -526,6 +528,14 @@ final class PRScreensTests: XCTestCase {
         }
         element.tap()
         return true
+    }
+
+    /// Opens the sample Anlass `event` from the journal, then its Stich (the row is named after the weapon,
+    /// as the journal's rows are: wait for the Anlass screen first).
+    private func openStich(_ event: String) -> Bool {
+        guard open(app.staticTexts[event].firstMatch), app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5),
+              open(app.staticTexts["Stgw 90"].firstMatch) else { return false }
+        return app.staticTexts["Ausrüstung"].firstMatch.waitForExistence(timeout: 5)
     }
 
     /// Taps the option of an open picker whose label holds `name`, whatever element type it has. False when

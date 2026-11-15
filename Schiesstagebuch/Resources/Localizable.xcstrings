@@ -4124,52 +4124,6 @@
         }
       }
     },
-    "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "For another programme at the same event, also with different equipment."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pour un autre programme au même événement, aussi avec un autre équipement."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Per un altro programma allo stesso evento, anche con un altro attrezzo."
-          }
-        }
-      }
-    },
-    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "For another programme at the same event, also with a different firearm."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pour un autre programme au même événement, aussi avec une autre arme."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Per un altro programma allo stesso evento, anche con un'altra arma."
-          }
-        }
-      }
-    },
     "Gebundenes Tagebuch": {
       "extractionState": "manual",
       "localizations": {
@@ -11946,29 +11900,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi numero"
-          }
-        }
-      }
-    },
-    "Weiteren Stich hinzufügen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add another match"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajouter une autre cible"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi un altro bersaglio"
           }
         }
       }

@@ -43,6 +43,8 @@ final class IPadScreensTests: XCTestCase {
         row.tap()
         // The tap is sometimes lost on the CI runner: the entry page has «Bearbeiten», the list has not.
         if !app.buttons["Bearbeiten"].firstMatch.waitForExistence(timeout: 3) { row.tap() }
+        // The row opens the Anlass; its Stich row (named after the weapon) opens the Stich.
+        if app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 3) { app.staticTexts["Stgw 90"].firstMatch.tap() }
         snap("\(name)-1b-Eintrag")
     }
 

@@ -120,6 +120,11 @@ extension Entry {
               percentFromResult: !isLegacyImport)
     }
 
+    /// The result to show: as typed, else the points the Einzelschüsse or Passen add up to; empty without either.
+    var resultText: String {
+        result.isEmpty ? score.points.map(ScoreFormat.points) ?? passeTotals.resultText : result
+    }
+
     /// Imported from Schusszähler, whose export only holds a shot total and a free-text result. Such entries
     /// get a percentage only once a maximum is entered, and a per-shot average only once the
     /// sighters are split off.

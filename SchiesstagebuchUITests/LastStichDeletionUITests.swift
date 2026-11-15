@@ -14,21 +14,18 @@ final class LastStichDeletionUITests: XCTestCase {
     }
 
     func testDeletingTheLastStichFromItsDetailKeepsTheAnlass() {
-        // Give the sample Feldschiessen a second Stich, so the journal shows it as an Anlass.
+        // The sample Feldschiessen opens as its Anlass, also with one Stich; give it a second one there.
         let entry = app.staticTexts["Feldschiessen"].firstMatch
         XCTAssertTrue(entry.waitForExistence(timeout: 10))
         entry.tap()
-        let addStich = app.buttons["Weiteren Stich hinzufügen"].firstMatch
-        XCTAssertTrue(scroll(to: addStich), "No «Weiteren Stich hinzufügen» button")
+        let addStich = app.buttons["Stich hinzufügen"].firstMatch
+        XCTAssertTrue(addStich.waitForExistence(timeout: 5), "The Anlass screen did not open")
         addStich.tap()
         XCTAssertTrue(app.navigationBars["Weiterer Stich"].waitForExistence(timeout: 5))
         app.navigationBars["Weiterer Stich"].buttons["Sichern"].tap()
-        app.navigationBars.firstMatch.buttons.firstMatch.tap() // back to the journal
 
         // The Anlass with its two Stiche, then the first Stich's detail: delete it.
-        XCTAssertTrue(entry.waitForExistence(timeout: 5))
-        entry.tap()
-        XCTAssertTrue(app.staticTexts["Stiche"].waitForExistence(timeout: 5), "The Anlass screen did not open")
+        XCTAssertTrue(app.staticTexts["Stiche"].waitForExistence(timeout: 5), "Not back on the Anlass screen")
         deleteFirstStich()
         XCTAssertTrue(app.staticTexts["Stiche"].waitForExistence(timeout: 5), "Back on the Anlass with one Stich left")
 
@@ -59,13 +56,5 @@ final class LastStichDeletionUITests: XCTestCase {
         let confirm = app.buttons["Löschen"].firstMatch
         XCTAssertTrue(confirm.waitForExistence(timeout: 5))
         confirm.tap()
-    }
-
-    private func scroll(to element: XCUIElement, attempts: Int = 12) -> Bool {
-        for _ in 0..<attempts {
-            if element.exists && element.isHittable { return true }
-            app.swipeUp(velocity: .slow)
-        }
-        return element.exists && element.isHittable
     }
 }
