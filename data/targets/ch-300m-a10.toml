@@ -3,6 +3,7 @@
 id = "ch-300m-a10"
 name = "Scheibe A10 300 m"
 short_name = "A10"
+group = "Schweiz"
 distances_m = [300]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
@@ -13,5 +14,5 @@ black_mm = 600
 values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 [source]
-title = "Mittelkaliber.ch, Scheibe A"
-url = "https://mittelkaliber.ch/scheibe-a/"
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

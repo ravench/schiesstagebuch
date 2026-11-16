@@ -1,0 +1,14 @@
+# Kombinationsscheibe P, 10er: 100 × 100 cm, white, 20 cm black, ten circles on a 100 cm scoring field.
+id = "ch-50m-p10"
+name = "Pistolenscheibe P10 50 m"
+short_name = "P10"
+group = "Schweiz"
+distances_m = [50]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

@@ -2,6 +2,7 @@
 id = "issf-50m-rifle"
 name = "Gewehr 50 m"
 short_name = "ISSF 50 m"
+group = "ISSF"
 distances_m = [50]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [10.4, 26.4, 42.4, 58.4, 74.4, 90.4, 106.4, 122.4, 138.4, 154.4]
@@ -9,9 +10,9 @@ inner_ten_mm = 5
 black_mm = 112.4
 
 [scoring]
-# Any value from 0 up to max in steps of step.
+# Any value from min to max, typed on the decimal keypad.
+min = 0
 max = 10.9
-step = 0.1
 
 [source]
 title = "ISSF General Technical Rules, 2023 edition"

@@ -1,0 +1,14 @@
+# 25 m Ordonnanz-Schnellfeuer-Pistolenscheibe: black figure 76 × 45 cm, zones 10 to 6; black outside the 6 is a miss.
+id = "ch-25m-ordonnanz-rapid-fire"
+name = "Ordonnanz-Schnellfeuer-Pistolenscheibe 25 m"
+short_name = "Ordonnanz 25 m"
+group = "Schweiz"
+distances_m = [25]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 0]
+
+[source]
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

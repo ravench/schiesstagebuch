@@ -4,6 +4,7 @@
 id = "ch-300m-b10"
 name = "Feldscheibe B10 300 m"
 short_name = "B10"
+group = "Schweiz"
 distances_m = [300]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
@@ -13,5 +14,5 @@ ring_diameters_mm = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
 values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 [source]
-title = "SG Strengelbach, Scheiben-Vergleich A und B"
-url = "https://www.sg-strengelbach.ch/media/files/scheiben_vergleich.pdf"
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

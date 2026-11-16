@@ -10,7 +10,7 @@ TEN_TO_ZERO = list(range(10, -1, -1))
 
 def target(drop=(), **changes):
     t = {
-        "_file": "t.toml", "id": "t", "name": "Test", "short_name": "T", "distances_m": [10],
+        "_file": "t.toml", "id": "t", "name": "Test", "short_name": "T", "group": "ISSF", "distances_m": [10],
         "ring_diameters_mm": [10, 20, 30, 40], "black_mm": 30,
         "scoring": {"values": [10, 9, 8, 7, 0]},
         "source": {"title": "Rules", "url": "https://example.org"},
@@ -24,7 +24,8 @@ class RepoTargetTests(unittest.TestCase):
         self.targets = {t["id"]: t for t in targets.load()}
 
     def test_every_target_in_the_repo_is_fine(self):
-        self.assertGreaterEqual(len(self.targets), 10)
+        self.assertGreaterEqual(len(self.targets), 16)
+        self.assertEqual({t["group"] for t in self.targets.values()}, {"Schweiz", "ISSF"})
         for t in self.targets.values():
             self.assertEqual(targets.problems(t), [], t["_file"])
 
@@ -37,22 +38,24 @@ class RepoTargetTests(unittest.TestCase):
         self.assertEqual(self.targets["ch-300m-a5"]["scoring"], {"values": [5, 4, 3, 2, 1, 0]})
         self.assertEqual(self.targets["ch-300m-a10"]["scoring"], {"values": TEN_TO_ZERO})
         self.assertEqual(self.targets["issf-25m-rapid-fire-pistol"]["scoring"], {"values": [10, 9, 8, 7, 6, 5, 0]})
-        self.assertEqual(self.targets["ch-300m-a100"]["scoring"], {"max": 100, "step": 1})
-        self.assertEqual(self.targets["issf-10m-air-rifle"]["scoring"], {"max": 10.9, "step": 0.1})
+        self.assertEqual(self.targets["ch-300m-b4"]["scoring"], {"values": [4, 3, 2, 1, 0]})
+        self.assertEqual(self.targets["ch-25m-ordonnanz-rapid-fire"]["scoring"], {"values": [10, 9, 8, 7, 6, 0]})
+        self.assertEqual(self.targets["ch-300m-a100"]["scoring"], {"min": 0, "max": 100})
+        self.assertEqual(self.targets["issf-10m-air-rifle"]["scoring"], {"min": 0, "max": 10.9})
 
 
 class CheckTests(unittest.TestCase):
     def test_good_targets_have_no_problems(self):
         self.assertEqual(targets.problems(target()), [])
-        self.assertEqual(targets.problems(target(scoring={"max": 10.9, "step": 0.1})), [])
+        self.assertEqual(targets.problems(target(scoring={"min": 0, "max": 10.9})), [])
         zones = target(drop=("ring_diameters_mm", "black_mm"), scoring={"values": ["A", "C", "D", "M"]})
         self.assertEqual(targets.problems(zones), [])
 
     def test_scoring_is_a_range_or_a_list(self):
         self.assertIn("either", targets.problems(target(scoring={}))[0])
-        self.assertIn("either", targets.problems(target(scoring={"max": 10, "step": 1, "values": [1, 0]}))[0])
-        self.assertIn("0 < step", targets.problems(target(scoring={"max": 10}))[0])
-        self.assertIn("whole number of steps", targets.problems(target(scoring={"max": 10.95, "step": 0.1}))[0])
+        self.assertIn("either", targets.problems(target(scoring={"min": 0, "max": 10, "values": [1, 0]}))[0])
+        self.assertIn("min < max", targets.problems(target(scoring={"max": 10}))[0])
+        self.assertIn("min < max", targets.problems(target(scoring={"min": 10, "max": 10}))[0])
         self.assertIn("best to worst", targets.problems(target(scoring={"values": [0, 7, 8, 9, 10]}))[0])
         self.assertIn("all numbers or all names", targets.problems(target(scoring={"values": [10, "A", 0]}))[0])
         self.assertIn("two different", targets.problems(target(scoring={"values": [5, 5]}))[0])
@@ -75,8 +78,8 @@ class CheckTests(unittest.TestCase):
         self.assertEqual(out["innerTen"], 5)
         self.assertEqual(out["source"], "Rules, 1.2")
         self.assertNotIn("_file", out)
-        bare = targets.app_json([target(drop=("ring_diameters_mm", "black_mm"), scoring={"max": 100, "step": 1})])[0]
-        self.assertEqual(bare["scoring"], {"max": 100, "step": 1})
+        bare = targets.app_json([target(drop=("ring_diameters_mm", "black_mm"), scoring={"min": 0, "max": 100})])[0]
+        self.assertEqual(bare["scoring"], {"min": 0, "max": 100})
         self.assertNotIn("ringDiameters", bare)
         self.assertNotIn("black", bare)
 

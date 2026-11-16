@@ -2,6 +2,7 @@
 id = "issf-25m-rapid-fire-pistol"
 name = "Schnellfeuerpistole 25 m"
 short_name = "ISSF Schnellfeuer"
+group = "ISSF"
 distances_m = [25]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [100, 180, 260, 340, 420, 500]

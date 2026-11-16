@@ -1,0 +1,14 @@
+# Kombinationsscheibe P, 4er: 100 × 100 cm, white, 20 cm black, four fields on a 100 cm scoring field.
+id = "ch-50m-p4"
+name = "Pistolenscheibe P4 50 m"
+short_name = "P4"
+group = "Schweiz"
+distances_m = [50]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [4, 3, 2, 1, 0]
+
+[source]
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

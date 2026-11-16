@@ -4,12 +4,13 @@
 id = "ch-300m-a100"
 name = "Scheibe A100 300 m"
 short_name = "A100"
+group = "Schweiz"
 distances_m = [300]
 
 [scoring]
-# Any value from 0 up to max in steps of step.
+# Any value from min to max, typed on the decimal keypad.
+min = 0
 max = 100
-step = 1
 
 [source]
 title = "Mittelkaliber.ch, Scheibe A"

@@ -1,0 +1,14 @@
+# Kombinierte Pistolenscheibe B, 5er: 100 × 100 cm, light grey, green figure, five fields.
+id = "ch-50m-pistol-b5"
+name = "Pistolenscheibe B5 50 m"
+short_name = "B5"
+group = "Schweiz"
+distances_m = [50]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 2, 1, 0]
+
+[source]
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

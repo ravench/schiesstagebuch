@@ -67,6 +67,7 @@ jobs:
       - name: Check generated data and translations
         run: |
           python3 tools/generate_assets.py
+          python3 tools/targets.py json Schiesstagebuch/Resources/Targets.json
           python3 tools/localize.py
           git diff --exit-code Schiesstagebuch/Resources
       - name: Tool tests

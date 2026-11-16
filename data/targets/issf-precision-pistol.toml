@@ -2,6 +2,7 @@
 id = "issf-precision-pistol"
 name = "Präzisionspistole 25/50 m"
 short_name = "ISSF Präzision"
+group = "ISSF"
 distances_m = [25, 50]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
