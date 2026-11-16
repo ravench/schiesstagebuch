@@ -27,7 +27,7 @@ final class LocalizationTests: XCTestCase {
             XCTAssertNotEqual(text, "NSLocationWhenInUseUsageDescription", lang)
         }
         let en = try localized("NSLocationWhenInUseUsageDescription", "en", table: "InfoPlist")
-        XCTAssertTrue(en.contains("not stored"))
+        XCTAssertTrue(en.contains("only stored when you use it"))
         XCTAssertNotNil(Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription"))
     }
 

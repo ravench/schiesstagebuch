@@ -322,6 +322,34 @@ final class PRScreensTests: XCTestCase {
         if open(app.staticTexts["Einstellungen"].firstMatch) { snap("18c-Mehr-Einstellungen") }
     }
 
+    /// The list of ranges: a new range with «Aktuellen Standort verwenden», then the list's search field.
+    func testRanges() {
+        // Under Einstellungen, or a tab of its own where the app has one.
+        let ranges = app.tabBars.buttons["Schiessanlagen"]
+        if ranges.waitForExistence(timeout: 3) {
+            ranges.tap()
+        } else {
+            tab("Einstellungen")
+            guard open(app.staticTexts["Schiessanlagen"].firstMatch) else { return }
+        }
+        if openMenu(app.navigationBars.buttons["Hinzufügen"].firstMatch, showing: "Schweizer Schiessanlagen übernehmen") {
+            // The menu's own «Hinzufügen» comes after the bar's button of the same name.
+            let items = app.buttons.matching(NSPredicate(format: "label == %@", "Hinzufügen"))
+            items.element(boundBy: items.count - 1).tap()
+            XCTAssertTrue(app.buttons["Aktuellen Standort verwenden"].waitForExistence(timeout: 5), "No current-location button")
+            snap("19b-Neue-Schiessanlage")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        } else {
+            XCTFail("No menu to add a range")
+        }
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        guard search.waitForExistence(timeout: 5) else { return XCTFail("No search field in the ranges list") }
+        search.tap()
+        search.typeText("Oster\n") // return hides the keyboard
+        snap("19-Schiessanlagen-Suche")
+    }
+
     /// Starts the app again with `arguments` on top of the usual ones.
     private func relaunch(adding arguments: [String]) {
         app.terminate()

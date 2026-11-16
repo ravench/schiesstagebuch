@@ -65,25 +65,25 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wählt beim neuen Eintrag die Schiessanlage, bei der du gerade bist. Der Standort wird nicht gespeichert."
+            "value": "Wählt beim neuen Eintrag die Schiessanlage, bei der du gerade bist. Der Standort wird nur gespeichert, wenn du ihn als Ort einer Schiessanlage übernimmst."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Picks the shooting range you are at when you start a new entry. Your location is not stored."
+            "value": "Picks the shooting range you are at when you start a new entry. Your location is only stored when you use it as the place of a shooting range."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choisit le stand de tir où tu te trouves lors d'une nouvelle entrée. La position n'est pas enregistrée."
+            "value": "Choisit le stand de tir où tu te trouves lors d'une nouvelle entrée. La position n'est enregistrée que si tu la reprends comme lieu d'un stand de tir."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sceglie il poligono di tiro in cui ti trovi quando crei una nuova voce. La posizione non viene salvata."
+            "value": "Sceglie il poligono di tiro in cui ti trovi quando crei una nuova voce. La posizione viene salvata solo se la usi come luogo di un poligono di tiro."
           }
         }
       }

@@ -94,6 +94,9 @@ final class OneShotLocation: NSObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     }
 
+    /// The user said no (or may not say yes): asking again does nothing.
+    var isDenied: Bool { [.denied, .restricted].contains(manager.authorizationStatus) }
+
     func request() {
         // Screenshot runs: the sample range has a position, and the permission alert would cover the screen.
         guard !ScreenshotData.isActive else { return }

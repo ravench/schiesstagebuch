@@ -13,6 +13,13 @@ struct PickedLocation: Equatable {
         self.longitude = longitude
     }
 
+    /// One line from the parts a geocoder gives, e.g. "Uetlibergstrasse 341, 8045 Zürich"; missing parts are left out.
+    static func address(street: String?, number: String?, postalCode: String?, town: String?) -> String {
+        [[street, number], [postalCode, town]]
+            .map { $0.compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " ") }
+            .filter { !$0.isEmpty }.joined(separator: ", ")
+    }
+
     init?(range: ShootingRange) {
         guard let lat = range.latitude, let lon = range.longitude else { return nil }
         self.init(address: range.address, latitude: lat, longitude: lon)
@@ -90,6 +97,7 @@ struct PlaceField: View {
     @Binding var place: String
     @Binding var location: PickedLocation?
     @State private var completer = PlaceCompleter()
+    @State private var here = OneShotLocation()
     @FocusState private var focused: Bool
     /// The text set by picking a suggestion, so that edit isn't treated as typing.
     @State private var pickedText: String?
@@ -120,6 +128,12 @@ struct PlaceField: View {
                 }
             }
         }
+        if location == nil, !here.isDenied {
+            Button { here.request() } label: { Label("Aktuellen Standort verwenden", systemImage: "location") }
+                .onChange(of: here.location) { _, new in
+                    if let new { Task { await use(new) } }
+                }
+        }
         if let location {
             HStack {
                 Label(location.address.isEmpty ? "Auf der Karte gewählt".loc : location.address, systemImage: "mappin.circle.fill")
@@ -135,6 +149,20 @@ struct PlaceField: View {
                 .accessibilityLabel(Text("Kartenposition entfernen"))
             }
         }
+    }
+
+    /// Town, address and position of where the device is; without a network only the position.
+    private func use(_ here: CLLocation) async {
+        let found = try? await CLGeocoder().reverseGeocodeLocation(here).first
+        if let town = found?.locality, !town.isEmpty {
+            pickedText = town
+            place = town
+        }
+        location = PickedLocation(address: PickedLocation.address(street: found?.thoroughfare, number: found?.subThoroughfare,
+                                                                  postalCode: found?.postalCode, town: found?.locality),
+                                  latitude: here.coordinate.latitude, longitude: here.coordinate.longitude)
+        completer.clear()
+        focused = false
     }
 
     private func pick(_ result: MKLocalSearchCompletion) {

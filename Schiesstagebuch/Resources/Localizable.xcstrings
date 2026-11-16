@@ -645,6 +645,29 @@
         }
       }
     },
+    "Aktuellen Standort verwenden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use current location"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utiliser la position actuelle"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa la posizione attuale"
+          }
+        }
+      }
+    },
     "Alle": {
       "extractionState": "manual",
       "localizations": {
