@@ -52,7 +52,7 @@ enum TargetScoring: Equatable {
 @Model
 final class ShootingTarget {
     var id: UUID = UUID()
-    /// e.g. "Scheibe A10 300 m".
+    /// e.g. "VBS Scheibe A10 300 m"; the templates start with who issues them (VBS, SSV, ISSF).
     var name: String = ""
     /// `Mode` raw value.
     var modeRaw: String = Mode.values.rawValue

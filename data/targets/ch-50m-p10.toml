@@ -1,6 +1,6 @@
 # Kombinationsscheibe P, 10er: 100 × 100 cm, white, 20 cm black, ten circles on a 100 cm scoring field.
 id = "ch-50m-p10"
-name = "Pistolenscheibe P10 50 m"
+name = "VBS Pistolenscheibe P10 50 m"
 short_name = "P10"
 group = "Schweiz"
 distances_m = [50]

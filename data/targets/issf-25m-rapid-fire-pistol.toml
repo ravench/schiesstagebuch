@@ -1,6 +1,6 @@
 # Schnellfeuerpistole 25 m: ISSF General Technical Rules 6.3.4.4 (2023 edition).
 id = "issf-25m-rapid-fire-pistol"
-name = "Schnellfeuerpistole 25 m"
+name = "ISSF Schnellfeuerpistole 25 m"
 short_name = "ISSF Schnellfeuer"
 group = "ISSF"
 distances_m = [25]

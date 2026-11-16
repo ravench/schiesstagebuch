@@ -1,6 +1,6 @@
 # 25 m Ordonnanz-Schnellfeuer-Pistolenscheibe: black figure 76 × 45 cm, zones 10 to 6; black outside the 6 is a miss.
 id = "ch-25m-ordonnanz-rapid-fire"
-name = "Ordonnanz-Schnellfeuer-Pistolenscheibe 25 m"
+name = "VBS Ordonnanz-Schnellfeuer-Pistolenscheibe 25 m"
 short_name = "Ordonnanz 25 m"
 group = "Schweiz"
 distances_m = [25]

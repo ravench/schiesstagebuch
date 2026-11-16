@@ -2,7 +2,7 @@
 # 0.5 cm from the centre, so 91 to 100 hundredths make an A10 ten. Same face as
 # ch-300m-a10, so no rings here.
 id = "ch-300m-a100"
-name = "Scheibe A100 300 m"
+name = "VBS Scheibe A100 300 m"
 short_name = "A100"
 group = "Schweiz"
 distances_m = [300]

@@ -1,6 +1,6 @@
 # Luftgewehr 10 m: ISSF General Technical Rules 6.3.4.3 (2023 edition).
 id = "issf-10m-air-rifle"
-name = "Luftgewehr 10 m"
+name = "ISSF Luftgewehr 10 m"
 short_name = "ISSF LG"
 group = "ISSF"
 distances_m = [10]

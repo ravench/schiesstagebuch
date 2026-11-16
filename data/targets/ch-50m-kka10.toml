@@ -1,6 +1,6 @@
 # Kleinkaliberscheibe A: a 160 mm scoring field for the 50 m smallbore rifle, scored by the centre of the hit, 10 rings of 8 mm (the package names this method but leaves out its rings, so these follow A5 and A20).
 id = "ch-50m-kka10"
-name = "Kleinkaliberscheibe A10 50 m"
+name = "SSV Kleinkaliberscheibe A10 50 m"
 short_name = "KK A10"
 group = "Schweiz"
 distances_m = [50]

@@ -1,6 +1,6 @@
 # Gewehr 300 m: ISSF General Technical Rules 6.3.4.1 (2023 edition).
 id = "issf-300m-rifle"
-name = "Gewehr 300 m"
+name = "ISSF Gewehr 300 m"
 short_name = "ISSF 300 m"
 group = "ISSF"
 distances_m = [300]

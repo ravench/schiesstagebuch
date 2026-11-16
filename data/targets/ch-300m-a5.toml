@@ -1,7 +1,7 @@
 # Swiss 300 m Scheibe A, scored in 5 rings: a 100 cm scoring field split into 5 rings of
 # equal width, a 60 cm black centre. Rings score 5 in the centre down to 1.
 id = "ch-300m-a5"
-name = "Scheibe A5 300 m"
+name = "VBS Scheibe A5 300 m"
 short_name = "A5"
 group = "Schweiz"
 distances_m = [300]

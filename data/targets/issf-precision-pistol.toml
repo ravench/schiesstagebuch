@@ -1,6 +1,6 @@
 # Präzisionspistole 25/50 m: ISSF General Technical Rules 6.3.4.5 (2023 edition).
 id = "issf-precision-pistol"
-name = "Präzisionspistole 25/50 m"
+name = "ISSF Präzisionspistole 25/50 m"
 short_name = "ISSF Präzision"
 group = "ISSF"
 distances_m = [25, 50]

@@ -1,6 +1,6 @@
 # Kombinierte Pistolenscheibe B in Hunderterwertung: the 100 cm scoring field read in 100 steps of 5 mm.
 id = "ch-50m-pistol-b100"
-name = "Pistolenscheibe B100 50 m"
+name = "VBS Pistolenscheibe B100 50 m"
 short_name = "B100 Pistole"
 group = "Schweiz"
 distances_m = [50]

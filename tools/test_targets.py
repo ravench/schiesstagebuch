@@ -34,6 +34,14 @@ class RepoTargetTests(unittest.TestCase):
         self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][-1], 45.5)
         self.assertEqual(self.targets["issf-25m-rapid-fire-pistol"]["ring_diameters_mm"], [100, 180, 260, 340, 420, 500])
 
+    def test_names_say_who_issues_the_target(self):
+        # Raven 2026-11-16: ISSF and VBS targets with almost the same name must be told apart.
+        names = [t["name"] for t in self.targets.values()]
+        self.assertEqual(len(set(names)), len(names))
+        for target in self.targets.values():
+            prefix = "ISSF " if target["group"] == "ISSF" else ("VBS ", "SSV ")
+            self.assertTrue(target["name"].startswith(prefix), target["name"])
+
     def test_sius_50m_targets(self):
         # SIUS STYX SUI-50m-Targets-Package: P and B pistol targets, Kleinkaliber A for the rifle.
         self.assertEqual(self.targets["ch-50m-p4"]["ring_diameters_mm"], [200, 300, 600, 1000])

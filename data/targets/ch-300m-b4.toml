@@ -1,6 +1,6 @@
 # Kombinierte Feldscheibe B, 4er: light grey, green figure, four fields on a 100 cm scoring field.
 id = "ch-300m-b4"
-name = "Feldscheibe B4 300 m"
+name = "VBS Feldscheibe B4 300 m"
 short_name = "B4"
 group = "Schweiz"
 distances_m = [300]

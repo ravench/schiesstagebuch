@@ -1,6 +1,6 @@
 # Gewehr 50 m: ISSF General Technical Rules 6.3.4.2 (2023 edition).
 id = "issf-50m-rifle"
-name = "Gewehr 50 m"
+name = "ISSF Gewehr 50 m"
 short_name = "ISSF 50 m"
 group = "ISSF"
 distances_m = [50]

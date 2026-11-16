@@ -1,6 +1,6 @@
 # Luftpistole 10 m: ISSF General Technical Rules 6.3.4.6 (2023 edition).
 id = "issf-10m-air-pistol"
-name = "Luftpistole 10 m"
+name = "ISSF Luftpistole 10 m"
 short_name = "ISSF LP"
 group = "ISSF"
 distances_m = [10]

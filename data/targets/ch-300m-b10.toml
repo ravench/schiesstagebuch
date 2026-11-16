@@ -2,7 +2,7 @@
 # as Scheibe A, but light grey with a dark green figure (45 × 50 cm) instead of a round black.
 # B4 (fields 4 to 1, the 3 being the figure) needs a non-round zone and is not here yet.
 id = "ch-300m-b10"
-name = "Feldscheibe B10 300 m"
+name = "VBS Feldscheibe B10 300 m"
 short_name = "B10"
 group = "Schweiz"
 distances_m = [300]
