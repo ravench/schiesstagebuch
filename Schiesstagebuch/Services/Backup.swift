@@ -81,6 +81,11 @@ enum Backup {
     struct TargetDTO: Codable {
         var id: UUID; var name: String; var mode: String; var minValue: Double; var maxValue: Double
         var valuesText: String; var templateID: String; var createdAt: Date
+
+        init(_ t: ShootingTarget) {
+            id = t.id; name = t.name; mode = t.modeRaw; minValue = t.minValue; maxValue = t.maxValue
+            valuesText = t.valuesText; templateID = t.templateID; createdAt = t.createdAt
+        }
     }
     struct LicenceCardDTO: Codable { var id: UUID; var holderName: String; var licenceNumber: String; var updatedAt: Date }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
@@ -198,10 +203,7 @@ enum Backup {
                 .init(id: $0.id, date: $0.date, name: $0.name, rangeID: $0.range?.id, weather: $0.weather, createdAt: $0.createdAt,
                       scoringSystem: $0.scoringSystemRaw, ipscDivision: $0.ipscDivision, ipscPowerFactor: $0.ipscPowerFactorRaw)
             },
-            targets: try all(ShootingTarget.self, context).map {
-                .init(id: $0.id, name: $0.name, mode: $0.modeRaw, minValue: $0.minValue, maxValue: $0.maxValue,
-                      valuesText: $0.valuesText, templateID: $0.templateID, createdAt: $0.createdAt)
-            })
+            targets: try all(ShootingTarget.self, context).map(TargetDTO.init))
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .custom { date, encoder in
             var c = encoder.singleValueContainer()
