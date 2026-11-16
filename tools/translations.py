@@ -541,12 +541,7 @@ T = {
     "Stehend": ("Standing", "Debout", "In piedi"),
     "Aufgelegt": ("Rested", "Appuyé", "Appoggiato"),
     "Weiter": ("Next", "Suivant", "Avanti"),
-    "Weiteren Stich hinzufügen": ("Add another match", "Ajouter une autre cible", "Aggiungi un altro bersaglio"),
     "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
-    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": (
-        "For another programme at the same event, also with a different firearm.",
-        "Pour un autre programme au même événement, aussi avec une autre arme.",
-        "Per un altro programma allo stesso evento, anche con un'altra arma."),
     "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": (
         "Date, range, event and weather apply to all %lld matches.",
         "La date, le stand, l'événement et la météo valent pour les %lld cibles.",

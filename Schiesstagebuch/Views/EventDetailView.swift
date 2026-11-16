@@ -126,9 +126,10 @@ struct StichRow: View {
                     Text(IPSCFormat.hitFactor(hitFactor)).font(.headline.monospacedDigit())
                     Text("Hitfaktor").font(.caption2).foregroundStyle(.secondary)
                 } else {
-                    Text(entry.result.isEmpty || entry.scoringSystem == .ipsc ? entry.shotCount.formatted() : entry.result)
+                    let result = entry.scoringSystem == .ipsc ? "" : entry.resultText
+                    Text(result.isEmpty ? entry.shotCount.formatted() : result)
                         .font(.headline.monospacedDigit())
-                    Text(entry.result.isEmpty || entry.scoringSystem == .ipsc ? "Schuss".loc : String(localized: "\(entry.shotCount) Schuss"))
+                    Text(result.isEmpty ? "Schuss".loc : String(localized: "\(entry.shotCount) Schuss"))
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             }
