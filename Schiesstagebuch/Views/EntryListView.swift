@@ -117,10 +117,13 @@ struct EntryListView: View {
             ForEach(sections, id: \.month) { section in
                 Section {
                     ForEach(section.items) { item in
-                        if item.isSingle, let entry = item.entries.first {
+                        // Every row opens its Anlass, also one with a single Stich: Stiche are added there.
+                        if let event = item.event {
+                            NavigationLink(value: event) {
+                                if item.isSingle, let entry = item.entries.first { EntryRow(entry: entry) } else { EventRow(event: event, entries: item.entries) }
+                            }
+                        } else if let entry = item.entries.first {
                             NavigationLink(value: entry) { EntryRow(entry: entry) }
-                        } else if let event = item.event {
-                            NavigationLink(value: event) { EventRow(event: event, entries: item.entries) }
                         }
                     }
                     .onDelete { offsets in

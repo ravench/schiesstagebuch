@@ -36,8 +36,13 @@ final class PRScreensTests: XCTestCase {
     func testTour() {
         tab("Tagebuch")
         snap("01-Tagebuch")
-        if open(app.staticTexts["Obligatorisch"].firstMatch) {
-            snap("02-Eintrag")
+        // A journal row opens its Anlass, with each Stich's result; the Stich row opens the Stich.
+        if open(app.staticTexts["Obligatorisch"].firstMatch), app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5) {
+            snap("01b-Anlass")
+            if open(app.staticTexts["Stgw 90"].firstMatch) {
+                snap("02-Eintrag")
+                back()
+            }
             back()
         }
         // The Anlass first (date, range, name), then its screen with no Stich yet, then the first Stich.
@@ -64,7 +69,15 @@ final class PRScreensTests: XCTestCase {
 
         tab("Statistik")
         snap("05-Statistik")
+        stop("05c-Statistik-Resultat-in-Prozent", chart: "Resultat in Prozent")
         stop("05b-Statistik-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
+        // The single Stiche are one row further (the sample data names none, so the row is not there today).
+        let stiche = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Stiche")).firstMatch
+        reveal(stiche, swipes: 4)
+        if stiche.exists, open(stiche) {
+            snap("05d-Statistik-Stiche")
+            back()
+        }
 
         tab("Waffen")
         snap("06-Waffen")
@@ -87,18 +100,12 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
-            // The figures are their own screen (the tab bar has a «Statistik» button too, so by the cell).
-            let statistics = app.cells.containing(.staticText, identifier: "Statistik").firstMatch
-            reveal(statistics)
-            if open(statistics) {
-                snap("07e-Waffe-Statistik")
-                stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
-                stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
-                back()
-            }
+            weaponStatisticsStops()
             back()
         }
 
+        tab("Anlagen")
+        snap("07h-Schiessanlagen")
         tab("Einstellungen")
         snap("08-Einstellungen")
         // Cartridge drawings: the calibre list and one calibre at true scale (1 mm = 2 pt).
@@ -114,6 +121,27 @@ final class PRScreensTests: XCTestCase {
         scroll()
         snap("09-Einstellungen-unten")
         filterStops()
+    }
+
+    /// A firearm's figures: the charts, calibre and ammunition in one card, the entries on a page of their own.
+    private func weaponStatisticsStops() {
+        // The figures are their own screen (the tab bar has a «Statistik» button too, so by the cell).
+        let statistics = app.cells.containing(.staticText, identifier: "Statistik").firstMatch
+        reveal(statistics)
+        if open(statistics) {
+            snap("07e-Waffe-Statistik")
+            stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
+            // Calibre and ammunition in one card; the entries one row further, at the very end.
+            stop("07f-Waffe-Pro-Kaliber", chart: "Pro Kaliber")
+            stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
+            let entries = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Einträge")).firstMatch
+            reveal(entries, swipes: 10)
+            if open(entries) {
+                snap("07g-Waffe-Eintraege")
+                back()
+            }
+            back()
+        }
     }
 
     /// The GP 11 lots, split by firearm and position, and the calibre of the cartridge: more than ten to
@@ -169,7 +197,7 @@ final class PRScreensTests: XCTestCase {
             snap("12b-Neuer-Anlass-bei-Wetter-ein")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
-        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        guard openStich("Feldschiessen"), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         reveal(weatherSwitch)
         if (weatherSwitch.value as? String) != "1" {
@@ -230,7 +258,7 @@ final class PRScreensTests: XCTestCase {
     func testWeatherWithoutAppleWeather() {
         relaunch(adding: ["-sportFeatures.v1", "8", "-appleWeather.enabled", "0"])
         tab("Tagebuch")
-        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        guard openStich("Feldschiessen"), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         reveal(weatherSwitch)
         if (weatherSwitch.value as? String) != "1" {
@@ -248,10 +276,7 @@ final class PRScreensTests: XCTestCase {
     func testSightStops() {
         relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
         tab("Tagebuch")
-        guard open(app.staticTexts["Feldschiessen"].firstMatch) else { return }
-        let add = app.buttons["Weiteren Stich hinzufügen"].firstMatch
-        reveal(add)
-        guard open(add) else { return }
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
         topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17-Sportschuetzen-Felder")
         // The diopter corrections switched on: the clicks up or down and right or left.
         let diopter = app.switches.matching(NSPredicate(format: "label BEGINSWITH %@", "Diopterkorrekturen")).firstMatch
@@ -301,11 +326,49 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered.
+    /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered. With a card
+    /// there are six tabs: on the iPhone the ranges and the settings then share «Mehr».
     func testLicenceCard() {
         tab("Einstellungen")
         guard open(app.staticTexts["SSV-Lizenzkarte"].firstMatch) else { return }
         snap("18-SSV-Lizenzkarte-leer")
+        guard open(app.buttons["Lizenz erfassen"].firstMatch), open(app.textFields["Lizenznummer"].firstMatch) else { return }
+        app.textFields["Lizenznummer"].firstMatch.typeText("123456")
+        app.buttons["Sichern"].firstMatch.tap()
+        // The Einstellungen tab is gone now: the app shows the new card, not the diary.
+        let card = app.tabBars.buttons["Lizenzkarte"]
+        XCTAssertTrue(card.waitForExistence(timeout: 5) && card.isSelected, "Saving the first card does not show it")
+        tab("Mehr")
+        snap("18b-Mehr")
+        if open(app.staticTexts["Einstellungen"].firstMatch) { snap("18c-Mehr-Einstellungen") }
+    }
+
+    /// The list of ranges: a new range with «Aktuellen Standort verwenden», then the list's search field.
+    func testRanges() {
+        // Under Einstellungen, or a tab of its own where the app has one.
+        let ranges = app.tabBars.buttons["Schiessanlagen"]
+        if ranges.waitForExistence(timeout: 3) {
+            ranges.tap()
+        } else {
+            tab("Einstellungen")
+            guard open(app.staticTexts["Schiessanlagen"].firstMatch) else { return }
+        }
+        if openMenu(app.navigationBars.buttons["Hinzufügen"].firstMatch, showing: "Schweizer Schiessanlagen übernehmen") {
+            // The menu's own «Hinzufügen» comes after the bar's button of the same name.
+            let items = app.buttons.matching(NSPredicate(format: "label == %@", "Hinzufügen"))
+            items.element(boundBy: items.count - 1).tap()
+            XCTAssertTrue(app.buttons["Aktuellen Standort verwenden"].waitForExistence(timeout: 5), "No current-location button")
+            snap("19b-Neue-Schiessanlage")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        } else {
+            XCTFail("No menu to add a range")
+        }
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        guard search.waitForExistence(timeout: 5) else { return XCTFail("No search field in the ranges list") }
+        search.tap()
+        search.typeText("Oster\n") // return hides the keyboard
+        snap("19-Schiessanlagen-Suche")
     }
 
     /// Starts the app again with `arguments` on top of the usual ones.
@@ -526,6 +589,14 @@ final class PRScreensTests: XCTestCase {
         }
         element.tap()
         return true
+    }
+
+    /// Opens the sample Anlass `event` from the journal, then its Stich (the row is named after the weapon,
+    /// as the journal's rows are: wait for the Anlass screen first).
+    private func openStich(_ event: String) -> Bool {
+        guard open(app.staticTexts[event].firstMatch), app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5),
+              open(app.staticTexts["Stgw 90"].firstMatch) else { return false }
+        return app.staticTexts["Ausrüstung"].firstMatch.waitForExistence(timeout: 5)
     }
 
     /// Taps the option of an open picker whose label holds `name`, whatever element type it has. False when

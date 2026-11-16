@@ -97,7 +97,7 @@ extension WeatherField {
         .init(key: "visibility", label: "Sicht auf die Scheiben", icon: "binoculars", kind: .select([
             o("clear", "klar", "eye"),
             o("light_haze", "leichter Dunst", "sun.haze"),
-            o("fog", "Nebel", "eye.slash"),
+            o("fog", "Nebel", "cloud.fog"),
             o("mirage", "Flimmern", "water.waves"), // heat shimmer over the range (Raven 2026-11-09)
         ])),
         .init(key: "wind_strength", label: "Windstärke am Stand", icon: "wind", kind: .select([

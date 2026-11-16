@@ -70,7 +70,7 @@ struct SightSettings: Equatable {
     static let bipodRange: ClosedRange<Double> = 0...60
     static let bipodStep = 0.5
 
-    /// Bipod ruler: ±5 cm on screen, 0.5 cm steps, numbers every 2 cm.
+    /// Bipod ruler: ±5 cm on screen, 0.5 cm steps, a long stroke at every full centimetre, numbers every 2 cm.
     static let bipodRulerScale = RulerScale(range: bipodRange, step: bipodStep, halfSpan: 5, majorEvery: 4)
 
     /// Clamps to the bipod range and rounds to the nearest 0.5 cm.

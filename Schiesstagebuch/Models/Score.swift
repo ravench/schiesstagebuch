@@ -120,6 +120,11 @@ extension Entry {
               percentFromResult: !isLegacyImport)
     }
 
+    /// The result to show: as typed, else the points the Einzelschüsse or Passen add up to; empty without either.
+    var resultText: String {
+        result.isEmpty ? score.points.map(ScoreFormat.points) ?? passeTotals.resultText : result
+    }
+
     /// Imported from Schusszähler, whose export only holds a shot total and a free-text result. Such entries
     /// get a percentage only once a maximum is entered, and a per-shot average only once the
     /// sighters are split off.
@@ -214,6 +219,16 @@ extension Sequence where Element == Entry {
             .sorted { firearmGroupOrder(($0.count, $0.weapon), ($1.count, $1.weapon)) == .orderedAscending }
     }
 
+    /// Entries with a percentage per kind of firearm, oldest first, in the category picker's order (no firearm
+    /// last), for kinds with two results or more: a pistol's percentages next to a rifle's say nothing (Raven 2026-11-15).
+    var resultTrends: [ResultTrend] {
+        func order(_ c: WeaponCategory?) -> Int { c.flatMap { WeaponCategory.allCases.firstIndex(of: $0) } ?? WeaponCategory.allCases.count }
+        return Dictionary(grouping: filter { $0.score.percentage != nil }, by: { $0.weapon?.category })
+            .filter { $0.value.count >= 2 }
+            .map { ResultTrend(category: $0.key, entries: $0.value.sorted { $0.date < $1.date }) }
+            .sorted { order($0.category) < order($1.category) }
+    }
+
     /// Mean points per entry over the entries with a numeric result; impossible results (over
     /// the maximum) are left out, as in `averagePercentage`.
     var averagePoints: Double? {
@@ -278,6 +293,13 @@ extension ShootingPosition {
     static func order(_ position: ShootingPosition?) -> Int {
         position.flatMap { allCases.firstIndex(of: $0) } ?? allCases.count
     }
+}
+
+/// The results of one kind of firearm over time, see `resultTrends`.
+struct ResultTrend {
+    /// nil for entries without a firearm.
+    var category: WeaponCategory?
+    var entries: [Entry]
 }
 
 /// Positions shot with one firearm, see `positionComparisons`.

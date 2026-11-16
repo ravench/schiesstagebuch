@@ -199,4 +199,24 @@ final class LotResultTests: ModelTestCase {
         XCTAssertEqual(groups[0].positions.map(\.position), [.prone, .kneeling])
         XCTAssertEqual(groups[0].count, 2)
     }
+
+    func testResultTrendsArePerKindOfFirearm() {
+        let rifle = Weapon(name: "Stgw 90"), carbine = Weapon(name: "K31"), pistol = Weapon(name: "P210")
+        rifle.category = .serviceRifle; carbine.category = .serviceCarbine; pistol.category = .pistol
+        [rifle, carbine, pistol].forEach(context.insert)
+        let late = entry(nil, result: "92 %", weapon: rifle), early = entry(nil, result: "88 %", weapon: rifle)
+        early.date = day(1, month: 2)
+        let entries = [late, early,
+                       entry(nil, result: "85 %", weapon: pistol), entry(nil, result: "80 %", weapon: pistol),
+                       entry(nil, result: "", weapon: pistol),          // no percentage: not in the trend
+                       entry(nil, result: "70 %", weapon: carbine),     // one result is no trend
+                       entry(nil, result: "60 %"), entry(nil, result: "65 %")]
+        let trends = entries.resultTrends
+        // The category picker's order (handguns first), no firearm last.
+        XCTAssertEqual(trends.map(\.category), [.pistol, .serviceRifle, nil])
+        XCTAssertEqual(trends.map(\.entries.count), [2, 2, 2])
+        XCTAssertEqual(trends[1].entries.map(\.result), ["88 %", "92 %"], "oldest first")
+        XCTAssertTrue(ResultTrendChart.shows(entries))
+        XCTAssertFalse(ResultTrendChart.shows([late, entry(nil, result: "85 %", weapon: pistol)]), "one rifle and one pistol result")
+    }
 }

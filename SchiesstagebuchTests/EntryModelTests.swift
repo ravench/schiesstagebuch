@@ -97,4 +97,17 @@ final class EntryModelTests: ModelTestCase {
         XCTAssertEqual([a, b].averagePercentage!, 0.9, accuracy: 1e-9)
         XCTAssertEqual([a, b].averagePerShot!, 9, accuracy: 1e-9)
     }
+
+    /// The Anlass page shows each Stich's result, also one saved with shots only (tester feedback 2026-11-15).
+    func testResultTextFallsBackToTheShotsAndPassen() {
+        let e = addEntry(nil, on: day(1), shots: 3)
+        XCTAssertEqual(e.resultText, "", "no result and no shots")
+        e.shotValuesText = "10 9 8"
+        XCTAssertEqual(e.resultText, "27", "the sum of the Einzelschüsse")
+        e.result = "Kranz"
+        XCTAssertEqual(e.resultText, "Kranz", "a typed result wins")
+        let passen = addEntry(nil, on: day(1), shots: 20)
+        passen.passeTotals = [PasseTotal(shots: 10, points: 91), PasseTotal(shots: 10, points: 88.5)]
+        XCTAssertEqual(passen.resultText, ScoreFormat.points(179.5), "the sum of the Passen")
+    }
 }

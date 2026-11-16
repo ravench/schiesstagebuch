@@ -360,6 +360,9 @@ final class Entry {
     var stich: String = ""
     /// `ShootingPosition` raw value, e.g. "prone"; empty when none was entered. See `position`.
     var positionRaw: String = ""
+    /// Ablösung (relay) and Scheibe (target number) the Stich was shot in, as on the start card; empty when not entered.
+    var relay: String = ""
+    var targetNumber: String = ""
     /// All shots fired, sighters included.
     var shotCount: Int = 0
     /// Probeschüsse, when the user splits the count; nil = only a total was entered.

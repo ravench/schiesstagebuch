@@ -17,7 +17,7 @@ struct StatsView: View {
                 Section { KPIGrid(entries: filtered) }
                     .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
                 Section { ShotsOverTimeChart(entries: filtered) }
-                if filtered.compactMap(\.score.percentage).count >= 2 { Section { ResultTrendChart(entries: filtered) } }
+                if ResultTrendChart.shows(filtered) { Section { ResultTrendChart(entries: filtered) } }
                 if PositionResultsChart.shows(filtered) { Section { PositionResultsChart(entries: filtered) } }
                 Section {
                     BreakdownChart(title: term("Pro Waffe"), entries: filtered, key: \.weapon, label: \.name)
@@ -39,14 +39,20 @@ struct StatsView: View {
                 }
                 let stiche = StichStats.named(in: filtered)
                 if !stiche.isEmpty {
-                Section("Stiche") {
-                    ForEach(stiche) { item in
-                        NavigationLink {
-                            StichDetailView(name: item.name)
-                        } label: {
-                            StatsLinkRow(name: item.name, subtitle: StichDetailView.subtitle(item.entries),
-                                         archived: false, shots: item.shots)
+                // One row: the single Stiche have their own screen (Raven 2026-11-15).
+                Section {
+                    NavigationLink {
+                        List(stiche) { item in
+                            NavigationLink {
+                                StichDetailView(name: item.name)
+                            } label: {
+                                StatsLinkRow(name: item.name, subtitle: StichDetailView.subtitle(item.entries),
+                                             archived: false, shots: item.shots)
+                            }
                         }
+                        .navigationTitle("Stiche")
+                    } label: {
+                        LabeledContent("Stiche", value: stiche.count.formatted())
                     }
                 }
                 }
@@ -128,14 +134,20 @@ struct ItemStatsList<Header: View, Extra: View>: View {
             Section { KPIGrid(entries: filtered) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
             Section { ShotsOverTimeChart(entries: filtered) }
-            if filtered.compactMap(\.score.percentage).count >= 2 { Section { ResultTrendChart(entries: filtered) } }
+            if ResultTrendChart.shows(filtered) { Section { ResultTrendChart(entries: filtered) } }
             if PositionResultsChart.shows(filtered) { Section { PositionResultsChart(entries: filtered) } }
             breakdowns(filtered)
-            Section("Einträge") {
-                if filtered.isEmpty { Text("Keine Einträge").foregroundStyle(.secondary) }
-                ForEach(filtered) { e in
-                    NavigationLink { EntryDetailView(entry: e) } label: { EntryRow(entry: e) }
+            // One row: the list was too much below the charts (Raven 2026-11-15).
+            Section {
+                NavigationLink {
+                    List(filtered) { e in
+                        NavigationLink { EntryDetailView(entry: e) } label: { EntryRow(entry: e) }
+                    }
+                    .navigationTitle("Einträge")
+                } label: {
+                    LabeledContent("Einträge", value: filtered.count.formatted())
                 }
+                .disabled(filtered.isEmpty)
             }
         }
     }
@@ -235,9 +247,12 @@ struct WeaponStatsView: View {
             if weapon.hasSeveralBarrels {
                 Section { BreakdownChart(title: "Pro Lauf", entries: entries, key: \.effectiveBarrel, label: \.displayName) }
             }
-            Section { BreakdownChart(title: "Pro Kaliber", entries: entries, key: \.caliber, label: \.name) }
+            // Calibre and ammunition together (Raven 2026-11-15): the ammunition is the calibre's.
+            Section {
+                BreakdownChart(title: "Pro Kaliber", entries: entries, key: \.caliber, label: \.name)
+                BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.displayName)
+            }
             Section { BreakdownChart(title: "Pro Schiessanlage", entries: entries, key: \.range, label: \.name) }
-            Section { BreakdownChart(title: "Pro Munition", entries: entries, key: \.ammunition, label: \.displayName) }
             if LotResultsChart.shows(entries) { Section { LotResultsChart(entries: entries) } }
         }
         .navigationTitle(weapon.name)

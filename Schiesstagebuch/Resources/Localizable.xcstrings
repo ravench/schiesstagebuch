@@ -599,6 +599,29 @@
         }
       }
     },
+    "Ablösung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relève"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turno"
+          }
+        }
+      }
+    },
     "Abzugsgehäuse": {
       "extractionState": "manual",
       "localizations": {
@@ -618,6 +641,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Castello di scatto"
+          }
+        }
+      }
+    },
+    "Aktuellen Standort verwenden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use current location"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utiliser la position actuelle"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa la posizione attuale"
           }
         }
       }
@@ -848,6 +894,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Altro"
+          }
+        }
+      }
+    },
+    "Anlagen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranges"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stands"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poligoni"
           }
         }
       }
@@ -4032,25 +4101,25 @@
         }
       }
     },
-    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später unter Einstellungen › Schiessanlagen.": {
+    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später im Tab «Anlagen».": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges."
+            "value": "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later in the Ranges tab."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard sous Réglages › Stands de tir."
+            "value": "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard dans l'onglet Stands."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi in Impostazioni › Poligoni."
+            "value": "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi nella scheda Poligoni."
           }
         }
       }
@@ -4120,52 +4189,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e l'ora, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso posto."
-          }
-        }
-      }
-    },
-    "Für ein weiteres Programm am selben Anlass, auch mit einem anderen Sportgerät.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "For another programme at the same event, also with different equipment."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pour un autre programme au même événement, aussi avec un autre équipement."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Per un altro programma allo stesso evento, anche con un altro attrezzo."
-          }
-        }
-      }
-    },
-    "Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "For another programme at the same event, also with a different firearm."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pour un autre programme au même événement, aussi avec une autre arme."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Per un altro programma allo stesso evento, anche con un'altra arma."
           }
         }
       }
@@ -6679,6 +6702,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mediana per colpo"
+          }
+        }
+      }
+    },
+    "Mehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro"
           }
         }
       }
@@ -9236,6 +9282,29 @@
         }
       }
     },
+    "Resultat (Punkte)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result (points)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultat (points)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultato (punti)"
+          }
+        }
+      }
+    },
     "Resultat in Prozent": {
       "extractionState": "manual",
       "localizations": {
@@ -10060,6 +10129,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra i colpi come"
+          }
+        }
+      }
+    },
+    "Schüsse total": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total shots"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total des coups"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totale colpi"
           }
         }
       }
@@ -11946,29 +12038,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi numero"
-          }
-        }
-      }
-    },
-    "Weiteren Stich hinzufügen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add another match"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajouter une autre cible"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi un altro bersaglio"
           }
         }
       }

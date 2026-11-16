@@ -22,161 +22,164 @@ struct SettingsView: View {
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
     @AppStorage(ScoringSystem.enabledKey) private var scoringSystems = ""
 
+    /// Under the «Mehr» tab the navigation stack is that tab's.
+    var inMore = false
+
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    NavigationLink { WeaponsListView() } label: { Label(term("Waffen").loc, systemImage: "scope") }
-                    NavigationLink { CaliberListView() } label: {
-                        // A cartridge from the catalogue as a tinted symbol, like the rows around it.
-                        Label { Text("Kaliber (Mehrzahl)") } icon: { CartridgeView(catalogID: ".45 ACP", monochrome: true).frame(width: 22, height: 22) }
-                    }
-                    NavigationLink { AmmunitionListView() } label: { Label("Munition", systemImage: "circle.grid.3x3.fill") }
-                    NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "target") }
-                } header: {
-                    Text("Stammdaten")
-                }
+        if inMore { list } else { NavigationStack { list } }
+    }
 
-                // Entering and editing the card happens here only; the tab (RootView) just shows it.
-                Section {
-                    NavigationLink { LicenceCardScreen(editable: true) } label: {
-                        Label("SSV-Lizenzkarte", systemImage: "person.text.rectangle")
-                    }
+    private var list: some View {
+        List {
+            Section {
+                NavigationLink { CaliberListView() } label: {
+                    // A cartridge from the catalogue as a tinted symbol, like the rows around it.
+                    Label { Text("Kaliber (Mehrzahl)") } icon: { CartridgeView(catalogID: ".45 ACP", monochrome: true).frame(width: 22, height: 22) }
                 }
+                NavigationLink { AmmunitionListView() } label: { Label("Munition", systemImage: "circle.grid.3x3.fill") }
+            } header: {
+                Text("Stammdaten")
+            }
 
-                Section {
-                    Toggle(isOn: $sportsEquipment) {
-                        Label("«Sportgeräte» statt «Waffen»", systemImage: "textformat")
-                    }
-                } header: {
-                    Text("Bezeichnung")
-                } footer: {
-                    Text("Ändert nur die Wörter in der App, deine Daten bleiben gleich.")
+            // Entering and editing the card happens here only; the tab (RootView) just shows it.
+            Section {
+                NavigationLink { LicenceCardScreen(editable: true) } label: {
+                    Label("SSV-Lizenzkarte", systemImage: "person.text.rectangle")
                 }
+            }
 
-                Section {
-                    Picker(selection: $defaultMode) {
-                        ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
-                    } label: {
-                        Label("Schüsse erfassen als", systemImage: "list.number")
-                    }
-                    Toggle(isOn: $showSerial) {
-                        Label(term("Seriennummer in der Waffenauswahl").loc, systemImage: "number")
-                    }
-                } header: {
-                    Text("Erfassung")
-                } footer: {
-                    Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
+            Section {
+                Toggle(isOn: $sportsEquipment) {
+                    Label("«Sportgeräte» statt «Waffen»", systemImage: "textformat")
                 }
+            } header: {
+                Text("Bezeichnung")
+            } footer: {
+                Text("Ändert nur die Wörter in der App, deine Daten bleiben gleich.")
+            }
 
-                Section {
-                    Toggle(isOn: $rangeByLocation) {
-                        Label("Schiessanlage nach Standort wählen", systemImage: "location")
-                    }
-                } footer: {
-                    Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
+            Section {
+                Picker(selection: $defaultMode) {
+                    ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
+                } label: {
+                    Label("Schüsse erfassen als", systemImage: "list.number")
                 }
-
-                Section {
-                    ForEach(ScoringSystem.allCases) { system in
-                        ScoringSystemToggle(system: system, raw: $scoringSystems)
-                    }
-                } header: {
-                    Text("Wertungsarten")
-                } footer: {
-                    Text("Mit mehr als einer wählst du sie pro Anlass. Neue Anlässe beginnen mit der obersten.")
+                Toggle(isOn: $showSerial) {
+                    Label(term("Seriennummer in der Waffenauswahl").loc, systemImage: "number")
                 }
+            } header: {
+                Text("Erfassung")
+            } footer: {
+                Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
+            }
 
-                Section {
-                    ForEach(SportFeatures.each, id: \.rawValue) { feature in
-                        if feature.hasFilterList {
-                            // One row for filters: its switch sits on the filter page, above the filters.
-                            NavigationLink { FilterSettingsView() } label: {
-                                LabeledContent {
-                                    Text(features.contains(feature) ? "Ein".loc : "Aus".loc)
-                                } label: {
-                                    Label { Text(feature.title.loc) } icon: { SportFeatureIcon(feature: feature) }
-                                }
+            Section {
+                Toggle(isOn: $rangeByLocation) {
+                    Label("Schiessanlage nach Standort wählen", systemImage: "location")
+                }
+            } footer: {
+                Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
+            }
+
+            Section {
+                ForEach(ScoringSystem.allCases) { system in
+                    ScoringSystemToggle(system: system, raw: $scoringSystems)
+                }
+            } header: {
+                Text("Wertungsarten")
+            } footer: {
+                Text("Mit mehr als einer wählst du sie pro Anlass. Neue Anlässe beginnen mit der obersten.")
+            }
+
+            Section {
+                ForEach(SportFeatures.each, id: \.rawValue) { feature in
+                    if feature.hasFilterList {
+                        // One row for filters: its switch sits on the filter page, above the filters.
+                        NavigationLink { FilterSettingsView() } label: {
+                            LabeledContent {
+                                Text(features.contains(feature) ? "Ein".loc : "Aus".loc)
+                            } label: {
+                                Label { Text(feature.title.loc) } icon: { SportFeatureIcon(feature: feature) }
                             }
-                        } else {
-                            SportFeatureToggle(feature: feature, features: $features, showsDetail: false)
                         }
+                    } else {
+                        SportFeatureToggle(feature: feature, features: $features, showsDetail: false)
                     }
-                    // Under the weather switch it belongs to (Raven 2026-11-09); only while weather is recorded at all.
+                }
+                // Under the weather switch it belongs to (Raven 2026-11-09); only while weather is recorded at all.
+                if features.contains(.weather) {
+                    Toggle(isOn: $appleWeather) {
+                        Label("Wetterdaten von Apple Weather übernehmen", systemImage: "icloud.and.arrow.down")
+                    }
+                }
+            } header: {
+                Text("Zusätzliche Felder")
+            } footer: {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.")
                     if features.contains(.weather) {
-                        Toggle(isOn: $appleWeather) {
-                            Label("Wetterdaten von Apple Weather übernehmen", systemImage: "icloud.and.arrow.down")
-                        }
-                    }
-                } header: {
-                    Text("Zusätzliche Felder")
-                } footer: {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.")
-                        if features.contains(.weather) {
-                            Text("Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
-                        }
-                    }
-                }
-
-                Section {
-                    Picker(selection: $dayCounting) {
-                        ForEach(DayCounting.allCases) { Text($0.title).tag($0) }
-                    } label: {
-                        Label("Tage zählen", systemImage: "calendar.badge.clock")
-                    }
-                } header: {
-                    Text("Erinnerungen")
-                } footer: {
-                    Text(term("Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.").loc)
-                }
-
-                Section {
-                    Button { export() } label: { Label("Backup exportieren", systemImage: "square.and.arrow.up") }
-                    Button { importing = true } label: { Label("Backup wiederherstellen", systemImage: "square.and.arrow.down") }
-                    Button { exportCSV() } label: { Label("Tagebuch als CSV", systemImage: "tablecells") }
-                    Button { importingLegacy = true } label: {
-                        Label {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Import aus «\(LegacyImport.sourceAppName)»")
-                                Text("App von \(LegacyImport.sourceDeveloper)")
-                                    .font(.caption).foregroundStyle(.secondary)
-                            }
-                        } icon: {
-                            Image(systemName: "arrow.down.doc")
-                        }
-                    }
-                } header: {
-                    Text("Daten")
-                } footer: {
-                    Text("Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.")
-                }
-
-                Section {
-                    NavigationLink { AppIconView() } label: { Label("App-Icon", systemImage: "app.badge") }
-                    LabeledContent("Version", value: Bundle.main.versionText)
-                    if let source = CaliberCatalog.source {
-                        LabeledContent("Kaliberdaten", value: source.text)
+                        Text("Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
                     }
                 }
             }
-            .navigationTitle("Einstellungen")
-            .onChange(of: dayCounting) { weapons.forEach { MaintenanceNotifier.refresh($0) } }
-            .fileExporter(isPresented: Binding(get: { exportDoc != nil }, set: { if !$0 { exportDoc = nil } }),
-                          document: exportDoc, contentType: exportType, defaultFilename: exportName) { result in
-                if case .failure(let e) = result { message = e.localizedDescription }
+
+            Section {
+                Picker(selection: $dayCounting) {
+                    ForEach(DayCounting.allCases) { Text($0.title).tag($0) }
+                } label: {
+                    Label("Tage zählen", systemImage: "calendar.badge.clock")
+                }
+            } header: {
+                Text("Erinnerungen")
+            } footer: {
+                Text(term("Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.").loc)
             }
-            .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
-                switch result {
-                case .success(let url): restore(from: url)
-                case .failure(let e): message = e.localizedDescription
+
+            Section {
+                Button { export() } label: { Label("Backup exportieren", systemImage: "square.and.arrow.up") }
+                Button { importing = true } label: { Label("Backup wiederherstellen", systemImage: "square.and.arrow.down") }
+                Button { exportCSV() } label: { Label("Tagebuch als CSV", systemImage: "tablecells") }
+                Button { importingLegacy = true } label: {
+                    Label {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Import aus «\(LegacyImport.sourceAppName)»")
+                            Text("App von \(LegacyImport.sourceDeveloper)")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                    } icon: {
+                        Image(systemName: "arrow.down.doc")
+                    }
+                }
+            } header: {
+                Text("Daten")
+            } footer: {
+                Text("Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.")
+            }
+
+            Section {
+                NavigationLink { AppIconView() } label: { Label("App-Icon", systemImage: "app.badge") }
+                LabeledContent("Version", value: Bundle.main.versionText)
+                if let source = CaliberCatalog.source {
+                    LabeledContent("Kaliberdaten", value: source.text)
                 }
             }
-            .sheet(isPresented: $importingLegacy) { LegacyImportView() }
-            .alert("Datensicherung", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
-                Button("OK") {}
-            } message: { Text(message ?? "") }
         }
+        .navigationTitle("Einstellungen")
+        .onChange(of: dayCounting) { weapons.forEach { MaintenanceNotifier.refresh($0) } }
+        .fileExporter(isPresented: Binding(get: { exportDoc != nil }, set: { if !$0 { exportDoc = nil } }),
+                      document: exportDoc, contentType: exportType, defaultFilename: exportName) { result in
+            if case .failure(let e) = result { message = e.localizedDescription }
+        }
+        .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
+            switch result {
+            case .success(let url): restore(from: url)
+            case .failure(let e): message = e.localizedDescription
+            }
+        }
+        .sheet(isPresented: $importingLegacy) { LegacyImportView() }
+        .alert("Datensicherung", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
+            Button("OK") {}
+        } message: { Text(message ?? "") }
     }
 
     private func export() {
@@ -523,13 +526,14 @@ struct RangeListView: View {
     @State private var showArchived = false
     @State private var adding = false
     @State private var importedCount: Int?
+    @State private var search = ""
 
     private var hasCatalogueRanges: Bool { ranges.contains { !$0.catalogID.isEmpty } }
 
     var body: some View {
         List {
             Section {
-                ForEach(ranges.filter { showArchived || !$0.isArchived }) { r in
+                ForEach(ranges.filter { (showArchived || !$0.isArchived) && RangeSearch.matches($0, search) }) { r in
                     NavigationLink { RangeDetailView(range: r) } label: {
                         StatsLinkRow(name: r.name, subtitle: r.place, archived: r.isArchived, shots: (r.entries ?? []).totalShots)
                     }
@@ -546,6 +550,7 @@ struct RangeListView: View {
             }
         }
         .navigationTitle("Schiessanlagen")
+        .searchable(text: $search, prompt: "Schiessanlage suchen")
         .toolbar {
             Toggle(isOn: $showArchived) { Label("Archivierte", systemImage: "archivebox") }.toggleStyle(.button)
             Menu {

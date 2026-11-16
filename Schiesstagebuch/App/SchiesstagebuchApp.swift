@@ -77,13 +77,12 @@ struct SchiesstagebuchApp: App {
 }
 
 struct RootView: View {
-    enum Tab: Hashable { case journal, stats, weapons, licence, settings }
-
     @Environment(\.term) private var term
     @Environment(\.modelContext) private var context
     @Query(filter: #Predicate<Weapon> { !$0.isArchived }) private var weapons: [Weapon]
     @Query private var licenceCards: [LicenceCard]
-    @State private var tab = Tab.journal
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var tab = "diary"
     /// The Waffen tab's navigation path: a tapped reminder puts its firearm there. Type-erased, since
     /// the firearm's page pushes its statistics with a view link, which a typed path cannot hold.
     @State private var weaponPath = NavigationPath()
@@ -93,29 +92,55 @@ struct RootView: View {
     @State private var showWhatsNew = false
 
     private var dueCount: Int { weapons.reduce(0) { $0 + $1.dueMaintenance.count } }
+    /// With a licence card there are six tabs, one too many for a narrow tab bar. The system's own «Mehr»
+    /// puts a second navigation bar on each of its pages, so the ranges and the settings share this one.
+    private var crowded: Bool { sizeClass == .compact && LicenceCard.hasCard(licenceCards) }
 
     var body: some View {
         TabView(selection: $tab) {
             EntryListView()
                 .tabItem { Label("Tagebuch", systemImage: "list.bullet.rectangle") }
-                .tag(Tab.journal)
+                .tag("diary")
             StatsView()
                 .tabItem { Label("Statistik", systemImage: "chart.bar.xaxis") }
-                .tag(Tab.stats)
+                .tag("stats")
             WeaponsTab(path: $weaponPath)
                 .tabItem { Label(term("Waffen").loc, systemImage: "scope") }
                 .badge(dueCount)
-                .tag(Tab.weapons)
+                .tag("weapons")
             // The card gets its own tab once one has been entered, to show at the range; entering and
             // editing it stays in Einstellungen › SSV-Lizenzkarte (Raven 2026-11-14).
             if LicenceCard.hasCard(licenceCards) {
                 NavigationStack { LicenceCardScreen(editable: false) }
                     .tabItem { Label("Lizenzkarte", systemImage: "person.text.rectangle") }
-                    .tag(Tab.licence)
+                    .tag("card")
             }
-            SettingsView()
-                .tabItem { Label("Einstellungen", systemImage: "gearshape") }
-                .tag(Tab.settings)
+            // Firearms and ranges are tabs only, no longer also under Einstellungen (Raven 2026-11-15).
+            if crowded {
+                NavigationStack {
+                    List {
+                        NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "target") }
+                        NavigationLink { SettingsView(inMore: true) } label: { Label("Einstellungen", systemImage: "gearshape") }
+                    }
+                    .navigationTitle("Mehr")
+                }
+                .tabItem { Label("Mehr", systemImage: "ellipsis") }
+                .tag("more")
+            } else {
+                // «Anlagen», not the page's «Schiessanlagen»: five German labels do not fit an iPhone otherwise.
+                NavigationStack { RangeListView() }
+                    .tabItem { Label("Anlagen", systemImage: "target") }
+                    .tag("ranges")
+                SettingsView()
+                    .tabItem { Label("Einstellungen", systemImage: "gearshape") }
+                    .tag("settings")
+            }
+        }
+        // The tab the user is on goes away when the first card is saved or the last one deleted:
+        // show the new card, or the settings the card was deleted from, instead of jumping to the diary.
+        .onChange(of: crowded) { _, now in
+            if now, tab == "ranges" || tab == "settings" { tab = "card" }
+            if !now, tab == "more" { tab = "settings" }
         }
         // A tapped Pflege reminder; `initial`, since the tap may have started the app.
         .onChange(of: ReminderTap.shared.weaponID, initial: true) { _, id in
@@ -142,7 +167,7 @@ struct RootView: View {
 
     /// The firearm's page in the Waffen tab; the list alone when the firearm no longer exists.
     private func open(weaponID id: UUID) {
-        tab = .weapons
+        tab = "weapons"
         let found = try? context.fetch(FetchDescriptor<Weapon>(predicate: #Predicate { $0.id == id })).first
         weaponPath = found.map { NavigationPath([$0]) } ?? NavigationPath()
     }

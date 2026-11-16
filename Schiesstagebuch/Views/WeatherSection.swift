@@ -76,10 +76,9 @@ private struct AppleWeatherRow: View {
 
     private var request: Request? { Self.request(enabled: enabled, range: range, date: date) }
 
-    /// Whether the row shows anything: the fill button, values from Apple Weather or their attribution.
+    /// Whether the row shows anything: the fill button or values from Apple Weather.
     static func shows(_ record: WeatherRecord, enabled: Bool, range: ShootingRange?, date: Date) -> Bool {
-        request(enabled: enabled, range: range, date: date) != nil || record.fromAppleWeather == true
-            || MeasuredWeatherLine.shows(record.conditions)
+        request(enabled: enabled, range: range, date: date) != nil || MeasuredWeatherLine.shows(record.conditions)
     }
 
     var body: some View {
@@ -97,7 +96,6 @@ private struct AppleWeatherRow: View {
         }
         // Only with values, so it adds no empty row.
         if let conditions = weather?.conditions, MeasuredWeatherLine.shows(conditions) { MeasuredWeatherLine(conditions: conditions) }
-        if weather?.fromAppleWeather == true { AppleWeatherAttribution() }
     }
 
     @ViewBuilder private var label: some View {

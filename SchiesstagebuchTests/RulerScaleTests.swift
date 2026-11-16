@@ -75,6 +75,11 @@ final class RulerScaleTests: XCTestCase {
         XCTAssertEqual(ticks.count, 23)
         XCTAssertEqual(ticks.filter(\.isMajor).map(\.value), [16, 18, 20, 22, 24, 26])
         XCTAssertEqual(ticks.filter(\.isWhole).count, 11, "16 … 26")
+        // Every full centimetre has the long stroke, with or without a number; the halves the short one.
+        XCTAssertEqual(Set(ticks.filter(\.isWhole).map(\.length)), [0.42])
+        XCTAssertEqual(Set(ticks.filter { !$0.isWhole }.map(\.length)), [0.18])
+        // Ring and iris: long at the whole numbers, middle at the halves, short at the tenths.
+        XCTAssertEqual(scale.ticks(around: 2.2).filter { $0.value >= 1.9 && $0.value <= 2.5 }.map(\.length), [0.18, 0.42, 0.18, 0.18, 0.18, 0.18, 0.3])
     }
 
     func testBipodRulerAgreesWithBipodClamp() {

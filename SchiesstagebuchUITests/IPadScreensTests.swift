@@ -5,7 +5,7 @@ import XCTest
 /// pull requests that change the GUI and comments with the screens that changed;
 /// .github/workflows/ipad-screens.yml runs it by hand for a full set.
 final class IPadScreensTests: XCTestCase {
-    static let tabs = ["Tagebuch", "Statistik", "Waffen", "Einstellungen"]
+    static let tabs = ["Tagebuch", "Statistik", "Waffen", "Anlagen", "Einstellungen"]
 
     private var app: XCUIApplication!
 
@@ -43,6 +43,8 @@ final class IPadScreensTests: XCTestCase {
         row.tap()
         // The tap is sometimes lost on the CI runner: the entry page has «Bearbeiten», the list has not.
         if !app.buttons["Bearbeiten"].firstMatch.waitForExistence(timeout: 3) { row.tap() }
+        // The row opens the Anlass; its Stich row (named after the weapon) opens the Stich.
+        if app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 3) { app.staticTexts["Stgw 90"].firstMatch.tap() }
         snap("\(name)-1b-Eintrag")
     }
 

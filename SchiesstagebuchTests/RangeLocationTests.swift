@@ -26,4 +26,12 @@ final class RangeLocationTests: ModelTestCase {
         let comps = try XCTUnwrap(URLComponents(url: XCTUnwrap(r.mapsURL), resolvingAgainstBaseURL: false))
         XCTAssertEqual(comps.queryItems?.first { $0.name == "q" }?.value, "Schützenhaus")
     }
+
+    func testAddressFromGeocoderPartsLeavesOutWhatIsMissing() {
+        XCTAssertEqual(PickedLocation.address(street: "Uetlibergstrasse", number: "341", postalCode: "8045", town: "Zürich"),
+                       "Uetlibergstrasse 341, 8045 Zürich")
+        XCTAssertEqual(PickedLocation.address(street: "Allmend", number: nil, postalCode: nil, town: "Thun"), "Allmend, Thun")
+        XCTAssertEqual(PickedLocation.address(street: nil, number: "", postalCode: "3600", town: "Thun"), "3600 Thun")
+        XCTAssertEqual(PickedLocation.address(street: nil, number: nil, postalCode: nil, town: nil), "", "no network: position only")
+    }
 }

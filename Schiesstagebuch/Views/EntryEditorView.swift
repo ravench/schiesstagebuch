@@ -17,7 +17,8 @@ struct EntryEditorView: View {
         self.entry = entry
         addingTo = nil
         _date = State(initialValue: entry.date); _range = State(initialValue: entry.range); _event = State(initialValue: entry.eventName)
-        _stich = State(initialValue: entry.stich); _weapon = State(initialValue: entry.weapon); _caliber = State(initialValue: entry.caliber)
+        _stich = State(initialValue: entry.stich); _relay = State(initialValue: entry.relay); _targetNumber = State(initialValue: entry.targetNumber)
+        _weapon = State(initialValue: entry.weapon); _caliber = State(initialValue: entry.caliber)
         _ammunition = State(initialValue: entry.ammunition); _lot = State(initialValue: entry.lot); _barrel = State(initialValue: entry.effectiveBarrel)
         _shotCount = State(initialValue: entry.shotCount); _result = State(initialValue: entry.result); _maxPoints = State(initialValue: entry.maxPoints)
         _position = State(initialValue: entry.position); _sight = State(initialValue: SightSettings(entry: entry)); _weather = State(initialValue: entry.weather)
@@ -52,6 +53,8 @@ struct EntryEditorView: View {
     @State private var range: ShootingRange?
     @State private var event = ""
     @State private var stich = ""
+    @State private var relay = ""
+    @State private var targetNumber = ""
     @State private var weapon: Weapon?
     @State private var caliber: Caliber?
     @State private var ammunition: Ammunition?
@@ -153,6 +156,15 @@ struct EntryEditorView: View {
                             } label: { Image(systemName: "clock.arrow.circlepath") }
                         }
                     }
+                    if scoring != .ipsc {
+                        // Side by side: both are a number or two.
+                        HStack(spacing: 16) {
+                            LabeledContent("Ablösung") { TextField("–", text: $relay).multilineTextAlignment(.trailing) }
+                            Divider()
+                            LabeledContent("Scheibe") { TextField("–", text: $targetNumber).multilineTextAlignment(.trailing) }
+                        }
+                        .keyboardType(.numbersAndPunctuation)
+                    }
                     pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
                     if barrelChoices.count > 1 {
@@ -217,6 +229,9 @@ struct EntryEditorView: View {
                     }
                 } header: {
                     Text("Fotos (\(photos.count)/\(Limits.maxPhotos))")
+                } footer: {
+                    // At the very end of the form, not between the weather values (Raven 2026-11-13).
+                    if features.contains(.weather), weather?.fromAppleWeather == true { AppleWeatherAttribution().padding(.top, 8) }
                 }
             }
             .scrollDismissesKeyboard(.immediately)
@@ -317,12 +332,11 @@ struct EntryEditorView: View {
             case .split:
                 countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
                 countRow("Wertungsschüsse", value: $scored, step: Self.CountStep.scored)
-                LabeledContent("Total", value: (sighters + scored).formatted())
+                LabeledContent("Schüsse total", value: (sighters + scored).formatted())
             case .passeTotals:
                 countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
                 PasseTotalsRows(passen: $passeTotals)
-                LabeledContent("Wertungsschüsse", value: enteredPasseTotals.shotCount.formatted())
-                LabeledContent("Total", value: (sighters + enteredPasseTotals.shotCount).formatted())
+                shotCounts(scored: enteredPasseTotals.shotCount, total: sighters + enteredPasseTotals.shotCount)
             case .shots:
                 ShotBoxesRow(title: Text("Probeschüsse"), boxes: $sighterBoxes, showsTotal: false)
                 ForEach($passes) { $pass in
@@ -334,22 +348,17 @@ struct EntryEditorView: View {
                 } label: {
                     Label("Passe hinzufügen", systemImage: "plus.circle")
                 }
-                LabeledContent("Wertungsschüsse", value: passShotCount.formatted())
-                LabeledContent("Total", value: (sighterShotCount + passShotCount).formatted())
+                shotCounts(scored: passShotCount, total: sighterShotCount + passShotCount)
             }
             // The result sits right below the shots, and is typed only when they do not add up to one.
-            if let sum = summedResult(in: mode) {
-                LabeledContent("Resultat", value: sum)
-            } else {
-                TextField("Resultat", text: $result)
-            }
-            HStack {
-                Text("Max. Punkte")
-                Spacer()
-                TextField("optional", value: $maxPoints, format: .number)
-                    .keyboardType(.decimalPad)
-                    .multilineTextAlignment(.trailing)
-                    .frame(maxWidth: 100)
+            // Named as points, so it is not taken for the number of shots above it.
+            HStack(alignment: .top) {
+                CaptionedValue(title: "Resultat (Punkte)") {
+                    if let sum = summedResult(in: mode) { Text(sum) } else { TextField("Resultat", text: $result) }
+                }
+                CaptionedValue(title: "Max. Punkte") {
+                    TextField("optional", value: $maxPoints, format: .number).keyboardType(.decimalPad)
+                }
             }
             ScoreSummary(score: currentScore)
             if currentScore.exceedsMax {
@@ -466,6 +475,14 @@ struct EntryEditorView: View {
         static let scored = 1
     }
 
+    /// Scored shots and all shots on one row.
+    private func shotCounts(scored: Int, total: Int) -> some View {
+        HStack(alignment: .top) {
+            CaptionedValue("Wertungsschüsse", scored.formatted()).accessibilityElement(children: .combine)
+            CaptionedValue("Schüsse total", total.formatted()).accessibilityElement(children: .combine)
+        }
+    }
+
     private func countRow(_ title: String, value: Binding<Int>, step: Int) -> some View {
         NumberStepperRow(title: title, value: value, step: step)
     }
@@ -577,6 +594,7 @@ struct EntryEditorView: View {
         shootingEvent.range = range
         shootingEvent.name = event.trimmingCharacters(in: .whitespaces)
         target.stich = stich.trimmingCharacters(in: .whitespaces)
+        target.relay = relay.trimmingCharacters(in: .whitespaces); target.targetNumber = targetNumber.trimmingCharacters(in: .whitespaces)
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
         target.lot = lot?.ammunition == ammunition ? lot : nil
         target.barrel = weapon?.barrelToStore(picked: barrel, caliber: caliber, on: date)

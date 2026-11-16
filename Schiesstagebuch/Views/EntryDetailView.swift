@@ -7,8 +7,6 @@ struct EntryDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var editing = false
-    /// Set by "Weiteren Stich hinzufügen": the event the new Stich joins.
-    @State private var addingTo: ShootingEvent?
     @State private var confirmDelete = false
     /// The screen pops first and deletes in `onDisappear`, so it never renders a deleted entry.
     @State private var deleting = false
@@ -23,6 +21,9 @@ struct EntryDetailView: View {
                     if !entry.stich.isEmpty {
                         Text(entry.stich).font(.headline)
                     }
+                    let slot = [entry.relay.isEmpty ? nil : "\("Ablösung".loc) \(entry.relay)",
+                                entry.targetNumber.isEmpty ? nil : "\("Scheibe".loc) \(entry.targetNumber)"].compactMap { $0 }
+                    if !slot.isEmpty { Text(slot.joined(separator: " · ")).font(.subheadline) }
                     if let range = entry.range {
                         Label(range.place.isEmpty ? range.name : "\(range.name), \(range.place)",
                               systemImage: "mappin.and.ellipse")
@@ -45,7 +46,7 @@ struct EntryDetailView: View {
                     if entry.scoringSystem == .ipsc {
                         metric("Hitfaktor", entry.hitFactor.map { IPSCFormat.hitFactor($0) } ?? "–")
                     } else {
-                        metric("Resultat", entry.result.isEmpty ? "–" : entry.result)
+                        metric("Resultat", entry.resultText.isEmpty ? "–" : entry.resultText)
                     }
                 }
                 .frame(height: 64)
@@ -135,16 +136,6 @@ struct EntryDetailView: View {
             if !photos.isEmpty {
                 Section("Fotos") { PhotoGrid(photos: .constant(photos), editable: false) }
             }
-
-            Section {
-                Button {
-                    addingTo = ShootingEvent.of(entry, in: context)
-                } label: {
-                    Label("Weiteren Stich hinzufügen", systemImage: "plus.circle")
-                }
-            } footer: {
-                Text(term("Für ein weiteres Programm am selben Anlass, auch mit einer anderen Waffe.").loc)
-            }
         }
         .navigationTitle(entry.date.formatted(date: .abbreviated, time: .omitted))
         .navigationBarTitleDisplayMode(.inline)
@@ -155,7 +146,6 @@ struct EntryDetailView: View {
             }
         }
         .sheet(isPresented: $editing) { EntryEditorView(entry: entry) }
-        .sheet(item: $addingTo) { EntryEditorView(addingTo: $0) }
         .confirmationDialog("Eintrag löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
             Button("Löschen", role: .destructive) {
                 deleting = true

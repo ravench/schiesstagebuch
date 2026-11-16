@@ -50,6 +50,10 @@ final class AppleWeatherUITests: XCTestCase {
         let entry = app.staticTexts["Feldschiessen"].firstMatch
         XCTAssertTrue(entry.waitForExistence(timeout: 5))
         entry.tap()
+        // The row opens the Anlass; its Stich row (named after the weapon, as the journal's rows are) opens the Stich.
+        XCTAssertTrue(app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5), "The Anlass screen did not open")
+        app.staticTexts["Stgw 90"].firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["Ausrüstung"].firstMatch.waitForExistence(timeout: 5), "The Stich did not open")
         let edit = app.buttons["Bearbeiten"].firstMatch
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         edit.tap()
