@@ -1,0 +1,15 @@
+# Kleinkaliberscheibe A: a 160 mm scoring field for the 50 m smallbore rifle, scored by the centre of the hit, read in 100 steps of 0.8 mm.
+id = "ch-50m-kka100"
+name = "Kleinkaliberscheibe A100 50 m"
+short_name = "KK A100"
+group = "Schweiz"
+distances_m = [50]
+
+[scoring]
+# Hundred rating: a shot scores 0 to 100 by its distance from the centre.
+min = 0
+max = 100
+
+[source]
+title = "SIUS STYX, Paket SUI-50m-Targets-Package 1.0.0 (Wertungsmethoden)"
+url = "https://support.sius.com/de/jhelp_kb_cat/styx/"

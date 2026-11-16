@@ -34,6 +34,16 @@ class RepoTargetTests(unittest.TestCase):
         self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][-1], 45.5)
         self.assertEqual(self.targets["issf-25m-rapid-fire-pistol"]["ring_diameters_mm"], [100, 180, 260, 340, 420, 500])
 
+    def test_sius_50m_targets(self):
+        # SIUS STYX SUI-50m-Targets-Package: P and B pistol targets, Kleinkaliber A for the rifle.
+        self.assertEqual(self.targets["ch-50m-p4"]["ring_diameters_mm"], [200, 300, 600, 1000])
+        self.assertEqual(self.targets["ch-50m-p100"]["scoring"], {"min": 0, "max": 100})
+        self.assertEqual(self.targets["ch-50m-pistol-b100"]["scoring"], {"min": 0, "max": 100})
+        self.assertEqual(self.targets["ch-50m-kka5"]["ring_diameters_mm"], [32, 64, 96, 128, 160])
+        self.assertEqual(self.targets["ch-50m-kka20"]["scoring"], {"values": list(range(20, -1, -1))})
+        self.assertEqual(len(self.targets["ch-50m-kka20"]["ring_diameters_mm"]), 20)
+        self.assertEqual(self.targets["ch-50m-kka100"]["scoring"], {"min": 0, "max": 100})
+
     def test_scorings_of_the_swiss_and_issf_targets(self):
         self.assertEqual(self.targets["ch-300m-a5"]["scoring"], {"values": [5, 4, 3, 2, 1, 0]})
         self.assertEqual(self.targets["ch-300m-a10"]["scoring"], {"values": TEN_TO_ZERO})

@@ -1,0 +1,16 @@
+# Kleinkaliberscheibe A: a 160 mm scoring field for the 50 m smallbore rifle, scored by the centre of the hit, 10 rings of 8 mm (the package names this method but leaves out its rings, so these follow A5 and A20).
+id = "ch-50m-kka10"
+name = "Kleinkaliberscheibe A10 50 m"
+short_name = "KK A10"
+group = "Schweiz"
+distances_m = [50]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [16, 32, 48, 64, 80, 96, 112, 128, 144, 160]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS STYX, Paket SUI-50m-Targets-Package 1.0.0 (Wertungsmethoden)"
+url = "https://support.sius.com/de/jhelp_kb_cat/styx/"
