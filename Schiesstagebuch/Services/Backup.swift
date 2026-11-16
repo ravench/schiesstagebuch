@@ -42,6 +42,8 @@ enum Backup {
         var barrels: [BarrelDTO]?
         /// Version 2 and later; in version 1 every entry carried its own date, Anlass, range and weather.
         var events: [EventDTO]?
+        /// Optional so backups from before targets still load.
+        var targets: [TargetDTO]?
     }
 
     // `createdAt` fields are optional so backups from before they were exported still load.
@@ -76,6 +78,10 @@ enum Backup {
         var catalogID: String?; var distances: [Int]?
         var createdAt: Date?
     }
+    struct TargetDTO: Codable {
+        var id: UUID; var name: String; var mode: String; var minValue: Double; var maxValue: Double
+        var valuesText: String; var templateID: String; var createdAt: Date
+    }
     struct LicenceCardDTO: Codable { var id: UUID; var holderName: String; var licenceNumber: String; var updatedAt: Date }
     struct MaintenanceDTO: Codable { var id: UUID; var weaponID: UUID?; var kind: String; var date: Date; var notes: String }
     struct EventDTO: Codable {
@@ -100,6 +106,7 @@ enum Backup {
         var weaponID: UUID?; var caliberID: UUID?; var ammunitionID: UUID?
         var lotID: UUID?
         var barrelID: UUID?
+        var targetID: UUID?
         var sighterCount: Int?
         var maxPoints: Double?
         var shotValuesText: String?
@@ -163,7 +170,7 @@ enum Backup {
                       eventID: $0.shootingEvent?.id, stich: $0.stich, position: $0.position?.rawValue,
                       relay: $0.relay.isEmpty ? nil : $0.relay, targetNumber: $0.targetNumber.isEmpty ? nil : $0.targetNumber, weather: $0.weather,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
-                      lotID: $0.lot?.id, barrelID: $0.barrel?.id, sighterCount: $0.sighterCount,
+                      lotID: $0.lot?.id, barrelID: $0.barrel?.id, targetID: $0.target?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
                       sighterValuesText: $0.sighterValuesText.isEmpty ? nil : $0.sighterValuesText,
                       passeTotals: $0.passeTotals.isEmpty ? nil : $0.passeTotals,
@@ -190,6 +197,10 @@ enum Backup {
             events: try all(ShootingEvent.self, context).map {
                 .init(id: $0.id, date: $0.date, name: $0.name, rangeID: $0.range?.id, weather: $0.weather, createdAt: $0.createdAt,
                       scoringSystem: $0.scoringSystemRaw, ipscDivision: $0.ipscDivision, ipscPowerFactor: $0.ipscPowerFactorRaw)
+            },
+            targets: try all(ShootingTarget.self, context).map {
+                .init(id: $0.id, name: $0.name, mode: $0.modeRaw, minValue: $0.minValue, maxValue: $0.maxValue,
+                      valuesText: $0.valuesText, templateID: $0.templateID, createdAt: $0.createdAt)
             })
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .custom { date, encoder in
@@ -198,6 +209,16 @@ enum Backup {
         }
         encoder.outputFormatting = [.sortedKeys]
         return try encoder.encode(file)
+    }
+
+    private static func restoreTargets(_ dtos: [TargetDTO], into context: ModelContext) throws -> [UUID: ShootingTarget] {
+        var targets = Dictionary(uniqueKeysWithValues: try all(ShootingTarget.self, context).map { ($0.id, $0) })
+        for d in dtos where targets[d.id] == nil {
+            let t = ShootingTarget(name: d.name, scoring: .range(min: d.minValue, max: d.maxValue), templateID: d.templateID)
+            t.id = d.id; t.modeRaw = d.mode; t.valuesText = d.valuesText; t.createdAt = d.createdAt
+            context.insert(t); targets[d.id] = t
+        }
+        return targets
     }
 
     private static func restoreLicenceCards(_ cards: [LicenceCardDTO], into context: ModelContext) throws {
@@ -403,6 +424,7 @@ enum Backup {
         restoreOldWeaponCalibers(file.weapons, weapons: weapons, calibers: caliberMap, into: context)
 
         let events = try restoreEvents(file.events ?? [], ranges: ranges, into: context)
+        let targets = try restoreTargets(file.targets ?? [], into: context)
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
@@ -420,6 +442,7 @@ enum Backup {
             (d.eventID.flatMap { events[$0] } ?? versionOneEvent(of: d, ranges: ranges, into: context)).add(e)
             e.lot = d.lotID.flatMap { lots[$0] }
             e.barrel = d.barrelID.flatMap { barrels[$0] }
+            e.target = d.targetID.flatMap { targets[$0] }
             e.sighterCount = d.sighterCount; e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""; e.sighterValuesText = d.sighterValuesText ?? ""
             e.passeTotals = d.passeTotals ?? []

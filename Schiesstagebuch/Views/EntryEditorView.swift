@@ -21,7 +21,7 @@ struct EntryEditorView: View {
         _weapon = State(initialValue: entry.weapon); _caliber = State(initialValue: entry.caliber)
         _ammunition = State(initialValue: entry.ammunition); _lot = State(initialValue: entry.lot); _barrel = State(initialValue: entry.effectiveBarrel)
         _shotCount = State(initialValue: entry.shotCount); _result = State(initialValue: entry.result); _maxPoints = State(initialValue: entry.maxPoints)
-        _position = State(initialValue: entry.position); _sight = State(initialValue: SightSettings(entry: entry)); _weather = State(initialValue: entry.weather)
+        _position = State(initialValue: entry.position); _target = State(initialValue: entry.target); _sight = State(initialValue: SightSettings(entry: entry)); _weather = State(initialValue: entry.weather)
         _passes = State(initialValue: entry.shotValuesText.split(whereSeparator: \.isNewline).map { PassDraft(text: String($0)) })
         _sighterBoxes = State(initialValue: ShotBoxes(text: entry.sighterValuesText))
         _passeTotals = State(initialValue: entry.passeTotals.map { PasseTotalDraft(shots: $0.shots, points: $0.points) })
@@ -48,6 +48,7 @@ struct EntryEditorView: View {
     @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @Query(filter: #Predicate<Ammunition> { !$0.isArchived }, sort: \Ammunition.name) private var ammunitions: [Ammunition]
     @Query(sort: \Entry.date, order: .reverse) private var allEntries: [Entry]
+    @Query(sort: \ShootingTarget.name) private var targets: [ShootingTarget]
 
     @State private var date = Date.now
     @State private var range: ShootingRange?
@@ -62,6 +63,7 @@ struct EntryEditorView: View {
     /// Barrel used; saved only when it differs from the automatic match (see Weapon.barrelToStore).
     @State private var barrel: Barrel?
     @State private var position: ShootingPosition?
+    @State private var target: ShootingTarget?
     @State private var shotCount = 0
     @State private var mode: ShotEntryMode = .total
     @State private var sight = SightSettings()
@@ -136,10 +138,6 @@ struct EntryEditorView: View {
                         DatePicker("Datum", selection: $date, displayedComponents: .date)
                         RangePickerRow(selection: $range, ranges: ranges)
                         TextField("Anlass", text: $event)
-                        ScoringSystemPicker(system: $scoring)
-                        if scoring == .ipsc {
-                            IPSCMatchFields(division: $division, powerFactor: $powerFactor)
-                        }
                     } footer: {
                         if stichCount > 1 {
                             Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
@@ -161,7 +159,7 @@ struct EntryEditorView: View {
                         HStack(spacing: 16) {
                             LabeledContent("Ablösung") { TextField("–", text: $relay).multilineTextAlignment(.trailing) }
                             Divider()
-                            LabeledContent("Scheibe") { TextField("–", text: $targetNumber).multilineTextAlignment(.trailing) }
+                            LabeledContent("Scheiben-Nr.") { TextField("–", text: $targetNumber).multilineTextAlignment(.trailing) }
                         }
                         .keyboardType(.numbersAndPunctuation)
                     }
@@ -181,7 +179,10 @@ struct EntryEditorView: View {
                         SearchablePicker(title: "Los".loc, selection: $lot,
                                          choices: PickerChoice.optional(ammunition.sortedLots(), keeping: lot, title: \.number))
                     }
-                    if scoring != .ipsc { positionPicker }
+                    if scoring != .ipsc {
+                        positionPicker
+                        targetPicker
+                    }
                 } footer: {
                     if scoring != .ipsc {
                         Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
@@ -338,9 +339,10 @@ struct EntryEditorView: View {
                 PasseTotalsRows(passen: $passeTotals)
                 shotCounts(scored: enteredPasseTotals.shotCount, total: sighters + enteredPasseTotals.shotCount)
             case .shots:
-                ShotBoxesRow(title: Text("Probeschüsse"), boxes: $sighterBoxes, showsTotal: false)
+                ShotBoxesRow(title: Text("Probeschüsse"), boxes: $sighterBoxes, showsTotal: false, scoring: target?.scoring)
                 ForEach($passes) { $pass in
-                    ShotBoxesRow(title: Text("Passe \((passes.firstIndex { $0.id == pass.id } ?? 0) + 1)"), boxes: $pass.boxes)
+                    ShotBoxesRow(title: Text("Passe \((passes.firstIndex { $0.id == pass.id } ?? 0) + 1)"), boxes: $pass.boxes,
+                                 scoring: target?.scoring)
                 }
                 .onDelete { passes.remove(atOffsets: $0) }
                 Button {
@@ -376,6 +378,14 @@ struct EntryEditorView: View {
             } else {
                 Text("Das Resultat ist die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.")
             }
+        }
+    }
+
+    /// The Stich's target; its scoring decides how single shots are entered. Targets are registered in Settings › Scheiben.
+    private var targetPicker: some View {
+        Picker("Scheibe", selection: $target) {
+            Text("–").tag(ShootingTarget?.none)
+            ForEach(targets) { Text($0.name).tag(Optional($0)) }
         }
     }
 
@@ -519,7 +529,11 @@ struct EntryEditorView: View {
             mode = defaultMode
             if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
         }
-        if entry == nil { position = weapon?.category.defaultPosition }
+        if entry == nil {
+            position = weapon?.category.defaultPosition
+            // A new Stich keeps the target of the Stich before it in the event.
+            target = addingTo?.sortedEntries.last?.target
+        }
         didLoad = true
     }
 
@@ -624,6 +638,7 @@ struct EntryEditorView: View {
         if features.contains(.weather) { target.weather = weather?.normalized() }
         if scoring == .rings {
             target.position = position
+            target.target = self.target // `target` here is the entry being saved
             target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
             target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""
             target.sighterValuesText = mode == .shots ? sighterBoxes.text : ""

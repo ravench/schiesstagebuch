@@ -59,6 +59,15 @@ enum ScreenshotData {
             Sample(daysAgo: 105, event: "Training", weapon: carbine, shots: 20, result: "85", max: 100, lot: lotB),
             Sample(daysAgo: 120, event: "Training", weapon: rifle, shots: 20, result: "71", max: 100, lot: lotA, position: .kneeling),
         ]
+        // Targets from the templates; the federal programmes are shot on A5 (Obligatorisch) and B4 (Feldschiessen).
+        var targets: [String: ShootingTarget] = [:]
+        for item in TargetCatalog.items where ["ch-300m-a5", "ch-300m-b4", "ch-300m-a10"].contains(item.id) {
+            let t = TargetCatalog.target(from: item)
+            context.insert(t)
+            targets[item.id] = t
+        }
+        let eventTargets = ["Obligatorisch": "ch-300m-a5", "Feldschiessen": "ch-300m-b4"]
+
         for s in samples {
             let date = Calendar.current.date(byAdding: .day, value: -s.daysAgo, to: now) ?? now
             let caliber = s.weapon.calibers.first
@@ -70,6 +79,7 @@ enum ScreenshotData {
             context.insert(entry)
             entry.maxPoints = s.max
             entry.lot = s.lot
+            entry.target = eventTargets[s.event].flatMap { targets[$0] }
             event.add(entry)
         }
         try? context.save()

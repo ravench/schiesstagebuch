@@ -326,6 +326,29 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// Einstellungen › Scheiben with the sample targets and the templates; then a new Stich of the Feldschiessen,
+    /// which takes the B4 of the Stich before it: its Einzelschüsse are the values 4 to 0 as buttons.
+    func testTargets() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Scheiben"].firstMatch) else { return }
+        snap("21-Scheiben")
+        if open(app.buttons["Hinzufügen"].firstMatch), open(app.buttons["Aus Vorlage hinzufügen"].firstMatch) {
+            snap("21b-Scheiben-Vorlagen")
+            app.buttons["Abbrechen"].firstMatch.tap()
+        }
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
+        let shots = app.buttons["Einzelschüsse"].firstMatch
+        reveal(shots)
+        shots.tap()
+        let shot = app.buttons["Schuss 1"].firstMatch
+        guard shot.waitForExistence(timeout: 3) else { return XCTFail("No shot buttons for the B4 target") }
+        shot.tap()
+        snap("21c-Einzelschuesse-Feste-Werte")
+        // A tap fills the shot and moves on to the next.
+        if open(app.buttons["shotValue-4"].firstMatch) { snap("21d-Einzelschuesse-Wert-getippt") }
+    }
+
     /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered. With a card
     /// there are six tabs: on the iPhone the ranges and the settings then share «Mehr».
     func testLicenceCard() {

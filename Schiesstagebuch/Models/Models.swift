@@ -410,6 +410,8 @@ final class Entry {
     var lot: AmmoLot?
     /// Barrel picked explicitly; nil = matched by calibre and date (see `effectiveBarrel`).
     var barrel: Barrel?
+    /// Target (Scheibe) of the Stich; decides how single shots are entered (`ShootingTarget.scoring`).
+    var target: ShootingTarget?
 
     @Relationship(deleteRule: .cascade, inverse: \EntryPhoto.entry)
     var photos: [EntryPhoto]? = []
