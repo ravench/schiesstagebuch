@@ -99,6 +99,8 @@ final class PRScreensTests: XCTestCase {
             back()
         }
 
+        tab("Anlagen")
+        snap("07h-Schiessanlagen")
         tab("Einstellungen")
         snap("08-Einstellungen")
         // Cartridge drawings: the calibre list and one calibre at true scale (1 mm = 2 pt).
@@ -301,11 +303,21 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered.
+    /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered. With a card
+    /// there are six tabs: on the iPhone the ranges and the settings then share «Mehr».
     func testLicenceCard() {
         tab("Einstellungen")
         guard open(app.staticTexts["SSV-Lizenzkarte"].firstMatch) else { return }
         snap("18-SSV-Lizenzkarte-leer")
+        guard open(app.buttons["Lizenz erfassen"].firstMatch), open(app.textFields["Lizenznummer"].firstMatch) else { return }
+        app.textFields["Lizenznummer"].firstMatch.typeText("123456")
+        app.buttons["Sichern"].firstMatch.tap()
+        // The Einstellungen tab is gone now: the app shows the new card, not the diary.
+        let card = app.tabBars.buttons["Lizenzkarte"]
+        XCTAssertTrue(card.waitForExistence(timeout: 5) && card.isSelected, "Saving the first card does not show it")
+        tab("Mehr")
+        snap("18b-Mehr")
+        if open(app.staticTexts["Einstellungen"].firstMatch) { snap("18c-Mehr-Einstellungen") }
     }
 
     /// Starts the app again with `arguments` on top of the usual ones.

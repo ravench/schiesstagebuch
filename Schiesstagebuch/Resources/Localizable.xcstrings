@@ -875,6 +875,29 @@
         }
       }
     },
+    "Anlagen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ranges"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stands"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poligoni"
+          }
+        }
+      }
+    },
     "Anlass": {
       "extractionState": "manual",
       "localizations": {
@@ -4055,25 +4078,25 @@
         }
       }
     },
-    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später unter Einstellungen › Schiessanlagen.": {
+    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später im Tab «Anlagen».": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later under Settings › Ranges."
+            "value": "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later in the Ranges tab."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard sous Réglages › Stands de tir."
+            "value": "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard dans l'onglet Stands."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi in Impostazioni › Poligoni."
+            "value": "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi nella scheda Poligoni."
           }
         }
       }
@@ -6702,6 +6725,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mediana per colpo"
+          }
+        }
+      }
+    },
+    "Mehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro"
           }
         }
       }
