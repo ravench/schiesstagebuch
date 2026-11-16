@@ -5,8 +5,8 @@ id = "ch-300m-b10"
 name = "Feldscheibe B10 300 m"
 short_name = "B10"
 distances_m = [300]
-lowest_ring = 1
-# Outer diameter of each ring from the 10 outwards, in mm.
+top_value = 10
+# Outer diameter of each ring from the centre outwards, in mm; the centre ring scores top_value.
 ring_diameters_mm = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
 
 [source]

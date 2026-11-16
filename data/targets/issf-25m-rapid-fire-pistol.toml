@@ -3,8 +3,8 @@ id = "issf-25m-rapid-fire-pistol"
 name = "Schnellfeuerpistole 25 m"
 short_name = "ISSF Schnellfeuer"
 distances_m = [25]
-lowest_ring = 5
-# Outer diameter of each ring from the 10 outwards, in mm.
+top_value = 10
+# Outer diameter of each ring from the centre outwards, in mm; the centre ring scores top_value.
 ring_diameters_mm = [100, 180, 260, 340, 420, 500]
 inner_ten_mm = 50
 black_mm = 500

@@ -9,7 +9,7 @@ import targets  # noqa: E402
 def face(**changes):
     target = {
         "_file": "t.toml", "id": "t", "name": "Test", "short_name": "T", "distances_m": [10],
-        "lowest_ring": 7, "ring_diameters_mm": [10, 20, 30, 40], "black_mm": 30, "black_from_ring": 8,
+        "top_value": 10, "ring_diameters_mm": [10, 20, 30, 40], "black_mm": 30, "black_from_ring": 8,
         "source": {"title": "Rules", "url": "https://example.org"},
     }
     target.update(changes)
@@ -31,14 +31,21 @@ class TargetDataTests(unittest.TestCase):
 
     def test_rapid_fire_has_only_rings_ten_to_five(self):
         rapid = {t["id"]: t for t in targets.load()}["issf-25m-rapid-fire-pistol"]
-        self.assertEqual(rapid["lowest_ring"], 5)
         self.assertEqual(rapid["ring_diameters_mm"], [100, 180, 260, 340, 420, 500])
+        self.assertEqual(targets.shot_values(rapid), [10, 9, 8, 7, 6, 5, 0])
+
+    def test_a5_takes_one_digit_shots_and_the_rifles_decimals(self):
+        faces = {t["id"]: t for t in targets.load()}
+        self.assertEqual(targets.shot_values(faces["ch-300m-a5"]), [5, 4, 3, 2, 1, 0])
+        self.assertEqual(targets.shot_values(faces["ch-300m-a10"]), list(range(10, -1, -1)))
+        self.assertTrue(faces["issf-10m-air-rifle"].get("decimal"))
+        self.assertFalse(faces["ch-300m-a10"].get("decimal", False))
 
     def test_a_good_face_has_no_problems(self):
         self.assertEqual(targets.problems(face()), [])
 
     def test_finds_wrong_ring_count_order_and_black(self):
-        self.assertIn("4 ring diameters", targets.problems(face(lowest_ring=6))[0])
+        self.assertIn("centre scores only 3", targets.problems(face(top_value=3, black_from_ring=2))[0])
         self.assertIn("grow", targets.problems(face(ring_diameters_mm=[10, 30, 20, 40], black_mm=20))[0])
         self.assertIn("does not end in ring 8", targets.problems(face(black_mm=31))[0])
         self.assertEqual(targets.problems(face(black_mm=25)), [])
@@ -52,6 +59,7 @@ class TargetDataTests(unittest.TestCase):
     def test_app_json_leaves_out_comments_and_keeps_optional_fields_optional(self):
         out = targets.app_json([face(inner_ten_mm=5, source={"title": "Rules", "url": "u", "rule": "1.2"})])[0]
         self.assertEqual(out["ringDiameters"], [10, 20, 30, 40])
+        self.assertEqual((out["topValue"], out["lowestRing"], out["decimal"]), (10, 7, False))
         self.assertEqual(out["innerTen"], 5)
         self.assertEqual(out["source"], "Rules, 1.2")
         self.assertNotIn("_file", out)
