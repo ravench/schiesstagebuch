@@ -1,0 +1,17 @@
+# SSV 10 m air rifle target in hundred rating: the ISSF 10 m face (45.5 mm scoring field, 30.5 mm black),
+# read electronically or with gauges from 0 to 100; the inner ten is 93 to 100.
+id = "ch-10m-air-rifle-100"
+name = "SSV Luftgewehrscheibe 100 10 m"
+short_name = "LG 100"
+group = "Schweiz"
+distances_m = [10]
+
+[scoring]
+# Hundred rating.
+min = 0
+max = 100
+
+[source]
+title = "SSV Regeln für das sportliche Schiessen, Teil B: Technische Regeln Gewehr (TRG)"
+rule = "Art. 25"
+url = "https://www.swissshooting.ch/media/sslercxt/dok-1104022-d.pdf"
