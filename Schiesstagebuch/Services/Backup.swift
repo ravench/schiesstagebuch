@@ -425,8 +425,8 @@ enum Backup {
         let barrels = try restoreBarrels(file.barrels ?? [], weapons: weapons, calibers: caliberMap, into: context)
         restoreOldWeaponCalibers(file.weapons, weapons: weapons, calibers: caliberMap, into: context)
 
-        let events = try restoreEvents(file.events ?? [], ranges: ranges, into: context)
-        let targets = try restoreTargets(file.targets ?? [], into: context)
+        let (events, targets) = (try restoreEvents(file.events ?? [], ranges: ranges, into: context),
+                                 try restoreTargets(file.targets ?? [], into: context))
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
@@ -443,8 +443,7 @@ enum Backup {
             context.insert(e)
             (d.eventID.flatMap { events[$0] } ?? versionOneEvent(of: d, ranges: ranges, into: context)).add(e)
             e.lot = d.lotID.flatMap { lots[$0] }
-            e.barrel = d.barrelID.flatMap { barrels[$0] }
-            e.target = d.targetID.flatMap { targets[$0] }
+            e.barrel = d.barrelID.flatMap { barrels[$0] }; e.target = d.targetID.flatMap { targets[$0] }
             e.sighterCount = d.sighterCount; e.maxPoints = d.maxPoints
             e.shotValuesText = d.shotValuesText ?? ""; e.sighterValuesText = d.sighterValuesText ?? ""
             e.passeTotals = d.passeTotals ?? []
