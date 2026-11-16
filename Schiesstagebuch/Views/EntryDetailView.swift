@@ -23,6 +23,9 @@ struct EntryDetailView: View {
                     if !entry.stich.isEmpty {
                         Text(entry.stich).font(.headline)
                     }
+                    let slot = [entry.relay.isEmpty ? nil : "\("Ablösung".loc) \(entry.relay)",
+                                entry.targetNumber.isEmpty ? nil : "\("Scheibe".loc) \(entry.targetNumber)"].compactMap { $0 }
+                    if !slot.isEmpty { Text(slot.joined(separator: " · ")).font(.subheadline) }
                     if let range = entry.range {
                         Label(range.place.isEmpty ? range.name : "\(range.name), \(range.place)",
                               systemImage: "mappin.and.ellipse")

@@ -210,6 +210,28 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(e.shootingEvent?.stichCount, 1)
     }
 
+    func testRelayAndTargetNumberSurviveBackupAndExport() throws {
+        let e = addEntry(nil, on: day(1), shots: 10); e.relay = "3"; e.targetNumber = "14"
+        _ = addEntry(nil, on: day(2), shots: 5)
+        try context.save()
+
+        let data = try Backup.export(context)
+        let json = try XCTUnwrap(String(data: data, encoding: .utf8))
+        XCTAssertEqual(json.components(separatedBy: "\"relay\"").count, 2, "only the Stich that has one writes it")
+        let (keep, target) = try freshContext()
+        _ = keep
+        try Backup.restore(from: data, into: target)
+        let restored = try target.fetch(FetchDescriptor<Entry>(sortBy: [SortDescriptor(\.shotCount)]))
+        XCTAssertEqual(restored.map(\.relay), ["", "3"])
+        XCTAssertEqual(restored.map(\.targetNumber), ["", "14"])
+
+        let lines = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8)).components(separatedBy: "\r\n")
+        let header = lines[0].components(separatedBy: ";")
+        let relay = try XCTUnwrap(header.firstIndex(of: "Ablösung".loc)), number = try XCTUnwrap(header.firstIndex(of: "Scheibe".loc))
+        let row = try XCTUnwrap(lines.first { $0.contains(";10;") }).components(separatedBy: ";")
+        XCTAssertEqual([row[relay], row[number]], ["3", "14"])
+    }
+
     func testCSVContainsNewColumns() throws {
         let ammo = Ammunition(name: "GP 90"); context.insert(ammo)
         let lot = AmmoLot(number: "LOT-77"); context.insert(lot); lot.ammunition = ammo
