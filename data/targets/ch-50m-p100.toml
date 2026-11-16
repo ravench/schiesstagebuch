@@ -1,6 +1,6 @@
 # Kombinationsscheibe P in Hunderterwertung: the 100 cm scoring field read in 100 steps of 5 mm.
 id = "ch-50m-p100"
-name = "VBS Pistolenscheibe P100 50 m"
+name = "SSV Pistolenscheibe P100 50 m"
 short_name = "P100"
 group = "Schweiz"
 distances_m = [50]

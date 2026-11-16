@@ -39,7 +39,9 @@ class RepoTargetTests(unittest.TestCase):
         names = [t["name"] for t in self.targets.values()]
         self.assertEqual(len(set(names)), len(names))
         for target in self.targets.values():
-            prefix = "ISSF " if target["group"] == "ISSF" else ("VBS ", "SSV ")
+            # VBS only for the targets of the military regulation (Raven), SSV for the other Swiss ones.
+            military = "SR 512.311" in target["source"]["title"]
+            prefix = "ISSF " if target["group"] == "ISSF" else "VBS " if military else "SSV "
             self.assertTrue(target["name"].startswith(prefix), target["name"])
 
     def test_sius_50m_targets(self):
