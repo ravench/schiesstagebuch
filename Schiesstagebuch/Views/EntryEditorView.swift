@@ -386,7 +386,7 @@ struct EntryEditorView: View {
     private var targetPicker: some View {
         Picker("Scheibe", selection: $target) {
             Text("–").tag(ShootingTarget?.none)
-            ForEach(targets) { Text($0.name).tag(Optional($0)) }
+            ForEach(ShootingTarget.sorted(targets, for: weapon)) { Text($0.name).tag(Optional($0)) }
         }
     }
 

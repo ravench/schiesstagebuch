@@ -107,4 +107,20 @@ final class ShootingTarget {
     }
 
     var scoringSummary: String { scoring.summary }
+
+    /// The order of the Stich editor's picker (Raven 2026-11-16, instead of targets per firearm category):
+    /// the targets shot with `weapon` first, latest first, then the others by their last use, then by name.
+    static func sorted(_ targets: [ShootingTarget], for weapon: Weapon?) -> [ShootingTarget] {
+        let keyed = targets.map { target in
+            let entries = target.entries ?? []
+            let withWeapon = weapon.flatMap { w in entries.filter { $0.weapon === w }.map(\.date).max() }
+            return (target, withWeapon ?? .distantPast, entries.map(\.date).max() ?? .distantPast)
+        }
+        return keyed.sorted { a, b in
+            if a.1 != b.1 { return a.1 > b.1 }
+            if a.2 != b.2 { return a.2 > b.2 }
+            return a.0.name.localizedStandardCompare(b.0.name) == .orderedAscending
+        }
+        .map(\.0)
+    }
 }

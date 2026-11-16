@@ -64,6 +64,25 @@ final class ShootingTargetTests: ModelTestCase {
         XCTAssertNil(e.target)
     }
 
+    func testPickerOrderPutsTheFirearmsTargetsFirst() throws {
+        let rifle = Weapon(name: "Stgw 90"); context.insert(rifle)
+        let pistol = Weapon(name: "P220"); context.insert(pistol)
+        let a5 = ShootingTarget(name: "A5", scoring: .values([5, 4, 3, 2, 1, 0])), a10 = ShootingTarget(name: "A10", scoring: .range(min: 0, max: 10))
+        let p10 = ShootingTarget(name: "P10", scoring: .range(min: 0, max: 10)), b4 = ShootingTarget(name: "B4", scoring: .values([4, 3, 2, 1, 0]))
+        let unused = ShootingTarget(name: "Zehntel", scoring: .range(min: 0, max: 10.9))
+        for t in [a5, a10, p10, b4, unused] { context.insert(t) }
+        addEntry(rifle, on: day(1), shots: 10).target = a10
+        addEntry(rifle, on: day(5), shots: 20).target = a5
+        addEntry(pistol, on: day(9), shots: 10).target = p10
+        addEntry(pistol, on: day(2), shots: 10).target = b4
+        try context.save()
+        let all = [a10, a5, b4, p10, unused]
+        // The rifle's targets, latest first; then the pistol's by last use; never used last.
+        XCTAssertEqual(ShootingTarget.sorted(all, for: rifle).map(\.name), ["A5", "A10", "P10", "B4", "Zehntel"])
+        XCTAssertEqual(ShootingTarget.sorted(all, for: pistol).map(\.name), ["P10", "B4", "A5", "A10", "Zehntel"])
+        XCTAssertEqual(ShootingTarget.sorted(all, for: nil).map(\.name), ["P10", "A5", "B4", "A10", "Zehntel"])
+    }
+
     func testBackupKeepsTargetsAndTheStichTarget() throws {
         let t = ShootingTarget(name: "B4", scoring: .values([4, 3, 2, 1, 0]), templateID: "ch-300m-b4")
         context.insert(t)
