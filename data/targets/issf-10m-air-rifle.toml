@@ -1,0 +1,17 @@
+# Luftgewehr 10 m: ISSF General Technical Rules 6.3.4.3 (2023 edition).
+id = "issf-10m-air-rifle"
+name = "Luftgewehr 10 m"
+short_name = "ISSF LG"
+distances_m = [10]
+lowest_ring = 1
+# Outer diameter of each ring from the 10 outwards, in mm.
+ring_diameters_mm = [0.5, 5.5, 10.5, 15.5, 20.5, 25.5, 30.5, 35.5, 40.5, 45.5]
+# Inner ten: no diameter; the 10 dot (0.5 mm) must be shot out completely.
+black_mm = 30.5
+# The black covers rings 4 to 9; the 10 is a white dot.
+black_from_ring = 4
+
+[source]
+title = "ISSF General Technical Rules, 2023 edition"
+rule = "6.3.4.3"
+url = "https://www.swissshooting.ch/media/o1edqrqq/20230619_issf_2023-technical_rules.pdf"

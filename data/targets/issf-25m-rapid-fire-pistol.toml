@@ -1,0 +1,17 @@
+# Schnellfeuerpistole 25 m: ISSF General Technical Rules 6.3.4.4 (2023 edition).
+id = "issf-25m-rapid-fire-pistol"
+name = "Schnellfeuerpistole 25 m"
+short_name = "ISSF Schnellfeuer"
+distances_m = [25]
+lowest_ring = 5
+# Outer diameter of each ring from the 10 outwards, in mm.
+ring_diameters_mm = [100, 180, 260, 340, 420, 500]
+inner_ten_mm = 50
+black_mm = 500
+# The black covers ring 5 and inwards.
+black_from_ring = 5
+
+[source]
+title = "ISSF General Technical Rules, 2023 edition"
+rule = "6.3.4.4"
+url = "https://www.swissshooting.ch/media/o1edqrqq/20230619_issf_2023-technical_rules.pdf"

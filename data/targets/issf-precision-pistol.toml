@@ -1,0 +1,17 @@
+# Präzisionspistole 25/50 m: ISSF General Technical Rules 6.3.4.5 (2023 edition).
+id = "issf-precision-pistol"
+name = "Präzisionspistole 25/50 m"
+short_name = "ISSF Präzision"
+distances_m = [25, 50]
+lowest_ring = 1
+# Outer diameter of each ring from the 10 outwards, in mm.
+ring_diameters_mm = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
+inner_ten_mm = 25
+black_mm = 200
+# The black covers ring 7 and inwards.
+black_from_ring = 7
+
+[source]
+title = "ISSF General Technical Rules, 2023 edition"
+rule = "6.3.4.5"
+url = "https://www.swissshooting.ch/media/o1edqrqq/20230619_issf_2023-technical_rules.pdf"

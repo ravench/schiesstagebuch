@@ -1,0 +1,15 @@
+# Swiss 300 m Scheibe A, scored in 5 rings: a 100 cm scoring field split into 5 rings of
+# equal width, a 60 cm black centre. Rings are numbered 10 down to 6.
+id = "ch-300m-a5"
+name = "Scheibe A5 300 m"
+short_name = "A5"
+distances_m = [300]
+lowest_ring = 6
+# Outer diameter of each ring from the 10 outwards, in mm.
+ring_diameters_mm = [200, 400, 600, 800, 1000]
+black_mm = 600
+black_from_ring = 8
+
+[source]
+title = "Mittelkaliber.ch, Scheibe A"
+url = "https://mittelkaliber.ch/scheibe-a/"

@@ -1,0 +1,17 @@
+# Gewehr 50 m: ISSF General Technical Rules 6.3.4.2 (2023 edition).
+id = "issf-50m-rifle"
+name = "Gewehr 50 m"
+short_name = "ISSF 50 m"
+distances_m = [50]
+lowest_ring = 1
+# Outer diameter of each ring from the 10 outwards, in mm.
+ring_diameters_mm = [10.4, 26.4, 42.4, 58.4, 74.4, 90.4, 106.4, 122.4, 138.4, 154.4]
+inner_ten_mm = 5
+black_mm = 112.4
+# The black ends inside ring 3 ("part of 3 to 10").
+black_from_ring = 3
+
+[source]
+title = "ISSF General Technical Rules, 2023 edition"
+rule = "6.3.4.2"
+url = "https://www.swissshooting.ch/media/o1edqrqq/20230619_issf_2023-technical_rules.pdf"

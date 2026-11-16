@@ -1,0 +1,17 @@
+# Gewehr 300 m: ISSF General Technical Rules 6.3.4.1 (2023 edition).
+id = "issf-300m-rifle"
+name = "Gewehr 300 m"
+short_name = "ISSF 300 m"
+distances_m = [300]
+lowest_ring = 1
+# Outer diameter of each ring from the 10 outwards, in mm.
+ring_diameters_mm = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+inner_ten_mm = 50
+black_mm = 600
+# The black covers ring 5 and inwards.
+black_from_ring = 5
+
+[source]
+title = "ISSF General Technical Rules, 2023 edition"
+rule = "6.3.4.1"
+url = "https://www.swissshooting.ch/media/o1edqrqq/20230619_issf_2023-technical_rules.pdf"
