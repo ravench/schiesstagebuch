@@ -326,8 +326,8 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Einstellungen › Scheiben with the sample targets and the templates; then a new Stich of the Feldschiessen,
-    /// which takes the B4 of the Stich before it: its Einzelschüsse are the values 4 to 0 as buttons.
+    /// Einstellungen › Scheiben with the sample targets and the templates; then a new Stich of the Obligatorisch,
+    /// which takes the A5 of the Stich before it: its Einzelschüsse are the values 5 to 0 as buttons.
     func testTargets() {
         tab("Einstellungen")
         guard open(app.staticTexts["Scheiben"].firstMatch) else { return }
@@ -337,12 +337,12 @@ final class PRScreensTests: XCTestCase {
             app.buttons["Abbrechen"].firstMatch.tap()
         }
         tab("Tagebuch")
-        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
+        guard open(app.staticTexts["Obligatorisch"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
         let shots = app.buttons["Einzelschüsse"].firstMatch
         reveal(shots)
         shots.tap()
         let shot = app.buttons["Schuss 1"].firstMatch
-        guard shot.waitForExistence(timeout: 3) else { return XCTFail("No shot buttons for the B4 target") }
+        guard shot.waitForExistence(timeout: 3) else { return XCTFail("No shot buttons for the A5 target") }
         shot.tap()
         snap("21c-Einzelschuesse-Feste-Werte")
         // A tap fills the shot and moves on to the next.
