@@ -1,0 +1,14 @@
+# Swiss 300 m Feldscheibe B, scored in 10 rings: the same 100 cm field and 10 equal rings
+# as Scheibe A, but light grey with a dark green figure (45 × 50 cm) instead of a round black.
+# B4 (fields 4 to 1, the 3 being the figure) needs a non-round zone and is not here yet.
+id = "ch-300m-b10"
+name = "Feldscheibe B10 300 m"
+short_name = "B10"
+distances_m = [300]
+lowest_ring = 1
+# Outer diameter of each ring from the 10 outwards, in mm.
+ring_diameters_mm = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+
+[source]
+title = "SG Strengelbach, Scheiben-Vergleich A und B"
+url = "https://www.sg-strengelbach.ch/media/files/scheiben_vergleich.pdf"
