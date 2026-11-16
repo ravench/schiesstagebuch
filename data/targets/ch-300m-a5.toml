@@ -4,11 +4,13 @@ id = "ch-300m-a5"
 name = "Scheibe A5 300 m"
 short_name = "A5"
 distances_m = [300]
-top_value = 5
-# Outer diameter of each ring from the centre outwards, in mm; the centre ring scores top_value.
+# Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [200, 400, 600, 800, 1000]
 black_mm = 600
-black_from_ring = 3
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 2, 1, 0]
 
 [source]
 title = "Mittelkaliber.ch, Scheibe A"

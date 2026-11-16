@@ -1,10 +1,16 @@
-"""Target faces (Scheiben): checks data/targets/*.toml and writes them as JSON for the app.
+"""Targets (Scheiben): checks data/targets/*.toml and writes them as JSON for the app.
 
-One TOML file per target face and scoring (A10 and A5 are two files), named after its id,
-with the ring diameters from the centre outwards, the score of the centre ring and the source.
-The app uses the scores to check single shots as they are typed: a target scored 5 to 1
-takes only 0 to 5, one digit, so the entry can move on after each digit. The ISSF faces come from the ISSF General Technical
-Rules; Swiss faces follow from SIUS's STYX packages and the SSV rules.
+One TOML file per target and scoring (A10 and A5 are two files), named after its id. Each
+says how a single shot is scored, in one of two ways:
+
+- a range: any value from 0 up to `max` in steps of `step`, e.g. 0 to 10.9 in tenths
+  (decimal rifle scoring) or 0 to 100 (A100 hundredths);
+- a list of `values`: the only scores a shot can have, e.g. [5, 4, 3, 2, 1, 0] on A5,
+  [10, 9, 8, 7, 6, 5, 0] on ISSF rapid fire, or zone names like ["A", "C", "D", "M"].
+
+The app checks single shots against this as they are typed, and offers only the values a
+target allows. Ring diameters, the inner ten and the black are optional and only describe
+the face. Each file names its source.
 
     python3 tools/targets.py check
     python3 tools/targets.py json out/Targets.json
@@ -22,7 +28,7 @@ DATA = os.path.join(ROOT, "data", "targets")
 
 
 def load(folder=DATA):
-    """All target faces in `folder`, sorted by id."""
+    """All targets in `folder`, sorted by id."""
     targets = []
     for path in sorted(glob.glob(os.path.join(folder, "*.toml"))):
         with open(path, "rb") as f:
@@ -32,67 +38,81 @@ def load(folder=DATA):
     return targets
 
 
+def _number(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool)
+
+
+def scoring_problems(scoring):
+    """What is wrong with a [scoring] table; empty when it is fine."""
+    if ("max" in scoring) == ("values" in scoring):
+        return ["scoring needs either max and step, or values"]
+    if "max" in scoring:
+        if not (_number(scoring["max"]) and _number(scoring.get("step")) and 0 < scoring["step"] <= scoring["max"]):
+            return ["scoring max and step must be numbers with 0 < step <= max"]
+        steps = scoring["max"] / scoring["step"]
+        if abs(steps - round(steps)) > 1e-9:
+            return [f"scoring max {scoring['max']} is not a whole number of steps of {scoring['step']}"]
+        return []
+    values = scoring["values"]
+    if len(values) < 2 or len(set(values)) != len(values):
+        return ["scoring values need at least two different values"]
+    if all(_number(v) for v in values):
+        return [] if values == sorted(values, reverse=True) else ["scoring values must go from best to worst"]
+    if all(isinstance(v, str) and v for v in values):
+        return []
+    return ["scoring values must be all numbers or all names"]
+
+
 def problems(target):
-    """What is wrong with one target face, as readable lines; empty when it is fine."""
-    found = []
+    """What is wrong with one target, as readable lines; empty when it is fine."""
     name = target.get("_file", target.get("id", "?"))
-    for key in ("id", "name", "short_name", "distances_m", "top_value", "ring_diameters_mm", "source"):
-        if key not in target:
-            found.append(f"{name}: {key} missing")
+    found = [f"{name}: {key} missing" for key in ("id", "name", "short_name", "distances_m", "scoring", "source")
+             if key not in target]
     if found:
         return found
     if target["_file"] != target["id"] + ".toml":
         found.append(f"{name}: file name is not the id {target['id']}")
-    rings = target["ring_diameters_mm"]
-    lowest = lowest_ring(target)
-    if lowest < 1:
-        found.append(f"{name}: {len(rings)} ring diameters, but the centre scores only {target['top_value']}")
-    if any(b <= a for a, b in zip(rings, rings[1:])) or rings[0] <= 0:
-        found.append(f"{name}: ring diameters must grow from the 10 outwards")
-    inner = target.get("inner_ten_mm")
-    if inner is not None and not 0 < inner < rings[0]:
-        found.append(f"{name}: inner ten {inner} mm is not inside the 10 ({rings[0]} mm)")
-    if ("black_mm" in target) != ("black_from_ring" in target):
-        found.append(f"{name}: black_mm and black_from_ring go together")
-    elif "black_mm" in target:
-        ring = target["black_from_ring"]
-        top = target["top_value"]
-        if not lowest <= ring <= top:
-            found.append(f"{name}: black from ring {ring}, which the target does not have")
-        elif not (rings[top - ring - 1] if ring < top else 0) < target["black_mm"] <= rings[top - ring]:
-            # The black may end inside its outermost ring, as on the ISSF 50 m target.
-            found.append(f"{name}: black {target['black_mm']} mm does not end in ring {ring} ({rings[top - ring]} mm)")
+    found += [f"{name}: {line}" for line in scoring_problems(target["scoring"])]
+    rings = target.get("ring_diameters_mm")
+    if rings is not None:
+        if not rings or rings[0] <= 0 or any(b <= a for a, b in zip(rings, rings[1:])):
+            found.append(f"{name}: ring diameters must grow from the centre outwards")
+        else:
+            inner = target.get("inner_ten_mm")
+            if inner is not None and not 0 < inner < rings[0]:
+                found.append(f"{name}: inner ten {inner} mm is not inside the centre ring ({rings[0]} mm)")
+            black = target.get("black_mm")
+            if black is not None and not 0 < black <= rings[-1]:
+                found.append(f"{name}: black {black} mm is larger than the scoring field ({rings[-1]} mm)")
+            values = target["scoring"].get("values", [])
+            if values and all(_number(v) for v in values) and values[-1] == 0 and len(values) - 1 != len(rings):
+                found.append(f"{name}: {len(rings)} rings for {len(values) - 1} scores")
+    elif "inner_ten_mm" in target or "black_mm" in target:
+        found.append(f"{name}: inner ten and black need ring diameters")
     if not target["source"].get("title") or not target["source"].get("url"):
         found.append(f"{name}: source needs a title and url")
     return found
 
 
-def lowest_ring(target):
-    """Score of the outermost ring; a shot outside it scores 0."""
-    return target["top_value"] - len(target["ring_diameters_mm"]) + 1
-
-
-def shot_values(target):
-    """The whole scores a single shot can have, misses (0) included, highest first.
-    Decimal targets also take tenths up to top_value + 0.9."""
-    return list(range(target["top_value"], lowest_ring(target) - 1, -1)) + [0]
-
-
 def app_json(targets):
-    """The targets as the app reads them: ids, names, distances and rings, no comments."""
-    return [{
-        "id": t["id"],
-        "name": t["name"],
-        "shortName": t["short_name"],
-        "distances": t["distances_m"],
-        "topValue": t["top_value"],
-        "lowestRing": lowest_ring(t),
-        "decimal": t.get("decimal", False),
-        "ringDiameters": t["ring_diameters_mm"],
-        **({"innerTen": t["inner_ten_mm"]} if "inner_ten_mm" in t else {}),
-        **({"black": t["black_mm"], "blackFromRing": t["black_from_ring"]} if "black_mm" in t else {}),
-        "source": t["source"]["title"] + (f", {t['source']['rule']}" if t["source"].get("rule") else ""),
-    } for t in targets]
+    """The targets as the app reads them: ids, names, distances, scoring and rings, no comments."""
+    out = []
+    for t in targets:
+        s = t["scoring"]
+        entry = {
+            "id": t["id"],
+            "name": t["name"],
+            "shortName": t["short_name"],
+            "distances": t["distances_m"],
+            "scoring": {"values": s["values"]} if "values" in s else {"max": s["max"], "step": s["step"]},
+        }
+        for key, app_key in (("ring_diameters_mm", "ringDiameters"), ("inner_ten_mm", "innerTen"), ("black_mm", "black")):
+            if key in t:
+                entry[app_key] = t[key]
+        src = t["source"]
+        entry["source"] = src["title"] + (f", {src['rule']}" if src.get("rule") else "")
+        out.append(entry)
+    return out
 
 
 def main(argv):

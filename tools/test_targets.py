@@ -5,68 +5,80 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import targets  # noqa: E402
 
+TEN_TO_ZERO = list(range(10, -1, -1))
 
-def face(**changes):
-    target = {
+
+def target(drop=(), **changes):
+    t = {
         "_file": "t.toml", "id": "t", "name": "Test", "short_name": "T", "distances_m": [10],
-        "top_value": 10, "ring_diameters_mm": [10, 20, 30, 40], "black_mm": 30, "black_from_ring": 8,
+        "ring_diameters_mm": [10, 20, 30, 40], "black_mm": 30,
+        "scoring": {"values": [10, 9, 8, 7, 0]},
         "source": {"title": "Rules", "url": "https://example.org"},
     }
-    target.update(changes)
-    return target
+    t.update(changes)
+    return {k: v for k, v in t.items() if k not in drop}
 
 
-class TargetDataTests(unittest.TestCase):
+class RepoTargetTests(unittest.TestCase):
+    def setUp(self):
+        self.targets = {t["id"]: t for t in targets.load()}
+
     def test_every_target_in_the_repo_is_fine(self):
-        loaded = targets.load()
-        self.assertGreaterEqual(len(loaded), 6)
-        for target in loaded:
-            self.assertEqual(targets.problems(target), [], target["_file"])
+        self.assertGreaterEqual(len(self.targets), 10)
+        for t in self.targets.values():
+            self.assertEqual(targets.problems(t), [], t["_file"])
 
-    def test_issf_air_rifle_matches_the_rulebook(self):
-        rifle = {t["id"]: t for t in targets.load()}["issf-10m-air-rifle"]
-        self.assertEqual(rifle["ring_diameters_mm"][0], 0.5)
-        self.assertEqual(rifle["ring_diameters_mm"][-1], 45.5)
-        self.assertNotIn("inner_ten_mm", rifle)
+    def test_issf_rings_match_the_rulebook(self):
+        self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][0], 0.5)
+        self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][-1], 45.5)
+        self.assertEqual(self.targets["issf-25m-rapid-fire-pistol"]["ring_diameters_mm"], [100, 180, 260, 340, 420, 500])
 
-    def test_rapid_fire_has_only_rings_ten_to_five(self):
-        rapid = {t["id"]: t for t in targets.load()}["issf-25m-rapid-fire-pistol"]
-        self.assertEqual(rapid["ring_diameters_mm"], [100, 180, 260, 340, 420, 500])
-        self.assertEqual(targets.shot_values(rapid), [10, 9, 8, 7, 6, 5, 0])
+    def test_scorings_of_the_swiss_and_issf_targets(self):
+        self.assertEqual(self.targets["ch-300m-a5"]["scoring"], {"values": [5, 4, 3, 2, 1, 0]})
+        self.assertEqual(self.targets["ch-300m-a10"]["scoring"], {"values": TEN_TO_ZERO})
+        self.assertEqual(self.targets["issf-25m-rapid-fire-pistol"]["scoring"], {"values": [10, 9, 8, 7, 6, 5, 0]})
+        self.assertEqual(self.targets["ch-300m-a100"]["scoring"], {"max": 100, "step": 1})
+        self.assertEqual(self.targets["issf-10m-air-rifle"]["scoring"], {"max": 10.9, "step": 0.1})
 
-    def test_a5_takes_one_digit_shots_and_the_rifles_decimals(self):
-        faces = {t["id"]: t for t in targets.load()}
-        self.assertEqual(targets.shot_values(faces["ch-300m-a5"]), [5, 4, 3, 2, 1, 0])
-        self.assertEqual(targets.shot_values(faces["ch-300m-a10"]), list(range(10, -1, -1)))
-        self.assertEqual(len(targets.shot_values(faces["ch-300m-a100"])), 101)
-        self.assertTrue(faces["issf-10m-air-rifle"].get("decimal"))
-        self.assertFalse(faces["ch-300m-a10"].get("decimal", False))
 
-    def test_a_good_face_has_no_problems(self):
-        self.assertEqual(targets.problems(face()), [])
+class CheckTests(unittest.TestCase):
+    def test_good_targets_have_no_problems(self):
+        self.assertEqual(targets.problems(target()), [])
+        self.assertEqual(targets.problems(target(scoring={"max": 10.9, "step": 0.1})), [])
+        zones = target(drop=("ring_diameters_mm", "black_mm"), scoring={"values": ["A", "C", "D", "M"]})
+        self.assertEqual(targets.problems(zones), [])
 
-    def test_finds_wrong_ring_count_order_and_black(self):
-        self.assertIn("centre scores only 3", targets.problems(face(top_value=3, black_from_ring=2))[0])
-        self.assertIn("grow", targets.problems(face(ring_diameters_mm=[10, 30, 20, 40], black_mm=20))[0])
-        self.assertIn("does not end in ring 8", targets.problems(face(black_mm=31))[0])
-        self.assertEqual(targets.problems(face(black_mm=25)), [])
-        self.assertIn("does not have", targets.problems(face(black_from_ring=5))[0])
+    def test_scoring_is_a_range_or_a_list(self):
+        self.assertIn("either", targets.problems(target(scoring={}))[0])
+        self.assertIn("either", targets.problems(target(scoring={"max": 10, "step": 1, "values": [1, 0]}))[0])
+        self.assertIn("0 < step", targets.problems(target(scoring={"max": 10}))[0])
+        self.assertIn("whole number of steps", targets.problems(target(scoring={"max": 10.95, "step": 0.1}))[0])
+        self.assertIn("best to worst", targets.problems(target(scoring={"values": [0, 7, 8, 9, 10]}))[0])
+        self.assertIn("all numbers or all names", targets.problems(target(scoring={"values": [10, "A", 0]}))[0])
+        self.assertIn("two different", targets.problems(target(scoring={"values": [5, 5]}))[0])
 
-    def test_finds_inner_ten_outside_the_ten_and_missing_source(self):
-        self.assertIn("inner ten", targets.problems(face(inner_ten_mm=12))[0])
-        self.assertIn("source", targets.problems(face(source={"title": "x"}))[0])
-        self.assertIn("id", targets.problems(face(id="other"))[0])
+    def test_rings_must_fit_the_scores_and_each_other(self):
+        self.assertIn("grow", targets.problems(target(ring_diameters_mm=[10, 30, 20, 40]))[0])
+        self.assertIn("3 rings for 4 scores", targets.problems(target(ring_diameters_mm=[10, 20, 40]))[0])
+        self.assertIn("inner ten", targets.problems(target(inner_ten_mm=12))[0])
+        self.assertIn("black", targets.problems(target(black_mm=50))[0])
+        self.assertIn("need ring diameters", targets.problems(target(drop=("ring_diameters_mm",)))[0])
 
-    def test_app_json_leaves_out_comments_and_keeps_optional_fields_optional(self):
-        out = targets.app_json([face(inner_ten_mm=5, source={"title": "Rules", "url": "u", "rule": "1.2"})])[0]
+    def test_finds_missing_source_and_wrong_file_name(self):
+        self.assertIn("source", targets.problems(target(source={"title": "x"}))[0])
+        self.assertIn("id", targets.problems(target(id="other"))[0])
+
+    def test_app_json_keeps_the_scoring_and_leaves_out_what_is_not_there(self):
+        out = targets.app_json([target(inner_ten_mm=5, source={"title": "Rules", "url": "u", "rule": "1.2"})])[0]
+        self.assertEqual(out["scoring"], {"values": [10, 9, 8, 7, 0]})
         self.assertEqual(out["ringDiameters"], [10, 20, 30, 40])
-        self.assertEqual((out["topValue"], out["lowestRing"], out["decimal"]), (10, 7, False))
         self.assertEqual(out["innerTen"], 5)
         self.assertEqual(out["source"], "Rules, 1.2")
         self.assertNotIn("_file", out)
-        bare = targets.app_json([{k: v for k, v in face().items() if k not in ("black_mm", "black_from_ring")}])[0]
+        bare = targets.app_json([target(drop=("ring_diameters_mm", "black_mm"), scoring={"max": 100, "step": 1})])[0]
+        self.assertEqual(bare["scoring"], {"max": 100, "step": 1})
+        self.assertNotIn("ringDiameters", bare)
         self.assertNotIn("black", bare)
-        self.assertNotIn("innerTen", bare)
 
 
 if __name__ == "__main__":

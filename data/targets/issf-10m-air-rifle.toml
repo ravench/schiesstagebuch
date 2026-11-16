@@ -3,15 +3,15 @@ id = "issf-10m-air-rifle"
 name = "Luftgewehr 10 m"
 short_name = "ISSF LG"
 distances_m = [10]
-top_value = 10
-# Scored in tenths (decimal scoring), up to 10.9.
-decimal = true
-# Outer diameter of each ring from the centre outwards, in mm; the centre ring scores top_value.
+# Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [0.5, 5.5, 10.5, 15.5, 20.5, 25.5, 30.5, 35.5, 40.5, 45.5]
 # Inner ten: no diameter; the 10 dot (0.5 mm) must be shot out completely.
 black_mm = 30.5
-# The black covers rings 4 to 9; the 10 is a white dot.
-black_from_ring = 4
+
+[scoring]
+# Any value from 0 up to max in steps of step.
+max = 10.9
+step = 0.1
 
 [source]
 title = "ISSF General Technical Rules, 2023 edition"

@@ -3,13 +3,14 @@ id = "issf-10m-air-pistol"
 name = "Luftpistole 10 m"
 short_name = "ISSF LP"
 distances_m = [10]
-top_value = 10
-# Outer diameter of each ring from the centre outwards, in mm; the centre ring scores top_value.
+# Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [11.5, 27.5, 43.5, 59.5, 75.5, 91.5, 107.5, 123.5, 139.5, 155.5]
 inner_ten_mm = 5
 black_mm = 59.5
-# The black covers ring 7 and inwards.
-black_from_ring = 7
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 [source]
 title = "ISSF General Technical Rules, 2023 edition"
