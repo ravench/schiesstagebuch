@@ -38,6 +38,7 @@ class TargetDataTests(unittest.TestCase):
         faces = {t["id"]: t for t in targets.load()}
         self.assertEqual(targets.shot_values(faces["ch-300m-a5"]), [5, 4, 3, 2, 1, 0])
         self.assertEqual(targets.shot_values(faces["ch-300m-a10"]), list(range(10, -1, -1)))
+        self.assertEqual(len(targets.shot_values(faces["ch-300m-a100"])), 101)
         self.assertTrue(faces["issf-10m-air-rifle"].get("decimal"))
         self.assertFalse(faces["ch-300m-a10"].get("decimal", False))
 
