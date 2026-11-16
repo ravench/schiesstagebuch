@@ -1,7 +1,7 @@
 # Morgartenscheibe F5 (also F100/5): 45 × 100 cm, khaki green, ordnance pistols only, shot at the Morgarten,
 # Rothenthurm and Schwaderloh shoots. The 5 is an oval of 10 × 15 cm; the other zones are not round rings.
 id = "ch-50m-morgarten-f5"
-name = "SSV Morgartenscheibe F5 50 m"
+name = "Morgartenscheibe F5 50 m"
 short_name = "F5"
 group = "Schweiz"
 distances_m = [50]

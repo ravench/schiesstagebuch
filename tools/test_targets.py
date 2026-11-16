@@ -33,16 +33,19 @@ class RepoTargetTests(unittest.TestCase):
         self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][0], 0.5)
         self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][-1], 45.5)
         self.assertEqual(self.targets["issf-25m-rapid-fire-pistol"]["ring_diameters_mm"], [100, 180, 260, 340, 420, 500])
+        self.assertEqual(self.targets["issf-50m-running-target"]["ring_diameters_mm"][::9], [60, 366])
+        self.assertEqual(self.targets["issf-10m-running-target"]["ring_diameters_mm"][::9], [5.5, 50.5])
 
     def test_names_say_who_issues_the_target(self):
         # Raven 2026-11-16: ISSF and VBS targets with almost the same name must be told apart.
         names = [t["name"] for t in self.targets.values()]
         self.assertEqual(len(set(names)), len(names))
         for target in self.targets.values():
-            # VBS only for the targets of the military regulation (Raven), SSV for the other Swiss ones.
+            # VBS only for the targets of the military regulation (Raven); the SSV and local Swiss ones
+            # (Morgarten, Ustertag) carry neither VBS nor ISSF.
             military = "SR 512.311" in target["source"]["title"]
-            prefix = "ISSF " if target["group"] == "ISSF" else "VBS " if military else "SSV "
-            self.assertTrue(target["name"].startswith(prefix), target["name"])
+            self.assertEqual(target["name"].startswith("ISSF "), target["group"] == "ISSF", target["name"])
+            self.assertEqual(target["name"].startswith("VBS "), military, target["name"])
 
     def test_ssv_and_sius_targets(self):
         # SIUS STYX SUI-50m-Targets-Package: P and B pistol targets, Kleinkaliber A for the rifle.
@@ -57,6 +60,8 @@ class RepoTargetTests(unittest.TestCase):
         self.assertEqual(self.targets["ch-50m-kka100"]["scoring"], {"min": 0, "max": 100})
         self.assertEqual(self.targets["ch-10m-air-rifle-100"]["scoring"], {"min": 0, "max": 100})
         self.assertEqual(self.targets["ch-50m-morgarten-f5"]["scoring"], {"values": [5, 4, 3, 2, 1, 0]})
+        self.assertEqual(self.targets["ch-25m-ustertag"]["scoring"], {"values": [5, 4, 3, 0]})
+        self.assertEqual(self.targets["ch-300m-ustertag"]["scoring"], {"values": [5, 4, 3, 2, 0]})
 
     def test_scorings_of_the_swiss_and_issf_targets(self):
         self.assertEqual(self.targets["ch-300m-a5"]["scoring"], {"values": [5, 4, 3, 2, 1, 0]})

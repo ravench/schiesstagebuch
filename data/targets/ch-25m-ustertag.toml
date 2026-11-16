@@ -1,0 +1,14 @@
+# Special target of the Ustertag-Schiessen (SG Uster), pistol 25 m, with the Uster coat of arms; scores 5, 4, 3 or 0.
+id = "ch-25m-ustertag"
+name = "Ustertag-Scheibe 25 m"
+short_name = "Uster 25 m"
+group = "Schweiz"
+distances_m = [25]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 0]
+
+[source]
+title = "SG Uster, Ustertag-Schiessen: Ablauf (Scheiben)"
+url = "https://www.ustertagschiessen.ch/Home/Ablauf"

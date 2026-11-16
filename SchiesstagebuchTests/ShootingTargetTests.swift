@@ -88,7 +88,7 @@ final class ShootingTargetTests: ModelTestCase {
 
     func testTemplatesComeBundledSwissFirst() throws {
         let items = TargetCatalog.items
-        XCTAssertGreaterThanOrEqual(items.count, 24)
+        XCTAssertGreaterThanOrEqual(items.count, 29)
         XCTAssertEqual(TargetCatalog.grouped().map(\.group), ["Schweiz", "ISSF"])
         let b4 = try XCTUnwrap(items.first { $0.id == "ch-300m-b4" })
         XCTAssertEqual(b4.targetScoring, .values([4, 3, 2, 1, 0]))
