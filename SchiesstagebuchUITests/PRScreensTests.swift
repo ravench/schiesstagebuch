@@ -69,7 +69,15 @@ final class PRScreensTests: XCTestCase {
 
         tab("Statistik")
         snap("05-Statistik")
+        stop("05c-Statistik-Resultat-in-Prozent", chart: "Resultat in Prozent")
         stop("05b-Statistik-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
+        // The single Stiche are one row further (the sample data names none, so the row is not there today).
+        let stiche = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Stiche")).firstMatch
+        reveal(stiche, swipes: 4)
+        if stiche.exists, open(stiche) {
+            snap("05d-Statistik-Stiche")
+            back()
+        }
 
         tab("Waffen")
         snap("06-Waffen")
@@ -92,15 +100,7 @@ final class PRScreensTests: XCTestCase {
                 }
                 app.buttons["Abbrechen"].firstMatch.tap()
             }
-            // The figures are their own screen (the tab bar has a «Statistik» button too, so by the cell).
-            let statistics = app.cells.containing(.staticText, identifier: "Statistik").firstMatch
-            reveal(statistics)
-            if open(statistics) {
-                snap("07e-Waffe-Statistik")
-                stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
-                stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
-                back()
-            }
+            weaponStatisticsStops()
             back()
         }
 
@@ -121,6 +121,27 @@ final class PRScreensTests: XCTestCase {
         scroll()
         snap("09-Einstellungen-unten")
         filterStops()
+    }
+
+    /// A firearm's figures: the charts, calibre and ammunition in one card, the entries on a page of their own.
+    private func weaponStatisticsStops() {
+        // The figures are their own screen (the tab bar has a «Statistik» button too, so by the cell).
+        let statistics = app.cells.containing(.staticText, identifier: "Statistik").firstMatch
+        reveal(statistics)
+        if open(statistics) {
+            snap("07e-Waffe-Statistik")
+            stop("07c-Waffe-Resultat-pro-Stellung", chart: "Resultat pro Stellung")
+            // Calibre and ammunition in one card; the entries one row further, at the very end.
+            stop("07f-Waffe-Pro-Kaliber", chart: "Pro Kaliber")
+            stop("07d-Waffe-Resultat-pro-Los", chart: "Resultat pro Los")
+            let entries = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Einträge")).firstMatch
+            reveal(entries, swipes: 10)
+            if open(entries) {
+                snap("07g-Waffe-Eintraege")
+                back()
+            }
+            back()
+        }
     }
 
     /// The GP 11 lots, split by firearm and position, and the calibre of the cartridge: more than ten to

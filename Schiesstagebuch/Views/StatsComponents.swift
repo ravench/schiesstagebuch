@@ -123,53 +123,63 @@ struct ScoreSummary: View {
     }
 }
 
-/// Result percentage per entry over time; shown once two entries have one. Entries shot in
-/// different positions get a line each, since liegend scores clearly higher than stehend.
+/// Result percentage per entry over time, one chart per kind of firearm with two results or more (a pistol's
+/// percentages say nothing next to a rifle's). Within a chart, entries shot in different positions get a line
+/// each, since liegend scores clearly higher than stehend.
 struct ResultTrendChart: View {
+    @Environment(\.term) private var term
     let entries: [Entry]
 
     private struct Point: Identifiable { let id: UUID; let date: Date; let percent: Double; let position: ShootingPosition? }
 
-    private var points: [Point] {
-        entries.compactMap { e in
-            e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0, position: e.statsPosition) }
-        }
-        .sorted { $0.date < $1.date }
-    }
+    static func shows(_ entries: [Entry]) -> Bool { !entries.resultTrends.isEmpty }
 
     var body: some View {
-        let data = points
-        if data.count >= 2 {
-            let positions = Set(data.map(\.position)).sorted { ShootingPosition.order($0) < ShootingPosition.order($1) }
-            let split = positions.count > 1
+        let trends = entries.resultTrends
+        if !trends.isEmpty {
+            // One kind of firearm, as on a firearm's own page, needs no name above the chart.
+            let named = Set(entries.map { $0.weapon?.category }).count > 1
             VStack(alignment: .leading, spacing: 8) {
                 Text("Resultat in Prozent").font(.headline)
-                Chart(data) { p in
-                    if split {
-                        LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
-                            .foregroundStyle(by: .value("Stellung", p.position?.title ?? "Ohne Stellung".loc))
-                            .symbol(by: .value("Stellung", p.position?.title ?? "Ohne Stellung".loc))
-                            .interpolationMethod(.monotone)
-                    } else {
-                        LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
-                            .symbol(.circle)
-                            .interpolationMethod(.monotone)
+                ForEach(Array(trends.enumerated()), id: \.offset) { _, trend in
+                    if named {
+                        Text(trend.category?.title ?? term("Ohne Waffe").loc).font(.subheadline.weight(.semibold))
                     }
+                    chart(trend.entries.compactMap { e in
+                        e.score.percentage.map { Point(id: e.id, date: e.date, percent: $0, position: e.statsPosition) }
+                    })
                 }
-                .chartYAxis {
-                    AxisMarks { value in
-                        AxisGridLine()
-                        AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
-                    }
-                }
-                .chartYScale(domain: .automatic(includesZero: false))
-                // The same colour and shape per position as in the box plots; one line needs no legend.
-                .chartForegroundStyleScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map { ShootingPosition.marker($0).color })
-                .chartSymbolScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map { ShootingPosition.marker($0).shape })
-                .chartLegend(split ? .automatic : .hidden)
-                .frame(height: 180)
             }
         }
+    }
+
+    private func chart(_ data: [Point]) -> some View {
+        let positions = Set(data.map(\.position)).sorted { ShootingPosition.order($0) < ShootingPosition.order($1) }
+        let split = positions.count > 1
+        return Chart(data) { p in
+            if split {
+                LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
+                    .foregroundStyle(by: .value("Stellung", p.position?.title ?? "Ohne Stellung".loc))
+                    .symbol(by: .value("Stellung", p.position?.title ?? "Ohne Stellung".loc))
+                    .interpolationMethod(.monotone)
+            } else {
+                LineMark(x: .value("Datum", p.date), y: .value("Prozent", p.percent))
+                    .symbol(.circle)
+                    .interpolationMethod(.monotone)
+            }
+        }
+        .chartYAxis {
+            AxisMarks { value in
+                AxisGridLine()
+                AxisValueLabel { if let v = value.as(Double.self) { Text(ScoreFormat.percent(v)) } }
+            }
+        }
+        .chartYScale(domain: .automatic(includesZero: false))
+        // The same colour and shape per position as in the box plots; one line needs no legend.
+        .chartForegroundStyleScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map { ShootingPosition.marker($0).color })
+        .chartSymbolScale(domain: positions.map { $0?.title ?? "Ohne Stellung".loc }, range: positions.map { ShootingPosition.marker($0).shape })
+        .chartLegend(split ? .automatic : .hidden)
+        .frame(height: 180)
     }
 }
 
