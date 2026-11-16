@@ -425,8 +425,7 @@ enum Backup {
         let barrels = try restoreBarrels(file.barrels ?? [], weapons: weapons, calibers: caliberMap, into: context)
         restoreOldWeaponCalibers(file.weapons, weapons: weapons, calibers: caliberMap, into: context)
 
-        let (events, targets) = (try restoreEvents(file.events ?? [], ranges: ranges, into: context),
-                                 try restoreTargets(file.targets ?? [], into: context))
+        let events = try restoreEvents(file.events ?? [], ranges: ranges, into: context), targets = try restoreTargets(file.targets ?? [], into: context)
 
         let existingEntries = Set(try all(Entry.self, context).map(\.id))
         var added = 0
