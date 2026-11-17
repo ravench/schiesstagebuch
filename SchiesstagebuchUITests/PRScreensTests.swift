@@ -368,14 +368,7 @@ final class PRScreensTests: XCTestCase {
 
     /// The list of ranges: a new range with «Aktuellen Standort verwenden», then the list's search field.
     func testRanges() {
-        // Under Einstellungen, or a tab of its own where the app has one.
-        let ranges = app.tabBars.buttons["Schiessanlagen"]
-        if ranges.waitForExistence(timeout: 3) {
-            ranges.tap()
-        } else {
-            tab("Einstellungen")
-            guard open(app.staticTexts["Schiessanlagen"].firstMatch) else { return }
-        }
+        tab("Anlagen")
         if openMenu(app.navigationBars.buttons["Hinzufügen"].firstMatch, showing: "Schweizer Schiessanlagen übernehmen") {
             // The menu's own «Hinzufügen» comes after the bar's button of the same name.
             let items = app.buttons.matching(NSPredicate(format: "label == %@", "Hinzufügen"))
