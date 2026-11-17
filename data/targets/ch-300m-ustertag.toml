@@ -13,3 +13,30 @@ values = [5, 4, 3, 2, 0]
 [source]
 title = "SG Uster, Ustertag-Schiessen: Ablauf (Scheiben)"
 url = "https://www.ustertagschiessen.ch/Home/Ablauf"
+
+# The icon, from the club's dimensioned drawing (ustertagschiessen.ch/img/various/riftargetdim.gif):
+# white card, black body with the 30 mm trapezium on top, the head above it, the 4 as a white frame and the
+# 5 in white and red. Card size and the gap under the head are read off the drawing.
+[[shapes]]
+rect = [-450, -640, 900, 1100]
+fill = "white"
+
+[[shapes]]
+rect = [-100, -630, 200, 185]
+fill = "black"
+
+[[shapes]]
+polygon = [[-220, 385], [220, 385], [220, -385], [180, -415], [-180, -415], [-220, -385]]
+fill = "black"
+
+[[shapes]]
+rect = [-150, -250, 300, 500]
+line = "white"
+
+[[shapes]]
+rect = [-75, -100, 150, 200]
+fill = "white"
+
+[[shapes]]
+rect = [0, -100, 75, 200]
+fill = "red"

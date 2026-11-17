@@ -12,3 +12,18 @@ values = [5, 4, 3, 0]
 [source]
 title = "SG Uster, Ustertag-Schiessen: Ablauf (Scheiben)"
 url = "https://www.ustertagschiessen.ch/Home/Ablauf"
+
+# The icon, from the club's picture (ustertagschiessen.ch/img/various/25mTarget.jpg): the 3 is the white
+# card, the 4 the black square, the 5 the Uster shield. No sizes are published: the proportions are
+# measured off the picture and scaled to a 50 cm card.
+[[shapes]]
+rect = [-250, -250, 500, 500]
+fill = "white"
+
+[[shapes]]
+rect = [-155, -155, 310, 310]
+fill = "black"
+
+[[shapes]]
+polygon = [[-69.5, -78], [69.5, -78], [69.5, 9], [64.2, 35.6], [49.1, 58.1], [26.6, 73.2], [0, 78.5], [-26.6, 73.2], [-49.1, 58.1], [-64.2, 35.6], [-69.5, 9]]
+fill = "white"

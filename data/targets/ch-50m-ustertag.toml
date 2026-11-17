@@ -12,3 +12,38 @@ values = [10, 9, 8, 7, 6, 5, 0]
 [source]
 title = "SG Uster, Ustertag-Schiessen: Ablauf (Scheiben)"
 url = "https://www.ustertagschiessen.ch/Home/Ablauf"
+
+# The icon, from the club's picture (ustertagschiessen.ch/img/various/50mTarget2018.jpg): nested black
+# rectangles 5 to 8 with white lines, a white 9 and the 10 with the red of the Uster arms. No sizes are
+# published: the proportions are measured off the picture and scaled to a 50 x 90 cm 5 zone.
+[[shapes]]
+rect = [-260, -460, 520, 920]
+fill = "white"
+
+[[shapes]]
+rect = [-250, -450, 500, 900]
+fill = "black"
+
+[[shapes]]
+rect = [-210, -365, 420, 730]
+line = "white"
+
+[[shapes]]
+rect = [-167, -279, 334, 558]
+line = "white"
+
+[[shapes]]
+rect = [-129, -195, 258, 390]
+line = "white"
+
+[[shapes]]
+rect = [-84, -109, 168, 218]
+fill = "white"
+
+[[shapes]]
+rect = [0, -67, 45, 134]
+fill = "red"
+
+[[shapes]]
+rect = [-45, -67, 90, 134]
+line = "black"

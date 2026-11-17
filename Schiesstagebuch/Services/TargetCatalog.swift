@@ -19,6 +19,8 @@ enum TargetCatalog {
         let distances: [Int]
         let scoring: Scoring
         let source: String
+        /// What its icon shows; nil for none.
+        let face: TargetFace?
 
         var targetScoring: TargetScoring {
             if let values = scoring.values { return .values(values) }
@@ -31,6 +33,15 @@ enum TargetCatalog {
               let data = try? Data(contentsOf: url) else { return [] }
         return (try? decode(data)) ?? []
     }()
+
+    private static let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+
+    static func item(id: String) -> Item? { byID[id] }
+
+    /// The face of the template `target` was made from; nil for the user's own targets.
+    static func face(of target: ShootingTarget?) -> TargetFace? {
+        target.flatMap { item(id: $0.templateID)?.face }
+    }
 
     static func decode(_ data: Data) throws -> [Item] {
         try JSONDecoder().decode([Item].self, from: data)
@@ -48,4 +59,25 @@ enum TargetCatalog {
     static func target(from item: Item) -> ShootingTarget {
         ShootingTarget(name: item.name, scoring: item.targetScoring, templateID: item.id)
     }
+}
+
+/// A target face as tools/targets.py writes it for the icon: shapes in mm from the scoring centre
+/// (y down), the first being the card, then the black and the ring lines on top.
+struct TargetFace: Codable, Equatable {
+    struct Shape: Codable, Equatable {
+        /// x, y (top left), width, height.
+        var rect: [Double]?
+        var radius: Double?
+        /// Centre x, centre y, width, height.
+        var ellipse: [Double]?
+        var polygon: [[Double]]?
+        /// Colour names from tools/targets.py COLOURS.
+        var fill: String?
+        var line: String?
+    }
+
+    var shapes: [Shape]
+    /// Ring diameters, centre outwards.
+    var rings: [Double]
+    var black: Double?
 }
