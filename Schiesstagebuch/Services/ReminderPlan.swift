@@ -2,8 +2,11 @@ import Foundation
 
 /// When a reminder notification should fire; pure so it can be tested without UNUserNotificationCenter.
 enum ReminderPlan: Equatable {
-    /// No notification: no interval set, weapon archived, or already told.
+    /// No notification, and a pending one is removed: no interval set, weapon archived, or counted by shots only.
     case none
+    /// Due and already told: nothing new, and what is pending stays. A refresh right after the save
+    /// (the store's own change notice) must not remove the reminder the save has just scheduled.
+    case keep
     /// The limit is crossed right now: notify once, immediately.
     case now
     /// Ahead of time, at this moment.
@@ -23,7 +26,7 @@ extension MaintenanceNotifier {
     static func plan(_ status: MaintenanceStatus, archived: Bool, previouslyDue: Bool,
                      now: Date = .now, calendar: Calendar = .current) -> ReminderPlan {
         guard status.hasReminder, !archived else { return .none }
-        if status.isDue { return previouslyDue ? .none : .now }
+        if status.isDue { return previouslyDue ? .keep : .now }
         guard let due = status.dueDate else { return .none }
         return .at(ReminderPlan.fireDate(for: due, now: now, calendar: calendar))
     }

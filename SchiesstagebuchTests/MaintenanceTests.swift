@@ -156,10 +156,11 @@ final class MaintenanceTests: ModelTestCase {
         try context.save()
         XCTAssertTrue(weapon.status(.cleaning).isDue)
 
-        // Editing the weapon, logging maintenance, restoring a backup…: already due, no new notification.
-        XCTAssertEqual(MaintenanceNotifier.plans(weapon)[.cleaning], ReminderPlan.none)
         // The entry editor saw the weapon below the limit before this entry.
         XCTAssertEqual(MaintenanceNotifier.plans(weapon, previouslyDue: [])[.cleaning], ReminderPlan.now)
-        XCTAssertEqual(MaintenanceNotifier.plans(weapon, previouslyDue: [.cleaning])[.cleaning], ReminderPlan.none)
+        // The refresh that follows the save's own store change, editing the weapon, restoring a backup…:
+        // already due, no new notification, and the one just scheduled is not removed.
+        XCTAssertEqual(MaintenanceNotifier.plans(weapon)[.cleaning], ReminderPlan.keep)
+        XCTAssertEqual(MaintenanceNotifier.plans(weapon, previouslyDue: [.cleaning])[.cleaning], ReminderPlan.keep)
     }
 }

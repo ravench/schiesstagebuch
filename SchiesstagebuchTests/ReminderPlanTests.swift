@@ -40,7 +40,8 @@ final class ReminderPlanTests: XCTestCase {
         let s = status(shots: 100, since: 100)
         XCTAssertTrue(s.isDue)
         XCTAssertEqual(MaintenanceNotifier.plan(s, archived: false, previouslyDue: false), .now)
-        XCTAssertEqual(MaintenanceNotifier.plan(s, archived: false, previouslyDue: true), .none, "already told when the limit was crossed")
+        XCTAssertEqual(MaintenanceNotifier.plan(s, archived: false, previouslyDue: true), .keep,
+                       "already told when the limit was crossed; the reminder the save has just scheduled stays")
     }
 
     func testDayIntervalSchedulesAhead() {

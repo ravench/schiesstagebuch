@@ -144,10 +144,11 @@ enum MaintenanceNotifier {
         let center = UNUserNotificationCenter.current()
         let planned = plans(weapon, previouslyDue: previouslyDue)
         for kind in MaintenanceKind.allCases {
+            let plan = planned[kind] ?? ReminderPlan.none
+            if plan == .keep { continue }
             let id = identifier(weapon, kind)
             center.removePendingNotificationRequests(withIdentifiers: [id])
             let status = weapon.status(kind)
-            guard status.hasReminder, !weapon.isArchived else { continue }
 
             let content = UNMutableNotificationContent()
             content.title = String(localized: "\(kind.title) fällig: \(weapon.name)")
@@ -156,8 +157,8 @@ enum MaintenanceNotifier {
             content.userInfo = ReminderLink.userInfo(weaponID: weapon.id, kind: kind)
 
             let trigger: UNNotificationTrigger
-            switch planned[kind] ?? ReminderPlan.none {
-            case .none:
+            switch plan {
+            case .none, .keep:
                 continue
             case .now:
                 // Notify once when the limit is crossed, not on every later refresh.
@@ -181,6 +182,8 @@ enum MaintenanceNotifier {
 /// Shows reminders while the app is open and reports a tap on one. Without a delegate iOS drops a
 /// notification that arrives in the foreground, and a shot-based reminder fires one second after the
 /// entry is saved, so it was never seen.
+/// On the main actor: iOS aborts the app when the answer to a tap that started it comes from another thread.
+@MainActor
 final class MaintenanceNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
@@ -191,6 +194,6 @@ final class MaintenanceNotificationDelegate: NSObject, UNUserNotificationCenterD
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
               let id = ReminderLink.weaponID(in: response.notification.request.content.userInfo) else { return }
-        await MainActor.run { ReminderTap.shared.weaponID = id }
+        ReminderTap.shared.weaponID = id
     }
 }
