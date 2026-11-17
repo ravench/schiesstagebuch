@@ -91,7 +91,7 @@ struct RootView: View {
     @State private var whatsNew: [String] = []
     @State private var showWhatsNew = false
 
-    private var dueCount: Int { weapons.reduce(0) { $0 + $1.dueMaintenance.count } }
+    private var dueCount: Int { MaintenanceNotifier.dueCount(weapons) }
     /// With a licence card there are six tabs, one too many for a narrow tab bar. The system's own «Mehr»
     /// puts a second navigation bar on each of its pages, so the ranges and the settings share this one.
     private var crowded: Bool { sizeClass == .compact && LicenceCard.hasCard(licenceCards) }

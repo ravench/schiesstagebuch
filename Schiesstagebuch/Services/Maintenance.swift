@@ -139,8 +139,14 @@ enum MaintenanceNotifier {
         })
     }
 
+    /// The number on the app icon and on the Waffen tab: every cleaning and service that is due.
+    static func dueCount(_ weapons: [Weapon]) -> Int {
+        weapons.filter { !$0.isArchived }.reduce(0) { $0 + $1.dueMaintenance.count }
+    }
+
     /// Re-schedule all reminders for a weapon. Call after saving an entry, a record or intervals.
-    static func refresh(_ weapon: Weapon, previouslyDue: Set<MaintenanceKind>? = nil) {
+    /// `badgeAhead` is the number a reminder set ahead puts on the app icon when it fires.
+    static func refresh(_ weapon: Weapon, previouslyDue: Set<MaintenanceKind>? = nil, badgeAhead: Int? = nil) {
         let center = UNUserNotificationCenter.current()
         let planned = plans(weapon, previouslyDue: previouslyDue)
         for kind in MaintenanceKind.allCases {
@@ -164,6 +170,7 @@ enum MaintenanceNotifier {
                 // Notify once when the limit is crossed, not on every later refresh.
                 trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
             case .at(let date):
+                content.badge = badgeAhead.map { NSNumber(value: $0) }
                 let comps = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
                 trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
             }
@@ -175,7 +182,12 @@ enum MaintenanceNotifier {
     /// recorded there must cancel the reminder still pending here) and when the app comes to the front.
     /// Without `previouslyDue` nothing fires at once; only the pending reminders are put right.
     static func refreshAll(in context: ModelContext) {
-        for weapon in (try? context.fetch(FetchDescriptor<Weapon>())) ?? [] { refresh(weapon) }
+        let weapons = (try? context.fetch(FetchDescriptor<Weapon>())) ?? []
+        let due = dueCount(weapons)
+        // shortcut: a reminder ahead counts what is due now plus itself, not the others that fire
+        // before it; the next start of the app puts the number right. Upgrade if that is noticed.
+        for weapon in weapons { refresh(weapon, badgeAhead: due + 1) }
+        UNUserNotificationCenter.current().setBadgeCount(due)
     }
 }
 
@@ -187,7 +199,7 @@ enum MaintenanceNotifier {
 final class MaintenanceNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
+        [.banner, .list, .sound, .badge]
     }
 
     /// A tap on the reminder (not a dismissal): the firearm's page opens (`RootView`).
