@@ -1473,6 +1473,29 @@
         }
       }
     },
+    "Aus Vorlage hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add from template"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter depuis un modèle"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi da modello"
+          }
+        }
+      }
+    },
     "Aus, wenn drinnen geschossen wird; dann erscheint auch im Eintrag kein Wetter.": {
       "extractionState": "manual",
       "localizations": {
@@ -1814,6 +1837,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Osservazioni"
+          }
+        }
+      }
+    },
+    "Bereich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Range"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervallo"
           }
         }
       }
@@ -2669,6 +2715,29 @@
         }
       }
     },
+    "Die möglichen Werte eines Schusses, durch Leerzeichen getrennt, der beste zuerst, z. B. «5 4 3 2 1 0». Bei den Einzelschüssen erscheinen sie als Tasten, und nach jedem Tipp geht es zum nächsten Schuss.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The values a shot can have, separated by spaces, best first, e.g. “5 4 3 2 1 0”. For individual shots they appear as buttons, and each tap moves on to the next shot."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les valeurs possibles d'un coup, séparées par des espaces, la meilleure d'abord, p. ex. « 5 4 3 2 1 0 ». Pour les coups individuels, elles apparaissent comme boutons et chaque toucher passe au coup suivant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I valori possibili di un colpo, separati da spazi, il migliore per primo, p. es. «5 4 3 2 1 0». Per i colpi singoli appaiono come pulsanti e ogni tocco passa al colpo successivo."
+          }
+        }
+      }
+    },
     "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.": {
       "extractionState": "manual",
       "localizations": {
@@ -2895,6 +2964,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "I miei filtri"
+          }
+        }
+      }
+    },
+    "Eigene Scheibe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Own target"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cible personnalisée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersaglio personalizzato"
           }
         }
       }
@@ -3290,6 +3382,29 @@
         }
       }
     },
+    "Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10,9 für Zehntelwertung oder 0 bis 100 für A100.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You type individual shots on the number pad; values outside the range are marked red. For example 0 to 10.9 for decimal scoring or 0 to 100 for A100."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu saisis les coups individuels avec le pavé numérique ; les valeurs hors de la plage sont marquées en rouge. Par exemple 0 à 10,9 pour l'évaluation au dixième ou 0 à 100 pour A100."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I colpi singoli si digitano con il tastierino numerico; i valori fuori intervallo sono segnati in rosso. Per esempio da 0 a 10,9 per il punteggio decimale o da 0 a 100 per A100."
+          }
+        }
+      }
+    },
     "Erfasse deine Munitionssorten, je mit Kaliber.": {
       "extractionState": "manual",
       "localizations": {
@@ -3355,6 +3470,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registra la tua prima giornata di tiro con +."
+          }
+        }
+      }
+    },
+    "Erfasse die Scheiben, auf die du schiesst. Beim Stich wählst du dann die Scheibe, und bei den Einzelschüssen bietet die App nur ihre Werte an.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add the targets you shoot at. You then pick the target for each match, and for individual shots the app offers only its values."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistre les cibles sur lesquelles tu tires. Tu choisis ensuite la cible pour chaque passe, et pour les coups individuels l'app ne propose que ses valeurs."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra i bersagli su cui spari. Poi scegli il bersaglio per ogni serie e, per i colpi singoli, l'app offre solo i suoi valori."
           }
         }
       }
@@ -3654,6 +3792,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fine"
+          }
+        }
+      }
+    },
+    "Feste Werte": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fixed values"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valeurs fixes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valori fissi"
           }
         }
       }
@@ -4860,6 +5021,29 @@
         }
       }
     },
+    "ISSF": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISSF"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISSF"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISSF"
+          }
+        }
+      }
+    },
     "Im Ordner der App gefunden": {
       "extractionState": "manual",
       "localizations": {
@@ -5552,6 +5736,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna munizione"
+          }
+        }
+      }
+    },
+    "Keine Scheiben": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No targets"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun bersaglio"
           }
         }
       }
@@ -6683,6 +6890,29 @@
         }
       }
     },
+    "Maximum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maximum"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maximum"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Massimo"
+          }
+        }
+      }
+    },
     "Median pro Schuss": {
       "extractionState": "manual",
       "localizations": {
@@ -6794,6 +7024,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Almeno un calibro. Aggiungi le canne intercambiabili dopo il salvataggio."
+          }
+        }
+      }
+    },
+    "Minimum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimum"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimum"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimo"
           }
         }
       }
@@ -7438,6 +7691,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nuova munizione"
+          }
+        }
+      }
+    },
+    "Neue Scheibe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New target"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouvelle cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo bersaglio"
           }
         }
       }
@@ -9673,6 +9949,75 @@
         }
       }
     },
+    "Scheibe bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit target"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier la cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica bersaglio"
+          }
+        }
+      }
+    },
+    "Scheiben": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Targets"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli"
+          }
+        }
+      }
+    },
+    "Scheiben-Nr.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target no."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N° de cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "N. bersaglio"
+          }
+        }
+      }
+    },
     "Schiessanlage": {
       "extractionState": "manual",
       "localizations": {
@@ -10060,6 +10405,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Polvere nera"
+          }
+        }
+      }
+    },
+    "Schweiz": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switzerland"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suisse"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svizzera"
           }
         }
       }
@@ -11743,6 +12111,29 @@
         }
       }
     },
+    "Vorlagen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Templates"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modèles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modelli"
+          }
+        }
+      }
+    },
     "Vorschau": {
       "extractionState": "manual",
       "localizations": {
@@ -12130,6 +12521,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tipi di punteggio"
+          }
+        }
+      }
+    },
+    "Wertungsmodus": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scoring mode"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode d'évaluation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modalità di punteggio"
           }
         }
       }

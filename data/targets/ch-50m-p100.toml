@@ -1,0 +1,15 @@
+# Kombinationsscheibe P in Hunderterwertung: the 100 cm scoring field read in 100 steps of 5 mm.
+id = "ch-50m-p100"
+name = "SSV Pistolenscheibe P100 50 m"
+short_name = "P100"
+group = "Schweiz"
+distances_m = [50]
+
+[scoring]
+# Hundred rating: a shot scores 0 to 100 by its distance from the centre.
+min = 0
+max = 100
+
+[source]
+title = "SIUS STYX, Paket SUI-50m-Targets-Package 1.0.0 (Wertungsmethoden)"
+url = "https://support.sius.com/de/jhelp_kb_cat/styx/"

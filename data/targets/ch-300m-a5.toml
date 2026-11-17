@@ -1,0 +1,18 @@
+# Swiss 300 m Scheibe A, scored in 5 rings: a 100 cm scoring field split into 5 rings of
+# equal width, a 60 cm black centre. Rings score 5 in the centre down to 1.
+id = "ch-300m-a5"
+name = "VBS Scheibe A5 300 m"
+short_name = "A5"
+group = "Schweiz"
+distances_m = [300]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [200, 400, 600, 800, 1000]
+black_mm = 600
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 2, 1, 0]
+
+[source]
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

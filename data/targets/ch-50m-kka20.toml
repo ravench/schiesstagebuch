@@ -1,0 +1,20 @@
+# SSV 50 m smallbore rifle target (the ISSF 50 m face: 154.4 mm scoring field, 112.4 mm black), 20-point scoring:
+# inner ten 20, outer ten 19, then every ring in halves: inner half of the nine 18, outer half 17, and so on down to 1.
+# SIUS STYX (SUI-50m-Targets-Package) scores it from the hit's centre on a 160 mm field: this face plus half a 5.6 mm calibre.
+id = "ch-50m-kka20"
+name = "SSV Kleinkaliberscheibe A20 50 m"
+short_name = "KK A20"
+group = "Schweiz"
+distances_m = [50]
+# Outer diameter of each scoring zone from the centre outwards, in mm (the first is the inner ten).
+ring_diameters_mm = [5, 10.4, 18.4, 26.4, 34.4, 42.4, 50.4, 58.4, 66.4, 74.4, 82.4, 90.4, 98.4, 106.4, 114.4, 122.4, 130.4, 138.4, 146.4, 154.4]
+black_mm = 112.4
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SSV Regeln für das sportliche Schiessen, Teil B: Technische Regeln Gewehr (TRG)"
+rule = "Art. 26"
+url = "https://www.swissshooting.ch/media/sslercxt/dok-1104022-d.pdf"

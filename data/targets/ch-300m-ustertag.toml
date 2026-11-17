@@ -1,0 +1,15 @@
+# Special target of the Ustertag-Schiessen (SG Uster), rifle 300 m. Rectangles, not rings: 5 = 150 x 200 mm,
+# 4 = 300 x 500 mm, 3 = 440 x 770 mm plus a 30 mm trapezium, 2 = the head, 200 x 185 mm.
+id = "ch-300m-ustertag"
+name = "Ustertag-Scheibe 300 m"
+short_name = "Uster 300 m"
+group = "Schweiz"
+distances_m = [300]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 2, 0]
+
+[source]
+title = "SG Uster, Ustertag-Schiessen: Ablauf (Scheiben)"
+url = "https://www.ustertagschiessen.ch/Home/Ablauf"

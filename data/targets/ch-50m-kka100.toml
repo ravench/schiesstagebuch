@@ -1,0 +1,17 @@
+# SSV 50 m smallbore rifle target (the ISSF 50 m face: 154.4 mm scoring field, 112.4 mm black), hundred rating: 0 to 100, read electronically.
+# SIUS STYX (SUI-50m-Targets-Package) scores it from the hit's centre on a 160 mm field: this face plus half a 5.6 mm calibre.
+id = "ch-50m-kka100"
+name = "SSV Kleinkaliberscheibe A100 50 m"
+short_name = "KK A100"
+group = "Schweiz"
+distances_m = [50]
+
+[scoring]
+# Hundred rating.
+min = 0
+max = 100
+
+[source]
+title = "SSV Regeln für das sportliche Schiessen, Teil B: Technische Regeln Gewehr (TRG)"
+rule = "Art. 26"
+url = "https://www.swissshooting.ch/media/sslercxt/dok-1104022-d.pdf"

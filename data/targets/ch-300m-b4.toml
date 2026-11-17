@@ -1,0 +1,14 @@
+# Kombinierte Feldscheibe B, 4er: light grey, green figure, four fields on a 100 cm scoring field.
+id = "ch-300m-b4"
+name = "VBS Feldscheibe B4 300 m"
+short_name = "B4"
+group = "Schweiz"
+distances_m = [300]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [4, 3, 2, 1, 0]
+
+[source]
+title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
+url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"

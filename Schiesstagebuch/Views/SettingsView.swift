@@ -37,6 +37,7 @@ struct SettingsView: View {
                     Label { Text("Kaliber (Mehrzahl)") } icon: { CartridgeView(catalogID: ".45 ACP", monochrome: true).frame(width: 22, height: 22) }
                 }
                 NavigationLink { AmmunitionListView() } label: { Label("Munition", systemImage: "circle.grid.3x3.fill") }
+                NavigationLink { TargetListView() } label: { Label("Scheiben", systemImage: "target") }
             } header: {
                 Text("Stammdaten")
             }
