@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 import UserNotifications
 
 /// Where a weapon stands for one maintenance kind, derived from its records, entries and intervals.
@@ -143,19 +144,21 @@ enum MaintenanceNotifier {
         let center = UNUserNotificationCenter.current()
         let planned = plans(weapon, previouslyDue: previouslyDue)
         for kind in MaintenanceKind.allCases {
+            let plan = planned[kind] ?? ReminderPlan.none
+            if plan == .keep { continue }
             let id = identifier(weapon, kind)
             center.removePendingNotificationRequests(withIdentifiers: [id])
             let status = weapon.status(kind)
-            guard status.hasReminder, !weapon.isArchived else { continue }
 
             let content = UNMutableNotificationContent()
             content.title = String(localized: "\(kind.title) fällig: \(weapon.name)")
             content.body = status.dueText ?? status.summary
             content.sound = .default
+            content.userInfo = ReminderLink.userInfo(weaponID: weapon.id, kind: kind)
 
             let trigger: UNNotificationTrigger
-            switch planned[kind] ?? ReminderPlan.none {
-            case .none:
+            switch plan {
+            case .none, .keep:
                 continue
             case .now:
                 // Notify once when the limit is crossed, not on every later refresh.
@@ -166,5 +169,31 @@ enum MaintenanceNotifier {
             }
             center.add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
         }
+    }
+
+    /// Re-schedules the reminders of every firearm: after a sync from another device (a cleaning
+    /// recorded there must cancel the reminder still pending here) and when the app comes to the front.
+    /// Without `previouslyDue` nothing fires at once; only the pending reminders are put right.
+    static func refreshAll(in context: ModelContext) {
+        for weapon in (try? context.fetch(FetchDescriptor<Weapon>())) ?? [] { refresh(weapon) }
+    }
+}
+
+/// Shows reminders while the app is open and reports a tap on one. Without a delegate iOS drops a
+/// notification that arrives in the foreground, and a shot-based reminder fires one second after the
+/// entry is saved, so it was never seen.
+/// On the main actor: iOS aborts the app when the answer to a tap that started it comes from another thread.
+@MainActor
+final class MaintenanceNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .list, .sound]
+    }
+
+    /// A tap on the reminder (not a dismissal): the firearm's page opens (`RootView`).
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+              let id = ReminderLink.weaponID(in: response.notification.request.content.userInfo) else { return }
+        ReminderTap.shared.weaponID = id
     }
 }

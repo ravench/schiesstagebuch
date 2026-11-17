@@ -2,7 +2,9 @@ import SwiftUI
 import SwiftData
 
 struct WeaponsTab: View {
-    var body: some View { NavigationStack { WeaponsListView() } }
+    /// Owned by `RootView`, which pushes the firearm of a tapped reminder.
+    @Binding var path: NavigationPath
+    var body: some View { NavigationStack(path: $path) { WeaponsListView() } }
 }
 
 /// Weapons overview with maintenance status at a glance. The firearms tab.
@@ -26,10 +28,11 @@ struct WeaponsListView: View {
                     }
                 } else {
                     List(visible) { w in
-                        NavigationLink { WeaponDetailView(weapon: w) } label: { WeaponRow(weapon: w) }
+                        NavigationLink(value: w) { WeaponRow(weapon: w) }
                     }
                 }
             }
+            .navigationDestination(for: Weapon.self) { WeaponDetailView(weapon: $0) }
             .navigationTitle(term("Waffen").loc)
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
