@@ -326,9 +326,8 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// Einstellungen › Scheiben with the sample targets and the templates, each with its picture; then a new Stich
-    /// of the Obligatorisch with its target picker open. The Stich takes the A5 of the Stich before it: its Einzelschüsse
-    /// are the values 5 to 0 as buttons.
+    /// Einstellungen › Scheiben with the sample targets and the templates; then a new Stich of the Obligatorisch,
+    /// which takes the A5 of the Stich before it: its Einzelschüsse are the values 5 to 0 as buttons.
     func testTargets() {
         tab("Einstellungen")
         guard open(app.staticTexts["Scheiben"].firstMatch) else { return }
@@ -339,14 +338,6 @@ final class PRScreensTests: XCTestCase {
         }
         tab("Tagebuch")
         guard open(app.staticTexts["Obligatorisch"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
-        // The target picker, open. Picking the A5 again closes it.
-        let picker = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Scheibe'")).firstMatch
-        reveal(picker)
-        if open(picker) {
-            snap("21e-Scheibe-waehlen")
-            let a5 = app.buttons.matching(NSPredicate(format: "label CONTAINS 'A5'")).firstMatch
-            if a5.waitForExistence(timeout: 3) { a5.tap() } else { app.navigationBars.buttons.firstMatch.tap() }
-        }
         let shots = app.buttons["Einzelschüsse"].firstMatch
         reveal(shots)
         shots.tap()
