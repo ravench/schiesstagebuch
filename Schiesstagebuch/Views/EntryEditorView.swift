@@ -383,16 +383,11 @@ struct EntryEditorView: View {
     }
 
     /// The Stich's target; its scoring decides how single shots are entered. Targets are registered in Settings › Scheiben.
-    /// A page rather than a menu, so each target shows its picture (Raven 2026-11-17).
     private var targetPicker: some View {
         Picker("Scheibe", selection: $target) {
             Text("–").tag(ShootingTarget?.none)
-            ForEach(ShootingTarget.sorted(targets, for: weapon)) { target in
-                Label { Text(target.name) } icon: { TargetFaceView(face: TargetCatalog.face(of: target)) }
-                    .tag(Optional(target))
-            }
+            ForEach(ShootingTarget.sorted(targets, for: weapon)) { Text($0.name).tag(Optional($0)) }
         }
-        .pickerStyle(.navigationLink)
     }
 
     private var positionPicker: some View {

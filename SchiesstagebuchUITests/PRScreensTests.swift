@@ -327,7 +327,7 @@ final class PRScreensTests: XCTestCase {
     }
 
     /// Einstellungen › Scheiben with the sample targets and the templates, each with its picture; then a new Stich
-    /// of the Obligatorisch and its target picker. The Stich takes the A5 of the Stich before it: its Einzelschüsse
+    /// of the Obligatorisch with its target picker open. The Stich takes the A5 of the Stich before it: its Einzelschüsse
     /// are the values 5 to 0 as buttons.
     func testTargets() {
         tab("Einstellungen")
@@ -339,7 +339,7 @@ final class PRScreensTests: XCTestCase {
         }
         tab("Tagebuch")
         guard open(app.staticTexts["Obligatorisch"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
-        // The target picker: a page with each target's picture. Picking the A5 again goes back.
+        // The target picker, open. Picking the A5 again closes it.
         let picker = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Scheibe'")).firstMatch
         reveal(picker)
         if open(picker) {
