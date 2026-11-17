@@ -52,6 +52,16 @@ final class ReminderPlanTests: XCTestCase {
                        .at(date(8, 9)))
     }
 
+    func testTextOfAReminderAheadDoesNotNameTheDueDay() {
+        // Read on the due day itself, «Fällig bis 8. März» would be wrong by then.
+        let ahead = status(days: 7, start: date(1, 16))
+        XCTAssertEqual(MaintenanceNotifier.body(ahead, plan: .at(date(8, 9))), ahead.summary)
+        XCTAssertNotEqual(ahead.dueText, ahead.summary)
+        // Crossed by shots right now: the text written now is read now.
+        let crossed = status(shots: 100, since: 150)
+        XCTAssertEqual(MaintenanceNotifier.body(crossed, plan: .now), crossed.dueText)
+    }
+
     func testShotOnlyIntervalHasNoDateAhead() {
         XCTAssertEqual(MaintenanceNotifier.plan(status(shots: 100, since: 10), archived: false, previouslyDue: false), .none)
     }
