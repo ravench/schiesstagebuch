@@ -72,6 +72,13 @@ final class MaintenanceTests: ModelTestCase {
         XCTAssertEqual(weapon.dueMaintenance.map(\.kind), [.cleaning])
     }
 
+    func testSilencedOnlyWhenDeniedAndAReminderIsSet() {
+        XCTAssertTrue(MaintenanceNotifier.silenced(.denied, intervals: 100))
+        XCTAssertFalse(MaintenanceNotifier.silenced(.denied, intervals: 0), "no reminder, nothing to miss")
+        XCTAssertFalse(MaintenanceNotifier.silenced(.notDetermined, intervals: 100), "the question comes with the save")
+        XCTAssertFalse(MaintenanceNotifier.silenced(.authorized, intervals: 100))
+    }
+
     func testFirearmsListFlagsDueWeapons() throws {
         // Cleaned yesterday, shot today: the 30-day interval doesn't make it due by itself.
         log(.cleaning, on: .now - 86_400)
