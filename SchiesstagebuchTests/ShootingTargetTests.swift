@@ -29,6 +29,9 @@ final class TargetScoringTests: XCTestCase {
         XCTAssertEqual(TargetScoring.parseValues("10, 9; 9 x 0"), [10, 9, 0])
         XCTAssertNil(TargetScoring.parseValues("5"))
         XCTAssertNil(TargetScoring.parseValues(""))
+        // Text that would not fit an Int (and crash valuesText) is no value.
+        XCTAssertEqual(TargetScoring.parseValues("inf 1e400 1e19 5 0"), [5, 0])
+        XCTAssertEqual(TargetScoring.parseValues("1000 1001 0"), [1000, 0])
     }
 
     func testValuesTextUsesAPointAndReadsBack() {

@@ -6,7 +6,7 @@ says how a single shot is scored, in one of two ways:
 - a range: any value from `min` to `max`, e.g. 0 to 10.9 (decimal rifle scoring) or
   0 to 100 (A100 hundredths), typed on the decimal keypad;
 - a list of `values`: the only scores a shot can have, e.g. [5, 4, 3, 2, 1, 0] on A5,
-  [10, 9, 8, 7, 6, 5, 0] on ISSF rapid fire, or zone names like ["A", "C", "D", "M"].
+  [10, 9, 8, 7, 6, 5, 0] on ISSF rapid fire (numbers only; named zones such as IPSC come later).
 
 These are the templates of Settings › Scheiben in the app, where users also register their
 own targets: a range target keeps the decimal keypad and flags values outside it, a list
@@ -56,9 +56,8 @@ def scoring_problems(scoring):
         return ["scoring values need at least two different values"]
     if all(_number(v) for v in values):
         return [] if values == sorted(values, reverse=True) else ["scoring values must go from best to worst"]
-    if all(isinstance(v, str) and v for v in values):
-        return []
-    return ["scoring values must be all numbers or all names"]
+    # Named values (IPSC zones) come later; the app reads numbers only, and one name would empty its list.
+    return ["scoring values must all be numbers"]
 
 
 def problems(target):

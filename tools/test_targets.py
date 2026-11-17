@@ -77,16 +77,17 @@ class CheckTests(unittest.TestCase):
     def test_good_targets_have_no_problems(self):
         self.assertEqual(targets.problems(target()), [])
         self.assertEqual(targets.problems(target(scoring={"min": 0, "max": 10.9})), [])
-        zones = target(drop=("ring_diameters_mm", "black_mm"), scoring={"values": ["A", "C", "D", "M"]})
-        self.assertEqual(targets.problems(zones), [])
 
     def test_scoring_is_a_range_or_a_list(self):
         self.assertIn("either", targets.problems(target(scoring={}))[0])
+        # The app reads numbers only: named zones would make the whole template list fail to load.
+        zones = target(drop=("ring_diameters_mm", "black_mm"), scoring={"values": ["A", "C", "D", "M"]})
+        self.assertTrue(any("must all be numbers" in p for p in targets.problems(zones)))
         self.assertIn("either", targets.problems(target(scoring={"min": 0, "max": 10, "values": [1, 0]}))[0])
         self.assertIn("min < max", targets.problems(target(scoring={"max": 10}))[0])
         self.assertIn("min < max", targets.problems(target(scoring={"min": 10, "max": 10}))[0])
         self.assertIn("best to worst", targets.problems(target(scoring={"values": [0, 7, 8, 9, 10]}))[0])
-        self.assertIn("all numbers or all names", targets.problems(target(scoring={"values": [10, "A", 0]}))[0])
+        self.assertIn("must all be numbers", targets.problems(target(scoring={"values": [10, "A", 0]}))[0])
         self.assertIn("two different", targets.problems(target(scoring={"values": [5, 5]}))[0])
 
     def test_rings_must_fit_the_scores_and_each_other(self):

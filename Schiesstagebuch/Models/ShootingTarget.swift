@@ -21,12 +21,13 @@ enum TargetScoring: Equatable {
 
     private static let tolerance = 0.000_1
 
-    /// The values typed as text ("10 9 8 7 0", commas or semicolons work too), duplicates dropped,
-    /// in the order given. Nil when there are fewer than two.
+    /// The values typed as text ("10 9 8 7 0", commas or semicolons work too), duplicates and anything
+    /// that is no number from 0 to 1000 dropped, in the order given. Nil when there are fewer than two.
     static func parseValues(_ text: String) -> [Double]? {
         var seen: [Double] = []
         for token in text.split(whereSeparator: { $0.isWhitespace || $0 == "," || $0 == ";" }) {
-            guard let v = Double(token), v >= 0, !seen.contains(v) else { continue }
+            // Finite and at most 1000: "inf" or "1e400" would crash `valuesText`.
+            guard let v = Double(token), v.isFinite, v >= 0, v <= 1000, !seen.contains(v) else { continue }
             seen.append(v)
         }
         return seen.count >= 2 ? seen : nil

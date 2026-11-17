@@ -57,6 +57,8 @@ struct ShotBoxesRow: View {
         .onChange(of: selected) { _, now in
             if now == nil { boxes.removeEmptyBoxes() }
         }
+        // Another Scheibe hides the value buttons: close them, so the empty boxes go too.
+        .onChange(of: scoring) { selected = nil }
         // The number pad has no Next key.
         .toolbar {
             ToolbarItem(placement: .keyboard) {
