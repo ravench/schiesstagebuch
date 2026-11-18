@@ -4,7 +4,8 @@ import SwiftUI
 /// the total on the right unless `showsTotal` is off.
 /// How a shot is entered follows the Stich's target (`scoring`, Raven 2026-11-16):
 /// - fixed values (A5, B4, rapid fire …): tapping a box shows the target's values as buttons below
-///   the row; a tap fills the box and moves on to the next shot;
+///   the row; a tap fills the box and moves on to the next shot. Like a keyboard they belong to one
+///   box at a time: they close when another row opens its own or a text field is edited (tester 2026-11-17);
 /// - a range or no target: the boxes take numbers on the number pad; «Weiter» above it (a space, ";",
 ///   "+" or the Next key on a full keyboard) moves on to the next box. A value outside the target's
 ///   range is marked red.
@@ -17,6 +18,10 @@ struct ShotBoxesRow: View {
     @FocusState private var focused: Int?
     /// Fixed values: the box the value buttons fill.
     @State private var selected: Int?
+    /// Tells the rows apart in `keysOpened`.
+    @State private var id = UUID()
+    /// Posted by the row that opens its value buttons (object: its `id`).
+    private static let keysOpened = Notification.Name("ShotBoxesRow.keysOpened")
 
     private let columns = [GridItem(.adaptive(minimum: 44, maximum: 52), spacing: 6)]
 
@@ -55,7 +60,17 @@ struct ShotBoxesRow: View {
             if now == nil, selected == nil { boxes.removeEmptyBoxes() }
         }
         .onChange(of: selected) { _, now in
-            if now == nil { boxes.removeEmptyBoxes() }
+            guard now != nil else { return boxes.removeEmptyBoxes() }
+            NotificationCenter.default.post(name: Self.keysOpened, object: id)
+            // The value buttons replace the keyboard of the field edited until now.
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Self.keysOpened)) { note in
+            if note.object as? UUID != id { selected = nil }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)
+            .merge(with: NotificationCenter.default.publisher(for: UITextView.textDidBeginEditingNotification))) { _ in
+            selected = nil
         }
         // Another Scheibe hides the value buttons: close them, so the empty boxes go too.
         .onChange(of: scoring) { selected = nil }
