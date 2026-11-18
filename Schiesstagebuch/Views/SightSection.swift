@@ -8,6 +8,9 @@ struct SightSection: View {
     var aperture: SightSettings.Aperture = .both
     var fields: SportFeatures = SportFeatures.sightFields
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
+    /// What the fields held when they were switched off, by title: switched on again they come back.
+    @State private var lastValues: [String: Double] = [:]
+    @State private var lastDiopter: DiopterClicks?
 
     var body: some View {
         Section {
@@ -50,7 +53,8 @@ struct SightSection: View {
 
     /// Switch plus two steppers: the clicks turned up or down and right or left during the Stich.
     @ViewBuilder private var diopterRows: some View {
-        Toggle("Diopterkorrekturen", isOn: Binding(get: { sight.diopter != nil }, set: { sight.diopter = $0 ? DiopterClicks() : nil }))
+        Toggle("Diopterkorrekturen", isOn: Binding(get: { sight.diopter != nil },
+                                                      set: { sight.diopter.switchOn($0, last: &lastDiopter, start: DiopterClicks()) }))
         if sight.diopter != nil {
             clickStepper("Höhenverstellung", value: Binding(get: { sight.diopter?.up ?? 0 }, set: { sight.diopter?.up = $0 }),
                          up: "%lld hoch", down: "%lld tief")
@@ -86,7 +90,7 @@ struct SightSection: View {
     private func valueToggle(_ title: String, value: Binding<Double?>, unit: String = "", start: Double) -> some View {
         Toggle(isOn: Binding(
             get: { value.wrappedValue != nil },
-            set: { value.wrappedValue = $0 ? (value.wrappedValue ?? start) : nil })) {
+            set: { value.wrappedValue.switchOn($0, last: &lastValues[title], start: start) })) {
             HStack {
                 Text(title.loc)
                 Spacer()
