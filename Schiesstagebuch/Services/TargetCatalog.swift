@@ -36,12 +36,12 @@ enum TargetCatalog {
         try JSONDecoder().decode([Item].self, from: data)
     }
 
-    /// Templates by group, Swiss ones first, each group in file order (by id).
+    /// Templates by group, Swiss ones first, each group by name (A5 before A10; tester 2026-11-17).
     static func grouped(_ items: [Item] = items) -> [(group: String, items: [Item])] {
         let order = ["Schweiz", "ISSF"]
         return Dictionary(grouping: items, by: \.group)
             .sorted { (order.firstIndex(of: $0.key) ?? order.count, $0.key) < (order.firstIndex(of: $1.key) ?? order.count, $1.key) }
-            .map { (group: $0.key, items: $0.value) }
+            .map { (group: $0.key, items: $0.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }) }
     }
 
     /// A new target of the user's, made from `item`.

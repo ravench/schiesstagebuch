@@ -112,6 +112,11 @@ final class ShootingTargetTests: ModelTestCase {
         let items = TargetCatalog.items
         XCTAssertGreaterThanOrEqual(items.count, 29)
         XCTAssertEqual(TargetCatalog.grouped().map(\.group), ["Schweiz", "ISSF"])
+        // Each group by name, numbers by their value.
+        let names = ["VBS Scheibe A10 300 m", "SSV Scheibe A100 300 m", "VBS Scheibe A5 300 m", "ISSF Gewehr 50 m"]
+        let sorted = TargetCatalog.grouped(items.filter { names.contains($0.name) })
+        XCTAssertEqual(sorted.map { $0.items.map(\.name) },
+                       [["SSV Scheibe A100 300 m", "VBS Scheibe A5 300 m", "VBS Scheibe A10 300 m"], ["ISSF Gewehr 50 m"]])
         let b4 = try XCTUnwrap(items.first { $0.id == "ch-300m-b4" })
         XCTAssertEqual(b4.targetScoring, .values([4, 3, 2, 1, 0]))
         let a100 = try XCTUnwrap(items.first { $0.id == "ch-300m-a100" })
