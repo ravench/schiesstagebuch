@@ -293,6 +293,21 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// The firearm editor with a reminder set while notifications are switched off for the app.
+    func testReminderHint() {
+        relaunch(adding: ["-notificationsDenied"])
+        tab("Waffen")
+        guard open(app.staticTexts["Stgw 90"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let shots = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Nach Schüssen")).firstMatch
+        reveal(shots)
+        guard shots.exists else { return XCTFail("No reminder interval") }
+        shots.buttons["Increment"].tap()
+        let hint = app.buttons["Mitteilungen einschalten"].firstMatch
+        reveal(hint)
+        XCTAssertTrue(hint.exists, "No hint that notifications are off")
+        snap("07r-Erinnerung-Mitteilungen-aus")
+    }
+
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
     /// The fields are pinned off: 09c of the tour switches the filters on, and a run that misses it does not.
     func testWelcome() {

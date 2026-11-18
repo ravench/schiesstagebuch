@@ -115,6 +115,17 @@ enum MaintenanceNotifier {
         _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
     }
 
+    static func authorizationStatus() async -> UNAuthorizationStatus {
+        if ScreenshotData.notificationsDenied { return .denied }
+        return await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+    }
+
+    /// Reminders are set, but iOS shows none of them: the firearm editor says so. Not yet asked is
+    /// not silenced, the question comes with the first save.
+    static func silenced(_ status: UNAuthorizationStatus, intervals: Int) -> Bool {
+        status == .denied && intervals > 0
+    }
+
     /// Identifier of the pending notification for one reminder of a weapon.
     static func identifier(_ weapon: Weapon, _ kind: MaintenanceKind) -> String {
         "maintenance-\(weapon.id.uuidString)-\(kind.rawValue)"

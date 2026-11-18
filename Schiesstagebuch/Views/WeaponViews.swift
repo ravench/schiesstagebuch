@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 struct WeaponsTab: View {
     /// Owned by `RootView`, which pushes the firearm of a tapped reminder.
@@ -253,6 +254,9 @@ struct WeaponEditorView: View {
     @State private var swipedBarrel: Barrel?
     @State private var confirmDelete = false
     @State private var didLoad = false
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
+    @State private var notificationStatus = UNAuthorizationStatus.notDetermined
 
     private var sortedSelection: [Caliber] { calibers.sorted { $0.name < $1.name } }
     private var canSave: Bool {
@@ -292,6 +296,14 @@ struct WeaponEditorView: View {
 
                 intervalSection(.cleaning, shots: $cleaningShots, days: $cleaningDays)
                 intervalSection(.service, shots: $serviceShots, days: $serviceDays)
+                if MaintenanceNotifier.silenced(notificationStatus, intervals: cleaningShots + cleaningDays + serviceShots + serviceDays) {
+                    Section {
+                        Label("Mitteilungen sind für diese App ausgeschaltet: Erinnerungen erscheinen nur in der App.", systemImage: "bell.slash")
+                        Button("Mitteilungen einschalten") {
+                            if let url = URL(string: UIApplication.openNotificationSettingsURLString) { openURL(url) }
+                        }
+                    }
+                }
 
                 Section {
                     Picker("Tage zählen", selection: $dayCountingRaw) {
@@ -341,6 +353,8 @@ struct WeaponEditorView: View {
                 Text(term("Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.").loc)
             }
             .onAppear(perform: load)
+            // Again on coming back from the iOS settings the button leads to.
+            .task(id: scenePhase) { notificationStatus = await MaintenanceNotifier.authorizationStatus() }
         }
     }
 
