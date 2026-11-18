@@ -347,8 +347,10 @@ final class PRScreensTests: XCTestCase {
         snap("21c-Einzelschuesse-Feste-Werte")
         // Another row's box takes the value buttons with it, then the first box gets them back.
         let boxes = app.buttons.matching(NSPredicate(format: "label == %@", "Schuss 1"))
+        reveal(boxes.element(boundBy: 1))
         boxes.element(boundBy: 1).tap()
         snap("21c2-Wertknoepfe-bei-der-Passe")
+        XCTAssertEqual(boxes.count, 2, "The Probeschüsse scrolled away: the next tap would fill the Passe")
         boxes.element(boundBy: 0).tap()
         // A tap fills the shot and moves on to the next.
         if open(app.buttons["shotValue-4"].firstMatch) { snap("21d-Einzelschuesse-Wert-getippt") }
