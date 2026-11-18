@@ -12,6 +12,9 @@ enum ScreenshotData {
     /// Screenshot runs skip the welcome screen unless they also pass `-welcome` (the PR screen tour does).
     static var showsWelcome: Bool { ProcessInfo.processInfo.arguments.contains("-welcome") }
 
+    /// As if notifications were switched off for the app in iOS, which a test cannot do: for the hint in the firearm editor.
+    static var notificationsDenied: Bool { ProcessInfo.processInfo.arguments.contains("-notificationsDenied") }
+
     /// Fills an empty store with a small, realistic diary. Does nothing if entries exist.
     @MainActor
     static func seed(_ context: ModelContext, now: Date = .now) {

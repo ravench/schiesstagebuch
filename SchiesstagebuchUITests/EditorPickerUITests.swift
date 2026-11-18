@@ -92,6 +92,34 @@ final class EditorPickerUITests: XCTestCase {
         XCTAssertTrue(scroll(to: app.staticTexts["Passe 1"].firstMatch), "No first Passe beside the Probeschüsse")
     }
 
+    /// A target with fixed values: its value buttons belong to one box at a time, as a keyboard does, and
+    /// go away when a text field is edited (tester feedback 2026-11-17).
+    func testValueButtonsFollowTheBoxBeingFilled() {
+        let event = app.staticTexts["Obligatorisch"].firstMatch
+        XCTAssertTrue(event.waitForExistence(timeout: 10))
+        event.tap()
+        let add = app.buttons["Stich hinzufügen"].firstMatch
+        XCTAssertTrue(add.waitForExistence(timeout: 5), "The Anlass screen did not open")
+        add.tap()
+        let shots = app.buttons["Einzelschüsse"].firstMatch
+        XCTAssertTrue(scroll(to: shots), "No «Einzelschüsse» segment")
+        shots.tap()
+        // The Probeschüsse and the first Passe each start with a box for shot 1.
+        let boxes = app.buttons.matching(NSPredicate(format: "label == %@", "Schuss 1"))
+        let keys = app.buttons.matching(identifier: "shotValue-5")
+        XCTAssertTrue(scroll(to: boxes.element(boundBy: 0)), "No shot box for the A5 target")
+        boxes.element(boundBy: 0).tap()
+        XCTAssertTrue(keys.firstMatch.waitForExistence(timeout: 3), "No value buttons")
+        XCTAssertTrue(scroll(to: boxes.element(boundBy: 1)), "No box in the first Passe")
+        boxes.element(boundBy: 1).tap()
+        XCTAssertTrue(keys.firstMatch.waitForExistence(timeout: 3))
+        XCTAssertEqual(keys.count, 1, "The Probeschüsse kept their value buttons")
+        let name = app.textFields["Stich"].firstMatch
+        for _ in 0..<12 where !(name.exists && name.isHittable) { app.swipeDown(velocity: .slow) }
+        name.tap()
+        XCTAssertTrue(keys.firstMatch.waitForNonExistence(timeout: 3), "The value buttons stayed while a text field is edited")
+    }
+
     /// The result sits below the shots and is a field only while no shots add up to it (tester feedback 2026-11-13).
     func testResultIsTheSumOfTheShots() {
         let entry = app.staticTexts["Feldschiessen"].firstMatch

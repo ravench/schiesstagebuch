@@ -14,6 +14,11 @@ T = {
         "New entries for today pick the range you are at and list nearby ranges first. Your location is only read for this and is never stored or sent.",
         "Les nouvelles entrées du jour choisissent le stand où tu te trouves et listent d'abord les stands proches. La position n'est lue que pour cela, sans être enregistrée ni envoyée.",
         "Le nuove voci di oggi scelgono il poligono in cui ti trovi ed elencano prima quelli vicini. La posizione viene letta solo a questo scopo e non viene né salvata né inviata."),
+    "Mitteilungen sind für diese App ausgeschaltet: Erinnerungen erscheinen nur in der App.": (
+        "Notifications are off for this app: reminders only show inside the app.",
+        "Les notifications sont désactivées pour cette app : les rappels n'apparaissent que dans l'app.",
+        "Le notifiche sono disattivate per questa app: i promemoria compaiono solo nell'app."),
+    "Mitteilungen einschalten": ("Turn on notifications", "Activer les notifications", "Attiva le notifiche"),
     "%lld Einträge": ("%lld entries", "%lld entrées", "%lld voci"),
     "%lld Einträge importieren": ("Import %lld entries", "Importer %lld entrées", "Importa %lld voci"),
     "%lld Einträge importiert": ("%lld entries imported", "%lld entrées importées", "%lld voci importate"),

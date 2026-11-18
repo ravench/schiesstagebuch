@@ -1,5 +1,8 @@
 import XCTest
 
+// The tour stays one file, however long: the PR screens copy this one file onto the base branch (build.yml).
+// swiftlint:disable file_length
+
 /// A tour of the main screens with the sample data, one screenshot per stop. The Build job's
 /// PR screens run it on the pull request and on its base branch and post the screens that
 /// changed as a comment. A pull request that changes a screen the tour does not reach adds a stop.
@@ -293,6 +296,21 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// The firearm editor with a reminder set while notifications are switched off for the app.
+    func testReminderHint() {
+        relaunch(adding: ["-notificationsDenied"])
+        tab("Waffen")
+        guard open(app.staticTexts["Stgw 90"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let shots = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Nach Schüssen")).firstMatch
+        reveal(shots)
+        guard shots.exists else { return XCTFail("No reminder interval") }
+        shots.buttons["Increment"].tap()
+        let hint = app.buttons["Mitteilungen einschalten"].firstMatch
+        reveal(hint)
+        XCTAssertTrue(hint.exists, "No hint that notifications are off")
+        snap("07r-Erinnerung-Mitteilungen-aus")
+    }
+
     /// The welcome screen down to the sport shooter fields; screenshot runs show it only with `-welcome`.
     /// The fields are pinned off: 09c of the tour switches the filters on, and a run that misses it does not.
     func testWelcome() {
@@ -345,6 +363,13 @@ final class PRScreensTests: XCTestCase {
         guard shot.waitForExistence(timeout: 3) else { return XCTFail("No shot buttons for the A5 target") }
         shot.tap()
         snap("21c-Einzelschuesse-Feste-Werte")
+        // Another row's box takes the value buttons with it, then the first box gets them back.
+        let boxes = app.buttons.matching(NSPredicate(format: "label == %@", "Schuss 1"))
+        reveal(boxes.element(boundBy: 1))
+        boxes.element(boundBy: 1).tap()
+        snap("21c2-Wertknoepfe-bei-der-Passe")
+        XCTAssertEqual(boxes.count, 2, "The Probeschüsse scrolled away: the next tap would fill the Passe")
+        boxes.element(boundBy: 0).tap()
         // A tap fills the shot and moves on to the next.
         if open(app.buttons["shotValue-4"].firstMatch) { snap("21d-Einzelschuesse-Wert-getippt") }
         // A scored shot: the A5 target gives the maximum (5 for one shot) and with it the percentage.
