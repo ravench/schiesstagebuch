@@ -43,11 +43,14 @@ final class WeatherFieldsUITests: XCTestCase {
 
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         XCTAssertTrue(scroll(to: weatherSwitch), "No «Wetter erfassen» switch in the entry editor")
+        // At the bottom edge the switch counts as hittable, but a tap there does not reach it.
+        if weatherSwitch.frame.midY > 0.75 * app.frame.height { app.swipeUp(velocity: .slow) }
         if (weatherSwitch.value as? String) != "1" {
             // Tap the switch itself, not the label.
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
         sleep(2) // Apple Weather, when on, fills the fields (a fixed sample) half a second after the switch
+        XCTAssertEqual(weatherSwitch.value as? String, "1", "«Wetter erfassen» did not switch on")
 
         let strength = row("Windstärke am Stand")
         let direction = row("Windrichtung")
