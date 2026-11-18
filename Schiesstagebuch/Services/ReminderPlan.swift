@@ -30,4 +30,11 @@ extension MaintenanceNotifier {
         guard let due = status.dueDate else { return .none }
         return .at(ReminderPlan.fireDate(for: due, now: now, calendar: calendar))
     }
+
+    /// The text under the title. A reminder set ahead of time is read on its due day, where the
+    /// «Fällig bis 14. Nov.» written today would be stale: it says when the last one was instead.
+    static func body(_ status: MaintenanceStatus, plan: ReminderPlan) -> String {
+        if case .at = plan { return status.summary }
+        return status.dueText ?? status.summary
+    }
 }
