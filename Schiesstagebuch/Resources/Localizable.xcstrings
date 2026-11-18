@@ -14020,6 +14020,29 @@
         }
       }
     },
+    "optional": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "optional"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "facultatif"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "facoltativo"
+          }
+        }
+      }
+    },
     "pro Schuss": {
       "extractionState": "manual",
       "localizations": {

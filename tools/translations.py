@@ -238,6 +238,7 @@ T = {
     "Noch keine Einträge": ("No entries yet", "Pas encore d'entrées", "Ancora nessuna voce"),
     "Notizen": ("Notes", "Notes", "Note"),
     "Notizen (optional)": ("Notes (optional)", "Notes (facultatif)", "Note (facoltativo)"),
+    "optional": ("optional", "facultatif", "facoltativo"),
     "OK": ("OK", "OK", "OK"),
     "%lld Anlagen hinzugefügt.": ("%lld ranges added.", "%lld stands ajoutés.", "%lld poligoni aggiunti."),
     "Schiessanlagen übernommen": ("Ranges added", "Stands ajoutés", "Poligoni aggiunti"),

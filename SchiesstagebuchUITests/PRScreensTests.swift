@@ -347,6 +347,16 @@ final class PRScreensTests: XCTestCase {
         snap("21c-Einzelschuesse-Feste-Werte")
         // A tap fills the shot and moves on to the next.
         if open(app.buttons["shotValue-4"].firstMatch) { snap("21d-Einzelschuesse-Wert-getippt") }
+        // A scored shot: the A5 target gives the maximum (5 for one shot) and with it the percentage.
+        let passe = app.buttons.matching(NSPredicate(format: "label == %@", "Schuss 1")).element(boundBy: 1)
+        reveal(passe)
+        passe.tap()
+        // The last row of value buttons is the Passe's, whether or not the Probeschüsse still show theirs.
+        let keys = app.buttons.matching(identifier: "shotValue-4")
+        guard keys.firstMatch.waitForExistence(timeout: 3) else { return XCTFail("No value buttons for the first Passe") }
+        keys.element(boundBy: keys.count - 1).tap()
+        reveal(app.staticTexts["Max. Punkte"].firstMatch)
+        snap("21e-Max-Punkte-von-der-Scheibe")
     }
 
     /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered. With a card

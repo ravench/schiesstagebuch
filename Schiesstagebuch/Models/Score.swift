@@ -17,6 +17,8 @@ struct Score {
     /// Whether "93 %" is read as a percentage. Off for old-app imports: their free-text "93%" may
     /// mean something else (e.g. a hit rate), so they only get a percentage once a maximum is entered.
     var percentFromResult = true
+    /// The highest value of a shot on the Stich's target; nil without a target.
+    var maxPerShot: Double?
 
     /// Individual shots grouped into Passen, one Passe per line: "10 9 10 8,5" (spaces or semicolons
     /// between shots, comma or point for decimals). Empty lines are skipped.
@@ -44,11 +46,16 @@ struct Score {
         return shots.isEmpty ? nil : shots.reduce(0, +)
     }
 
-    /// Entered maximum, else the second number of a result like "96/100".
+    /// Entered maximum, else the second number of a result like "96/100", else what the target
+    /// gives for the scored shots: 7 shots on a 5-point target are 35 (tester 2026-11-17).
     var effectiveMax: Double? {
         if let maxPoints, maxPoints > 0 { return maxPoints }
         let n = Score.numbers(in: result)
-        return maxFromSlash && result.contains("/") && n.count >= 2 && n[1] > 0 ? n[1] : nil
+        if maxFromSlash, result.contains("/"), n.count >= 2, n[1] > 0 { return n[1] }
+        guard let maxPerShot, maxPerShot > 0 else { return nil }
+        let entered = shotValues.count
+        let shots = entered > 0 ? entered : scoredShotsKnown ? scoredShots : 0
+        return shots > 0 ? maxPerShot * Double(shots) : nil
     }
 
     /// More points than the maximum: impossible, a result is at most 100 %. Such data is
@@ -117,7 +124,7 @@ extension Entry {
     var score: Score {
         Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount,
               scoredShotsKnown: !isLegacyImport || sighterCount != nil, maxFromSlash: !isLegacyImport,
-              percentFromResult: !isLegacyImport)
+              percentFromResult: !isLegacyImport, maxPerShot: target?.scoring.highest)
     }
 
     /// The result to show: as typed, else the points the Einzelschüsse or Passen add up to; empty without either.

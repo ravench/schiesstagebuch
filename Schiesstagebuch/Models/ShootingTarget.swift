@@ -21,6 +21,14 @@ enum TargetScoring: Equatable {
 
     private static let tolerance = 0.000_1
 
+    /// The most a single shot can score: with the scored shots it gives the maximum of a Stich.
+    var highest: Double {
+        switch self {
+        case let .range(_, max): max
+        case let .values(list): list.max() ?? 0
+        }
+    }
+
     /// The values typed as text ("10 9 8 7 0", commas or semicolons work too), duplicates and anything
     /// that is no number from 0 to 1000 dropped, in the order given. Nil when there are fewer than two.
     static func parseValues(_ text: String) -> [Double]? {
