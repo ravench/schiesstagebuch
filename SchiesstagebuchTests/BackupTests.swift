@@ -210,8 +210,8 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(e.shootingEvent?.stichCount, 1)
     }
 
-    func testRelayAndTargetNumberSurviveBackupAndExport() throws {
-        let e = addEntry(nil, on: day(1), shots: 10); e.relay = "3"; e.targetNumber = "14"
+    func testRelayTargetNumberAndTimeSurviveBackupAndExport() throws {
+        let e = addEntry(nil, on: day(1), shots: 10); e.relay = "3"; e.targetNumber = "14"; e.time = day(1)
         _ = addEntry(nil, on: day(2), shots: 5)
         try context.save()
 
@@ -224,12 +224,14 @@ final class BackupTests: ModelTestCase {
         let restored = try target.fetch(FetchDescriptor<Entry>(sortBy: [SortDescriptor(\.shotCount)]))
         XCTAssertEqual(restored.map(\.relay), ["", "3"])
         XCTAssertEqual(restored.map(\.targetNumber), ["", "14"])
+        XCTAssertEqual(restored.map(\.time), [nil, day(1)], "the Stich's own time, with or without weather")
 
         let lines = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8)).components(separatedBy: "\r\n")
         let header = lines[0].components(separatedBy: ";")
         let relay = try XCTUnwrap(header.firstIndex(of: "Ablösung".loc)), number = try XCTUnwrap(header.firstIndex(of: "Scheibe".loc))
         let row = try XCTUnwrap(lines.first { $0.contains(";10;") }).components(separatedBy: ";")
         XCTAssertEqual([row[relay], row[number]], ["3", "14"])
+        XCTAssertEqual(row[try XCTUnwrap(header.firstIndex(of: "Uhrzeit".loc))], day(1).formatted(date: .omitted, time: .shortened))
     }
 
     func testCSVContainsNewColumns() throws {

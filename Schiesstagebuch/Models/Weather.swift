@@ -254,27 +254,15 @@ struct WeatherConditions: Codable, Hashable {
 
 /// Everything recorded about the weather of an entry. An entry without weather has none at all.
 struct WeatherRecord: Codable, Hashable {
-    /// Time of day of the entry (only hours and minutes count).
-    var time: Date?
-    /// The time a new record starts with: now, or a fixed hour in screenshot runs so the screens
-    /// compare equal from run to run.
-    static var startTime: Date {
-        ScreenshotData.isActive ? Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now : .now
-    }
     var conditions = WeatherConditions()
     /// Some values came from Apple Weather, which then has to be credited wherever they show.
     var fromAppleWeather: Bool?
 
-    /// The entry's day at the given time of day, for the sun position.
+    /// The entry's day at its time of day (`Entry.time`), for the sun position and Apple Weather.
     static func combine(day: Date, time: Date?, calendar: Calendar = .current) -> Date {
         guard let time else { return day }
         let t = calendar.dateComponents([.hour, .minute], from: time)
         return calendar.date(bySettingHour: t.hour ?? 0, minute: t.minute ?? 0, second: 0, of: day) ?? day
-    }
-
-    /// One line for the CSV export: the time, then the values.
-    func summary(timeFormatter: (Date) -> String) -> String {
-        [time.map(timeFormatter), conditions.summary()].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " | ")
     }
 
     /// Whether a new entry with this weapon starts with weather on: as in the newest entry with it.
@@ -285,9 +273,9 @@ struct WeatherRecord: Codable, Hashable {
 
     /// What a new entry shows after the weapon changed: recorded weather stays whatever the new
     /// weapon's habit is; an empty record follows the weapon's default (on outdoors, off indoors).
-    static func carriedOver(from current: WeatherRecord?, to weapon: Weapon?, in entries: [Entry], now: Date = startTime) -> WeatherRecord? {
+    static func carriedOver(from current: WeatherRecord?, to weapon: Weapon?, in entries: [Entry]) -> WeatherRecord? {
         if let current, current.hasValues { return current }
-        return recordsByDefault(for: weapon, in: entries) ? (current ?? WeatherRecord(time: now)) : nil
+        return recordsByDefault(for: weapon, in: entries) ? (current ?? WeatherRecord()) : nil
     }
 
     /// Until 2026-11-10 the weather was recorded per Anlass (Raven: it belongs to the Stich). Carries what
@@ -303,7 +291,7 @@ struct WeatherRecord: Codable, Hashable {
         return !events.isEmpty
     }
 
-    /// Something recorded apart from the time and the sun, which the app fills in by itself. While
+    /// Something recorded apart from the sun, which the app fills in by itself. While
     /// nothing is, the switch follows the weapon's default and Apple Weather fills the fields by itself.
     var hasValues: Bool { conditions.values.keys.contains { $0 != "sun_direction" } }
 
