@@ -342,6 +342,8 @@ final class PRScreensTests: XCTestCase {
         reveal(shots)
         shots.tap()
         let shot = app.buttons["Schuss 1"].firstMatch
+        // The Scheibe row above the segments leaves the shots below the screen's edge.
+        reveal(shot)
         guard shot.waitForExistence(timeout: 3) else { return XCTFail("No shot buttons for the A5 target") }
         shot.tap()
         snap("21c-Einzelschuesse-Feste-Werte")
