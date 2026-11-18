@@ -152,7 +152,7 @@ enum MaintenanceNotifier {
 
             let content = UNMutableNotificationContent()
             content.title = String(localized: "\(kind.title) fällig: \(weapon.name)")
-            content.body = status.dueText ?? status.summary
+            content.body = body(status, plan: plan)
             content.sound = .default
             content.userInfo = ReminderLink.userInfo(weaponID: weapon.id, kind: kind)
 
