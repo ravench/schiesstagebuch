@@ -54,7 +54,13 @@ struct SightSection: View {
     /// Switch plus two steppers: the clicks turned up or down and right or left during the Stich.
     @ViewBuilder private var diopterRows: some View {
         Toggle("Diopterkorrekturen", isOn: Binding(get: { sight.diopter != nil },
-                                                      set: { sight.diopter.switchOn($0, last: &lastDiopter, start: DiopterClicks()) }))
+                                                      set: { on in
+            // On copies: with the view's state passed by reference, the first switch of the section stayed off.
+            var last = lastDiopter, clicks = sight.diopter
+            clicks.switchOn(on, last: &last, start: DiopterClicks())
+            if last != lastDiopter { lastDiopter = last }
+            sight.diopter = clicks
+        }))
         if sight.diopter != nil {
             clickStepper("Höhenverstellung", value: Binding(get: { sight.diopter?.up ?? 0 }, set: { sight.diopter?.up = $0 }),
                          up: "%lld hoch", down: "%lld tief")
@@ -90,7 +96,12 @@ struct SightSection: View {
     private func valueToggle(_ title: String, value: Binding<Double?>, unit: String = "", start: Double) -> some View {
         Toggle(isOn: Binding(
             get: { value.wrappedValue != nil },
-            set: { value.wrappedValue.switchOn($0, last: &lastValues[title], start: start) })) {
+            set: { on in
+                var last = lastValues[title], new = value.wrappedValue
+                new.switchOn(on, last: &last, start: start)
+                if last != lastValues[title] { lastValues[title] = last }
+                value.wrappedValue = new
+            })) {
             HStack {
                 Text(title.loc)
                 Spacer()

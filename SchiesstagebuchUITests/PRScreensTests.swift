@@ -291,6 +291,12 @@ final class PRScreensTests: XCTestCase {
             if height.waitForExistence(timeout: 3), side.exists {
                 height.buttons["Increment"].tap(); height.buttons["Increment"].tap()
                 side.buttons["Decrement"].tap()
+                // Switched off and on again, the clicks are still there.
+                let toggle = diopter.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5))
+                toggle.tap()
+                _ = height.waitForNonExistence(timeout: 3)
+                toggle.tap()
+                _ = height.waitForExistence(timeout: 3)
             }
             snap("17b-Diopterkorrekturen")
         }
