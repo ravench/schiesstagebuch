@@ -360,7 +360,9 @@ struct EntryEditorView: View {
                     if let sum = summedResult(in: mode) { Text(sum) } else { TextField("Resultat", text: $result) }
                 }
                 CaptionedValue(title: "Max. Punkte") {
-                    TextField("optional", value: $maxPoints, format: .number).keyboardType(.decimalPad)
+                    // Left empty, the maximum the target gives for the scored shots stands in.
+                    TextField(currentScore.effectiveMax.map(ScoreFormat.points) ?? "optional".loc, value: $maxPoints, format: .number)
+                        .keyboardType(.decimalPad)
                 }
             }
             ScoreSummary(score: currentScore)
@@ -442,7 +444,7 @@ struct EntryEditorView: View {
     private var currentScore: Score {
         Score(result: summedResult(in: mode) ?? result, maxPoints: maxPoints,
               shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
-              scoredShots: scoredShotsForScore)
+              scoredShots: scoredShotsForScore, maxPerShot: target?.scoring.highest)
     }
 
     /// The result added up from the Passen or Einzelschüsse; nil when there are none, so the user types it.

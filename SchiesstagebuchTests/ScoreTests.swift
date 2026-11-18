@@ -137,4 +137,29 @@ final class ScoreTests: XCTestCase {
         XCTAssertEqual(score("100", max: 100).percentage!, 1, accuracy: 1e-9)
         XCTAssertFalse(score("96").exceedsMax, "without a maximum there is nothing to check")
     }
+
+    func testTargetGivesTheMaximumForTheScoredShots() {
+        var s = score("30", scored: 7)
+        s.maxPerShot = TargetScoring.values([5, 4, 3, 2, 1, 0]).highest
+        XCTAssertEqual(s.effectiveMax, 35, "7 shots on a 5-point target")
+        XCTAssertEqual(s.percentage!, 30.0 / 35, accuracy: 1e-9)
+        s.maxPoints = 40
+        XCTAssertEqual(s.effectiveMax, 40, "a typed maximum wins")
+        s.maxPoints = nil
+        s.result = "30/50"
+        XCTAssertEqual(s.effectiveMax, 50, "and so does 30/50")
+        s.result = "36"
+        XCTAssertTrue(s.exceedsMax, "36 points with 7 shots of at most 5")
+    }
+
+    func testTargetMaximumCountsTheShotsEntered() {
+        var s = score("", shots: "10 9,5\n10", scored: 20)
+        s.maxPerShot = TargetScoring.range(min: 0, max: 10.9).highest
+        XCTAssertEqual(s.effectiveMax!, 32.7, accuracy: 1e-9, "three shots entered, whatever the Stich's count")
+        var unknown = score("96")
+        unknown.maxPerShot = 10
+        unknown.scoredShotsKnown = false
+        XCTAssertNil(unknown.effectiveMax, "an imported total may include sighters")
+        XCTAssertNil(score("96").effectiveMax, "no target, no maximum")
+    }
 }
