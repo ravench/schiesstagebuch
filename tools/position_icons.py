@@ -1,0 +1,105 @@
+"""Shooting position pictograms: a figure with a rifle, facing right, in a 48x48 box.
+
+Writes one template image set per position into Resources/Assets.xcassets (Position-<raw value>),
+so the app shows them with Image("Position-prone") in the tint or text colour, menus included.
+Limbs are capsules (strokes with round ends); every shape winds the same way, so overlaps join.
+
+    python3 tools/position_icons.py
+"""
+import json
+import math
+import os
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ASSETS = os.path.join(ROOT, "Schiesstagebuch", "Resources", "Assets.xcassets")
+SIZE = 48
+# Points the image takes when not resized: about an SF Symbol at body size, for menus and labels.
+POINTS = 22
+LIMB, BODY, HEAD, GUN = 4.6, 6.2, 4.4, 3.6
+
+
+def _f(v):
+    return f"{v:.2f}".rstrip("0").rstrip(".")
+
+
+def capsule(a, b, w):
+    """A stroke from a to b, w wide with round ends."""
+    (x1, y1), (x2, y2), r = a, b, w / 2
+    ang = math.atan2(y2 - y1, x2 - x1)
+    pts = [(x2 + r * math.cos(ang - math.pi / 2 + math.pi * i / 12), y2 + r * math.sin(ang - math.pi / 2 + math.pi * i / 12)) for i in range(13)]
+    pts += [(x1 + r * math.cos(ang + math.pi / 2 + math.pi * i / 12), y1 + r * math.sin(ang + math.pi / 2 + math.pi * i / 12)) for i in range(13)]
+    return "M" + " L".join(f"{_f(x)} {_f(y)}" for x, y in pts) + " Z"
+
+
+def chain(*pts, w=LIMB):
+    return [capsule(pts[i], pts[i + 1], w) for i in range(len(pts) - 1)]
+
+
+def head(c):
+    return capsule(c, (c[0] + 0.01, c[1]), 2 * HEAD)
+
+
+def rect(x, y, w, h):
+    # Same winding as the capsules.
+    return f"M{_f(x)} {_f(y)} L{_f(x + w)} {_f(y)} L{_f(x + w)} {_f(y + h)} L{_f(x)} {_f(y + h)} Z"
+
+
+def rifle(butt, muzzle):
+    """Barrel to the muzzle and a thicker stock over the rear 38 %."""
+    (x1, y1), (x2, y2) = butt, muzzle
+    grip = (x1 + (x2 - x1) * 0.38, y1 + (y2 - y1) * 0.38)
+    return [capsule(butt, muzzle, GUN * 0.55), capsule(butt, grip, GUN * 1.25)]
+
+
+def _icons():
+    icons = {}
+    # Liegend: legs back on the ground, front elbow down, cheek on the stock.
+    sh, hip = (27, 35.5), (13, 40.5)
+    icons["prone"] = [head((30.5, 29))] + chain(sh, hip, w=BODY) + chain(hip, (2.5, 43)) + chain(hip, (4.5, 40), (2.5, 43.6)) \
+        + chain(sh, (36, 42.5), (40, 32.5)) + rifle((22, 33), (47, 31))
+    # Kniend: sitting on the rear heel, front elbow on the raised knee.
+    sh, hip = (20, 17), (15, 32)
+    icons["kneeling"] = [head((22.5, 10))] + chain(sh, hip, w=BODY) + chain(hip, (24, 43), (9, 43)) + chain(hip, (29, 32), (30, 44)) \
+        + chain(sh, (28, 29), (31, 19)) + chain(sh, (16, 24), (21, 17.5)) + rifle((13, 18), (46, 16))
+    # Stehend: upright, front arm under the rifle.
+    sh, hip = (21, 14.5), (19, 28)
+    icons["standing"] = [head((23, 7.5))] + chain(sh, hip, w=BODY) + chain(hip, (15.5, 44)) + chain(hip, (23, 44)) \
+        + chain(sh, (17, 22), (22, 15)) + chain(sh, (25, 22), (30, 15.5)) + rifle((14, 15), (46, 13))
+    # Aufgelegt: seated on a stool at a table, the rifle on a rest.
+    sh, hip = (18, 18), (14, 33)
+    icons["rested"] = [head((21, 11))] + chain(sh, hip, w=BODY) + chain(hip, (26, 33), (26, 44)) \
+        + chain(sh, (23, 27), (28, 23)) + chain(sh, (14, 25), (19, 20)) \
+        + [rect(26, 26, 20, 2.6), rect(41, 28.6, 2.6, 15.6), rect(36, 22.5, 4, 3.5), rect(8, 34, 11, 2.4), rect(12.3, 36.4, 2.4, 7.8)] \
+        + rifle((12, 19.5), (46, 21.5))
+    return icons
+
+
+ICONS = _icons()
+
+
+def svg(paths):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{POINTS}" height="{POINTS}" viewBox="0 0 {SIZE} {SIZE}">'
+            f'<path fill="#000" d="{" ".join(paths)}"/></svg>\n')
+
+
+def contents(filename):
+    return {"images": [{"filename": filename, "idiom": "universal"}],
+            "info": {"author": "xcode", "version": 1},
+            "properties": {"preserves-vector-representation": True, "template-rendering-intent": "template"}}
+
+
+def write(assets=ASSETS):
+    for key, paths in ICONS.items():
+        folder = os.path.join(assets, f"Position-{key}.imageset")
+        os.makedirs(folder, exist_ok=True)
+        name = f"Position-{key}.svg"
+        with open(os.path.join(folder, name), "w") as f:
+            f.write(svg(paths))
+        with open(os.path.join(folder, "Contents.json"), "w") as f:
+            json.dump(contents(name), f, indent=2)
+            f.write("\n")
+
+
+if __name__ == "__main__":
+    write()
+    print(f"{len(ICONS)} position icons")

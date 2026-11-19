@@ -116,8 +116,12 @@ struct StichRow: View {
                 let details = [entry.position?.title, entry.stich.isEmpty ? nil : entry.weapon?.name, entry.caliber?.name, entry.ammunition?.name]
                     .compactMap { $0 }
                 if !details.isEmpty {
-                    Text(details.joined(separator: " · "))
-                        .font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
+                    HStack(spacing: 4) {
+                        // The position's pictogram leads the line, before its name.
+                        if let position = entry.position { Image(position.iconName).resizable().frame(width: 16, height: 16) }
+                        Text(details.joined(separator: " · "))
+                    }
+                    .font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
                 }
             }
             Spacer(minLength: 4)
