@@ -100,7 +100,8 @@ struct EntryDetailView: View {
                 row("Munition", entry.ammunition?.name)
                 if let lot = entry.lot { row("Los", lot.number) }
                 if let position = entry.position {
-                    LabeledContent("Stellung".loc) { Label(position.title, image: position.iconName) }
+                    // Grey like the other values; the pictogram too, not in the tint.
+                    LabeledContent("Stellung".loc) { Label(position.title, image: position.iconName).foregroundStyle(.secondary) }
                 }
             }
 
