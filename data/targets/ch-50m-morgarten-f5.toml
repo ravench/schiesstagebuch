@@ -13,3 +13,30 @@ values = [5, 4, 3, 2, 1, 0]
 [source]
 title = "Pistolenklub Aeschi, Scheiben (Morgarten-, Rothenthurm-, Schwaderloh-Schiessen F100/5)"
 url = "https://pk-aeschi.ch/schiesswesen/scheiben"
+
+# The icon, from the club's picture (pk-aeschi.ch, Scheiben): khaki card 45 x 100 cm, green figure with head
+# and shoulders, and the oval 5 to 2 as white lines; the 1 is the rest of the figure. Only the card and the
+# 5 (10 x 15 cm) are published; the other sizes are measured off the picture (about ± 1 cm).
+[[shapes]]
+rect = [-233, -555, 450, 1000]
+fill = "khaki"
+
+[[shapes]]
+polygon = [[-96, -547], [97, -547], [97, -370], [150, -366], [213, -345], [213, 445], [-208, 445], [-208, -345], [-150, -366], [-96, -370]]
+fill = "green"
+
+[[shapes]]
+ellipse = [0, 0, 100, 150]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 200, 350]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 370, 550]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 420, 730]
+line = "white"

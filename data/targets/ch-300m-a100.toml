@@ -6,6 +6,8 @@ name = "SSV Scheibe A100 300 m"
 short_name = "A100"
 group = "Schweiz"
 distances_m = [300]
+# Same face as A10.
+face = "ch-300m-a10"
 
 [scoring]
 # Any value from min to max, typed on the decimal keypad.

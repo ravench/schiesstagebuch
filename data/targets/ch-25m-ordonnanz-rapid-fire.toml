@@ -12,3 +12,40 @@ values = [10, 9, 8, 7, 6, 0]
 [source]
 title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
 url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"
+
+# The icon: the black figure 45 x 76 cm with its white edge of about 1 cm, drawn as a plain rectangle
+# (the rules give no outline), and the zones 10 to 6: the 10 is 10 cm wide and 15 cm high with half circles
+# of 5 cm radius at its ends, each further zone 10 cm wider and 15 cm higher (Anhang 2). The 6 is wider
+# than the figure, so only its top and bottom show.
+[[shapes]]
+rect = [-235, -390, 470, 780]
+fill = "white"
+
+[[shapes]]
+rect = [-225, -380, 450, 760]
+fill = "black"
+
+[[shapes]]
+rect = [-50, -75, 100, 150]
+radius = 50
+line = "white"
+
+[[shapes]]
+rect = [-100, -150, 200, 300]
+radius = 100
+line = "white"
+
+[[shapes]]
+rect = [-150, -225, 300, 450]
+radius = 150
+line = "white"
+
+[[shapes]]
+rect = [-200, -300, 400, 600]
+radius = 200
+line = "white"
+
+[[shapes]]
+rect = [-250, -375, 500, 750]
+radius = 250
+line = "white"

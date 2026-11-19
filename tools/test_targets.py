@@ -114,5 +114,54 @@ class CheckTests(unittest.TestCase):
         self.assertNotIn("black", bare)
 
 
+
+class FaceTests(unittest.TestCase):
+    CARD = {"rect": [-50, -50, 100, 100], "fill": "white"}
+
+    def test_shapes_are_checked(self):
+        self.assertEqual(targets.problems(target(shapes=[self.CARD, {"ellipse": [0, 0, 10, 20], "line": "black"}])), [])
+        self.assertIn("one of rect", targets.problems(target(shapes=[self.CARD, {"fill": "black"}]))[0])
+        self.assertIn("size above 0", targets.problems(target(shapes=[self.CARD, {"rect": [0, 0, 0, 5], "fill": "red"}]))[0])
+        self.assertIn("three", targets.problems(target(shapes=[self.CARD, {"polygon": [[0, 0], [1, 1]], "fill": "red"}]))[0])
+        self.assertIn("fill or a line", targets.problems(target(shapes=[self.CARD, {"rect": [0, 0, 1, 1]}]))[0])
+        self.assertIn("not one of", targets.problems(target(shapes=[self.CARD, {"rect": [0, 0, 1, 1], "fill": "pink"}]))[0])
+        self.assertIn("rects only", targets.problems(target(shapes=[self.CARD, {"ellipse": [0, 0, 1, 1], "fill": "red", "radius": 1}]))[0])
+        self.assertIn("the card", targets.problems(target(shapes=[{"ellipse": [0, 0, 1, 1], "fill": "red"}]))[0])
+        self.assertIn("itself", targets.problems(target(face="t"))[0])
+
+    def test_face_references_must_exist_and_not_go_round(self):
+        a, b = target(id="a", _file="a.toml", face="b"), target(id="b", _file="b.toml", face="a")
+        self.assertIn("circle", targets.face_reference_problems([a, b])[0])
+        self.assertIn("no target", targets.face_reference_problems([target(face="x")])[0])
+        bare = target(drop=("ring_diameters_mm", "black_mm"))
+        self.assertIn("nothing to draw", targets.face_reference_problems([bare])[0])
+        self.assertEqual(targets.face_reference_problems([target()]), [])
+
+    def test_face_draws_the_named_target_first(self):
+        base = target(id="base", shapes=[self.CARD])
+        child = target(id="child", drop=("ring_diameters_mm", "black_mm"), face="base",
+                       shapes=[{"ellipse": [0, 0, 5, 5], "line": "black"}])
+        by_id = {"base": base, "child": child}
+        self.assertEqual(targets.face(child, by_id),
+                         {"shapes": [self.CARD, {"ellipse": [0, 0, 5, 5], "line": "black"}], "rings": [10, 20, 30, 40], "black": 30})
+        self.assertIsNone(targets.face(target(drop=("ring_diameters_mm", "black_mm")), {}))
+        out = targets.app_json([base, child])
+        self.assertEqual(out[1]["face"]["rings"], [10, 20, 30, 40])
+        # The hundred rating's own data keeps no rings: they are only drawn.
+        self.assertNotIn("ringDiameters", out[1])
+
+    def test_every_target_in_the_repo_is_drawn(self):
+        all_targets = targets.load()
+        self.assertEqual(targets.face_reference_problems(all_targets), [])
+        by_id = {t["id"]: t for t in all_targets}
+        for t in all_targets:
+            self.assertIsNotNone(targets.face(t, by_id), t["id"])
+        self.assertEqual(targets.face(by_id["ch-300m-a100"], by_id), targets.face(by_id["ch-300m-a10"], by_id))
+        # The B figure (SIUS Sui PB5 sweep) is 45 x 50 cm.
+        figure = by_id["ch-300m-b4"]["shapes"][1]["polygon"]
+        xs, ys = [p[0] for p in figure], [p[1] for p in figure]
+        self.assertEqual((max(xs) - min(xs), max(ys) - min(ys)), (450, 499))
+
+
 if __name__ == "__main__":
     unittest.main()

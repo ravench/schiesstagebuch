@@ -5,6 +5,8 @@ name = "SSV Luftgewehrscheibe 100 10 m"
 short_name = "LG 100"
 group = "Schweiz"
 distances_m = [10]
+# Same face as the ISSF air rifle target.
+face = "issf-10m-air-rifle"
 
 [scoring]
 # Hundred rating.

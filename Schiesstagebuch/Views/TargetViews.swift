@@ -49,11 +49,14 @@ struct TargetRow: View {
     let target: ShootingTarget
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(target.name)
-            Text(verbatim: "\(target.mode.title.loc) · \(target.scoringSummary)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+        HStack(spacing: 12) {
+            TargetFaceView(face: TargetCatalog.face(of: target))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(target.name)
+                Text(verbatim: "\(target.mode.title.loc) · \(target.scoringSummary)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }
@@ -75,7 +78,8 @@ struct TargetTemplateList: View {
                                 context.insert(TargetCatalog.target(from: item))
                                 dismiss()
                             } label: {
-                                HStack {
+                                HStack(spacing: 12) {
+                                    TargetFaceView(face: item.face)
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(item.name)
                                         Text(verbatim: item.targetScoring.summary)

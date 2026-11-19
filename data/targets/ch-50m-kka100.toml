@@ -5,6 +5,8 @@ name = "SSV Kleinkaliberscheibe A100 50 m"
 short_name = "KK A100"
 group = "Schweiz"
 distances_m = [50]
+# Same face as KK A10.
+face = "ch-50m-kka10"
 
 [scoring]
 # Hundred rating.
