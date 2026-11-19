@@ -363,6 +363,14 @@ final class Entry {
     /// Ablösung (relay) and Scheibe (target number) the Stich was shot in, as on the start card; empty when not entered.
     var relay: String = ""
     var targetNumber: String = ""
+    /// Time of day the Stich was shot (only hours and minutes count); nil when not entered. Also the
+    /// hour of its weather and sun (it was part of the weather record until 2026-11-18).
+    var time: Date?
+    /// The time a new Stich starts with: now, or a fixed hour in screenshot runs so the screens
+    /// compare equal from run to run.
+    static var startTime: Date {
+        ScreenshotData.isActive ? Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now : .now
+    }
     /// All shots fired, sighters included.
     var shotCount: Int = 0
     /// Probeschüsse, when the user splits the count; nil = only a total was entered.

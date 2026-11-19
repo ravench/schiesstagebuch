@@ -80,6 +80,7 @@ enum ScreenshotData {
             let entry = Entry(date: date, weapon: s.weapon, caliber: caliber,
                               shotCount: s.shots, ammunition: caliber === gp11 ? ammo : nil, result: s.result)
             entry.position = s.position ?? s.weapon.category.defaultPosition
+            entry.time = Entry.startTime
             context.insert(entry)
             entry.maxPoints = s.max
             entry.lot = s.lot

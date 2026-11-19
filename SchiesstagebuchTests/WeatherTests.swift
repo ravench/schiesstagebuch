@@ -202,7 +202,7 @@ final class WeatherTests: ModelTestCase {
     func testEntryStoresWeatherAsJSONAndNilMeansNone() {
         let e = addEntry(nil, on: day(1), shots: 10)
         XCTAssertNil(e.weather)
-        var record = WeatherRecord(time: day(1))
+        var record = WeatherRecord()
         record.conditions.set("sky", .option("fog"))
         e.weather = record
         XCTAssertNotNil(e.weatherData)
@@ -215,8 +215,8 @@ final class WeatherTests: ModelTestCase {
     /// of their own (Raven: weather belongs to the Stich), and the Anlass keeps none.
     func testWeatherOfAnEventMovesToItsStiche() throws {
         let event = ShootingEvent(date: day(1), name: "Feldschiessen"); context.insert(event)
-        var shared = WeatherRecord(time: day(1)); shared.conditions.set("sky", .option("fog"))
-        var own = WeatherRecord(time: day(1)); own.conditions.set("sky", .option("sunny"))
+        var shared = WeatherRecord(); shared.conditions.set("sky", .option("fog"))
+        var own = WeatherRecord(); own.conditions.set("sky", .option("sunny"))
         event.weather = shared
         let a = addStich(to: event, nil, shots: 10)
         let b = addStich(to: event, nil, shots: 6); b.weather = own
@@ -230,7 +230,7 @@ final class WeatherTests: ModelTestCase {
         XCTAssertFalse(WeatherRecord.moveToStiche(in: context), "nothing left to move")
     }
 
-    func testCombineTakesDayFromEntryAndTimeFromWeather() {
+    func testCombineTakesDayAndTimeOfDayFromTheEntry() {
         var cal = Calendar(identifier: .gregorian); cal.timeZone = TimeZone(identifier: "Europe/Zurich")!
         let entryDay = cal.date(from: DateComponents(year: 2026, month: 5, day: 9, hour: 8))!
         let time = cal.date(from: DateComponents(year: 2020, month: 1, day: 1, hour: 14, minute: 35))!
@@ -257,7 +257,7 @@ final class WeatherTests: ModelTestCase {
 
     func testBackupAndCSVKeepWeather() throws {
         let e = addEntry(nil, on: day(1), shots: 10)
-        var record = WeatherRecord(time: day(1))
+        var record = WeatherRecord()
         record.conditions.set("wind_strength", .option("strong"))
         e.weather = record
         try context.save()

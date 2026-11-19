@@ -102,8 +102,8 @@ enum Backup {
         var eventID: UUID?; var stich: String?
         /// `ShootingPosition` raw value; nil when none was entered.
         var position: String?
-        /// Ablösung and Scheibe; nil when not entered.
-        var relay: String?; var targetNumber: String?
+        /// Ablösung, Scheibe and time of day; nil when not entered.
+        var relay: String?; var targetNumber: String?; var time: Date?
         /// Version 1 only: what the event holds now.
         var event: String?; var rangeID: UUID?
         /// Not in version 2, which kept the weather on the event.
@@ -173,7 +173,7 @@ enum Backup {
             entries: try all(Entry.self, context).map {
                 .init(id: $0.id, date: $0.date, shotCount: $0.shotCount, result: $0.result, notes: $0.notes,
                       eventID: $0.shootingEvent?.id, stich: $0.stich, position: $0.position?.rawValue,
-                      relay: $0.relay.isEmpty ? nil : $0.relay, targetNumber: $0.targetNumber.isEmpty ? nil : $0.targetNumber, weather: $0.weather,
+                      relay: $0.relay.isEmpty ? nil : $0.relay, targetNumber: $0.targetNumber.isEmpty ? nil : $0.targetNumber, time: $0.time, weather: $0.weather,
                       weaponID: $0.weapon?.id, caliberID: $0.caliber?.id, ammunitionID: $0.ammunition?.id,
                       lotID: $0.lot?.id, barrelID: $0.barrel?.id, targetID: $0.target?.id, sighterCount: $0.sighterCount,
                       maxPoints: $0.maxPoints, shotValuesText: $0.shotValuesText,
@@ -435,7 +435,7 @@ enum Backup {
                           shotCount: d.shotCount, ammunition: d.ammunitionID.flatMap { ammo[$0] },
                           result: d.result, notes: d.notes)
             e.id = d.id
-            e.stich = d.stich ?? ""; e.relay = d.relay ?? ""; e.targetNumber = d.targetNumber ?? ""
+            e.stich = d.stich ?? ""; e.relay = d.relay ?? ""; e.targetNumber = d.targetNumber ?? ""; e.time = d.time
             e.position = d.position.flatMap(ShootingPosition.init(rawValue:))
             e.importKey = d.importKey ?? ""
             if let created = d.createdAt { e.createdAt = created }
@@ -484,7 +484,7 @@ enum Backup {
                 ? "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\"" : s
         }
         // Semicolon-separated so Excel with Swiss/German locale opens it directly.
-        let header: [String] = ["Datum", "Schiessanlage", "Ort", "Anlass", "Stich", "Ablösung", "Scheibe", "Stellung", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
+        let header: [String] = ["Datum", "Uhrzeit", "Schiessanlage", "Ort", "Anlass", "Stich", "Ablösung", "Scheibe", "Stellung", "Waffe", "Kaliber", "Lauf", "Munition", "Los",
                                 "Schusszahl", "Probeschüsse", "Wertungsschüsse", "Resultat", "Max. Punkte",
                                 "Prozent", "Einzelschüsse", "Probeschüsse einzeln", "Punkte pro Passe",
                                 "Wertungsart", "Division", "Zeit (s)", "Treffer und Fehler", "Hitfaktor",
@@ -494,6 +494,7 @@ enum Backup {
             let score = e.score
             var cols: [String] = []
             cols.append(csvDate.string(from: e.date))
+            cols.append(e.time?.formatted(date: .omitted, time: .shortened) ?? "")
             cols.append(e.range?.name ?? "")
             cols.append(e.range?.place ?? "")
             cols.append(e.eventName)
@@ -526,7 +527,7 @@ enum Backup {
             cols.append(e.ringSize.map { SightSettings.format($0) } ?? "")
             cols.append(SightSettings(entry: e).diopter?.text ?? "")
             cols.append(e.bipodLength.map { SightSettings.format($0) } ?? "")
-            cols.append(e.weather?.summary { $0.formatted(date: .omitted, time: .shortened) } ?? "")
+            cols.append(e.weather?.conditions.summary() ?? "")
             cols.append(e.notes)
             lines.append(cols.map(field).joined(separator: ";"))
         }

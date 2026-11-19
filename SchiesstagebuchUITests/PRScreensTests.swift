@@ -203,6 +203,8 @@ final class PRScreensTests: XCTestCase {
         guard openStich("Feldschiessen"), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         reveal(weatherSwitch)
+        // At the bottom edge the switch counts as hittable, but a tap there does not reach it.
+        if weatherSwitch.frame.midY > 0.75 * app.frame.height { app.swipeUp(velocity: .slow) }
         if (weatherSwitch.value as? String) != "1" {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
@@ -218,7 +220,7 @@ final class PRScreensTests: XCTestCase {
                                     ("Scheibe", "Teilschatten", "13g-Scheibe"),
                                     ("Sicht auf die Scheiben", "Flimmern", "13h-Sicht-auf-die-Scheiben")] {
             let button = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", row)).firstMatch
-            if button.waitForExistence(timeout: 3), openMenu(button, showing: option) {
+            if button.waitForExistence(timeout: 3), button.isHittable, openMenu(button, showing: option) {
                 snap(name)
                 closeMenu()
             }
@@ -264,6 +266,8 @@ final class PRScreensTests: XCTestCase {
         guard openStich("Feldschiessen"), open(app.buttons["Bearbeiten"].firstMatch) else { return }
         let weatherSwitch = app.switches["Wetter erfassen"].firstMatch
         reveal(weatherSwitch)
+        // At the bottom edge the switch counts as hittable, but a tap there does not reach it.
+        if weatherSwitch.frame.midY > 0.75 * app.frame.height { app.swipeUp(velocity: .slow) }
         if (weatherSwitch.value as? String) != "1" {
             weatherSwitch.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
         }
@@ -360,6 +364,8 @@ final class PRScreensTests: XCTestCase {
         reveal(shots)
         shots.tap()
         let shot = app.buttons["Schuss 1"].firstMatch
+        // The Scheibe row above the segments leaves the shots below the screen's edge.
+        reveal(shot)
         guard shot.waitForExistence(timeout: 3) else { return XCTFail("No shot buttons for the A5 target") }
         shot.tap()
         snap("21c-Einzelschuesse-Feste-Werte")

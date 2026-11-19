@@ -18,6 +18,7 @@ struct EntryEditorView: View {
         addingTo = nil
         _date = State(initialValue: entry.date); _range = State(initialValue: entry.range); _event = State(initialValue: entry.eventName)
         _stich = State(initialValue: entry.stich); _relay = State(initialValue: entry.relay); _targetNumber = State(initialValue: entry.targetNumber)
+        _time = State(initialValue: entry.time)
         _weapon = State(initialValue: entry.weapon); _caliber = State(initialValue: entry.caliber)
         _ammunition = State(initialValue: entry.ammunition); _lot = State(initialValue: entry.lot); _barrel = State(initialValue: entry.effectiveBarrel)
         _shotCount = State(initialValue: entry.shotCount); _result = State(initialValue: entry.result); _maxPoints = State(initialValue: entry.maxPoints)
@@ -57,6 +58,8 @@ struct EntryEditorView: View {
     @State private var stich = ""
     @State private var relay = ""
     @State private var targetNumber = ""
+    /// Time of day of the Stich; a new one starts with now.
+    @State private var time: Date?
     @State private var weapon: Weapon?
     @State private var caliber: Caliber?
     @State private var ammunition: Ammunition?
@@ -156,14 +159,26 @@ struct EntryEditorView: View {
                         }
                     }
                     if scoring != .ipsc {
-                        // Side by side: both are a number or two.
-                        HStack(spacing: 16) {
-                            LabeledContent("Ablösung") { TextField("–", text: $relay).multilineTextAlignment(.trailing) }
+                        // Side by side: both are a number or two. The relay takes only what it needs, so
+                        // the longer «Scheiben-Nr.» is never cut off (tester 2026-11-17).
+                        HStack(spacing: 12) {
+                            Text("Ablösung").fixedSize()
+                            TextField("–", text: $relay).multilineTextAlignment(.trailing).frame(width: 48)
                             Divider()
-                            LabeledContent("Scheiben-Nr.") { TextField("–", text: $targetNumber).multilineTextAlignment(.trailing) }
+                            Text("Scheiben-Nr.").fixedSize()
+                            TextField("–", text: $targetNumber).multilineTextAlignment(.trailing)
                         }
                         .keyboardType(.numbersAndPunctuation)
                     }
+                    DatePicker("Uhrzeit", selection: Binding(get: { time ?? date }, set: { time = $0 }), displayedComponents: .hourAndMinute)
+                } footer: {
+                    if scoring != .ipsc {
+                        Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
+                    }
+                }
+
+                // What it was shot with; the target is with the shots it scores (tester 2026-11-17).
+                Section {
                     pickerRow(term("Waffe"), selection: $weapon, items: weapons, label: \.name, add: .weapon,
                               subtitle: { $0.pickerSerial(show: showSerial) })
                     if barrelChoices.count > 1 {
@@ -180,14 +195,7 @@ struct EntryEditorView: View {
                         SearchablePicker(title: "Los".loc, selection: $lot,
                                          choices: PickerChoice.optional(ammunition.sortedLots(), keeping: lot, title: \.number))
                     }
-                    if scoring != .ipsc {
-                        positionPicker
-                        targetPicker
-                    }
-                } footer: {
-                    if scoring != .ipsc {
-                        Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
-                    }
+                    if scoring != .ipsc { positionPicker }
                 }
                 // Plain pickers show their value in grey, which read as disabled next to the tinted
                 // firearm and ammunition rows: one colour for every value that can be changed.
@@ -213,7 +221,7 @@ struct EntryEditorView: View {
                     SightSection(sight: $sight, aperture: aperture, fields: sightFields)
                 }
                 if features.contains(.weather) {
-                    WeatherSection(weather: $weather, day: date, range: range)
+                    WeatherSection(weather: $weather, day: date, time: time, range: range)
                 }
 
                 Section("Bemerkungen") {
@@ -324,6 +332,8 @@ struct EntryEditorView: View {
     @ViewBuilder
     private var ringSections: some View {
         Section {
+            // Same colour as the values of the firearm and ammunition rows.
+            targetPicker.tint(.accentColor)
             Picker("Erfassung", selection: $mode) {
                 ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
             }
@@ -533,6 +543,7 @@ struct EntryEditorView: View {
             if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
         }
         if entry == nil {
+            time = Entry.startTime
             position = weapon?.category.defaultPosition
             // A new Stich keeps the target of the Stich before it in the event.
             target = addingTo?.sortedEntries.last?.target
@@ -612,6 +623,7 @@ struct EntryEditorView: View {
         shootingEvent.name = event.trimmingCharacters(in: .whitespaces)
         target.stich = stich.trimmingCharacters(in: .whitespaces)
         target.relay = relay.trimmingCharacters(in: .whitespaces); target.targetNumber = targetNumber.trimmingCharacters(in: .whitespaces)
+        target.time = time
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
         target.lot = lot?.ammunition == ammunition ? lot : nil
         target.barrel = weapon?.barrelToStore(picked: barrel, caliber: caliber, on: date)

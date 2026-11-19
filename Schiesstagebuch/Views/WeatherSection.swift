@@ -1,33 +1,30 @@
 import SwiftUI
 import WeatherKit
 
-/// Weather in the entry editor: a «Wetter erfassen» switch (off for indoor shooting), the time and the
-/// values in one list. The sun fills in by itself from the range's position and shooting direction.
+/// Weather in the entry editor: a «Wetter erfassen» switch (off for indoor shooting) and the values in
+/// one list; the time is the Stich's own, at the top of the form. The sun fills in by itself from the range's position and shooting direction.
 struct WeatherSection: View {
     @Binding var weather: WeatherRecord?
-    /// Day of the entry and its range, for the sun.
+    /// Day and time of the entry and its range, for the sun.
     let day: Date
+    let time: Date?
     let range: ShootingRange?
     @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
 
     /// The sun at the range at the entry's time; nil without weather, or without the range's position or shooting direction.
     private var sun: SunDirection? {
-        weather.flatMap { SunDirection.suggestion(for: range, at: WeatherRecord.combine(day: day, time: $0.time)) }
+        weather.flatMap { _ in SunDirection.suggestion(for: range, at: WeatherRecord.combine(day: day, time: time)) }
     }
 
     var body: some View {
         Section {
-            Toggle(isOn: Binding(get: { weather != nil }, set: { weather = $0 ? (weather ?? WeatherRecord(time: WeatherRecord.startTime)) : nil })) {
+            Toggle(isOn: Binding(get: { weather != nil }, set: { weather = $0 ? (weather ?? WeatherRecord()) : nil })) {
                 Label("Wetter erfassen", systemImage: "cloud.sun")
             }
             // On this one row: a modifier on the whole Section goes to every row of it.
             .onChange(of: sun, initial: true) { old, new in weather?.conditions.fillSun(new, after: old) }
             if let record = weather {
-                DatePicker(selection: Binding(get: { record.time ?? day }, set: { weather?.time = $0 }),
-                           displayedComponents: .hourAndMinute) {
-                    Label("Uhrzeit", systemImage: "clock")
-                }
-                let date = WeatherRecord.combine(day: day, time: record.time)
+                let date = WeatherRecord.combine(day: day, time: time)
                 // Only when it shows something, so the list has no empty row.
                 if AppleWeatherRow.shows(record, enabled: appleWeather, range: range, date: date) {
                     AppleWeatherRow(weather: $weather, date: date, range: range)
@@ -227,9 +224,6 @@ struct WeatherDetailSection: View {
 
     var body: some View {
         Section {
-            if let time = record.time {
-                row(label: "Uhrzeit".loc, icon: "clock", value: time.formatted(date: .omitted, time: .shortened), valueIcon: nil)
-            }
             if MeasuredWeatherLine.shows(record.conditions) { MeasuredWeatherLine(conditions: record.conditions) }
             ForEach(WeatherField.inputs) { field in
                 if let shown = record.conditions.display(field) {

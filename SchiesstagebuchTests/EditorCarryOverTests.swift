@@ -13,7 +13,7 @@ final class EditorCarryOverTests: ModelTestCase {
         rifle = Weapon(name: "Stgw 90"); context.insert(rifle)
         pistol = Weapon(name: "P210"); context.insert(pistol)
         let outdoors = addEntry(rifle, on: day(1), shots: 20)
-        outdoors.weather = WeatherRecord(time: day(1))
+        outdoors.weather = WeatherRecord()
         SightSettings(filter: "Citron", diopter: DiopterClicks(up: 2), ringSize: 4.2).apply(to: outdoors)
         addEntry(pistol, on: day(2), shots: 30)      // indoors, no weather, no sight settings
         try context.save()
@@ -37,21 +37,20 @@ final class EditorCarryOverTests: ModelTestCase {
     }
 
     func testWeatherSwitchFollowsTheWeaponWhileNothingIsRecorded() {
-        let now = day(9)
-        XCTAssertEqual(WeatherRecord.carriedOver(from: nil, to: rifle, in: entries, now: now), WeatherRecord(time: now))
-        XCTAssertNil(WeatherRecord.carriedOver(from: WeatherRecord(time: now), to: pistol, in: entries, now: now),
-                     "only the time was set: an indoor weapon switches the weather off")
-        XCTAssertNil(WeatherRecord.carriedOver(from: nil, to: nil, in: entries, now: now))
+        XCTAssertEqual(WeatherRecord.carriedOver(from: nil, to: rifle, in: entries), WeatherRecord())
+        XCTAssertNil(WeatherRecord.carriedOver(from: WeatherRecord(), to: pistol, in: entries),
+                     "nothing recorded yet: an indoor weapon switches the weather off")
+        XCTAssertNil(WeatherRecord.carriedOver(from: nil, to: nil, in: entries))
     }
 
     func testRecordedWeatherSurvivesAWeaponChange() {
-        var record = WeatherRecord(time: day(9))
+        var record = WeatherRecord()
         record.conditions.set("sky", .option("fog"))
         XCTAssertEqual(WeatherRecord.carriedOver(from: record, to: pistol, in: entries), record)
     }
 
     func testTheSunAloneIsNothingRecorded() {
-        var record = WeatherRecord(time: day(9))
+        var record = WeatherRecord()
         record.conditions.set("sun_direction", .option("front"))
         XCTAssertFalse(record.hasValues, "the app fills the sun in by itself")
         record.conditions.set("sky", .option("overcast"))
@@ -59,7 +58,7 @@ final class EditorCarryOverTests: ModelTestCase {
     }
 
     func testNormalizedTrimsNotesAndDropsBlankOnes() {
-        var record = WeatherRecord(time: day(1))
+        var record = WeatherRecord()
         record.conditions.values["weather_note"] = .text("  Bise am Nachmittag ")
         record.conditions.set("sky", .option("sunny"))
 

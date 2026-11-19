@@ -220,7 +220,7 @@ final class ShootingEventTests: ModelTestCase {
         let range = ShootingRange(name: "Albisgüetli"); context.insert(range)
         let event = ShootingEvent(date: day(6), name: "Knabenschiessen", range: range); context.insert(event)
         // As a version 2 backup has it: the weather on the event. Restoring moves it to the Stiche.
-        event.weather = WeatherRecord(time: day(6))
+        event.weather = WeatherRecord()
         addStich(to: event, stgw, shots: 18, stich: "Sektionsstich")
         addStich(to: event, pistol, shots: 10, stich: "Kunststich")
         addEntry(stgw, on: day(8), shots: 30)
@@ -238,7 +238,7 @@ final class ShootingEventTests: ModelTestCase {
         XCTAssertEqual(restored.id, event.id)
         XCTAssertEqual(restored.range?.name, "Albisgüetli")
         XCTAssertNil(restored.weather)
-        XCTAssertTrue(restored.sortedEntries.allSatisfy { $0.weather == WeatherRecord(time: day(6)) })
+        XCTAssertTrue(restored.sortedEntries.allSatisfy { $0.weather == WeatherRecord() })
         XCTAssertEqual(Set(restored.sortedEntries.map(\.stich)), ["Sektionsstich", "Kunststich"])
         XCTAssertEqual(Set(restored.sortedEntries.compactMap(\.weapon?.name)), ["Stgw 90", "P210"])
         XCTAssertTrue(restored.sortedEntries.allSatisfy { $0.date == day(6) })

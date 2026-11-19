@@ -183,11 +183,11 @@ final class AppleWeatherTests: XCTestCase {
     }
 
     func testRecordsWithoutTheAppleWeatherMarkStayAsTheyWere() throws {
-        let plain = try JSONEncoder().encode(WeatherRecord(time: nil))
+        let plain = try JSONEncoder().encode(WeatherRecord())
         XCTAssertFalse(try XCTUnwrap(String(bytes: plain, encoding: .utf8)).contains("fromAppleWeather"))
         XCTAssertNil(try JSONDecoder().decode(WeatherRecord.self, from: plain).fromAppleWeather)
 
-        var filled = WeatherRecord(time: nil)
+        var filled = WeatherRecord()
         filled.fromAppleWeather = true
         let decoded = try JSONDecoder().decode(WeatherRecord.self, from: JSONEncoder().encode(filled.normalized()))
         XCTAssertEqual(decoded.fromAppleWeather, true)
