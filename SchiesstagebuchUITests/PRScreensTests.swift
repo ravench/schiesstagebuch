@@ -1,5 +1,8 @@
 import XCTest
 
+// The tour stays one file, however long: the PR screens copy this one file onto the base branch (build.yml).
+// swiftlint:disable file_length
+
 /// A tour of the main screens with the sample data, one screenshot per stop. The Build job's
 /// PR screens run it on the pull request and on its base branch and post the screens that
 /// changed as a comment. A pull request that changes a screen the tour does not reach adds a stop.
