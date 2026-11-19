@@ -267,4 +267,22 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertTrue(FilterColor.Filter(name: "Sunrise polar", rgb: 0).polarised)
         XCTAssertFalse(FilterColor.Filter(name: "Sunrise polar", rgb: 0, polarised: false).polarised)
     }
+
+    func testAFieldSwitchedOffAndOnKeepsItsValue() {
+        var iris: Double?
+        var last: Double?
+        iris.switchOn(true, last: &last, start: 1.0)
+        XCTAssertEqual(iris, 1.0, "the first time it starts at the start value")
+        iris = 4.2
+        iris.switchOn(false, last: &last, start: 1.0)
+        XCTAssertNil(iris)
+        iris.switchOn(true, last: &last, start: 1.0)
+        XCTAssertEqual(iris, 4.2)
+
+        var clicks: DiopterClicks? = DiopterClicks(up: 2, right: -1)
+        var lastClicks: DiopterClicks?
+        clicks.switchOn(false, last: &lastClicks, start: DiopterClicks())
+        clicks.switchOn(true, last: &lastClicks, start: DiopterClicks())
+        XCTAssertEqual(clicks, DiopterClicks(up: 2, right: -1))
+    }
 }

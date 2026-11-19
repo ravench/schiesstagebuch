@@ -20,6 +20,15 @@ struct DiopterClicks: Equatable, Hashable {
     }
 }
 
+extension Optional {
+    /// The switch of an optional field: off clears the value and keeps it in `last`, on brings it
+    /// back, or sets `start` when there was none.
+    mutating func switchOn(_ on: Bool, last: inout Wrapped?, start: Wrapped) {
+        if let self { last = self }
+        self = on ? (last ?? start) : nil
+    }
+}
+
 /// Optional sport-shooter settings for an entry: sight, shooting glasses and bipod.
 struct SightSettings: Equatable {
     /// Filter name from the catalogue; "" means no filter (the default).

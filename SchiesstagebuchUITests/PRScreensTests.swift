@@ -288,13 +288,21 @@ final class PRScreensTests: XCTestCase {
         // The diopter corrections switched on: the clicks up or down and right or left.
         let diopter = app.switches.matching(NSPredicate(format: "label BEGINSWITH %@", "Diopterkorrekturen")).firstMatch
         if diopter.exists {
-            diopter.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+            let toggle = diopter.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5))
+            toggle.tap()
             // Two clicks up, one left: «2 hoch, 1 links».
             let height = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Höhenverstellung")).firstMatch
             let side = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Seitenverstellung")).firstMatch
+            // The first tap after the drag does not always switch it on (the stop showed it off now and then).
+            if !height.waitForExistence(timeout: 3) { toggle.tap() }
             if height.waitForExistence(timeout: 3), side.exists {
                 height.buttons["Increment"].tap(); height.buttons["Increment"].tap()
                 side.buttons["Decrement"].tap()
+                // Switched off and on again, the clicks are still there.
+                toggle.tap()
+                _ = height.waitForNonExistence(timeout: 3)
+                toggle.tap()
+                _ = height.waitForExistence(timeout: 3)
             }
             snap("17b-Diopterkorrekturen")
         }
