@@ -9,6 +9,10 @@ enum ShootingPosition: String, CaseIterable, Identifiable {
 
     var title: String { titleKey.loc }
 
+    /// Pictogram from Assets.xcassets, drawn by tools/position_icons.py; a template image, so it
+    /// takes the tint or text colour, in menus too.
+    var iconName: String { "Position-\(rawValue)" }
+
     private var titleKey: String {
         switch self {
         case .prone: "Liegend"

@@ -234,7 +234,7 @@ struct CaliberListView: View {
             })
     }
 
-    /// The user's calibres and the catalogue, for the «same measurements» notes.
+    /// The user's calibres and the catalogue.
     private var choices: [CaliberChoice] { CaliberChoice.all(calibers) }
 
     /// The rest of the catalogue: a look at the cartridges, and the search finds them, the rare ones
@@ -255,9 +255,7 @@ struct CaliberListView: View {
                             if !c.aliasSummary.isEmpty {
                                 Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
                             }
-                            if let note = CaliberChoice(record: c).sameDimensionsNote(in: choices) {
-                                Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
-                            }
+                            if let group = c.dimensionGroup { CaliberGroupTag(name: group) }
                             let weapons = c.weapons.map(\.name).sorted()
                             if !weapons.isEmpty { Text(weapons.joined(separator: ", ")).font(.caption).foregroundStyle(.secondary) }
                         }
@@ -277,9 +275,7 @@ struct CaliberListView: View {
                             if !c.aliasSummary.isEmpty {
                                 Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
                             }
-                            if let note = c.sameDimensionsNote(in: choices) {
-                                Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
-                            }
+                            if let group = c.dimensionGroup { CaliberGroupTag(name: group) }
                         }
                     }
                 }
@@ -296,6 +292,27 @@ struct CaliberListView: View {
             Button { adding = true } label: { Label("Hinzufügen", systemImage: "plus") }
         }
         .sheet(isPresented: $adding) { CaliberEditorView(caliber: nil) }
+    }
+}
+
+/// The name of the calibre's group of identical measurements («.308 Winchester» on the .308 Win and the 7.62 NATO) as a
+/// small blue tag under its name, as Kaliberfinder shows it (Raven, 2026-11-20).
+struct CaliberGroupTag: View {
+    let name: String
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: "equal")
+            Text(verbatim: name)
+        }
+        .lineLimit(1)
+        .font(.caption2.weight(.semibold))
+        .foregroundStyle(.blue)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 1)
+        .background(.blue.opacity(0.15), in: Capsule())
+        .padding(.top, 1)
+        .accessibilityElement(children: .combine)
     }
 }
 

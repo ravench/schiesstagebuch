@@ -75,21 +75,14 @@ extension CaliberLike {
         (CaliberCatalog.item(id: catalogID)?.displayAliases ?? []).joined(separator: ", ")
     }
 
-    /// Catalogue group of cartridges with identical measurements (e.g. .308 Win and 7.62 NATO); nil when alone.
+    /// Catalogue group of cartridges with identical measurements (e.g. .308 Win and 7.62 NATO), by calibre-data's
+    /// name for it, which the lists show as a tag (`CaliberGroupTag`); nil when alone.
     var dimensionGroup: String? { CaliberCatalog.item(id: catalogID)?.dimensionGroup }
 
     /// Other calibres from `all` with the same measurements, so a barrel for one can take them too.
     func sameDimensions(in all: [Self]) -> [Self] {
         guard let group = dimensionGroup else { return [] }
         return all.filter { $0 != self && $0.dimensionGroup == group }
-    }
-
-    /// "Gleiche Masse wie .308 Winchester" for a calibre whose twins are in `all`; nil otherwise.
-    /// The calibres stay separate entries, the note only shows that they belong together.
-    func sameDimensionsNote(in all: [Self]) -> String? {
-        let names = sameDimensions(in: all).map(\.name).sorted { $0.localizedStandardCompare($1) == .orderedAscending }
-        guard !names.isEmpty else { return nil }
-        return String(format: "Gleiche Masse wie %@".loc, names.joined(separator: ", "))
     }
 
     /// Keeps `list` in its order but moves calibres with identical measurements (e.g. .308 Win and
@@ -108,13 +101,20 @@ extension CaliberLike {
         return result
     }
 
-    /// Whether the name, a printed name or a search name from the catalogue ("Pist Pat 41", "K31")
-    /// contains `query`, both compared the way the catalogue compares its aliases (`Caliber.normalized`).
-    /// The name is normalised on every call because the user may have renamed the calibre.
+    /// Whether the name, a printed name, a search name from the catalogue ("Pist Pat 41", "K31") or a word of its
+    /// type («Platzpatrone», «blank») contains `query`, or these hold each of its words in any order, so
+    /// «.22 Platzpatrone» finds the .22 blanks. A category («Flinte», «handgun») counts only when the whole query starts
+    /// it: inside a category word «long» (arme longue) or «kurz» (Kurzwaffe) would turn «.22 Long Rifle» or «9 mm kurz»
+    /// into a whole shelf. All compared the way the catalogue compares its aliases, without accents
+    /// (`CaliberCatalog.searchKey`). The name is normalised on every call because the user may have renamed the calibre.
     func matches(_ query: String) -> Bool {
-        let key = Caliber.normalized(query)
-        guard !key.isEmpty else { return true }
-        return Caliber.normalized(name).contains(key) || CaliberCatalog.searchKeys(id: catalogID).contains { $0.contains(key) }
+        let whole = CaliberCatalog.searchKey(query)
+        guard !whole.isEmpty else { return true }
+        let keys = [CaliberCatalog.searchKey(name)] + CaliberCatalog.searchKeys(id: catalogID)
+        if keys.contains(where: { $0.contains(whole) }) { return true }
+        if whole.count >= 4, CaliberCatalog.categoryKeys(category).contains(where: { $0.hasPrefix(whole) }) { return true }
+        let words = query.split { $0.isWhitespace || $0 == "/" }.map { CaliberCatalog.searchKey(String($0)) }.filter { !$0.isEmpty }
+        return !words.isEmpty && words.allSatisfy { word in keys.contains { $0.contains(word) } }
     }
 }
 
