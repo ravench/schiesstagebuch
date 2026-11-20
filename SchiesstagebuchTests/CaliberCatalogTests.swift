@@ -169,7 +169,7 @@ final class CaliberCatalogTests: ModelTestCase {
 
     func testGP1890IsItsOwnRifleCalibre() throws {
         let gp1890 = try XCTUnwrap(CaliberCatalog.match("GP 1890"))
-        XCTAssertEqual(gp1890.name, "7.5x53.5 mm Swiss (GP 1890)")
+        XCTAssertEqual(gp1890.name, "7.5x53.5 mm Swiss (Patrone Modell 1890)", "calibre-data #154")
         XCTAssertEqual(gp1890.category, CaliberCatalog.Category.rifle.rawValue)
         XCTAssertEqual(gp1890.displayAliases, ["GP 1890", "GP 90/03"])
         for text in ["GP1890", "GP 90/03", "7,5 mm GP 90", "7.5mm GP90", "Patrone 1890", "Gewehrpatrone 1890", "7,5x53,5", "7.5×53.5 mm"] {

@@ -16,12 +16,12 @@ class PatchedBulletTests(unittest.TestCase):
         return spec, generate_assets.outline(spec)
 
     def test_gp1890_has_paper_band_and_steel_cap(self):
-        spec, o = self.outline("7.5x53.5 mm Swiss (GP 1890)")
+        spec, o = self.outline("7.5x53.5 mm Swiss (Patrone Modell 1890)")
         self.assertEqual(o["bulletMaterial"], "steel")
         self.assertIn("patch", o)
 
     def test_paper_band_starts_at_the_case_mouth(self):
-        spec, o = self.outline("7.5x53.5 mm Swiss (GP 1890)")
+        spec, o = self.outline("7.5x53.5 mm Swiss (Patrone Modell 1890)")
         mouth = spec["oal"] - spec["case"]  # SVG y grows downwards from the tip
         ys = [float(p.split()[1]) for p in o["patch"].replace("Z", "").replace("M", "L").split("L") if p.strip()]
         self.assertAlmostEqual(max(ys), mouth, places=2)
@@ -30,7 +30,7 @@ class PatchedBulletTests(unittest.TestCase):
         self.assertLess(max(ys) - min(ys), mouth, "the capped nose shows")
 
     def test_profile_steps_in_where_the_paper_ends(self):
-        spec = self.outline("7.5x53.5 mm Swiss (GP 1890)")[0]
+        spec = self.outline("7.5x53.5 mm Swiss (Patrone Modell 1890)")[0]
         r = spec["bullet"] / 2
         pts = generate_assets.bullet_profile(r, spec["case"], spec["oal"], spec["profile"])
         self.assertEqual(pts[0][0], r)
@@ -72,17 +72,19 @@ class BlankTests(unittest.TestCase):
 
     def test_crimped_blanks_have_no_bullet(self):
         calibers = {c["name"]: c for c in generate_assets.build()[0]}
-        for name in (".22 Blank (6.8/11)", "9 mm R Knall", ".320 Knall", ".45 Knall", ".22 Long Knall",
-                     "6 mm Flobert Knall", "8 mm Knall", ".315 Knall"):
+        # calibre-data #168: each carries the title of its C.I.P. sheet.
+        for name in (".22 SH (5.6/11)", "9 mm R Blanc", ".320 Court Blanc", ".45 K Blanc", ".22 Long Blanc",
+                     "6 mm Flobert Blanc", "8 mm Blanc", ".315 Blanc"):
             o = calibers[name]["outline"]
             self.assertNotIn("bullet", o, name)
             self.assertIn("case", o, name)
         self.assertEqual({n for n, c in calibers.items() if c.get("blank")},
-                         {".22 Blank (6.8/11)", "9 mm P.A.K.", "8 mm Knall", ".315 Knall", "9 mm R Knall", ".320 Knall",
-                          ".45 Knall", ".22 Long Knall", "6 mm Flobert Knall"}, "the search finds them as blanks")
+                         {".22 SH (5.6/11)", "6.8/11", "9 mm PA Blanc", "8 mm Blanc", ".315 Blanc", "9 mm R Blanc", ".320 Court Blanc",
+                          ".45 K Blanc", ".22 Long Blanc", "6 mm Flobert Blanc"}, "the search finds them as blanks")
         self.assertNotIn("blank", calibers[".22 LR"])
-        self.assertEqual(calibers["9 mm R Knall"]["kind"], "rimmed")
-        self.assertIn("9 mm R.K.", calibers["9 mm R Knall"]["displayAliases"])
+        self.assertEqual(calibers["9 mm R Blanc"]["kind"], "rimmed")
+        self.assertIn("9 mm R Knall", calibers["9 mm R Blanc"]["displayAliases"])
+        self.assertIn("9mmrk", calibers["9 mm R Blanc"]["aliases"], "«9 mm R.K.» finds it (calibre-data #203)")
 
 
 class CalibreDataSubmoduleTests(unittest.TestCase):

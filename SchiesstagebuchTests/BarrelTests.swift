@@ -126,8 +126,8 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(Caliber.keepingGroupsTogether([]), [])
 
         // The lists tag each member with the group's name (CaliberGroupTag), calibre-data's name for it.
-        XCTAssertEqual(win.dimensionGroup, ".308 Winchester")
-        XCTAssertEqual(nato.dimensionGroup, ".308 Winchester")
+        XCTAssertEqual(win.dimensionGroup, "7.62x51 mm")
+        XCTAssertEqual(nato.dimensionGroup, "7.62x51 mm")
         XCTAssertEqual(gp90.dimensionGroup, rem.dimensionGroup)
         XCTAssertNil(gp11.dimensionGroup)
         XCTAssertNil(custom.dimensionGroup)
