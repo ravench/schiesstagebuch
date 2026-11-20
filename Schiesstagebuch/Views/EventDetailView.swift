@@ -104,6 +104,7 @@ struct EventDetailView: View {
 /// One Stich in an event's list: its name (or weapon), what it was shot with, shots and result.
 struct StichRow: View {
     let entry: Entry
+    @ScaledMetric(relativeTo: .subheadline) private var positionIconSize: CGFloat = 16
 
     var body: some View {
         HStack(spacing: 12) {
@@ -118,7 +119,7 @@ struct StichRow: View {
                 if !details.isEmpty {
                     HStack(spacing: 4) {
                         // The position's pictogram leads the line, before its name.
-                        if let position = entry.position { Image(position.iconName).resizable().frame(width: 16, height: 16) }
+                        if let position = entry.position { Image(decorative: position.iconName).resizable().frame(width: positionIconSize, height: positionIconSize) }
                         Text(details.joined(separator: " · "))
                     }
                     .font(.subheadline).foregroundStyle(.secondary).lineLimit(1)

@@ -9,12 +9,16 @@ Limbs are capsules (strokes with round ends); every shape winds the same way, so
 import json
 import math
 import os
+import re
+import shutil
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS = os.path.join(ROOT, "Schiesstagebuch", "Resources", "Assets.xcassets")
 SIZE = 48
 # Points the image takes when not resized: about an SF Symbol at body size, for menus and labels.
 POINTS = 22
+# Empty space around the drawing, like the side bearings of an SF Symbol.
+MARGIN = 2.5
 LIMB, BODY, HEAD, GUN = 4.6, 6.2, 4.4, 3.6
 
 
@@ -77,8 +81,23 @@ def _icons():
 ICONS = _icons()
 
 
+def _points(paths):
+    nums = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", " ".join(paths))]
+    return list(zip(nums[::2], nums[1::2]))
+
+
+def view_box(paths):
+    """The same scale for every figure, centred on its drawing with MARGIN on each side, so the
+    prone figure sits mid-height like the text next to it and nothing touches its label."""
+    pts = _points(paths)
+    xs, ys = [x for x, _ in pts], [y for _, y in pts]
+    side = SIZE + 2 * MARGIN
+    cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+    return f"{_f(cx - side / 2)} {_f(cy - side / 2)} {_f(side)} {_f(side)}"
+
+
 def svg(paths):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{POINTS}" height="{POINTS}" viewBox="0 0 {SIZE} {SIZE}">'
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{POINTS}" height="{POINTS}" viewBox="{view_box(paths)}">'
             f'<path fill="#000" d="{" ".join(paths)}"/></svg>\n')
 
 
@@ -89,6 +108,10 @@ def contents(filename):
 
 
 def write(assets=ASSETS):
+    # Sets of positions that no longer exist go.
+    for old in os.listdir(assets):
+        if old.startswith("Position-") and old.removeprefix("Position-").removesuffix(".imageset") not in ICONS:
+            shutil.rmtree(os.path.join(assets, old))
     for key, paths in ICONS.items():
         folder = os.path.join(assets, f"Position-{key}.imageset")
         os.makedirs(folder, exist_ok=True)

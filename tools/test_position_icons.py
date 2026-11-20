@@ -22,7 +22,8 @@ def signed_area(pts):
 
 class PositionIconTests(unittest.TestCase):
     def test_one_icon_per_position_case(self):
-        cases = re.search(r"case (prone[^\n]*)", SWIFT).group(1).replace(" ", "").split(",")
+        body = SWIFT[SWIFT.index("enum ShootingPosition"):SWIFT.index("var id")]
+        cases = [c.strip() for line in re.findall(r"^\s*case (.+)$", body, re.M) for c in line.split(",")]
         self.assertEqual(set(position_icons.ICONS), set(cases))
 
     def test_shapes_wind_the_same_way_so_overlaps_join(self):
@@ -48,7 +49,24 @@ class PositionIconTests(unittest.TestCase):
                 self.assertEqual(info["properties"]["template-rendering-intent"], "template")
                 self.assertTrue(info["properties"]["preserves-vector-representation"])
                 svg = open(os.path.join(folder, info["images"][0]["filename"])).read()
-                self.assertIn('viewBox="0 0 48 48"', svg)
+                self.assertIn(f'viewBox="{position_icons.view_box(position_icons.ICONS[key])}"', svg)
+
+    def test_figures_are_centred_with_a_margin(self):
+        for key, paths in position_icons.ICONS.items():
+            x, y, w, h = map(float, position_icons.view_box(paths).split())
+            pts = position_icons._points(paths)
+            self.assertEqual(w, 48 + 2 * position_icons.MARGIN, "the same scale for every figure")
+            self.assertGreaterEqual(min(p[0] for p in pts) - x, position_icons.MARGIN - 0.01, key)
+            self.assertGreaterEqual(x + w - max(p[0] for p in pts), position_icons.MARGIN - 0.01, key)
+            self.assertAlmostEqual((min(p[1] for p in pts) - y), (y + h - max(p[1] for p in pts)), places=1, msg=key)
+
+    def test_sets_of_removed_positions_are_deleted(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            os.makedirs(os.path.join(tmp, "Position-sitting.imageset"))
+            os.makedirs(os.path.join(tmp, "AppIcon.appiconset"))
+            position_icons.write(tmp)
+            self.assertFalse(os.path.exists(os.path.join(tmp, "Position-sitting.imageset")))
+            self.assertTrue(os.path.exists(os.path.join(tmp, "AppIcon.appiconset")))
 
     def test_checked_in_sets_are_up_to_date(self):
         assets = os.path.join(ROOT, "Schiesstagebuch", "Resources", "Assets.xcassets")

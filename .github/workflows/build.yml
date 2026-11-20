@@ -70,7 +70,8 @@ jobs:
           python3 tools/targets.py json Schiesstagebuch/Resources/Targets.json
           python3 tools/position_icons.py
           python3 tools/localize.py
-          git diff --exit-code Schiesstagebuch/Resources
+          # Also new files, e.g. the image set of a new shooting position nobody committed.
+          git add -N Schiesstagebuch/Resources && git diff --exit-code Schiesstagebuch/Resources
       - name: Tool tests
         # Pillow, so the PR screens comparison (tools/pr_screens.py) is tested, not skipped.
         run: pip3 install --quiet pillow && python3 -m unittest discover -s tools -p 'test_*.py'
