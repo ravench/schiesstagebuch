@@ -405,7 +405,7 @@ struct EntryEditorView: View {
     private var positionPicker: some View {
         Picker("Stellung", selection: $position) {
             Text("–").tag(ShootingPosition?.none)
-            ForEach(ShootingPosition.allCases) { Text($0.title).tag(Optional($0)) }
+            ForEach(ShootingPosition.allCases) { Label($0.title, image: $0.iconName).tag(Optional($0)) }
         }
     }
 

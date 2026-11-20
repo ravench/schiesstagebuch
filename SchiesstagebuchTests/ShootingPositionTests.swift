@@ -17,6 +17,12 @@ final class ShootingPositionTests: ModelTestCase {
         XCTAssertNil(WeaponCategory.other.defaultPosition)
     }
 
+    func testEveryPositionHasItsPictogram() {
+        for position in ShootingPosition.allCases {
+            XCTAssertNotNil(UIImage(named: position.iconName), "run tools/position_icons.py (\(position))")
+        }
+    }
+
     func testPositionFollowsTheWeaponUntilTheUserPicksOne() {
         XCTAssertEqual(ShootingPosition.following(.standing, from: .pistol, to: .serviceRifle), .prone)
         XCTAssertEqual(ShootingPosition.following(nil, from: nil, to: .airgun), .standing, "first weapon picked")
