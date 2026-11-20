@@ -642,9 +642,7 @@ struct CaliberMultiPicker: View {
                     if !c.aliasSummary.isEmpty {
                         Text(c.aliasSummary).font(.caption).foregroundStyle(.secondary)
                     }
-                    if let note = c.sameDimensionsNote(in: choices) {
-                        Label(note, systemImage: "equal.circle").font(.caption).foregroundStyle(.secondary)
-                    }
+                    if let group = c.dimensionGroup { CaliberGroupTag(name: group) }
                 }
                 Spacer()
                 if picked { Image(systemName: "checkmark").foregroundStyle(.tint) }

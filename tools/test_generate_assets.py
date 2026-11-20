@@ -77,6 +77,10 @@ class BlankTests(unittest.TestCase):
             o = calibers[name]["outline"]
             self.assertNotIn("bullet", o, name)
             self.assertIn("case", o, name)
+        self.assertEqual({n for n, c in calibers.items() if c.get("blank")},
+                         {".22 Blank (6.8/11)", "9 mm P.A.K.", "8 mm Knall", ".315 Knall", "9 mm R Knall", ".320 Knall",
+                          ".45 Knall", ".22 Long Knall", "6 mm Flobert Knall"}, "the search finds them as blanks")
+        self.assertNotIn("blank", calibers[".22 LR"])
         self.assertEqual(calibers["9 mm R Knall"]["kind"], "rimmed")
         self.assertIn("9 mm R.K.", calibers["9 mm R Knall"]["displayAliases"])
 
@@ -121,6 +125,7 @@ class DimensionGroupTests(unittest.TestCase):
         groups = generate_assets.dimension_groups()
         self.assertEqual(groups["9x19 mm"], groups["9 mm Glisenti"], "the same case, a weaker load")
         self.assertEqual(groups["9x19 mm"], "9x19 mm", "the parent names the group")
+        self.assertEqual(groups["7.62x25 mm Tokarev"], "7.63x25 mm", "or the family's name, the list's group tag")
         self.assertNotIn("7.5 mm Kadettenpatrone", groups, "its group with the GP 1890 differs by length too")
         self.assertNotIn(".22 LR", groups, "the .21 Sharp differs by bore")
         expected = {n for differ, names in LOOKALIKES if tuple(differ) == ("load",) for n in names}
@@ -178,7 +183,7 @@ class CatalogueOnlyDataTests(unittest.TestCase):
                          {"Randfeuer", "Kurzwaffe", "Langwaffe", "Schwarzpulver", "Flinte", "Luftdruck"})
         self.assertTrue(COLOUR_CODES and FIRED_BY)
         self.assertEqual(set().union(*calibers), {"id", "name", "category", "kind", "aliases", "displayAliases",
-                                                  "dimensionGroup", "outline", "obsolete", "rare"})
+                                                  "dimensionGroup", "outline", "obsolete", "rare", "blank"})
 
     def test_obsolete_and_rare_are_flagged(self):
         """calibre-data #114: `obsolete` and `rare` (cartridges.tags) go into the JSON so the app can keep

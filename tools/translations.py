@@ -655,7 +655,14 @@ T = {
         "Queste cartucce hanno le stesse dimensioni. Verifica le indicazioni del produttore prima di spararle nella stessa canna."),
     "Gehäuse": ("Receiver", "Boîtier de culasse", "Castello"),
     "Gleiche Abmessungen": ("Same dimensions", "Mêmes dimensions", "Stesse dimensioni"),
-    "Gleiche Masse wie %@": ("Same dimensions as %@", "Mêmes dimensions que %@", "Stesse dimensioni di %@"),
+    # Words of a type of round (CaliberCatalog.Item.typeKey), the same as Kaliberfinder's: each language comma-separated.
+    # The calibre search matches the words of every language.
+    "Platzpatrone, Knallpatrone, Knall": ("blank, blank cartridge", "à blanc, cartouche à blanc", "a salve, cartuccia a salve"),
+    "Schrotpatrone, Schrot, Flintenpatrone": ("shotshell, shotgun shell, shotgun cartridge", "cartouche de chasse, cartouche à plombs",
+                                              "cartuccia da caccia, cartuccia a pallini"),
+    "Rundkugel, Bleikugel": ("round ball, lead ball", "balle ronde", "palla tonda, palla sferica"),
+    "Diabolo, Luftgewehrkugel, Luftgewehr": ("pellet, air rifle, air gun", "plomb, air comprimé", "piombino, pallino, aria compressa"),
+    "Minié-Geschoss": ("Minié ball", "Balle Minié", "Palla Minié"),
     "Griffstück": ("Frame", "Carcasse", "Fusto"),
     "Hauptnummer": ("Main serial number", "Numéro principal", "Numero principale"),
     "Hauptnummer (optional)": ("Main serial number (optional)", "Numéro principal (facultatif)", "Numero principale (facoltativo)"),

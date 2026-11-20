@@ -34,6 +34,45 @@ final class CaliberSearchTests: ModelTestCase {
         XCTAssertFalse(try catalogue("7.65 Parabellum").matches("Pist Pat 41"))
     }
 
+    func testFindsCalibresByTheirTypeInEveryLanguage() throws {
+        let blank = try catalogue(".22 Long Knall")
+        let lr = try catalogue(".22 LR")
+        for query in ["Platzpatrone", "Knall", "blank", "à blanc", "a blanc", "a salve"] {
+            XCTAssertTrue(blank.matches(query), query)
+            XCTAssertFalse(lr.matches(query), query)
+        }
+        XCTAssertTrue(blank.matches(".22 Platzpatrone"), "the words in any order, in name and type")
+        XCTAssertTrue(blank.matches("Platzpatrone .22"))
+        XCTAssertFalse(try catalogue(".45 Knall").matches(".22 Platzpatrone"))
+        XCTAssertFalse(lr.matches(".22 Platzpatrone"))
+        XCTAssertTrue(try catalogue("4.5 mm Diabolo").matches("air rifle"))
+    }
+
+    func testFindsCalibresByTheirCategoryInEveryLanguage() throws {
+        let shotgun = try catalogue("12/70")
+        let nine = try catalogue("9x19")
+        for query in ["Flinte", "shotgun", "Schrot"] {
+            XCTAssertTrue(shotgun.matches(query), query)
+            XCTAssertFalse(nine.matches(query), query)
+        }
+        XCTAssertTrue(nine.matches("Kurzwaffe"))
+        XCTAssertTrue(nine.matches("handgun"))
+        XCTAssertTrue(nine.matches("arme de poing"))
+        // Not a word inside a category name: «long» is in «arme longue», «kurz» in «Kurzwaffe» (review of PR 211).
+        let rem = try catalogue(".223 Remington")
+        XCTAssertFalse(rem.matches(".22 Long Rifle"))
+        XCTAssertFalse(rem.matches("long"))
+        XCTAssertFalse(nine.matches("9 mm kurz"))
+        XCTAssertTrue(try catalogue("9 mm kurz").matches("9 mm kurz"))
+        XCTAssertTrue(try catalogue(".22 LR").matches(".22 Long Rifle"))
+        XCTAssertFalse(nine.matches("/"), "nothing but separators")
+        XCTAssertTrue(try catalogue("12/70").matches("/"))
+        let own = Caliber(name: "6.5 Wildcat", category: CaliberCatalog.Category.rifle.rawValue)
+        context.insert(own)
+        XCTAssertTrue(own.matches("Langwaffe"), "an own calibre by the category the user chose")
+        XCTAssertFalse(own.matches("Kurzwaffe"))
+    }
+
     func testOwnCalibresMatchOnTheirName() {
         let own = Caliber(name: "6.5 Wildcat")
         context.insert(own)
