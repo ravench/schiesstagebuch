@@ -50,7 +50,25 @@ enum CaliberCatalog {
         let obsolete: Bool?
         /// calibre-data: unlikely to be found; the pickers keep it behind the search (Raven, 2026-11-12).
         let rare: Bool?
+        /// A blank without a bullet (calibre-data's is_blank); absent for every other calibre.
+        let blank: Bool?
         let outline: Outline
+
+        /// The words of its type, by calibre-data's kind, or "blank" for a blank of any kind.
+        var typeKey: String? { Self.typeKey(blank == true ? "blank" : kind) }
+
+        /// German words of a type of round, used as localization key: its translations list the same words
+        /// (Kaliberfinder's `Cartridge.groupWordsKey`).
+        static func typeKey(_ kind: String) -> String? {
+            switch kind {
+            case "blank": "Platzpatrone, Knallpatrone, Knall"
+            case "shot": "Schrotpatrone, Schrot, Flintenpatrone"
+            case "ball": "Rundkugel, Bleikugel"
+            case "pellet": "Diabolo, Luftgewehrkugel, Luftgewehr"
+            case "minie": "Minié-Geschoss"
+            default: nil
+            }
+        }
     }
 
     /// The calibre-data commit the catalogue was generated from (tools/generate_assets.py), shown in Settings.
@@ -79,12 +97,39 @@ enum CaliberCatalog {
 
     private static let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
 
-    /// Each calibre's name, printed names and search names, normalised once for the calibre search.
+    /// Each calibre's name, printed names, search names and type words, normalised once for the calibre search.
     private static let keysByID = Dictionary(
-        items.map { ($0.id, ([$0.name] + ($0.displayAliases ?? []) + $0.aliases).map(normalizedAlias)) },
+        items.map { item in
+            (item.id, ([item.name] + (item.displayAliases ?? []) + item.aliases
+                       + (item.typeKey.map { typeWords($0) } ?? [])).map(searchKey))
+        },
         uniquingKeysWith: { a, _ in a })
 
     static func searchKeys(id: String) -> [String] { keysByID[id] ?? [] }
+
+    /// The words of a type or category in every language of the app, whatever language it runs in: the German key
+    /// and its English, French and Italian texts, each split at its commas. So «Platzpatrone», «blank», «à blanc» and
+    /// «a salve» each find all the blanks, «Flinte» and «shotgun» the shotgun calibres (as in Kaliberfinder).
+    static func typeWords(_ key: String, bundle: Bundle = .main) -> [String] {
+        let texts = [key] + ["en", "fr", "it"].compactMap { language in
+            bundle.path(forResource: language, ofType: "lproj").flatMap(Bundle.init(path:))?
+                .localizedString(forKey: key, value: nil, table: nil)
+        }
+        return texts.flatMap { $0.split(separator: ",") }.map { $0.trimmingCharacters(in: .whitespaces) }
+    }
+
+    /// Each category's words, normalised: the search asks for them on every keystroke.
+    private static let categoryKeys = Dictionary(uniqueKeysWithValues: Category.allCases.map {
+        ($0.rawValue, typeWords($0.rawValue).map(searchKey))
+    })
+
+    /// The words of `category` («Kurzwaffe», «handgun», …) for the search; none for a category the app does not know.
+    static func categoryKeys(_ category: String) -> [String] { categoryKeys[category] ?? [] }
+
+    /// `normalizedAlias` without accents, so «a blanc» finds «à blanc».
+    static func searchKey(_ s: String) -> String {
+        normalizedAlias(s.folding(options: .diacriticInsensitive, locale: nil))
+    }
 
     static func item(id: String) -> Item? { byID[id] }
 

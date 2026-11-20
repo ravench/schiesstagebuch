@@ -2623,6 +2623,29 @@
         }
       }
     },
+    "Diabolo, Luftgewehrkugel, Luftgewehr": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pellet, air rifle, air gun"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "plomb, air comprimé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "piombino, pallino, aria compressa"
+          }
+        }
+      }
+    },
     "Die Datei konnte nicht gelesen werden. Erwartet wird ShootCounter-Export.tsv oder data.db.": {
       "extractionState": "manual",
       "localizations": {
@@ -4603,29 +4626,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stesse dimensioni"
-          }
-        }
-      }
-    },
-    "Gleiche Masse wie %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Same dimensions as %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mêmes dimensions que %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stesse dimensioni di %@"
           }
         }
       }
@@ -7051,6 +7051,29 @@
         }
       }
     },
+    "Minié-Geschoss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minié ball"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balle Minié"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palla Minié"
+          }
+        }
+      }
+    },
     "Minor": {
       "extractionState": "manual",
       "localizations": {
@@ -8937,6 +8960,29 @@
         }
       }
     },
+    "Platzpatrone, Knallpatrone, Knall": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "blank, blank cartridge"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "à blanc, cartouche à blanc"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a salve, cartuccia a salve"
+          }
+        }
+      }
+    },
     "Polarisiert": {
       "extractionState": "manual",
       "localizations": {
@@ -9834,6 +9880,29 @@
         }
       }
     },
+    "Rundkugel, Bleikugel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "round ball, lead ball"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "balle ronde"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "palla tonda, palla sferica"
+          }
+        }
+      }
+    },
     "S": {
       "extractionState": "manual",
       "localizations": {
@@ -10336,6 +10405,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "nevischio"
+          }
+        }
+      }
+    },
+    "Schrotpatrone, Schrot, Flintenpatrone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shotshell, shotgun shell, shotgun cartridge"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cartouche de chasse, cartouche à plombs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cartuccia da caccia, cartuccia a pallini"
           }
         }
       }

@@ -125,11 +125,12 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(Set(grouped.map(\.id)).count, sorted.count)
         XCTAssertEqual(Caliber.keepingGroupsTogether([]), [])
 
-        XCTAssertEqual(win.sameDimensionsNote(in: sorted), String(format: "Gleiche Masse wie %@".loc, "7.62x51 mm NATO"))
-        XCTAssertEqual(gp90.sameDimensionsNote(in: sorted), String(format: "Gleiche Masse wie %@".loc, ".223 Remington, 5.56x45 mm NATO"))
-        XCTAssertNil(gp11.sameDimensionsNote(in: sorted))
-        XCTAssertNil(custom.sameDimensionsNote(in: sorted))
-        XCTAssertNil(win.sameDimensionsNote(in: [win, gp11]), "no note when the twin is not in the list")
+        // The lists tag each member with the group's name (CaliberGroupTag), calibre-data's name for it.
+        XCTAssertEqual(win.dimensionGroup, ".308 Winchester")
+        XCTAssertEqual(nato.dimensionGroup, ".308 Winchester")
+        XCTAssertEqual(gp90.dimensionGroup, rem.dimensionGroup)
+        XCTAssertNil(gp11.dimensionGroup)
+        XCTAssertNil(custom.dimensionGroup)
     }
 
     func testBarrelListsIdenticalCalibresNextToEachOther() throws {

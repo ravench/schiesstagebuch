@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 # The calibre catalogue and the outline drawing live in the calibre-data submodule
 # (github.com/ravench/calibre-data), shared with Kaliberfinder and the calibre poster.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "calibre-data"))
-from cartridges import CATALOGUE, DISPLAY_ALIASES, LOOKALIKES, PRIMERS, RIMFIRE, BALL, MINIE, PELLET, tags  # noqa: E402
+from cartridges import CATALOGUE, DISPLAY_ALIASES, LOOKALIKES, LOOKALIKE_NAMES, PRIMERS, RIMFIRE, SHOT, LOOSE, BALL, MINIE, PELLET, is_blank, tags  # noqa: E402
 from outline import outline, bullet_profile  # noqa: E402
 from weapon_icons import ICONS  # noqa: E402
 
@@ -29,12 +29,21 @@ def calibre_data():
 
 
 def dimension_groups():
-    """Calibre name -> group id (the parent, first in its group) for calibre-data's lookalike groups
+    """Calibre name -> group name (calibre-data's LOOKALIKE_NAMES, which the list shows as a tag) for calibre-data's lookalike groups
     whose cases share one design and differ only by load (.308 Win / 7.62 NATO, 9x19 / Glisenti):
     one chamber, where the maker's data says what a barrel may fire, so the app suggests the others
     when one is picked. Groups that differ by rim, bore, length, seating or ignition are other
     cartridges and stay apart."""
-    return {name: names[0] for differ, names in LOOKALIKES if tuple(differ) == ("load",) for name in names}
+    return {name: group for group, (differ, names) in zip(LOOKALIKE_NAMES, LOOKALIKES, strict=True)
+            if tuple(differ) == ("load",) for name in names}
+
+
+def blank(s):
+    """No bullet, the case is the whole round (calibre-data's is_blank, as Kaliberfinder applies it): to cartridges
+    only, not to a shot shell or a loose projectile, whose measurements can coincide the same way. The search
+    finds blanks by their type («Platzpatrone», «blank»)."""
+    return (s["kind"] != SHOT and s["kind"] not in LOOSE
+            and is_blank(s["profile"], s["rim"], s["base"], s["neck"], s["bullet"], s["case"], s["oal"]))
 
 
 def build():
@@ -51,6 +60,8 @@ def build():
             # app keeps rare calibres behind the search; absent means current and common.
             for tag in tags(s["name"]):
                 item[tag] = True
+            if blank(s):
+                item["blank"] = True
             calibers.append(item)
     names = {c["name"] for c in calibers}
     unknown = set(DISPLAY_ALIASES) - names
