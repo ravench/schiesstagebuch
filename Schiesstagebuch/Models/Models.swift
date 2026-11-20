@@ -102,16 +102,19 @@ extension CaliberLike {
     }
 
     /// Whether the name, a printed name, a search name from the catalogue ("Pist Pat 41", "K31") or a word of its
-    /// type or category («Platzpatrone», «blank», «Flinte») contains `query`, or these hold each of its words in any
-    /// order, so «.22 Platzpatrone» finds the .22 blanks. All compared the way the catalogue compares its aliases,
-    /// without accents (`CaliberCatalog.searchKey`). The name is normalised on every call because the user may have
-    /// renamed the calibre.
+    /// type («Platzpatrone», «blank») contains `query`, or these hold each of its words in any order, so
+    /// «.22 Platzpatrone» finds the .22 blanks. A category («Flinte», «handgun») counts only when the whole query starts
+    /// it: inside a category word «long» (arme longue) or «kurz» (Kurzwaffe) would turn «.22 Long Rifle» or «9 mm kurz»
+    /// into a whole shelf. All compared the way the catalogue compares its aliases, without accents
+    /// (`CaliberCatalog.searchKey`). The name is normalised on every call because the user may have renamed the calibre.
     func matches(_ query: String) -> Bool {
         let whole = CaliberCatalog.searchKey(query)
         guard !whole.isEmpty else { return true }
-        let keys = [CaliberCatalog.searchKey(name)] + CaliberCatalog.searchKeys(id: catalogID) + CaliberCatalog.categoryKeys(category)
+        let keys = [CaliberCatalog.searchKey(name)] + CaliberCatalog.searchKeys(id: catalogID)
+        if keys.contains(where: { $0.contains(whole) }) { return true }
+        if whole.count >= 4, CaliberCatalog.categoryKeys(category).contains(where: { $0.hasPrefix(whole) }) { return true }
         let words = query.split { $0.isWhitespace || $0 == "/" }.map { CaliberCatalog.searchKey(String($0)) }.filter { !$0.isEmpty }
-        return keys.contains { $0.contains(whole) } || words.allSatisfy { word in keys.contains { $0.contains(word) } }
+        return !words.isEmpty && words.allSatisfy { word in keys.contains { $0.contains(word) } }
     }
 }
 
