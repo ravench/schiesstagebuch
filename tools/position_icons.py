@@ -45,7 +45,7 @@ def rect(x, y, w, h):
 
 
 def rifle(butt, muzzle):
-    """Barrel to the muzzle and a thicker stock over the rear 38 %."""
+    """Barrel to the muzzle and a thicker stock over the rear 38 %; the butt sits against the shoulder."""
     (x1, y1), (x2, y2) = butt, muzzle
     grip = (x1 + (x2 - x1) * 0.38, y1 + (y2 - y1) * 0.38)
     return [capsule(butt, muzzle, GUN * 0.55), capsule(butt, grip, GUN * 1.25)]
@@ -56,21 +56,21 @@ def _icons():
     # Liegend: legs back on the ground, front elbow down, cheek on the stock.
     sh, hip = (27, 35.5), (13, 40.5)
     icons["prone"] = [head((30.5, 29))] + chain(sh, hip, w=BODY) + chain(hip, (2.5, 43)) + chain(hip, (4.5, 40), (2.5, 43.6)) \
-        + chain(sh, (36, 42.5), (40, 32.5)) + rifle((22, 33), (47, 31))
+        + chain(sh, (36, 42.5), (40, 32.5)) + rifle((27.5, 34), (47, 31))
     # Kniend: sitting on the rear heel, front elbow on the raised knee.
     sh, hip = (20, 17), (15, 32)
     icons["kneeling"] = [head((22.5, 10))] + chain(sh, hip, w=BODY) + chain(hip, (24, 43), (9, 43)) + chain(hip, (29, 32), (30, 44)) \
-        + chain(sh, (28, 29), (31, 19)) + chain(sh, (16, 24), (21, 17.5)) + rifle((13, 18), (46, 16))
+        + chain(sh, (28, 29), (32, 17)) + chain(sh, (18, 24), (25, 17.5)) + rifle((21, 17), (46, 15))
     # Stehend: upright, front arm under the rifle.
     sh, hip = (21, 14.5), (19, 28)
     icons["standing"] = [head((23, 7.5))] + chain(sh, hip, w=BODY) + chain(hip, (15.5, 44)) + chain(hip, (23, 44)) \
-        + chain(sh, (17, 22), (22, 15)) + chain(sh, (25, 22), (30, 15.5)) + rifle((14, 15), (46, 13))
+        + chain(sh, (19, 22), (26, 15.5)) + chain(sh, (27, 22), (33, 15)) + rifle((22, 14.5), (46, 12.5))
     # Aufgelegt: seated on a stool at a table, the rifle on a rest.
     sh, hip = (18, 18), (14, 33)
     icons["rested"] = [head((21, 11))] + chain(sh, hip, w=BODY) + chain(hip, (26, 33), (26, 44)) \
-        + chain(sh, (23, 27), (28, 23)) + chain(sh, (14, 25), (19, 20)) \
-        + [rect(26, 26, 20, 2.6), rect(41, 28.6, 2.6, 15.6), rect(36, 22.5, 4, 3.5), rect(8, 34, 11, 2.4), rect(12.3, 36.4, 2.4, 7.8)] \
-        + rifle((12, 19.5), (46, 21.5))
+        + chain(sh, (23, 27), (29, 21.5)) + chain(sh, (15, 25), (22, 20)) \
+        + [rect(26, 26, 20, 2.6), rect(41, 28.6, 2.6, 15.6), rect(36, 21.8, 4, 4.2), rect(8, 34, 11, 2.4), rect(12.3, 36.4, 2.4, 7.8)] \
+        + rifle((19, 18.5), (46, 21.5))
     return icons
 
 
