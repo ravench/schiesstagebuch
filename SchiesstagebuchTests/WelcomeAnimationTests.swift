@@ -26,7 +26,7 @@ final class WelcomeAnimationTests: XCTestCase {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
             let bundle = try XCTUnwrap(Bundle(path: path))
-            for key in ["Richten wir die App für dich ein", "Willkommen", "Los geht's"] {
+            for key in ["App einrichten", "Willkommen", "Starten"] {
                 XCTAssertNotEqual(bundle.localizedString(forKey: key, value: "<missing>", table: nil), "<missing>", "\(key) in \(lang)")
             }
         }

@@ -13,6 +13,9 @@ See the [README](README.md#building). In short: `brew install xcodegen`,
 - Write UI text in German and add English, French and Italian to
   `tools/translations.py`, then run `python3 tools/localize.py`. A text that says
   «Waffe» also needs its «Sportgerät» variant (see the [README](README.md#languages)).
+- German is Swiss Standard German, in the neutral tone of [srf.ch](https://www.srf.ch): ss (never ß),
+  «guillemets», a decimal point (10.9), Swiss words (Velo, parkieren, Website, Service, Total), and
+  «du». `tools/test_text_style.py` fails on ß, „“, a decimal comma and the German words it lists.
 - New calibres go into [calibre-data](https://github.com/ravench/calibre-data) (a submodule
   here), icons into `tools/weapon_icons.py`; `python3 tools/bump_data.py` moves the submodule
   to calibre-data's main and regenerates the JSON and strings, which you commit.

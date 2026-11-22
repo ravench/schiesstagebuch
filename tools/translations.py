@@ -200,7 +200,7 @@ T = {
         "Add the targets you shoot at. You then pick the target for each match, and for individual shots the app offers only its values.",
         "Enregistre les cibles sur lesquelles tu tires. Tu choisis ensuite la cible pour chaque passe, et pour les coups individuels l'app ne propose que ses valeurs.",
         "Registra i bersagli su cui spari. Poi scegli il bersaglio per ogni serie e, per i colpi singoli, l'app offre solo i suoi valori."),
-    "Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10,9 für Zehntelwertung oder 0 bis 100 für A100.": (
+    "Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.": (
         "You type individual shots on the number pad; values outside the range are marked red. For example 0 to 10.9 for decimal scoring or 0 to 100 for A100.",
         "Tu saisis les coups individuels avec le pavé numérique ; les valeurs hors de la plage sont marquées en rouge. Par exemple 0 à 10,9 pour l'évaluation au dixième ou 0 à 100 pour A100.",
         "I colpi singoli si digitano con il tastierino numerico; i valori fuori intervallo sono segnati in rosso. Per esempio da 0 a 10,9 per il punteggio decimale o da 0 a 100 per A100."),
@@ -318,7 +318,7 @@ T = {
     "Waffe löschen": ("Delete firearm", "Supprimer l'arme", "Elimina arma"),
     "Waffe löschen?": ("Delete firearm?", "Supprimer l'arme ?", "Eliminare l'arma?"),
     "Waffen": ("Firearms", "Armes", "Armi"),
-    "Wartung fällig": ("Maintenance due", "Entretien à faire", "Manutenzione dovuta"),
+    "Pflege fällig": ("Maintenance due", "Entretien à faire", "Manutenzione dovuta"),
     "Wiederherstellen fehlgeschlagen: %@": ("Restore failed: %@", "Échec de la restauration : %@", "Ripristino non riuscito: %@"),
     "Wählen": ("Choose", "Choisir", "Scegli"),
     "Zeitraum": ("Period", "Période", "Periodo"),
@@ -340,7 +340,7 @@ T = {
     "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": ("Optional. You can pick the lot when logging an entry.", "Facultatif. Tu peux choisir le lot en saisissant une entrée.", "Facoltativo. Puoi scegliere il lotto quando registri una voce."),
     "Pro Los": ("By lot", "Par lot", "Per lotto"),
     "Resultat pro Los": ("Result by lot", "Résultat par lot", "Risultato per lotto"),
-    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": (
+    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1.5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": (
         "Box: middle half of the results (1st to 3rd quartile), bar: median, line: up to 1.5 × interquartile range, dots: single results, red: outliers. Counts entries with a percentage (points with a maximum, or a result in %).",
         "Boîte : moitié centrale des résultats (1er au 3e quartile), trait : médiane, ligne : jusqu'à 1,5 × l'écart interquartile, points : résultats individuels, rouge : valeurs aberrantes. Compte les entrées avec pourcentage (points avec maximum ou résultat en %).",
         "Box: metà centrale dei risultati (dal 1° al 3° quartile), tratto: mediana, linea: fino a 1,5 × lo scarto interquartile, punti: singoli risultati, rosso: valori anomali. Conta le voci con percentuale (punti con massimo o risultato in %)."),
@@ -523,13 +523,13 @@ T = {
         "Switch each field on separately. Hidden values stay saved.",
         "Chaque champ s'active séparément. Les valeurs masquées restent enregistrées.",
         "Ogni campo si attiva separatamente. I valori nascosti restano salvati."),
-    "Richten wir die App für dich ein": ("Let's set up the app for you", "Configurons l'app pour toi", "Configuriamo l'app per te"),
+    "App einrichten": ("Set up the app", "Configurer l'app", "Configura l'app"),
     "Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.": (
         "A few questions about your preferences, so the app only shows what you need. You can change everything later in Settings.",
         "Quelques questions sur tes préférences, pour que l'app n'affiche que ce dont tu as besoin. Tu peux tout modifier plus tard dans Réglages.",
         "Qualche domanda sulle tue preferenze, così l'app mostra solo ciò che ti serve. Puoi cambiare tutto più tardi in Impostazioni."),
     "Willkommen": ("Welcome", "Bienvenue", "Benvenuto"),
-    "Los geht's": ("Let's go", "C'est parti", "Iniziamo"),
+    "Starten": ("Start", "Commencer", "Inizia"),
     "Wähle, welche Felder deine Einträge zusätzlich zeigen.": (
         "Choose which extra fields your entries show.",
         "Choisis les champs supplémentaires de tes entrées.",

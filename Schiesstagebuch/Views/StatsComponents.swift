@@ -491,7 +491,7 @@ struct LotResultsChart: View {
                             },
                             bands: group.positions.count, domain: domain)
                 }
-                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
+                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1.5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
                     .font(.caption).foregroundStyle(.secondary)
                 if named {
                     Text(term("Getrennt pro Waffe.").loc)
@@ -533,7 +533,7 @@ struct PositionResultsChart: View {
                             },
                             domain: domain)
                 }
-                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
+                Text("Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1.5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).")
                     .font(.caption).foregroundStyle(.secondary)
                 if groups.contains(where: { $0.positions.contains { $0.stats.count < BoxStats.reliableCount } }) {
                     Text("Mit weniger als 5 Resultaten pro Stellung sind Quartile wenig aussagekräftig.")
