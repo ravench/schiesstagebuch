@@ -371,6 +371,11 @@ final class Entry {
     static var startTime: Date {
         ScreenshotData.isActive ? Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now : .now
     }
+    /// The time a new Stich of an event on `day` starts with: none when it is entered afterwards,
+    /// since the clock then says when it was typed in, not when it was shot.
+    static func startTime(on day: Date, now: Date = .now, calendar: Calendar = .current) -> Date? {
+        calendar.isDate(day, inSameDayAs: now) ? startTime : nil
+    }
     /// All shots fired, sighters included.
     var shotCount: Int = 0
     /// Probeschüsse, when the user splits the count; nil = only a total was entered.

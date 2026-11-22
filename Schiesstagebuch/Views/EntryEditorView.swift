@@ -170,7 +170,17 @@ struct EntryEditorView: View {
                         }
                         .keyboardType(.numbersAndPunctuation)
                     }
-                    DatePicker("Uhrzeit", selection: Binding(get: { time ?? date }, set: { time = $0 }), displayedComponents: .hourAndMinute)
+                    // Switched off, the Stich has no time: one entered afterwards, or shot at a time nobody noted.
+                    HStack(spacing: 12) {
+                        if let value = time {
+                            DatePicker("Uhrzeit", selection: Binding(get: { value }, set: { time = $0 }), displayedComponents: .hourAndMinute)
+                        } else {
+                            Text("Uhrzeit")
+                            Spacer()
+                        }
+                        Toggle("Uhrzeit", isOn: Binding(get: { time != nil }, set: { time = $0 ? Entry.startTime : nil }))
+                            .labelsHidden()
+                    }
                 } footer: {
                     if scoring != .ipsc {
                         Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
@@ -218,7 +228,9 @@ struct EntryEditorView: View {
                 let aperture = SightSettings.aperture(for: weapon?.category)
                 let sightFields = features.sightFields(for: aperture)
                 if !sightFields.isEmpty {
-                    SightSection(sight: $sight, aperture: aperture, fields: sightFields)
+                    // Per firearm: the values the section remembers for a field switched off are the
+                    // old firearm's, and must not come back on the new one.
+                    SightSection(sight: $sight, aperture: aperture, fields: sightFields).id(weapon?.id)
                 }
                 if features.contains(.weather) {
                     WeatherSection(weather: $weather, day: date, time: time, range: range)
@@ -543,7 +555,7 @@ struct EntryEditorView: View {
             if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
         }
         if entry == nil {
-            time = Entry.startTime
+            time = Entry.startTime(on: date)
             position = weapon?.category.defaultPosition
             // A new Stich keeps the target of the Stich before it in the event.
             target = addingTo?.sortedEntries.last?.target
