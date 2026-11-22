@@ -171,7 +171,7 @@ struct EntryEditorView: View {
                         .keyboardType(.numbersAndPunctuation)
                     }
                     // Switched off, the Stich has no time: one entered afterwards, or shot at a time nobody noted.
-                    HStack {
+                    HStack(spacing: 12) {
                         if let value = time {
                             DatePicker("Uhrzeit", selection: Binding(get: { value }, set: { time = $0 }), displayedComponents: .hourAndMinute)
                         } else {
