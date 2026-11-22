@@ -364,6 +364,9 @@ final class PRScreensTests: XCTestCase {
         snap("21-Scheiben")
         if open(app.buttons["Hinzufügen"].firstMatch), open(app.buttons["Aus Vorlage hinzufügen"].firstMatch) {
             snap("21b-Scheiben-Vorlagen")
+            // The figure targets further down the list, such as the Ustertag ones with the Uster arms.
+            reveal(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Ustertag-Scheibe 25 m")).firstMatch)
+            snap("21b2-Scheiben-Vorlagen-Ustertag")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
         tab("Tagebuch")
