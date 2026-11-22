@@ -34,6 +34,14 @@ enum CaliberCatalog {
         let bulletMaterial: String?
         /// "copper", "steel" (lacquered), "nickel", "paper" or "hybrid" (brass body, steel head) where the case is not brass.
         let caseMaterial: String?
+        /// What is most commonly found today where it is not the original (calibre-data's [today]), "copper" and
+        /// "brass" too: the GP 11's jacket is copper today, its first bullets were silver.
+        let todayBulletMaterial: String?
+        let todayCaseMaterial: String?
+        /// The app draws the bullet and case as most commonly found today (Raven, 2026-11-22); the posters draw
+        /// the original.
+        var drawnBulletMaterial: String? { todayBulletMaterial ?? bulletMaterial }
+        var drawnCaseMaterial: String? { todayCaseMaterial ?? caseMaterial }
     }
 
     struct Item: Decodable, Identifiable {

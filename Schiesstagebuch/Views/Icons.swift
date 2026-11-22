@@ -41,8 +41,8 @@ struct CartridgeView: View {
         let p = Parts(box: CGSize(width: o.width, height: o.height),
                       hull: o.case.map(SVGPath.parse), head: o.head.map(SVGPath.parse),
                       bullet: o.bullet.map(SVGPath.parse), patch: o.patch.map(SVGPath.parse),
-                      tip: o.tip.map(SVGPath.parse), bulletFill: Self.bulletFill(o.bulletMaterial, hasCase: o.case != nil),
-                      hullFill: item.kind == "shot" ? .shotShell : Self.caseFill(o.caseMaterial),
+                      tip: o.tip.map(SVGPath.parse), bulletFill: Self.bulletFill(o.drawnBulletMaterial, hasCase: o.case != nil),
+                      hullFill: item.kind == "shot" ? .shotShell : Self.caseFill(o.drawnCaseMaterial),
                       headFill: o.headMaterial == "steel" ? .steel : .brass,
                       tipFill: Self.tipFill(o.tipMaterial))
         Self.cache[id] = p
@@ -64,7 +64,7 @@ struct CartridgeView: View {
     /// Red plastic tip, otherwise a soft point's bare lead.
     static func tipFill(_ material: String?) -> Color { material == "polymer" ? .polymer : .lead }
 
-    /// Brass unless the catalogue names the original case's material.
+    /// Brass unless the catalogue names another material ("brass" too, where today's differs from the original).
     static func caseFill(_ material: String?) -> Color {
         switch material {
         case "copper": .copper

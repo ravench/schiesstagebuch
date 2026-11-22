@@ -198,6 +198,23 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CartridgeView.bulletFill("cupronickel"), .nickel)
     }
 
+    /// The app draws what is most commonly found today (Raven, 2026-11-22): the GP 11's copper jacket, the
+    /// 7.62x54 mm R's steel case; where nothing changed, the original.
+    func testTodaysBulletsAndCasesAreDrawn() throws {
+        let gp11 = try XCTUnwrap(CaliberCatalog.match("GP 11")).outline
+        XCTAssertEqual(gp11.drawnBulletMaterial, "copper")
+        XCTAssertEqual(CartridgeView.bulletFill(gp11.drawnBulletMaterial), .copper)
+        let r54 = try XCTUnwrap(CaliberCatalog.item(id: "7.62x54 mm R")).outline
+        XCTAssertEqual(CartridgeView.caseFill(r54.drawnCaseMaterial), .lacqueredSteel)
+        XCTAssertEqual(CartridgeView.caseFill(r54.caseMaterial), .brass, "the first cases were brass")
+        let kurz = try XCTUnwrap(CaliberCatalog.item(id: "7.92x33 mm Kurz")).outline
+        XCTAssertEqual(CartridgeView.caseFill(kurz.drawnCaseMaterial), .brass)
+        let lee = try XCTUnwrap(CaliberCatalog.item(id: "6 mm Lee Navy")).outline
+        XCTAssertEqual(CartridgeView.bulletFill(lee.drawnBulletMaterial), .nickel, "no longer made: the original")
+        XCTAssertEqual(CartridgeView.bulletFill("copper"), .copper)
+        XCTAssertEqual(CartridgeView.caseFill("brass"), .brass)
+    }
+
     func testOriginalBulletsAndCasesAreDrawn() throws {
         // Raven 2026-11-05: lead, paper-patched lead, soft point tips; copper, steel and paper cases.
         let lr = try XCTUnwrap(CaliberCatalog.item(id: ".22 LR"))

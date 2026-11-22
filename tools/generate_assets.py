@@ -85,11 +85,11 @@ def preview(calibers, icons, path):
         w, h = o["width"] * scale, o["height"] * scale
         parts = ""
         if "case" in o:
-            parts += f'<path d="{o["case"]}" fill="{"#c0392b" if c["kind"] == "shot" else CASE_COLOURS.get(o.get("caseMaterial"), "#e3c16f")}" stroke="#333" stroke-width="0.25"/>'
+            parts += f'<path d="{o["case"]}" fill="{"#c0392b" if c["kind"] == "shot" else CASE_COLOURS.get(o.get("todayCaseMaterial", o.get("caseMaterial")), "#e3c16f")}" stroke="#333" stroke-width="0.25"/>'
         if "head" in o:
             parts += f'<path d="{o["head"]}" fill="{"#a7adb4" if o.get("headMaterial") == "steel" else "#e3c16f"}" stroke="#333" stroke-width="0.25"/>'
         if "bullet" in o:
-            fill = {"steel": "#a7adb4", "cupronickel": "#c8cbce", "plastic": "#edede6", "lead": "#8a8c91"}.get(o.get("bulletMaterial"), "#b87333" if "case" in o else "#8a8c91")
+            fill = {"steel": "#a7adb4", "cupronickel": "#c8cbce", "plastic": "#edede6", "lead": "#8a8c91"}.get(o.get("todayBulletMaterial", o.get("bulletMaterial")), "#b87333" if "case" in o else "#8a8c91")
             parts += f'<path d="{o["bullet"]}" fill="{fill}" stroke="#333" stroke-width="0.25"/>'
         if "patch" in o:
             parts += f'<path d="{o["patch"]}" fill="#f2ede0" stroke="#333" stroke-width="0.25"/>'
