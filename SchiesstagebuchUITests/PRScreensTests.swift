@@ -365,8 +365,9 @@ final class PRScreensTests: XCTestCase {
         if open(app.buttons["Hinzufügen"].firstMatch), open(app.buttons["Aus Vorlage hinzufügen"].firstMatch) {
             snap("21b-Scheiben-Vorlagen")
             // The figure targets further down the list, such as the Ustertag ones with the Uster arms.
-            reveal(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Ustertag-Scheibe 25 m")).firstMatch)
-            snap("21b2-Scheiben-Vorlagen-Ustertag")
+            // Held near the top: at the sheet's bottom edge the row was already hittable, so it never scrolled.
+            topStop(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Ustertag-Scheibe 25 m")).firstMatch,
+                    "21b2-Scheiben-Vorlagen-Ustertag")
             app.buttons["Abbrechen"].firstMatch.tap()
         }
         tab("Tagebuch")

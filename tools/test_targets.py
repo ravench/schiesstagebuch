@@ -19,6 +19,20 @@ def target(drop=(), **changes):
     return {k: v for k, v in t.items() if k not in drop}
 
 
+def inside(x, y, polygon, tolerance=0.2):
+    """True if (x, y) lies in the polygon or within `tolerance` mm of its edge."""
+    def near_edge(a, b):
+        (ax, ay), (bx, by) = a, b
+        dx, dy = bx - ax, by - ay
+        t = max(0, min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)))
+        return (ax + t * dx - x) ** 2 + (ay + t * dy - y) ** 2 <= tolerance ** 2
+    edges = list(zip(polygon, polygon[1:] + polygon[:1]))
+    if any(near_edge(a, b) for a, b in edges):
+        return True
+    crossings = sum(1 for (ax, ay), (bx, by) in edges if (ay > y) != (by > y) and x < ax + (y - ay) * (bx - ax) / (by - ay))
+    return crossings % 2 == 1
+
+
 class RepoTargetTests(unittest.TestCase):
     def setUp(self):
         self.targets = {t["id"]: t for t in targets.load()}
@@ -64,16 +78,25 @@ class RepoTargetTests(unittest.TestCase):
         self.assertEqual(self.targets["ch-300m-ustertag"]["scoring"], {"values": [5, 4, 3, 2, 0]})
 
     def test_ustertag_25m_shield_shows_the_uster_arms(self):
-        # Raven 2026-11-22: the shield had no arms. Right half: three red bars inside the shield.
+        # Raven 2026-11-22: the shield had no arms. Right half: five equal bars, the 1st, 3rd and 5th red.
         shapes = self.targets["ch-25m-ustertag"]["shapes"]
         shield = shapes[2]["polygon"]
-        bars = [s for s in shapes[3:] if s.get("fill") == "red"]
-        self.assertEqual(len(bars), 3)
-        for bar in bars:
-            points = bar.get("polygon") or [bar["rect"][:2], [bar["rect"][0] + bar["rect"][2], bar["rect"][1] + bar["rect"][3]]]
+        top, bottom = min(y for _, y in shield), max(y for _, y in shield)
+        bar = (bottom - top) / 5
+        red = [s for s in shapes[3:] if s.get("fill") == "red"]
+        self.assertEqual(len(red), 3)
+        for k, shape in zip((0, 2, 4), red):
+            if "rect" in shape:
+                x, y, w, h = shape["rect"]
+                points = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]]
+            else:
+                points = shape["polygon"]
+            ys = [y for _, y in points]
+            self.assertAlmostEqual(min(ys), top + k * bar, places=0)
+            self.assertAlmostEqual(max(ys), top + (k + 1) * bar, places=0)
             for x, y in points:
-                self.assertTrue(0 <= x <= max(p[0] for p in shield), (x, y))
-                self.assertTrue(min(p[1] for p in shield) <= y <= max(p[1] for p in shield), (x, y))
+                self.assertGreaterEqual(x, 0, "right half only")
+                self.assertTrue(inside(x, y, shield), (x, y))
 
     def test_scorings_of_the_swiss_and_issf_targets(self):
         self.assertEqual(self.targets["ch-300m-a5"]["scoring"], {"values": [5, 4, 3, 2, 1, 0]})
