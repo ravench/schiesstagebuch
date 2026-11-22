@@ -94,6 +94,13 @@ final class ShootingTarget {
         self.scoring = scoring
     }
 
+    /// The scoring as the user edited it. A template's copy that scores differently is the user's own
+    /// target: without the template's picture, and the template can be added again.
+    func edit(scoring new: TargetScoring) {
+        scoring = new
+        if let item = TargetCatalog.item(id: templateID), item.targetScoring != new { templateID = "" }
+    }
+
     var mode: Mode {
         get { Mode(rawValue: modeRaw) ?? .values }
         set { modeRaw = newValue.rawValue }

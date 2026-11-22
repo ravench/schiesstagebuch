@@ -6,6 +6,7 @@ struct TargetListView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \ShootingTarget.name) private var targets: [ShootingTarget]
     @State private var editing: ShootingTarget?
+    @State private var deleting: ShootingTarget?
     @State private var adding = false
     @State private var choosingTemplate = false
 
@@ -25,10 +26,21 @@ struct TargetListView: View {
                     ForEach(targets) { target in
                         Button { editing = target } label: { TargetRow(target: target) }
                             .foregroundStyle(.primary)
+                            .swipeActions(allowsFullSwipe: false) {
+                                Button {
+                                    // Only a target with Stiche asks first: they lose it and the maximum it gave them.
+                                    if (target.entries ?? []).isEmpty { context.delete(target) } else { deleting = target }
+                                } label: { Label("Löschen", systemImage: "trash") }.tint(.red)
+                            }
                     }
-                    .onDelete { offsets in offsets.map { targets[$0] }.forEach { context.delete($0) } }
                 }
             }
+        }
+        .confirmationDialog("Scheibe löschen?", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }),
+                            titleVisibility: .visible, presenting: deleting) { target in
+            Button("Löschen", role: .destructive) { context.delete(target) }
+        } message: { _ in
+            Text("Die Stiche mit dieser Scheibe bleiben erhalten, haben dann aber keine Scheibe und kein daraus berechnetes Maximum mehr.")
         }
         .navigationTitle("Scheiben")
         .toolbar {
@@ -185,7 +197,7 @@ struct TargetEditorView: View {
         let t = target ?? ShootingTarget(name: "", scoring: scoring)
         if target == nil { context.insert(t) }
         t.name = name.trimmingCharacters(in: .whitespaces)
-        t.scoring = scoring
+        t.edit(scoring: scoring)
         dismiss()
     }
 }

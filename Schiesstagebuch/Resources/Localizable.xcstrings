@@ -2738,6 +2738,29 @@
         }
       }
     },
+    "Die Stiche mit dieser Scheibe bleiben erhalten, haben dann aber keine Scheibe und kein daraus berechnetes Maximum mehr.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The matches shot on this target are kept, but no longer have a target or the maximum worked out from it."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les passes tirées sur cette cible sont conservées, mais n'ont plus de cible ni le maximum calculé à partir d'elle."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le serie tirate su questo bersaglio restano, ma non hanno più un bersaglio né il massimo calcolato da esso."
+          }
+        }
+      }
+    },
     "Die möglichen Werte eines Schusses, durch Leerzeichen getrennt, der beste zuerst, z. B. «5 4 3 2 1 0». Bei den Einzelschüssen erscheinen sie als Tasten, und nach jedem Tipp geht es zum nächsten Schuss.": {
       "extractionState": "manual",
       "localizations": {
@@ -10083,6 +10106,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modifica bersaglio"
+          }
+        }
+      }
+    },
+    "Scheibe löschen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete target?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la cible ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare il bersaglio?"
           }
         }
       }
