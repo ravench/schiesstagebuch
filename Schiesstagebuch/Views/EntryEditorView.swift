@@ -228,7 +228,9 @@ struct EntryEditorView: View {
                 let aperture = SightSettings.aperture(for: weapon?.category)
                 let sightFields = features.sightFields(for: aperture)
                 if !sightFields.isEmpty {
-                    SightSection(sight: $sight, aperture: aperture, fields: sightFields)
+                    // Per firearm: the values the section remembers for a field switched off are the
+                    // old firearm's, and must not come back on the new one.
+                    SightSection(sight: $sight, aperture: aperture, fields: sightFields).id(weapon?.id)
                 }
                 if features.contains(.weather) {
                     WeatherSection(weather: $weather, day: date, time: time, range: range)
