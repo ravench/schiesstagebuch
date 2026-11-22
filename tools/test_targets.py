@@ -63,6 +63,18 @@ class RepoTargetTests(unittest.TestCase):
         self.assertEqual(self.targets["ch-25m-ustertag"]["scoring"], {"values": [5, 4, 3, 0]})
         self.assertEqual(self.targets["ch-300m-ustertag"]["scoring"], {"values": [5, 4, 3, 2, 0]})
 
+    def test_ustertag_25m_shield_shows_the_uster_arms(self):
+        # Raven 2026-11-22: the shield had no arms. Right half: three red bars inside the shield.
+        shapes = self.targets["ch-25m-ustertag"]["shapes"]
+        shield = shapes[2]["polygon"]
+        bars = [s for s in shapes[3:] if s.get("fill") == "red"]
+        self.assertEqual(len(bars), 3)
+        for bar in bars:
+            points = bar.get("polygon") or [bar["rect"][:2], [bar["rect"][0] + bar["rect"][2], bar["rect"][1] + bar["rect"][3]]]
+            for x, y in points:
+                self.assertTrue(0 <= x <= max(p[0] for p in shield), (x, y))
+                self.assertTrue(min(p[1] for p in shield) <= y <= max(p[1] for p in shield), (x, y))
+
     def test_scorings_of_the_swiss_and_issf_targets(self):
         self.assertEqual(self.targets["ch-300m-a5"]["scoring"], {"values": [5, 4, 3, 2, 1, 0]})
         self.assertEqual(self.targets["ch-300m-a10"]["scoring"], {"values": TEN_TO_ZERO})
