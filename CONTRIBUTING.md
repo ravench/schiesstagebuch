@@ -22,4 +22,4 @@ See the [README](README.md#building). In short: `brew install xcodegen`,
   changed, before and after; if your screen is missing, add it to the tour in
   `SchiesstagebuchUITests/PRScreensTests.swift`. The tour takes about an hour, so it runs only for
   pull requests that change views, strings or images; for a visible change elsewhere add the
-  «screens» label and re-run the Build.
+  «screens» label and use «Re-run all jobs» on the Build.

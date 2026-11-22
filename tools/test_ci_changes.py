@@ -38,7 +38,9 @@ class NeedsMacTests(unittest.TestCase):
             [sys.executable, str(TOOL)], input=text, capture_output=True, text=True, check=True).stdout
         self.assertEqual(run("README.md\ntools/localize.py\n"), "mac=false\nscreens=false\n")
         self.assertEqual(subprocess.run([sys.executable, str(TOOL), "wip\nscreens"], input="README.md\n",
-                                        capture_output=True, text=True, check=True).stdout, "mac=false\nscreens=true\n")
+                                        capture_output=True, text=True, check=True).stdout, "mac=true\nscreens=true\n")
+        self.assertEqual(subprocess.run([sys.executable, str(TOOL), ""], input="README.md\n",
+                                        capture_output=True, text=True, check=True).stdout, "mac=false\nscreens=false\n")
         self.assertEqual(run(f"README.md\n{APP_PATHS[0]}\n"), "mac=true\nscreens=true\n")
         self.assertEqual(run("SchiesstagebuchTests/ModelsTests.swift\n"), "mac=true\nscreens=false\n")
 
@@ -46,7 +48,8 @@ class NeedsMacTests(unittest.TestCase):
 class NeedsScreensTests(unittest.TestCase):
     def test_gui_changes_get_the_screens(self):
         for path in ["Schiesstagebuch/Views/EntryEditorView.swift", "SchiesstagebuchUITests/PRScreensTests.swift",
-                     "Schiesstagebuch/Resources/Localizable.xcstrings", "Schiesstagebuch/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json", "tools/pr_screens.py", "tools/ipad_screens.py",
+                     "Schiesstagebuch/Resources/Localizable.xcstrings", "Schiesstagebuch/Resources/Targets.json",
+                     "Schiesstagebuch/Resources/WeaponIcons.json", "Schiesstagebuch/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json", "tools/pr_screens.py", "tools/ipad_screens.py",
                      "tools/publish_pr_screens.sh", ".github/workflows/build.yml"]:
             with self.subTest(path=path):
                 self.assertTrue(needs_screens(["README.md", path]))
