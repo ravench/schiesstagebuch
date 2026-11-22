@@ -14,7 +14,7 @@ See the [README](README.md#building). In short: `brew install xcodegen`,
   `tools/translations.py`, then run `python3 tools/localize.py`. A text that says
   «Waffe» also needs its «Sportgerät» variant (see the [README](README.md#languages)).
 - German is Swiss Standard German, in the neutral tone of [srf.ch](https://www.srf.ch): ss (never ß),
-  «guillemets», a decimal point (10.9), Swiss words (Velo, parkieren, Website, Service, Total), and
+  «guillemets», a decimal point (10.9), Swiss words (Website, Bildschirm, Pflege, Total), and
   «du». `tools/test_text_style.py` fails on ß, „“, a decimal comma and the German words it lists.
 - New calibres go into [calibre-data](https://github.com/ravench/calibre-data) (a submodule
   here), icons into `tools/weapon_icons.py`; `python3 tools/bump_data.py` moves the submodule
