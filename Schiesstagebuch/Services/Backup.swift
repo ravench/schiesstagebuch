@@ -364,7 +364,9 @@ enum Backup {
     /// otherwise persist what was inserted so far, and a retry would skip those ids (review 2026-11-10).
     static func restore(from data: Data, into context: ModelContext) throws -> String {
         do {
-            return try restoreOrThrow(from: data, into: context)
+            let summary = try restoreOrThrow(from: data, into: context)
+            TargetCatalog.deduplicate(context) // a template the backup and this device both added
+            return summary
         } catch {
             context.rollback()
             throw error

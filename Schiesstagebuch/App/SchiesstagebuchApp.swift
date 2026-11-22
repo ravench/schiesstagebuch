@@ -52,6 +52,7 @@ struct SchiesstagebuchApp: App {
                     CaliberCatalog.removeUnused(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
+                    TargetCatalog.deduplicate(container.mainContext)
                     if WeatherRecord.moveToStiche(in: container.mainContext) { try? container.mainContext.save() }
                     if ScreenshotData.isActive { ScreenshotData.seed(container.mainContext) }
                 }
@@ -60,6 +61,7 @@ struct SchiesstagebuchApp: App {
                     CaliberCatalog.followRenames(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
+                    TargetCatalog.deduplicate(container.mainContext)
                     if WeatherRecord.moveToStiche(in: container.mainContext) { try? container.mainContext.save() }
                     // A cleaning recorded on another device cancels the reminder pending here.
                     MaintenanceNotifier.refreshAll(in: container.mainContext)
@@ -70,6 +72,7 @@ struct SchiesstagebuchApp: App {
             if phase == .active {
                 CaliberCatalog.deduplicate(container.mainContext)
                 RangeCatalog.deduplicate(container.mainContext)
+                TargetCatalog.deduplicate(container.mainContext)
                 MaintenanceNotifier.refreshAll(in: container.mainContext)
             }
         }

@@ -356,6 +356,17 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// A target with Stiche (the Obligatorisch's A5) asks before it is deleted. A test of its own: on a base
+    /// branch that deletes at once, the stops of `testTargets` keep their A5.
+    func testTargetDeleteAsks() {
+        tab("Einstellungen")
+        guard open(app.staticTexts["Scheiben"].firstMatch) else { return }
+        let a5 = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "A5 300 m")).firstMatch
+        guard a5.waitForExistence(timeout: 5) else { return XCTFail("No A5 among the targets") }
+        a5.swipeLeft()
+        if open(app.buttons["Löschen"].firstMatch) { snap("21f-Scheibe-loeschen") }
+    }
+
     /// Einstellungen › Scheiben with the sample targets and the templates; then a new Stich of the Obligatorisch,
     /// which takes the A5 of the Stich before it: its Einzelschüsse are the values 5 to 0 as buttons.
     func testTargets() {
