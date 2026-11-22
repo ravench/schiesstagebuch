@@ -454,7 +454,7 @@ struct EntryEditorView: View {
     private var currentScore: Score {
         Score(result: summedResult(in: mode) ?? result, maxPoints: maxPoints,
               shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
-              scoredShots: scoredShotsForScore, maxPerShot: target?.scoring.highest)
+              scoredShots: scoredShotsForScore, maxPerShot: mode == .total ? nil : target?.scoring.highest)
     }
 
     /// The result added up from the Passen or Einzelschüsse; nil when there are none, so the user types it.

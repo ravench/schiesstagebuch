@@ -67,6 +67,19 @@ final class ShootingTargetTests: ModelTestCase {
         XCTAssertNil(e.target)
     }
 
+    func testTargetGivesTheMaximumOnlyWhenSightersAreApart() {
+        let a10 = ShootingTarget(name: "A10", scoring: .values([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]))
+        context.insert(a10)
+        // «Total»: 25 shots may be 5 sighters and 20 scored; 250 would make 180 points 72 % instead of 90 %.
+        let total = addEntry(nil, on: day(3), shots: 25)
+        total.target = a10; total.result = "180"
+        XCTAssertNil(total.score.effectiveMax)
+        XCTAssertNil(total.score.percentage)
+        total.sighterCount = 5
+        XCTAssertEqual(total.score.effectiveMax, 200)
+        XCTAssertEqual(total.score.percentage!, 0.9, accuracy: 1e-9)
+    }
+
     func testPickerOrderPutsTheFirearmsTargetsFirst() throws {
         let rifle = Weapon(name: "Stgw 90"); context.insert(rifle)
         let pistol = Weapon(name: "P220"); context.insert(pistol)
