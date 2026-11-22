@@ -46,6 +46,14 @@ final class CaliberSearchTests: ModelTestCase {
         XCTAssertFalse(try catalogue(".45 Knall").matches(".22 Platzpatrone"))
         XCTAssertFalse(lr.matches(".22 Platzpatrone"))
         XCTAssertTrue(try catalogue("4.5 mm Diabolo").matches("air rifle"))
+        // A type word from its start and from four letters, not a few letters somewhere inside it
+        // («Schrot», «cartouche de chasse», «shotgun shell»).
+        let shell = try catalogue("12/70")
+        XCTAssertTrue(shell.matches("cart"))
+        XCTAssertTrue(shell.matches("12 Schrotpatrone"))
+        for query in ["rot", "car", "gun", "shell", "chasse", "patrone"] {
+            XCTAssertFalse(shell.matches(query), query)
+        }
     }
 
     func testFindsCalibresByTheirCategoryInEveryLanguage() throws {
