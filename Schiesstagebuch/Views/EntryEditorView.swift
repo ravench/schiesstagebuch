@@ -170,7 +170,17 @@ struct EntryEditorView: View {
                         }
                         .keyboardType(.numbersAndPunctuation)
                     }
-                    DatePicker("Uhrzeit", selection: Binding(get: { time ?? date }, set: { time = $0 }), displayedComponents: .hourAndMinute)
+                    // Switched off, the Stich has no time: one entered afterwards, or shot at a time nobody noted.
+                    HStack {
+                        if let value = time {
+                            DatePicker("Uhrzeit", selection: Binding(get: { value }, set: { time = $0 }), displayedComponents: .hourAndMinute)
+                        } else {
+                            Text("Uhrzeit")
+                            Spacer()
+                        }
+                        Toggle("Uhrzeit", isOn: Binding(get: { time != nil }, set: { time = $0 ? Entry.startTime : nil }))
+                            .labelsHidden()
+                    }
                 } footer: {
                     if scoring != .ipsc {
                         Text("Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».")
@@ -543,7 +553,7 @@ struct EntryEditorView: View {
             if mode == .passeTotals { passeTotals = [PasseTotalDraft()] }
         }
         if entry == nil {
-            time = Entry.startTime
+            time = Entry.startTime(on: date)
             position = weapon?.category.defaultPosition
             // A new Stich keeps the target of the Stich before it in the event.
             target = addingTo?.sortedEntries.last?.target
