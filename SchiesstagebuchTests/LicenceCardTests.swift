@@ -176,4 +176,16 @@ final class LicenceCardTests: ModelTestCase {
         XCTAssertFalse(LicenceCard.hasCard([LicenceCard(licenceNumber: "12x")]))
         XCTAssertTrue(LicenceCard.hasCard([LicenceCard(), LicenceCard(licenceNumber: "004711")]))
     }
+
+    func testTabStaysPutWhenTheTabBarChanges() {
+        // The first card saved (in the settings) shows the new card.
+        XCTAssertEqual(RootView.tab("settings", crowded: true, newCard: true), "card")
+        // An iPad window made narrow keeps the ranges and the settings at hand, in «Mehr».
+        XCTAssertEqual(RootView.tab("ranges", crowded: true, newCard: false), "more")
+        XCTAssertEqual(RootView.tab("settings", crowded: true, newCard: false), "more")
+        // The last card deleted, or the window wide again.
+        XCTAssertEqual(RootView.tab("more", crowded: false, newCard: false), "settings")
+        XCTAssertEqual(RootView.tab("stats", crowded: true, newCard: true), "stats")
+        XCTAssertEqual(RootView.tab("ranges", crowded: false, newCard: false), "ranges")
+    }
 }

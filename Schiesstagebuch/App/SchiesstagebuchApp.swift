@@ -96,6 +96,15 @@ struct RootView: View {
     /// puts a second navigation bar on each of its pages, so the ranges and the settings share this one.
     private var crowded: Bool { sizeClass == .compact && LicenceCard.hasCard(licenceCards) }
 
+    /// The tab to show once the tab bar has changed: the first card saved shows the new card, a window
+    /// made narrow (iPad) stays with the ranges and settings in «Mehr», the last card deleted or the
+    /// window wide again shows the settings.
+    static func tab(_ tab: String, crowded: Bool, newCard: Bool) -> String {
+        if crowded, tab == "ranges" || tab == "settings" { return newCard ? "card" : "more" }
+        if !crowded, tab == "more" { return "settings" }
+        return tab
+    }
+
     var body: some View {
         TabView(selection: $tab) {
             EntryListView()
@@ -136,11 +145,9 @@ struct RootView: View {
                     .tag("settings")
             }
         }
-        // The tab the user is on goes away when the first card is saved or the last one deleted:
-        // show the new card, or the settings the card was deleted from, instead of jumping to the diary.
-        .onChange(of: crowded) { _, now in
-            if now, tab == "ranges" || tab == "settings" { tab = "card" }
-            if !now, tab == "more" { tab = "settings" }
+        // The tab the user is on goes away when the tab bar changes, instead of jumping to the diary:
+        .onChange(of: [sizeClass == .compact, LicenceCard.hasCard(licenceCards)]) { old, new in
+            tab = Self.tab(tab, crowded: new[0] && new[1], newCard: !old[1] && new[1])
         }
         // A tapped Pflege reminder; `initial`, since the tap may have started the app.
         .onChange(of: ReminderTap.shared.weaponID, initial: true) { _, id in
