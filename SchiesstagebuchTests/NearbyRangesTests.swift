@@ -110,4 +110,15 @@ final class NearbyRangesTests: ModelTestCase {
         XCTAssertFalse(NearbyRanges.applies(isNewEntry: true, enabled: true, date: day(9), now: now, ranges: [positioned]))
         XCTAssertFalse(NearbyRanges.applies(isNewEntry: true, enabled: true, date: now, now: now, ranges: [plain]))
     }
+
+    func testARefusedPermissionIsKnownAtOnce() {
+        // «Aktuellen Standort verwenden» goes away with the answer, not when the form is opened the next time.
+        let here = OneShotLocation()
+        here.authorizationChanged(to: .denied)
+        XCTAssertTrue(here.isDenied)
+        here.authorizationChanged(to: .authorizedWhenInUse)
+        XCTAssertFalse(here.isDenied)
+        here.authorizationChanged(to: .restricted)
+        XCTAssertTrue(here.isDenied)
+    }
 }

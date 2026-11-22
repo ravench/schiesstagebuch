@@ -92,10 +92,12 @@ final class OneShotLocation: NSObject, CLLocationManagerDelegate {
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        isDenied = [.denied, .restricted].contains(manager.authorizationStatus)
     }
 
-    /// The user said no (or may not say yes): asking again does nothing.
-    var isDenied: Bool { [.denied, .restricted].contains(manager.authorizationStatus) }
+    /// The user said no (or may not say yes): asking again does nothing. Stored, so a view that offers the
+    /// position follows the answer to the permission question.
+    private(set) var isDenied = false
 
     func request() {
         // Screenshot runs: the sample range has a position, and the permission alert would cover the screen.
@@ -109,8 +111,13 @@ final class OneShotLocation: NSObject, CLLocationManagerDelegate {
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        authorizationChanged(to: manager.authorizationStatus)
+    }
+
+    func authorizationChanged(to status: CLAuthorizationStatus) {
+        isDenied = [.denied, .restricted].contains(status)
         guard wanted else { return }
-        switch manager.authorizationStatus {
+        switch status {
         case .authorizedWhenInUse, .authorizedAlways: manager.requestLocation()
         case .notDetermined: break
         default: wanted = false
