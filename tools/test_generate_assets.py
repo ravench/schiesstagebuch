@@ -211,6 +211,8 @@ class CatalogueOnlyDataTests(unittest.TestCase):
         with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
             tools_job = f.read().split("  tools:", 1)[1].split("  build:", 1)[0]
         self.assertIn("merge-base --is-ancestor", tools_job)
+        # A pointer from before the public repository's history is not compared (2026-11-22).
+        self.assertIn('cat-file -e "$main^{commit}"', tools_job)
         self.assertIn("tools/bump_data.py", tools_job)
         self.assertIn("python3 tools/generate_assets.py", tools_job)
         self.assertIn("git diff --exit-code Schiesstagebuch/Resources", tools_job)
