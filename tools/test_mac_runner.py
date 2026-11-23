@@ -54,7 +54,8 @@ class MacRunnerTests(unittest.TestCase):
     def test_a_mac_that_keeps_its_state_starts_clean(self):
         # Each simulator is erased before it boots and shut down after the job, whatever happened.
         build = workflow("build.yml")
-        for text, var in ((job(build, "build"), "UDID"), (job(build, "ipad-screens"), "IPAD"),
+        for text, var in ((job(build, "build"), "UDID"), (job(build, "base-screens"), "UDID"),
+                          (job(build, "ipad-screens"), "IPAD"),
                           (job(workflow("ipad-screens.yml"), "screens"), "UDID")):
             # Shut down first: erase fails on a simulator a crashed run left booted.
             self.assertLess(text.index(f'xcrun simctl shutdown "${var}"'), text.index(f'xcrun simctl erase "${var}"'))

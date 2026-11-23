@@ -90,8 +90,7 @@ jobs:
     # private (README, CI on your own Mac).
     runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
     permissions:
-      contents: read # the PR screens below push their images to ravench/app-screens with a deploy key
-      pull-requests: write # and comment on the pull request
+      contents: read
     env:
       # Pull requests that change how a screen looks, or carry the «screens» label (tools/ci_changes.py),
       # also get the PR screens.
@@ -102,8 +101,6 @@ jobs:
           submodules: true
           # Images (app icon) are in Git LFS.
           lfs: true
-          # The merge commit and its first parent, the base branch, for the PR screens.
-          fetch-depth: 2
       - run: command -v xcodegen >/dev/null || brew install xcodegen
       - run: xcodegen generate
       - name: Pick an iPhone simulator and a build folder
@@ -112,7 +109,7 @@ jobs:
           echo "Testing on $UDID"
           echo "UDID=$UDID" >> "$GITHUB_ENV"
           echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
-          # Outside the checkout, which the base branch tour replaces; upload-artifact rejects '..' paths.
+          # Outside the checkout; upload-artifact rejects '..' paths.
           echo "SCREENS=$RUNNER_TEMP/screens" >> "$GITHUB_ENV"
           # Erased first, so a Mac that keeps its simulators starts as clean as GitHub's. A fresh
           # simulator takes minutes to boot; it boots while the app compiles.
@@ -180,19 +177,14 @@ jobs:
           done
           python3 tools/test_summary.py "Unit tests=$RUNNER_TEMP/UnitTests.json" "UI tests=$RUNNER_TEMP/UITests.json"
       # PR screens: the screen tour (SchiesstagebuchUITests/PRScreensTests.swift) on this pull request
-      # and on its base branch, and one comment with the screens that look different. The images
-      # are kept in ravench/app-screens on its schiesstagebuch/pr-screens branch, outside this repo's history;
-      # all screens of a run are in its "pr-screens" artifact. The iPad screens: job ipad-screens below.
-      # In this job rather than its own, so it reuses this build and simulator and needs no
-      # second Mac runner.
+      # here, and on its base branch in the base-screens job at the same time, on a second Mac; the
+      # screens job compares them. The tour reuses this build and simulator. The iPad screens: job
+      # ipad-screens below.
       - name: Screens of this pull request
         id: screens
         if: "!cancelled() && env.SCREENS_TOUR == 'true' && steps.build-ui.outcome == 'success'"
         run: |
           mkdir -p "$SCREENS"
-          # The base branch is toured with this pull request's tour and tools.
-          cp SchiesstagebuchUITests/PRScreensTests.swift tools/pr_screens.py tools/ipad_screens.py \
-            tools/publish_pr_screens.sh "$SCREENS/"
           xcrun simctl bootstatus "$UDID" >/dev/null
           # Same clock and bars in both tours, so unchanged screens give the same image.
           xcrun simctl status_bar "$UDID" override --time 9:41 --dataNetwork wifi --wifiBars 3 \
@@ -207,23 +199,90 @@ jobs:
             -only-testing:SchiesstagebuchUITests/PRScreensTests \
             -resultBundlePath "$SCREENS/after.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
-      - name: Screens of the base branch
-        # A base without some of the screens still gives the others.
+      - name: Export the screens
+        # A tour that broke off still gives the screens it took.
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
-        continue-on-error: true
         run: |
+          xcrun xcresulttool export attachments --path "$SCREENS/after.xcresult" --output-path "$SCREENS/raw"
+          python3 tools/pr_screens.py rename "$SCREENS/raw" "$SCREENS/after"
+      - uses: actions/upload-artifact@v5
+        if: "!cancelled() && steps.screens.outcome != 'skipped'"
+        with:
+          name: pr-screens-after
+          overwrite: true # a re-run of the job uploads again
+          path: ${{ env.SCREENS }}/after
+      - name: Shut down the simulator
+        # A self-hosted Mac would otherwise keep it running until the next run.
+        if: always()
+        run: xcrun simctl shutdown "$UDID" 2>/dev/null || true
+  base-screens:
+    # The PR screens' «before»: the base branch toured with this pull request's tour, on its own Mac
+    # while the build job compiles, tests and tours the pull request. A later push to the pull
+    # request takes them from the cache while the base, the tour, Xcode, the runner image and the
+    # day are the same: the tour then only runs here once per base.
+    needs: changes
+    if: needs.changes.outputs.screens == 'true'
+    # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
+    # private (README, CI on your own Mac).
+    runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+          # Images (app icon) are in Git LFS.
+          lfs: true
+          # The merge commit and its first parent, the base branch.
+          fetch-depth: 2
+      - name: Cache key
+        id: key
+        run: |
+          echo "SCREENS=$RUNNER_TEMP/screens" >> "$GITHUB_ENV"
+          echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
+          tour=$(cat SchiesstagebuchUITests/PRScreensTests.swift tools/pr_screens.py tools/ipad_screens.py | shasum -a 256 | cut -c1-16)
+          xcode=$(xcodebuild -version | tr -cs 'A-Za-z0-9.' '-')
+          # The day too: the sample data's dates count from today.
+          echo "key=pr-screens-before-$(git rev-parse HEAD^1)-$tour-$xcode${ImageVersion:-self-hosted}-$(date -u +%F)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@v5
+        id: cache
+        with:
+          path: ${{ env.SCREENS }}/before
+          key: ${{ steps.key.outputs.key }}
+      - name: Check out the base branch with this pull request's tour
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$SCREENS"
+          cp SchiesstagebuchUITests/PRScreensTests.swift tools/pr_screens.py tools/ipad_screens.py "$SCREENS/"
           git checkout -q HEAD^1
           git submodule update -q
           cp "$SCREENS/PRScreensTests.swift" SchiesstagebuchUITests/
+          command -v xcodegen >/dev/null || brew install xcodegen
           xcodegen generate
-          # Same build folder: only what the pull request changed compiles again.
+      - name: Pick an iPhone simulator
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          # The same pick as the build job's, so both sides come from the same iPhone.
+          UDID=$(xcrun simctl list devices available -j | python3 "$SCREENS/pr_screens.py" pick-iphone)
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl shutdown "$UDID" 2>/dev/null || true
+          xcrun simctl erase "$UDID"
+          xcrun simctl boot "$UDID"
+      - name: Screens of the base branch
+        id: tour
+        # A base without some of the screens still gives the others.
+        if: steps.cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        run: |
           xcodebuild build-for-testing \
             -project Schiesstagebuch.xcodeproj \
             -scheme SchiesstagebuchScreens \
             -destination "id=$UDID" \
             -derivedDataPath "$DERIVED_DATA" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
-          xcrun simctl uninstall "$UDID" ch.giotta.schiesstagebuch
+          xcrun simctl bootstatus "$UDID" >/dev/null
+          xcrun simctl status_bar "$UDID" override --time 9:41 --dataNetwork wifi --wifiBars 3 \
+            --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
           xcodebuild test-without-building \
             -project Schiesstagebuch.xcodeproj \
             -scheme SchiesstagebuchScreens \
@@ -232,33 +291,67 @@ jobs:
             -only-testing:SchiesstagebuchUITests/PRScreensTests \
             -resultBundlePath "$SCREENS/before.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
+      - name: Export the screens
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          # A run that broke off early leaves no readable result: that side just has no screens.
+          mkdir -p "$SCREENS/before"
+          xcrun xcresulttool export attachments --path "$SCREENS/before.xcresult" --output-path "$SCREENS/raw" \
+            && python3 "$SCREENS/pr_screens.py" rename "$SCREENS/raw" "$SCREENS/before" || true
+      - uses: actions/cache/save@v5
+        # Only a full tour: a broken one is toured again next time.
+        if: steps.tour.outcome == 'success'
+        with:
+          path: ${{ env.SCREENS }}/before
+          key: ${{ steps.key.outputs.key }}
+      - uses: actions/upload-artifact@v5
+        with:
+          name: pr-screens-before
+          overwrite: true
+          path: ${{ env.SCREENS }}/before
+          if-no-files-found: ignore
+      - name: Shut down the simulator
+        if: always()
+        run: '[ -z "$UDID" ] || xcrun simctl shutdown "$UDID" 2>/dev/null || true'
+  screens:
+    # Compares both tours and comments with the screens that look different. The images are kept
+    # in ravench/app-screens on its schiesstagebuch/pr-screens branch, outside this repo's history;
+    # all screens of a run are in its pr-screens-after and pr-screens-before artifacts.
+    needs: [changes, build, base-screens]
+    if: "!cancelled() && needs.changes.outputs.screens == 'true'"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # the images go to ravench/app-screens with a deploy key
+      pull-requests: write # and the comment on the pull request
+    env:
+      SCREENS: ${{ github.workspace }}/screens
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v6
+        id: after
+        continue-on-error: true
+        with:
+          name: pr-screens-after
+          path: ${{ env.SCREENS }}/after
+      - uses: actions/download-artifact@v6
+        # A base tour that took no screens leaves no artifact: every screen is then new.
+        continue-on-error: true
+        with:
+          name: pr-screens-before
+          path: ${{ env.SCREENS }}/before
       - name: Compare
         id: compare
-        if: "!cancelled() && steps.screens.outcome != 'skipped'"
+        if: steps.after.outcome == 'success'
         run: |
           cd "$SCREENS"
+          mkdir -p before
           # Pillow lets the comparison ignore faint rendering noise.
           python3 -m venv venv && venv/bin/pip install -q pillow
-          for side in after before; do
-            mkdir -p "$side"
-            [ -d "$side.xcresult" ] || continue
-            # A run that broke off early leaves no readable result: that side just has no screens.
-            xcrun xcresulttool export attachments --path "$side.xcresult" --output-path "raw-$side" || continue
-            python3 pr_screens.py rename "raw-$side" "$side"
-          done
-          venv/bin/python pr_screens.py changes before after changed
-          # Smaller copies for the comment; the artifact keeps the full size.
-          find changed -name '*.png' -exec sips -Z 1200 {} \; >/dev/null
-      - uses: actions/upload-artifact@v5
-        if: "!cancelled() && steps.screens.outcome != 'skipped'"
-        with:
-          name: pr-screens
-          overwrite: true # a re-run of the job uploads again
-          path: |
-            ${{ env.SCREENS }}/after
-            ${{ env.SCREENS }}/before
+          venv/bin/python ../tools/pr_screens.py changes before after changed
+          # Smaller copies for the comment; the artifacts keep the full size.
+          venv/bin/python ../tools/pr_screens.py shrink changed 1200
       - name: Comment on the pull request
-        # Pull requests from forks get a read-only token, so they only get the artifact.
+        # Pull requests from forks get a read-only token, so they only get the artifacts.
         if: "!cancelled() && steps.compare.outcome == 'success' && github.event.pull_request.head.repo.full_name == github.repository"
         env:
           GH_TOKEN: ${{ github.token }}
@@ -269,17 +362,14 @@ jobs:
           SCREENS_REPO: ravench/app-screens
           SCREENS_BRANCH: ${{ github.event.repository.name }}/pr-screens
           SCREENS_DEPLOY_KEY: ${{ secrets.SCREENS_DEPLOY_KEY }}
-        run: cd "$SCREENS" && bash publish_pr_screens.sh changed
-      - name: Shut down the simulator
-        # A self-hosted Mac would otherwise keep it running until the next run.
-        if: always()
-        run: xcrun simctl shutdown "$UDID" 2>/dev/null || true
+        run: cd "$SCREENS" && bash ../tools/publish_pr_screens.sh changed
   ipad-screens:
     # The iPad screens (SchiesstagebuchUITests/IPadScreensTests.swift, every tab in portrait and
     # landscape) of pull requests that change the GUI, on the pull request and on its base branch,
     # and their own comment with the ones that look different, like the PR screens above.
     # Its own Mac runner, next to build: an iPad booted beside the iPhone overloaded the runner,
-    # and one after the other made build 14 minutes longer.
+    # and one after the other made build 14 minutes longer. The base branch's screens are cached
+    # like the base-screens job's, so a later push to the pull request tours only the pull request.
     needs: changes
     if: needs.changes.outputs.screens == 'true'
     # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
@@ -305,6 +395,10 @@ jobs:
           echo "IPAD=$IPAD" >> "$GITHUB_ENV"
           echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
           echo "SCREENS=$RUNNER_TEMP/screens" >> "$GITHUB_ENV"
+          tour=$(cat SchiesstagebuchUITests/IPadScreensTests.swift tools/pr_screens.py tools/ipad_screens.py | shasum -a 256 | cut -c1-16)
+          xcode=$(xcodebuild -version | tr -cs 'A-Za-z0-9.' '-')
+          # The day too: the sample data's dates count from today.
+          echo "BASE_KEY=ipad-screens-before-$(git rev-parse HEAD^1)-$tour-$xcode${ImageVersion:-self-hosted}-$(date -u +%F)" >> "$GITHUB_ENV"
           # Erased first, so a Mac that keeps its simulators starts as clean as GitHub's. A fresh
           # simulator takes minutes to boot; it boots while the app compiles, so the first tour
           # does not meet a simulator that is still settling.
@@ -338,9 +432,15 @@ jobs:
             -only-testing:SchiesstagebuchUITests/IPadScreensTests \
             -resultBundlePath "$SCREENS/after.xcresult" \
             CODE_SIGNING_ALLOWED=NO | xcpretty
+      - uses: actions/cache/restore@v5
+        id: cache
+        with:
+          path: ${{ env.SCREENS }}/before
+          key: ${{ env.BASE_KEY }}
       - name: Screens of the base branch
+        id: base
         # A base without some of the screens still gives the others.
-        if: "!cancelled() && steps.screens.outcome != 'skipped'"
+        if: "!cancelled() && steps.screens.outcome != 'skipped' && steps.cache.outputs.cache-hit != 'true'"
         continue-on-error: true
         run: |
           git checkout -q HEAD^1
@@ -374,11 +474,18 @@ jobs:
             [ -d "$side.xcresult" ] || continue
             xcrun xcresulttool export attachments --path "$side.xcresult" --output-path "raw-$side" || continue
             python3 pr_screens.py rename "raw-$side" "$side"
+            # Screenshots come in the device's portrait buffer; turn landscape ones upright. Cached
+            # base screens were turned when they were taken.
+            for f in "$side"/landscape-*.png; do [ -e "$f" ] && sips -r 270 "$f" >/dev/null; done
           done
-          # Screenshots come in the device's portrait buffer; turn landscape ones upright.
-          for f in after/landscape-*.png before/landscape-*.png; do [ -e "$f" ] && sips -r 270 "$f" >/dev/null; done
           venv/bin/python pr_screens.py changes before after changed ipad
           find changed -name '*.png' -exec sips -Z 1200 {} \; >/dev/null
+      - uses: actions/cache/save@v5
+        # Only a full tour: a broken one is toured again next time.
+        if: "!cancelled() && steps.base.outcome == 'success' && steps.compare.outcome == 'success'"
+        with:
+          path: ${{ env.SCREENS }}/before
+          key: ${{ env.BASE_KEY }}
       - uses: actions/upload-artifact@v5
         if: "!cancelled() && steps.screens.outcome != 'skipped'"
         with:

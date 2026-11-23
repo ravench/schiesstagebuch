@@ -10,6 +10,7 @@ import tempfile
 import unittest
 
 import pr_screens
+from test_mac_runner import job
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RT = "com.apple.CoreSimulator.SimRuntime.iOS-"
@@ -110,6 +111,15 @@ class SameTests(unittest.TestCase):
         path = os.path.join(self.tmp.name, name)
         img.save(path)
         return path
+
+    def test_shrink_scales_only_larger_screens_down(self):
+        os.makedirs(os.path.join(self.tmp.name, "after"))
+        big = self.png(os.path.join("after", "a.png"), size=(60, 120))
+        small = self.png("b.png", size=(20, 30))
+        pr_screens.shrink(self.tmp.name, 40)
+        for path, size in ((big, (20, 40)), (small, (20, 30))):
+            with Image.open(path) as img:
+                self.assertEqual(img.size, size)
 
     def test_faint_noise_is_the_same(self):
         noise = [((x, 3), (250, 245, 250)) for x in range(40)]
@@ -266,8 +276,8 @@ class WorkflowTests(unittest.TestCase):
     def setUpClass(cls):
         with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
             cls.workflow = f.read()
-        cls.build = cls.workflow.split("\n  build:\n")[1].split("\n  ipad-screens:\n")[0]
-        cls.ipad = cls.workflow.split("\n  ipad-screens:\n")[1]
+        cls.build, cls.base, cls.screens, cls.ipad = (job(cls.workflow, name)
+                                                      for name in ("build", "base-screens", "screens", "ipad-screens"))
         with open(os.path.join(ROOT, "tools", "publish_pr_screens.sh")) as f:
             cls.publish = f.read()
 
@@ -278,20 +288,49 @@ class WorkflowTests(unittest.TestCase):
         self.assertRegex(self.workflow, r"runs-on: .*macos-2[6-9]")
 
     def test_reuses_the_build_and_its_simulator(self):
-        # No second Mac runner: the tour runs on the Build job's build, without compiling it again.
+        # The pull request's tour runs on the Build job's build, without compiling it again.
         self.assertFalse(os.path.exists(os.path.join(ROOT, ".github", "workflows", "pr-screens.yml")))
         self.assertNotIn("xcodebuild test ", self.workflow)
         self.assertIn('xcrun simctl boot "$UDID"', self.workflow)
 
     def test_tours_start_without_the_tests_data(self):
-        self.assertEqual(self.workflow.count('xcrun simctl uninstall "$UDID" ch.giotta.schiesstagebuch'), 2)
+        self.assertEqual(self.workflow.count('xcrun simctl uninstall "$UDID" ch.giotta.schiesstagebuch'), 1)
+        # The base tour's simulator is erased and never ran the tests.
+        self.assertIn('xcrun simctl erase "$UDID"', self.base)
 
     def test_tours_head_and_base_with_the_same_tour(self):
-        self.assertEqual(self.build.count("-only-testing:SchiesstagebuchUITests/PRScreensTests"), 2)
-        self.assertIn("fetch-depth: 2", self.build)
-        self.assertIn("git checkout -q HEAD^1", self.build)
-        self.assertIn('cp "$SCREENS/PRScreensTests.swift" SchiesstagebuchUITests/', self.build)
-        self.assertIn("status_bar", self.build)
+        self.assertEqual(self.build.count("-only-testing:SchiesstagebuchUITests/PRScreensTests"), 1)
+        self.assertEqual(self.base.count("-only-testing:SchiesstagebuchUITests/PRScreensTests"), 1)
+        self.assertIn("fetch-depth: 2", self.base)
+        self.assertIn("git checkout -q HEAD^1", self.base)
+        self.assertNotIn("git checkout -q HEAD^1", self.build)
+        self.assertIn('cp "$SCREENS/PRScreensTests.swift" SchiesstagebuchUITests/', self.base)
+        for job_ in (self.build, self.base):
+            self.assertIn("status_bar", job_)
+
+    def test_base_tour_runs_beside_the_build_on_its_own_mac(self):
+        # About 30 minutes each: side by side the screens come about half an hour sooner (2026-11-23).
+        self.assertIn("    needs: changes\n", self.base)
+        self.assertRegex(self.base, r"runs-on: .*macos-2[6-9]")
+        self.assertIn("name: pr-screens-before", self.base)
+        self.assertIn("name: pr-screens-after", self.build)
+        self.assertIn("needs: [changes, build, base-screens]", self.screens)
+        self.assertIn("runs-on: ubuntu-latest", self.screens)
+
+    def test_base_screens_are_cached_per_base_tour_and_day(self):
+        for text, key, tour in ((self.base, 'echo "key=', "PRScreensTests.swift"),
+                                (self.ipad, 'echo "BASE_KEY=', "IPadScreensTests.swift")):
+            line = text.split(key, 1)[1].split("\n", 1)[0]
+            # The sample data's dates count from today, so the day is part of the key.
+            for part in ("$(git rev-parse HEAD^1)", "$tour", "$xcode", "ImageVersion", "$(date -u +%F)"):
+                self.assertIn(part, line)
+            self.assertIn(f"cat SchiesstagebuchUITests/{tour} tools/pr_screens.py tools/ipad_screens.py | shasum", text)
+            self.assertIn("actions/cache/restore@", text)
+            # Only a full tour is saved.
+            self.assertIn("outcome == 'success'", text.split("actions/cache/save@", 1)[1].split("key:", 1)[0])
+        self.assertEqual(self.base.count("if: steps.cache.outputs.cache-hit != 'true'"), 4)
+        base = self.ipad.split("name: Screens of the base branch")[1].split("- name:")[0]
+        self.assertIn("steps.cache.outputs.cache-hit != 'true'", base)
 
     def test_ipad_screens_in_their_own_job(self):
         # One simulator per runner: an iPad booted next to the iPhone overloaded the runner, and
@@ -319,30 +358,34 @@ class WorkflowTests(unittest.TestCase):
 
     def test_ipad_screens_compared_and_commented(self):
         compare = self.ipad.split("name: Compare")[1].split("- uses:")[0]
-        self.assertIn('sips -r 270 "$f"', compare)  # landscape screens upright, as in ipad-screens.yml
+        self.assertIn('sips -r 270 "$f"', compare)
+        # Only the side just exported: cached base screens are upright already.
+        self.assertIn('for f in "$side"/landscape-*.png', compare)  # landscape screens upright, as in ipad-screens.yml
         self.assertIn("pr_screens.py changes before after changed ipad", compare)
-        self.assertNotIn("changes before after changed ipad", self.build.split("ipad-screens:")[0])
+        self.assertNotIn("changes before after changed ipad", self.screens)
         self.assertIn("name: ipad-screens", self.ipad)
         self.assertIn("bash publish_pr_screens.sh changed ipad", self.ipad)
-        self.assertRegex(self.build, r"bash publish_pr_screens\.sh changed\n")  # the iPhone, no device argument
+        self.assertRegex(self.screens, r"bash \.\./tools/publish_pr_screens\.sh changed$")  # the iPhone, no device argument
 
     def test_tools_copied_before_the_base_checkout(self):
-        for job in (self.build, self.ipad):
-            copy = job.split("name: Screens of this pull request")[1].split("- name:")[0]
-            for tool in ("tools/pr_screens.py", "tools/ipad_screens.py", "tools/publish_pr_screens.sh"):
-                self.assertIn(tool, copy)
+        ipad = self.ipad.split("name: Screens of this pull request")[1].split("- name:")[0]
+        for copy, tools in ((self.base.split("git checkout -q HEAD^1")[0], ("pr_screens.py", "ipad_screens.py")),
+                            (ipad, ("pr_screens.py", "ipad_screens.py", "publish_pr_screens.sh"))):
+            for tool in tools:
+                self.assertIn(f"tools/{tool}", copy)
 
     def test_comments_once_per_pull_request_and_device(self):
-        for job in (self.build, self.ipad):
-            self.assertIn("pull-requests: write", job)
+        for job_ in (self.screens, self.ipad):
+            self.assertIn("pull-requests: write", job_)
+        self.assertNotIn("pull-requests: write", self.build + self.base)
         self.assertIn('startswith(\\"$MARKER\\")', self.publish)
         self.assertIn("MARKER=$(head -1 comment.md)", self.publish)
         self.assertIn("PATCH", self.publish)
 
     def test_images_go_to_app_screens_with_a_deploy_key(self):
         # The images stay out of this repo's history: ravench/app-screens holds them.
-        for job in (self.build, self.ipad):
-            comment = job.split("name: Comment on the pull request")[1]
+        for job_ in (self.screens, self.ipad):
+            comment = job_.split("name: Comment on the pull request")[1]
             self.assertIn("SCREENS_REPO: ravench/app-screens", comment)
             self.assertIn("SCREENS_BRANCH: ${{ github.event.repository.name }}/pr-screens", comment)
             self.assertIn("secrets.SCREENS_DEPLOY_KEY", comment)
