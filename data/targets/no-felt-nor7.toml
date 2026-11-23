@@ -1,0 +1,28 @@
+# Nor7 (Norwegen), SIUS's target 213 in SiusData's Target.ini (NOR/TGNOR7.TRG).
+# A field figure: a hit anywhere on it counts 1. SIUS also draws the inner zone; it only breaks ties
+# («innertreff»), so it has no value of its own here.
+id = "no-felt-nor7"
+name = "Felt Nor7 (NO)"
+short_name = "Felt Nor7"
+group = "Norwegen"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Nor7"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-500, -500, 1000, 1000]
+fill = "white"
+
+[[shapes]]
+polygon = [[81.9, -143.4], [75.3, -151.8], [67.9, -159.4], [59.7, -166.2], [50.8, -172.1], [41.4, -177], [31.5, -180.9], [21.2, -183.7], [10.6, -185.4], [0, -186], [-10.6, -185.4], [-21.2, -183.7], [-31.5, -180.9], [-41.4, -177], [-50.8, -172.1], [-59.7, -166.2], [-67.9, -159.4], [-75.3, -151.8], [-81.9, -143.4], [-245, 109], [-245, 144], [245, 144], [245, 109]]
+fill = "black"
+
+[[shapes]]
+polygon = [[44.2, -117], [40.7, -121.5], [36.7, -125.6], [32.2, -129.3], [27.5, -132.5], [22.3, -135.2], [17, -137.3], [11.4, -138.8], [5.7, -139.7], [0, -140], [-5.7, -139.7], [-11.4, -138.8], [-17, -137.3], [-22.3, -135.2], [-27.5, -132.5], [-32.2, -129.3], [-36.7, -125.6], [-40.7, -121.5], [-44.2, -117], [-164, 69], [-164, 89], [164, 89], [164, 69]]
+line = "white"

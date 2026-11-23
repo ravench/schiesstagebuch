@@ -1,0 +1,23 @@
+# Fig1 (Schweden), SIUS's target 70 in SiusData's Target.ini (SWE/TGFIG1.TRG).
+# A field figure (fältskytte): a hit anywhere on it counts 1.
+id = "se-falt-figur-1"
+name = "Fält Figur 1 (SE)"
+short_name = "Fält Figur 1"
+group = "Schweden"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Fig1"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-500, -500, 1000, 1000]
+fill = "white"
+
+[[shapes]]
+polygon = [[-178, 457], [-204, 352], [-210, 319], [-222, 301], [-226, 250], [-273, 219], [-273, -18], [-221, -238], [-74, -269], [-61, -283], [-67, -323], [-93, -350], [-44, -469], [18, -490], [81, -473], [108, -381], [126, -341], [92, -314], [80, -280], [103, -247], [227, -158], [255, 91], [146, 231], [148, 397], [130, 407], [136, 457]]
+fill = "black"

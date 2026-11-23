@@ -1,0 +1,32 @@
+# 150Sirkel (Norwegen), SIUS's target 548 in SiusData's Target.ini (NOR/TGSirk15.TRG).
+# A field figure: a hit anywhere on it counts 1. SIUS also draws the inner zone; it only breaks ties
+# («innertreff»), so it has no value of its own here.
+id = "no-felt-150-sirkel"
+name = "Felt 150 Sirkel (NO)"
+short_name = "Felt 150 Sirkel"
+group = "Norwegen"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 150Sirkel"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-225, -225, 450, 450]
+fill = "white"
+
+[[shapes]]
+ellipse = [0, 0, 340, 340]
+fill = "black"
+
+[[shapes]]
+ellipse = [0, 0, 300, 300]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 120, 120]
+line = "white"

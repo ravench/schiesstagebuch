@@ -1,0 +1,27 @@
+# Eighth figure (Schweden), SIUS's target 450 in SiusData's Target.ini (SWE/TGATTFIG.TRG).
+# A field figure (fältskytte): a hit anywhere on it counts 1.
+id = "se-falt-attondelsfigur"
+name = "Fält Åttondelsfigur (SE)"
+short_name = "Fält Åttondelsfi"
+group = "Schweden"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Eighth figure"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-250, -250, 500, 500]
+fill = "white"
+
+[[shapes]]
+polygon = [[-113, 62], [-93, 89], [120, 89], [91, 77], [97, 62], [77.5, -51], [59.5, -82], [40, -95], [-15, -103], [-66, -89], [-93, -51]]
+fill = "black"
+
+[[shapes]]
+polygon = [[50, 89], [59.5, 36], [47, -5], [7, -23], [-36, -18], [-66, 5], [-81, 39], [-81, 89]]
+line = "white"

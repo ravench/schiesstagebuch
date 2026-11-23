@@ -155,6 +155,11 @@ final class ShootingTargetTests: ModelTestCase {
         XCTAssertEqual(Array(groups.prefix(2)), ["Schweiz", "ISSF"])
         XCTAssertEqual(Array(groups.dropFirst(2)), groups.dropFirst(2).sorted())
         XCTAssertTrue(groups.contains("Norwegen"))
+        XCTAssertTrue(groups.contains("Kanada"))
+        // A field figure counts a hit, and draws its black figure.
+        let felt = try XCTUnwrap(items.first { $0.id == "no-felt-c35" })
+        XCTAssertEqual(felt.targetScoring, .values([1, 0]))
+        XCTAssertNotNil(TargetCatalog.face(of: TargetCatalog.target(from: felt)))
         // Each group by name, numbers by their value.
         let names = ["VBS Scheibe A10 300 m", "SSV Scheibe A100 300 m", "VBS Scheibe A5 300 m", "ISSF Gewehr 50 m"]
         let sorted = TargetCatalog.grouped(items.filter { names.contains($0.name) })

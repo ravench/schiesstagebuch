@@ -40,7 +40,7 @@ class RepoTargetTests(unittest.TestCase):
     def test_every_target_in_the_repo_is_fine(self):
         self.assertGreaterEqual(len(self.targets), 16)
         countries = {"Österreich", "Deutschland", "Dänemark", "Frankreich", "Kroatien", "Italien", "Luxemburg",
-                     "Niederlande", "Norwegen", "Schweden", "USA"}
+                     "Niederlande", "Norwegen", "Schweden", "USA", "Kanada", "Grossbritannien"}
         self.assertLessEqual({t["group"] for t in self.targets.values()}, {"Schweiz", "ISSF"} | countries)
         for t in self.targets.values():
             self.assertEqual(targets.problems(t), [], t["_file"])
@@ -56,6 +56,21 @@ class RepoTargetTests(unittest.TestCase):
             self.assertIn("SiusData", t["source"]["title"])
         self.assertEqual(self.targets["us-sr1-100y"]["scoring"]["values"], [10, 9, 8, 7, 6, 5, 0])
         self.assertEqual(self.targets["no-dfs-300"]["distances_m"], [300])
+
+    def test_field_figures_count_a_hit(self):
+        # Norwegian, Swedish and Danish field figures (added by hand from SIUSData's drawings): a hit
+        # anywhere on the figure counts 1, so their only values are 1 and 0; the figure is drawn black.
+        figures = [t for t in self.targets.values() if "-felt-" in t["id"] or t["id"].startswith("se-falt-")]
+        self.assertGreaterEqual(len(figures), 40)
+        for t in figures:
+            self.assertEqual(t["scoring"]["values"], [1, 0], t["id"])
+            self.assertTrue(any(s.get("fill") == "black" for s in t["shapes"][1:]), t["id"])
+        # Fullbore: the 2 is the rest of the square card, so it has shapes and no rings.
+        lr = self.targets["ca-fullbore-300-yards"]
+        self.assertEqual(lr["scoring"]["values"], [5, 4, 3, 2, 0])
+        self.assertEqual(lr["shapes"][0]["rect"], [-600, -600, 1200, 1200])
+        self.assertEqual(self.targets["dk-trekant-50m"]["scoring"]["values"], list(range(10, -1, -1)))
+        self.assertEqual(self.targets["no-sprint-luft"]["ring_diameters_mm"], [22, 48.6, 75.2, 101.8, 128.4, 155])
 
     def test_issf_rings_match_the_rulebook(self):
         self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][0], 0.5)
