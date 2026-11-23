@@ -74,46 +74,73 @@ struct TargetRow: View {
 }
 
 /// The bundled templates (Targets.json) by group; tapping one adds it to the user's targets.
+/// Swiss and ISSF templates are listed open; the other countries sit closed under «Weitere Länder»
+/// so the list stays short (Raven 2026-11-23). A search shows every matching template, open.
 struct TargetTemplateList: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var targets: [ShootingTarget]
+    @State private var search = ""
+    @State private var openCountries: Set<String> = []
 
     var body: some View {
         NavigationStack {
+            let groups = TargetCatalog.grouped(matching: search)
+            let searching = !search.trimmingCharacters(in: .whitespaces).isEmpty
+            let main = groups.filter { searching || TargetCatalog.mainGroups.contains($0.group) }
+            let others = searching ? [] : groups.filter { !TargetCatalog.mainGroups.contains($0.group) }
             List {
-                ForEach(TargetCatalog.grouped(), id: \.group) { group in
+                ForEach(main, id: \.group) { group in
                     Section(group.group.loc) {
-                        ForEach(group.items) { item in
-                            let added = targets.contains { $0.templateID == item.id }
-                            Button {
-                                context.insert(TargetCatalog.target(from: item))
-                                dismiss()
+                        ForEach(group.items) { row($0) }
+                    }
+                }
+                if !others.isEmpty {
+                    Section("Weitere Länder") {
+                        ForEach(others, id: \.group) { group in
+                            DisclosureGroup(isExpanded: Binding(
+                                get: { openCountries.contains(group.group) },
+                                set: { if $0 { openCountries.insert(group.group) } else { openCountries.remove(group.group) } })) {
+                                ForEach(group.items) { row($0) }
                             } label: {
-                                HStack(spacing: 12) {
-                                    TargetFaceView(face: item.face)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(item.name)
-                                        Text(verbatim: item.targetScoring.summary)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    Spacer()
-                                    if added { Image(systemName: "checkmark").foregroundStyle(.secondary) }
-                                }
+                                LabeledContent(group.group.loc) { Text(verbatim: "\(group.items.count)") }
                             }
-                            .foregroundStyle(.primary)
-                            .disabled(added)
                         }
                     }
                 }
             }
+            .overlay {
+                if groups.isEmpty { ContentUnavailableView.search(text: search) }
+            }
+            .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Scheibe, Land oder Distanz")
             .navigationTitle("Vorlagen")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
             }
         }
+    }
+
+    private func row(_ item: TargetCatalog.Item) -> some View {
+        let added = targets.contains { $0.templateID == item.id }
+        return Button {
+            context.insert(TargetCatalog.target(from: item))
+            dismiss()
+        } label: {
+            HStack(spacing: 12) {
+                TargetFaceView(face: item.face)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.name)
+                    Text(verbatim: item.targetScoring.summary)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if added { Image(systemName: "checkmark").foregroundStyle(.secondary) }
+            }
+        }
+        .foregroundStyle(.primary)
+        .disabled(added)
     }
 }
 

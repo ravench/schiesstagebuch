@@ -379,7 +379,24 @@ final class PRScreensTests: XCTestCase {
             // Held near the top: at the sheet's bottom edge the row was already hittable, so it never scrolled.
             topStop(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Ustertag-Scheibe 25 m")).firstMatch,
                     "21b2-Scheiben-Vorlagen-Ustertag")
-            app.buttons["Abbrechen"].firstMatch.tap()
+            // The other countries sit closed under «Weitere Länder» at the end; Norwegen opened.
+            let norway = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Norwegen")).firstMatch
+            topStop(norway, "21b3-Scheiben-Vorlagen-Weitere-Laender")
+            if norway.exists && norway.isHittable {
+                norway.tap()
+                snap("21b4-Scheiben-Vorlagen-Norwegen")
+            }
+            // A search for a distance shows the matching templates of every group.
+            let field = app.searchFields.firstMatch
+            if field.waitForExistence(timeout: 3) {
+                field.tap()
+                field.typeText("300")
+                snap("21b5-Scheiben-Vorlagen-Suche")
+                // The search's Abbrechen first, then the sheet's.
+                app.buttons["Abbrechen"].firstMatch.tap()
+            }
+            let cancel = app.buttons["Abbrechen"].firstMatch
+            if cancel.waitForExistence(timeout: 2) { cancel.tap() }
         }
         tab("Tagebuch")
         guard open(app.staticTexts["Obligatorisch"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
