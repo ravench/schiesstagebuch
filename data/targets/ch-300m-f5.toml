@@ -1,0 +1,35 @@
+# Scheibe F5, 300 m: 100 x 120 cm card with a figure 44 x 77 cm and a head 20 cm wide; rectangles, not
+# rings: 5 = 150 x 200 mm, 4 = 300 x 500 mm, 3 = the figure. The same face as the 300 m Ustertag-Scheibe.
+# From SIUS's F5 target (SiusData Target.ini, 300 m range mode). SIUS labels no zones on F5, so the
+# values below the 3 (head, card) are a guess: 2 and 1 are offered as well.
+id = "ch-300m-f5"
+name = "Scheibe F5 300 m"
+short_name = "F5 300 m"
+group = "Schweiz"
+distances_m = [300]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Scheibe F5"
+url = "https://www.sius.com"
+
+# The icon, in mm from the centre: white card, black figure from 385 above to 385 below the centre with
+# sloped shoulders to the head (200 wide, up to 600 above), the 4 and 5 as white rectangles.
+[[shapes]]
+rect = [-500, -700, 1000, 1200]
+fill = "white"
+
+[[shapes]]
+polygon = [[-100, -600], [100, -600], [100, -415], [220, -385], [220, 385], [-220, 385], [-220, -385], [-100, -415]]
+fill = "black"
+
+[[shapes]]
+rect = [-150, -250, 300, 500]
+line = "white"
+
+[[shapes]]
+rect = [-75, -100, 150, 200]
+line = "white"

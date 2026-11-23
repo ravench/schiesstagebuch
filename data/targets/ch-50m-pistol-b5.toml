@@ -4,8 +4,6 @@ name = "VBS Pistolenscheibe B5 50 m"
 short_name = "B5"
 group = "Schweiz"
 distances_m = [50]
-# The icon: the card and green figure of B4, with the 5, 4 and 2 rings.
-face = "ch-300m-b4"
 
 [scoring]
 # The only scores a shot can have, best first; 0 is a miss.
@@ -17,6 +15,19 @@ url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"
 
 # The 5, 4, 2 and 1 rings, Ø 150, 300, 700 and 1000 mm (SIUS STYX 50 m package, Sui PB5 - Rings);
 # the 3 is the figure.
+# The icon: the card and figure of the pistol B targets (SIUS PB5), the 1000 mm field and the 5, 4 and 2 circles.
+[[shapes]]
+rect = [-500, -500, 1000, 1000]
+fill = "grey"
+
+[[shapes]]
+polygon = [[-225, 171], [225, 171], [225, -217], [183, -231], [142, -242], [100, -250], [100, -328], [-100, -328], [-100, -250], [-142, -242], [-183, -231], [-225, -217]]
+fill = "green"
+
+[[shapes]]
+ellipse = [0, 0, 1000, 1000]
+line = "black"
+
 [[shapes]]
 ellipse = [0, 0, 150, 150]
 line = "black"

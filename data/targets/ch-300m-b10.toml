@@ -1,6 +1,6 @@
 # Swiss 300 m Feldscheibe B, scored in 10 rings: the same 100 cm field and 10 equal rings
 # as Scheibe A, but light grey with a dark green figure (45 × 50 cm) instead of a round black.
-# B4 (fields 4 to 1, the 3 being the figure) needs a non-round zone and is not here yet.
+# B4 (fields 4 to 1, the 3 being the figure) is its own target, ch-300m-b4.
 id = "ch-300m-b10"
 name = "VBS Feldscheibe B10 300 m"
 short_name = "B10"

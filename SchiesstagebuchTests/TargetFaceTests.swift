@@ -31,14 +31,19 @@ final class TargetFaceTests: XCTestCase {
         XCTAssertEqual(b4.shapes.first?.rect, [-500, -500, 1000, 1000])
         XCTAssertEqual(b4.shapes.first?.fill, "grey")
         XCTAssertEqual(b4.shapes[1].fill, "green")
-        // B10 is B4's card and figure with ten rings on top.
-        let b10 = try XCTUnwrap(TargetCatalog.item(id: "ch-50m-pistol-b10")?.face)
+        // The rifle B10 is B4's card and figure with ten rings on top.
+        let b10 = try XCTUnwrap(TargetCatalog.item(id: "ch-300m-b10")?.face)
         XCTAssertEqual(Array(b10.shapes.prefix(b4.shapes.count)), b4.shapes)
         XCTAssertEqual(b10.rings.count, 10)
-        // The tall Morgarten card stands upright in the square icon.
+        // The pistol B10 has the same card but the pistol figure, which sits higher.
+        let pistol = try XCTUnwrap(TargetCatalog.item(id: "ch-50m-pistol-b10")?.face)
+        XCTAssertEqual(pistol.shapes.first, b4.shapes.first)
+        XCTAssertNotEqual(pistol.shapes[1], b4.shapes[1])
+        XCTAssertEqual(pistol.rings.count, 10)
+        // The tall Morgarten card (48 x 103 cm around SIUS's figure) stands upright in the square icon.
         let f5 = try XCTUnwrap(TargetFaceLayout(face: XCTUnwrap(TargetCatalog.item(id: "ch-50m-morgarten-f5")?.face), size: 28))
         XCTAssertEqual(f5.cardRect.height, 28, accuracy: 0.01)
-        XCTAssertEqual(f5.cardRect.width, 28 * 0.45, accuracy: 0.01)
+        XCTAssertEqual(f5.cardRect.width, 28 * 480 / 1030, accuracy: 0.01)
     }
 
     func testCloseRingsAreThinnedButKeepTheOutermost() {

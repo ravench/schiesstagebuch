@@ -1,0 +1,18 @@
+# Zimmerstutzen target, 15 m: ten rings 4.5 mm apart, Ø 4.4 to 85.4 mm, black Ø 40.4 mm (the 4 to 10).
+# From SIUS's Zimmerstutzen target (SiusData Target.ini), which SIUS offers in its Swiss air rifle range mode.
+id = "ch-15m-zimmerstutzen"
+name = "Zimmerstutzenscheibe 15 m"
+short_name = "Zimmerstutzen"
+group = "Schweiz"
+distances_m = [15]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [4.4, 13.4, 22.4, 31.4, 40.4, 49.4, 58.4, 67.4, 76.4, 85.4]
+black_mm = 40.4
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Zimmerstutzen"
+url = "https://www.sius.com"

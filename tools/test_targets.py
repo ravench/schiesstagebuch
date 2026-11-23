@@ -192,10 +192,36 @@ class FaceTests(unittest.TestCase):
         for t in all_targets:
             self.assertIsNotNone(targets.face(t, by_id), t["id"])
         self.assertEqual(targets.face(by_id["ch-300m-a100"], by_id), targets.face(by_id["ch-300m-a10"], by_id))
-        # The B figure (SIUS Sui PB5 sweep) is 45 x 50 cm.
-        figure = by_id["ch-300m-b4"]["shapes"][1]["polygon"]
-        xs, ys = [p[0] for p in figure], [p[1] for p in figure]
-        self.assertEqual((max(xs) - min(xs), max(ys) - min(ys)), (450, 499))
+        def size(polygon):
+            xs, ys = [p[0] for p in polygon], [p[1] for p in polygon]
+            return max(xs) - min(xs), max(ys) - min(ys)
+
+        # The B figures are 45 x 50 cm: SIUS's rifle B4 one, and the pistol one (Sui PB5 sweep) that sits higher.
+        rifle = by_id["ch-300m-b4"]["shapes"][1]["polygon"]
+        pistol = by_id["ch-50m-pistol-b5"]["shapes"][1]["polygon"]
+        self.assertEqual(size(rifle), (450, 500))
+        self.assertEqual(size(pistol), (450, 499))
+        self.assertEqual(by_id["ch-50m-pistol-b10"]["shapes"][1]["polygon"], pistol)
+        self.assertLess(min(p[1] for p in pistol), min(p[1] for p in rifle), "the pistol figure's head is higher")
+        # The rifle B10 draws the B4 face; the pistol B10 its own, with the pistol figure.
+        self.assertEqual(targets.face(by_id["ch-300m-b10"], by_id)["shapes"][1]["polygon"], rifle)
+        self.assertEqual(targets.face(by_id["ch-50m-pistol-b10"], by_id)["shapes"][1]["polygon"], pistol)
+        # SIUS's Morgarten figure: 46 x 101 cm.
+        self.assertEqual(size(by_id["ch-50m-morgarten-f5"]["shapes"][1]["polygon"]), (460, 1010))
+
+    def test_targets_from_siusdata(self):
+        by_id = {t["id"]: t for t in targets.load()}
+        a6 = by_id["ch-300m-a6"]
+        self.assertEqual(a6["scoring"]["values"], [6, 5, 4, 3, 2, 1, 0])
+        self.assertEqual(a6["shapes"][0]["rect"], [-600, -600, 1200, 1200], "the 1 is the rest of the 120 cm card")
+        self.assertEqual(by_id["ch-300m-f5"]["scoring"]["values"][:3], [5, 4, 3])
+        zimmer = by_id["ch-15m-zimmerstutzen"]
+        self.assertEqual(zimmer["distances_m"], [15])
+        rings = zimmer["ring_diameters_mm"]
+        self.assertEqual(len(rings), 10)
+        self.assertTrue(all(abs(b - a - 9) < 1e-9 for a, b in zip(rings, rings[1:])), "rings 4.5 mm wide")
+        for t in (a6, by_id["ch-300m-f5"], zimmer):
+            self.assertEqual(targets.problems(t), [], t["id"])
 
 
 if __name__ == "__main__":
