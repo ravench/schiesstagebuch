@@ -214,7 +214,7 @@ class FaceTests(unittest.TestCase):
         a6 = by_id["ch-300m-a6"]
         self.assertEqual(a6["scoring"]["values"], [6, 5, 4, 3, 2, 1, 0])
         self.assertEqual(a6["shapes"][0]["rect"], [-600, -600, 1200, 1200], "the 1 is the rest of the 120 cm card")
-        self.assertEqual(by_id["ch-300m-f5"]["scoring"]["values"][:3], [5, 4, 3])
+        self.assertEqual(by_id["ch-300m-f5"]["scoring"]["values"], [5, 4, 3, 0], "SIUS draws only the 5, 4 and the figure")
         zimmer = by_id["ch-15m-zimmerstutzen"]
         self.assertEqual(zimmer["distances_m"], [15])
         rings = zimmer["ring_diameters_mm"]
