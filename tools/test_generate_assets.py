@@ -66,6 +66,13 @@ class PatchedBulletTests(unittest.TestCase):
         self.assertEqual(by_name[".45-70 Government"]["currentCaseMaterials"], ["brass"])
         self.assertEqual(by_name["9x19 mm"]["currentCaseMaterials"], ["steel", "aluminium"])
 
+    def test_todays_bullets_and_cases(self):
+        # Raven 2026-11-22: the app draws what is most commonly found today, the original stays beside it.
+        gp11 = self.outline("7.5x55 mm Swiss (GP 11)")[1]
+        self.assertEqual((gp11["bulletMaterial"], gp11["todayBulletMaterial"]), ("cupronickel", "copper"))
+        self.assertEqual(self.outline("7.62x54 mm R")[1]["todayCaseMaterial"], "steel")
+        self.assertNotIn("todayBulletMaterial", self.outline("9x19 mm")[1])
+
 
 class BlankTests(unittest.TestCase):
     """Alarm and starter blanks (calibre-data #45): no bullet; the app draws only the case."""
@@ -211,6 +218,8 @@ class CatalogueOnlyDataTests(unittest.TestCase):
         with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
             tools_job = f.read().split("  tools:", 1)[1].split("  build:", 1)[0]
         self.assertIn("merge-base --is-ancestor", tools_job)
+        # A pointer from before the public repository's history is not compared (2026-11-22).
+        self.assertIn('cat-file -e "$main^{commit}"', tools_job)
         self.assertIn("tools/bump_data.py", tools_job)
         self.assertIn("python3 tools/generate_assets.py", tools_job)
         self.assertIn("git diff --exit-code Schiesstagebuch/Resources", tools_job)

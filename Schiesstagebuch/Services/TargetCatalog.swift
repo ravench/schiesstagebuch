@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 /// Target templates bundled with the app (Targets.json, built by tools/targets.py from
 /// data/targets): the Swiss military and SSV targets and the ISSF targets. Settings › Scheiben
@@ -58,6 +59,26 @@ enum TargetCatalog {
     /// A new target of the user's, made from `item`.
     static func target(from item: Item) -> ShootingTarget {
         ShootingTarget(name: item.name, scoring: item.targetScoring, templateID: item.id)
+    }
+
+    /// A template added on two devices, or here and in a restored backup, is one target: the oldest
+    /// stays and takes the Stiche of the others. Copies that score differently stay apart.
+    @discardableResult
+    static func deduplicate(_ context: ModelContext) -> Int {
+        guard let all = try? context.fetch(FetchDescriptor<ShootingTarget>(sortBy: [SortDescriptor(\.createdAt)])) else { return 0 }
+        var keepers: [String: [ShootingTarget]] = [:]
+        var merged = 0
+        for target in all where !target.templateID.isEmpty {
+            guard let keep = keepers[target.templateID]?.first(where: { $0.scoring == target.scoring }) else {
+                keepers[target.templateID, default: []].append(target)
+                continue
+            }
+            for entry in target.entries ?? [] { entry.target = keep }
+            context.delete(target)
+            merged += 1
+        }
+        if merged > 0 { try? context.save() }
+        return merged
     }
 }
 

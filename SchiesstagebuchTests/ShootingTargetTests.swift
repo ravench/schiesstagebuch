@@ -121,6 +121,32 @@ final class ShootingTargetTests: ModelTestCase {
         XCTAssertEqual(try restored.fetch(FetchDescriptor<Entry>()).first?.target?.name, "B4")
     }
 
+    func testATemplateAddedTwiceIsOneTarget() throws {
+        let item = try XCTUnwrap(TargetCatalog.item(id: "ch-300m-b4"))
+        let first = TargetCatalog.target(from: item), second = TargetCatalog.target(from: item), changed = TargetCatalog.target(from: item)
+        first.createdAt = day(1); second.createdAt = day(2); changed.createdAt = day(3)
+        changed.scoring = .values([4, 3, 2, 1])
+        for t in [first, second, changed] { context.insert(t) }
+        let stich = addEntry(nil, on: day(4), shots: 18)
+        stich.target = second
+        try context.save()
+
+        XCTAssertEqual(TargetCatalog.deduplicate(context), 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<ShootingTarget>()).count, 2, "the copy that scores differently stays")
+        XCTAssertEqual(stich.target, first, "the oldest stays and takes the Stiche")
+        XCTAssertEqual(TargetCatalog.deduplicate(context), 0)
+    }
+
+    func testAChangedTemplateCopyIsTheUsersOwnTarget() throws {
+        let item = try XCTUnwrap(TargetCatalog.item(id: "ch-300m-b4"))
+        let t = TargetCatalog.target(from: item)
+        t.edit(scoring: item.targetScoring)
+        XCTAssertEqual(t.templateID, "ch-300m-b4", "renamed or saved as it is, it stays the template's")
+        t.edit(scoring: .values([4, 3, 2, 1]))
+        XCTAssertEqual(t.templateID, "")
+        XCTAssertNil(TargetCatalog.face(of: t), "no B4 picture for another scoring")
+    }
+
     func testTemplatesComeBundledSwissFirst() throws {
         let items = TargetCatalog.items
         XCTAssertGreaterThanOrEqual(items.count, 29)

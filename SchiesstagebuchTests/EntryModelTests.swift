@@ -110,4 +110,9 @@ final class EntryModelTests: ModelTestCase {
         passen.passeTotals = [PasseTotal(shots: 10, points: 91), PasseTotal(shots: 10, points: 88.5)]
         XCTAssertEqual(passen.resultText, ScoreFormat.points(179.5), "the sum of the Passen")
     }
+
+    func testAStichEnteredAfterwardsStartsWithoutATime() {
+        XCTAssertNotNil(Entry.startTime(on: day(3), now: day(3).addingTimeInterval(3600)), "shot today: the time it is entered")
+        XCTAssertNil(Entry.startTime(on: day(3), now: day(5)), "the clock of two days later says nothing about the Stich")
+    }
 }

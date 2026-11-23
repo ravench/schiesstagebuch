@@ -101,20 +101,26 @@ extension CaliberLike {
         return result
     }
 
-    /// Whether the name, a printed name, a search name from the catalogue ("Pist Pat 41", "K31") or a word of its
-    /// type («Platzpatrone», «blank») contains `query`, or these hold each of its words in any order, so
-    /// «.22 Platzpatrone» finds the .22 blanks. A category («Flinte», «handgun») counts only when the whole query starts
-    /// it: inside a category word «long» (arme longue) or «kurz» (Kurzwaffe) would turn «.22 Long Rifle» or «9 mm kurz»
-    /// into a whole shelf. All compared the way the catalogue compares its aliases, without accents
-    /// (`CaliberCatalog.searchKey`). The name is normalised on every call because the user may have renamed the calibre.
+    /// Whether the name, a printed name or a search name from the catalogue ("Pist Pat 41", "K31") contains `query`,
+    /// or a word of its type («Platzpatrone», «blank») starts with it, or these hold each of the query's words in any
+    /// order, so «.22 Platzpatrone» finds the .22 blanks. A type word counts from its start and from four letters:
+    /// inside the words, «car» (cartouche à blanc), «lan» (blank) or «rot» (Schrot) would list whole shelves. A category
+    /// («Flinte», «handgun») counts only when the whole query starts it: inside a category word «long» (arme longue) or
+    /// «kurz» (Kurzwaffe) would turn «.22 Long Rifle» or «9 mm kurz» into a whole shelf. All compared the way the
+    /// catalogue compares its aliases, without accents (`CaliberCatalog.searchKey`). The name is normalised on every
+    /// call because the user may have renamed the calibre.
     func matches(_ query: String) -> Bool {
         let whole = CaliberCatalog.searchKey(query)
         guard !whole.isEmpty else { return true }
-        let keys = [CaliberCatalog.searchKey(name)] + CaliberCatalog.searchKeys(id: catalogID)
-        if keys.contains(where: { $0.contains(whole) }) { return true }
+        let names = [CaliberCatalog.searchKey(name)] + CaliberCatalog.searchKeys(id: catalogID)
+        let types = CaliberCatalog.typeKeys(id: catalogID)
+        func hit(_ text: String) -> Bool {
+            names.contains { $0.contains(text) } || (text.count >= 4 && types.contains { $0.hasPrefix(text) })
+        }
+        if hit(whole) { return true }
         if whole.count >= 4, CaliberCatalog.categoryKeys(category).contains(where: { $0.hasPrefix(whole) }) { return true }
         let words = query.split { $0.isWhitespace || $0 == "/" }.map { CaliberCatalog.searchKey(String($0)) }.filter { !$0.isEmpty }
-        return !words.isEmpty && words.allSatisfy { word in keys.contains { $0.contains(word) } }
+        return !words.isEmpty && words.allSatisfy(hit)
     }
 }
 
@@ -370,6 +376,11 @@ final class Entry {
     /// compare equal from run to run.
     static var startTime: Date {
         ScreenshotData.isActive ? Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: .now) ?? .now : .now
+    }
+    /// The time a new Stich of an event on `day` starts with: none when it is entered afterwards,
+    /// since the clock then says when it was typed in, not when it was shot.
+    static func startTime(on day: Date, now: Date = .now, calendar: Calendar = .current) -> Date? {
+        calendar.isDate(day, inSameDayAs: now) ? startTime : nil
     }
     /// All shots fired, sighters included.
     var shotCount: Int = 0

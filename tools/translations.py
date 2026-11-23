@@ -181,6 +181,11 @@ T = {
     "Keine Scheiben": ("No targets", "Aucune cible", "Nessun bersaglio"),
     "Neue Scheibe": ("New target", "Nouvelle cible", "Nuovo bersaglio"),
     "Scheibe bearbeiten": ("Edit target", "Modifier la cible", "Modifica bersaglio"),
+    "Scheibe löschen?": ("Delete target?", "Supprimer la cible ?", "Eliminare il bersaglio?"),
+    "Die Stiche mit dieser Scheibe bleiben erhalten, haben dann aber keine Scheibe und kein daraus berechnetes Maximum mehr.": (
+        "The matches shot on this target are kept, but no longer have a target or the maximum worked out from it.",
+        "Les passes tirées sur cette cible sont conservées, mais n'ont plus de cible ni le maximum calculé à partir d'elle.",
+        "Le serie tirate su questo bersaglio restano, ma non hanno più un bersaglio né il massimo calcolato da esso."),
     "Eigene Scheibe": ("Own target", "Cible personnalisée", "Bersaglio personalizzato"),
     "Aus Vorlage hinzufügen": ("Add from template", "Ajouter depuis un modèle", "Aggiungi da modello"),
     "Vorlagen": ("Templates", "Modèles", "Modelli"),
