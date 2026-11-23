@@ -1,0 +1,18 @@
+# B3 50ft rapid (USA), from SIUS's target 641 in SiusData's Target.ini (USA/TGNRAB3.TRG):
+# 6 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "us-b3-50ft-rapid"
+name = "B3 50ft rapid (US)"
+short_name = "B3 50ft rapid"
+group = "USA"
+distances_m = [15]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [22.8, 45.6, 77.6, 113.2, 155.8, 211.2]
+black_mm = 77.6
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [11, 10, 9, 8, 7, 6, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), B3 50ft rapid"
+url = "https://www.sius.com"

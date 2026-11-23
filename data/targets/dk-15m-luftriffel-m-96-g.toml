@@ -1,0 +1,18 @@
+# 15m luftriffel M 96/G (Dänemark), from SIUS's target 91 in SiusData's Target.ini (DEN/TG15mAR.TRG):
+# 11 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "dk-15m-luftriffel-m-96-g"
+name = "15m luftriffel M 96/G (DK)"
+short_name = "15m luftriffel M"
+group = "Dänemark"
+distances_m = [15]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [7.4, 12.6, 20.2, 27.6, 35.2, 42.6, 50.2, 57.6, 65.2, 72.6, 80.2]
+black_mm = 42.6
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 15m luftriffel M 96/G"
+url = "https://www.sius.com"

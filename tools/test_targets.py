@@ -39,9 +39,23 @@ class RepoTargetTests(unittest.TestCase):
 
     def test_every_target_in_the_repo_is_fine(self):
         self.assertGreaterEqual(len(self.targets), 16)
-        self.assertEqual({t["group"] for t in self.targets.values()}, {"Schweiz", "ISSF"})
+        countries = {"Österreich", "Deutschland", "Dänemark", "Frankreich", "Kroatien", "Italien", "Luxemburg",
+                     "Niederlande", "Norwegen", "Schweden", "USA"}
+        self.assertLessEqual({t["group"] for t in self.targets.values()}, {"Schweiz", "ISSF"} | countries)
         for t in self.targets.values():
             self.assertEqual(targets.problems(t), [], t["_file"])
+
+    def test_other_countries_name_their_country(self):
+        # Targets of other countries (from SIUSData) end in their country code, so «A10 Reduced 200 (DK)»
+        # and «(SE)» can be told apart in a Stich, and their ids start with it.
+        foreign = [t for t in self.targets.values() if t["group"] not in ("Schweiz", "ISSF")]
+        self.assertGreaterEqual(len(foreign), 40)
+        for t in foreign:
+            code = t["id"].split("-")[0]
+            self.assertTrue(t["name"].endswith(f"({code.upper()})"), t["id"])
+            self.assertIn("SiusData", t["source"]["title"])
+        self.assertEqual(self.targets["us-sr1-100y"]["scoring"]["values"], [10, 9, 8, 7, 6, 5, 0])
+        self.assertEqual(self.targets["no-dfs-300"]["distances_m"], [300])
 
     def test_issf_rings_match_the_rulebook(self):
         self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][0], 0.5)

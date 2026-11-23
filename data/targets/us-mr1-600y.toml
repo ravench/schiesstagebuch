@@ -1,0 +1,19 @@
+# MR1 600y (USA), from SIUS's target 462 in SiusData's Target.ini (USA/TGMR1NRA.TRG):
+# 6 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "us-mr1-600y"
+name = "MR1 600y (US)"
+short_name = "MR1 600y"
+group = "USA"
+distances_m = [549]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [304.8, 457.2, 609.6, 914.4, 1219.2, 1524]
+inner_ten_mm = 152.4
+black_mm = 914.4
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), MR1 600y"
+url = "https://www.sius.com"
