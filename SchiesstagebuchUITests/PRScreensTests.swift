@@ -390,13 +390,21 @@ final class PRScreensTests: XCTestCase {
             let field = app.searchFields.firstMatch
             if field.waitForExistence(timeout: 3) {
                 field.tap()
-                field.typeText("300")
+                field.typeText("300\n") // Return: no keyboard in the screen
                 snap("21b5-Scheiben-Vorlagen-Suche")
-                // The search's Abbrechen first, then the sheet's.
-                app.buttons["Abbrechen"].firstMatch.tap()
             }
-            let cancel = app.buttons["Abbrechen"].firstMatch
-            if cancel.waitForExistence(timeout: 2) { cancel.tap() }
+            // While searching, the sheet's «Abbrechen» is hidden (CI: «No matches found»), so pull the
+            // sheet down when it is not there; it closes without asking.
+            for _ in 0..<3 where app.searchFields.firstMatch.exists { // only the template list searches
+                let cancel = app.buttons["Abbrechen"].firstMatch
+                if cancel.exists {
+                    cancel.tap()
+                } else {
+                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12))
+                        .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
+                }
+                sleep(1)
+            }
         }
         tab("Tagebuch")
         guard open(app.staticTexts["Obligatorisch"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
