@@ -396,6 +396,12 @@ final class PRScreensTests: XCTestCase {
         keys.element(boundBy: keys.count - 1).tap()
         reveal(app.staticTexts["Max. Punkte"].firstMatch)
         snap("21e-Max-Punkte-von-der-Scheibe")
+        // Back to «Total»: the two shots may include sighters, so the target gives no maximum.
+        let total = app.buttons["Total"].firstMatch
+        reveal(total, up: false)
+        total.tap()
+        reveal(app.staticTexts["Max. Punkte"].firstMatch)
+        snap("21e2-Total-ohne-Maximum")
     }
 
     /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered. With a card
