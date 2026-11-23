@@ -77,7 +77,7 @@ struct WelcomeView: View {
             .navigationTitle("Willkommen")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Los geht's") {
+                    Button("Starten") {
                         FirstRun.finish(importingRanges: offerRanges && importRanges, into: context)
                         dismiss()
                     }
@@ -109,7 +109,7 @@ struct WelcomeIntro: View {
                 .rotationEffect(.degrees(shown || reduceMotion ? 0 : -90))
                 .animation(reduceMotion ? nil : .spring(response: 0.6, dampingFraction: 0.6), value: shown)
                 .accessibilityHidden(true)
-            Text("Richten wir die App für dich ein")
+            Text("App einrichten")
                 .font(.title2.bold())
                 .multilineTextAlignment(.center)
             Text("Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.")

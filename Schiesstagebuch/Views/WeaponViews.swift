@@ -65,7 +65,7 @@ struct WeaponRow: View {
                 if weapon.isArchived { Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small) }
                 if weapon.needsMaintenance {
                     Image(systemName: "bell.badge.fill").foregroundStyle(.red).imageScale(.small)
-                        .accessibilityLabel("Wartung fällig")
+                        .accessibilityLabel("Pflege fällig")
                 }
                 Spacer()
                 Text("\((weapon.entries ?? []).totalShots.formatted()) Schuss")

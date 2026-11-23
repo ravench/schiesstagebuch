@@ -17,10 +17,25 @@ NOT_BRITISH = re.compile(r"\b(calibers?|colors?|programs?|licenses?|catalogs?|ce
                          r"weapons?|ammo|recogniz\w*|organiz\w*)\b", re.I)
 # Schusszähler-Schiesstagebuch is someone else's app and still maintained: name it, never "the old app".
 OLD_APP = re.compile(r"\b(alten?|old|ancienne|vecchia) app\b", re.I)
+# German is Swiss Standard German (CONTRIBUTING.md): ss, «», decimal point, Swiss words.
+SWISS = [(re.compile(r"ß"), "ss"), (re.compile(r"[„“”]"), "«»"), (re.compile(r"\d,\d"), "decimal point, 10.9")]
+GERMANISMS = {r"Webseiten?": "Website", r"oftmals": "oft", r"Los geht['’]s": "Starten", r"Wartung\w*": "Pflege or Service",
+              r"Displays?": "Bildschirm"}
 README = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "README.md")
 # Words that may be capitalised mid-sentence: names, products and screens they refer to.
 PROPER = {"Albisgüetli", "Apple", "Edit", "Elmiger", "Equipment", "Files", "Firearms", "Geco", "Grünig", "Log", "Maps",
           "Menu", "My", "On", "Photos", "Ranges", "Settings", "ShootCounter-Export", "Swiss", "Weather"}
+
+
+def german():
+    """Every German text: the keys, and the German spelling where it differs from the key."""
+    return list(T) + [v[3] for v in T.values() if len(v) > 3]
+
+
+def swiss_problems(texts):
+    bad = [(text, hint) for text in texts for pattern, hint in SWISS if pattern.search(text)]
+    return bad + [(text, swiss) for text in texts for word, swiss in GERMANISMS.items()
+                  if re.search(rf"(?<!\w){word}(?!\w)", text, re.I)]
 
 
 def english():
@@ -73,6 +88,14 @@ class TextStyleTests(unittest.TestCase):
     def test_sentence_case_check_catches_title_case(self):
         words = re.findall(r"[A-Za-zÀ-ÿ][\w’'-]*", "App Icon")
         self.assertTrue(any(w[0].isupper() and w not in PROPER for w in words[1:]))
+
+    def test_german_is_swiss(self):
+        self.assertEqual(swiss_problems(german()), [])
+
+    def test_swiss_check_catches_german_spelling(self):
+        bad = ["Größe", "„Stich“", "0 bis 10,9", "Los geht's", "Wartungsintervall", "Los geht’s"]
+        found = swiss_problems(["Grösse", "10.9"] + bad)
+        self.assertEqual([text for text, _ in found], bad)
 
 
 if __name__ == "__main__":

@@ -1082,6 +1082,29 @@
         }
       }
     },
+    "App einrichten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set up the app"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configurer l'app"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configura l'app"
+          }
+        }
+      }
+    },
     "App von %@": {
       "extractionState": "manual",
       "localizations": {
@@ -2048,7 +2071,7 @@
         }
       }
     },
-    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1,5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": {
+    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1.5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -3428,7 +3451,7 @@
         }
       }
     },
-    "Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10,9 für Zehntelwertung oder 0 bis 100 für A100.": {
+    "Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -6545,29 +6568,6 @@
         }
       }
     },
-    "Los geht's": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Let's go"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "C'est parti"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Iniziamo"
-          }
-        }
-      }
-    },
     "Losnummer": {
       "extractionState": "manual",
       "localizations": {
@@ -8960,6 +8960,29 @@
         }
       }
     },
+    "Pflege fällig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenance due"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entretien à faire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manutenzione dovuta"
+          }
+        }
+      }
+    },
     "Pflegeverlauf": {
       "extractionState": "manual",
       "localizations": {
@@ -9807,29 +9830,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Revolver"
-          }
-        }
-      }
-    },
-    "Richten wir die App für dich ein": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Let's set up the app for you"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configurons l'app pour toi"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configuriamo l'app per te"
           }
         }
       }
@@ -11444,6 +11444,29 @@
         }
       }
     },
+    "Starten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commencer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inizia"
+          }
+        }
+      }
+    },
     "Statistik": {
       "extractionState": "manual",
       "localizations": {
@@ -12498,29 +12521,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Armi"
-          }
-        }
-      }
-    },
-    "Wartung fällig": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Maintenance due"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entretien à faire"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Manutenzione dovuta"
           }
         }
       }

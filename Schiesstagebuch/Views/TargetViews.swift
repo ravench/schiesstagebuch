@@ -158,7 +158,7 @@ struct TargetEditorView: View {
                             TextField("0", value: $minValue, format: .number).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                         }
                         LabeledContent("Maximum") {
-                            TextField("10,9", value: $maxValue, format: .number).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
+                            TextField("10.9", value: $maxValue, format: .number).keyboardType(.decimalPad).multilineTextAlignment(.trailing)
                         }
                     case .values:
                         TextField("10 9 8 7 6 5 4 3 2 1 0", text: $valuesText)
@@ -167,7 +167,7 @@ struct TargetEditorView: View {
                 } footer: {
                     switch mode {
                     case .range:
-                        Text("Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10,9 für Zehntelwertung oder 0 bis 100 für A100.")
+                        Text("Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.")
                     case .values:
                         Text("Die möglichen Werte eines Schusses, durch Leerzeichen getrennt, der beste zuerst, z. B. «5 4 3 2 1 0». Bei den Einzelschüssen erscheinen sie als Tasten, und nach jedem Tipp geht es zum nächsten Schuss.")
                     }

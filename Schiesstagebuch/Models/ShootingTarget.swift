@@ -41,7 +41,7 @@ enum TargetScoring: Equatable {
         return seen.count >= 2 ? seen : nil
     }
 
-    /// Short description for lists: "0 – 10,9" or "5 4 3 2 1 0".
+    /// Short description for lists: "0 – 10.9" or "5 4 3 2 1 0".
     var summary: String {
         switch self {
         case let .range(min, max): "\(ScoreFormat.points(min)) – \(ScoreFormat.points(max))"
