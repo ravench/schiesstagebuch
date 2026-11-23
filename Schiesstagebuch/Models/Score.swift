@@ -17,7 +17,8 @@ struct Score {
     /// Whether "93 %" is read as a percentage. Off for old-app imports: their free-text "93%" may
     /// mean something else (e.g. a hit rate), so they only get a percentage once a maximum is entered.
     var percentFromResult = true
-    /// The highest value of a shot on the Stich's target; nil without a target.
+    /// The highest value of a shot on the Stich's target; nil without a target, and for a Stich entered
+    /// as a «Total»: its shot count may include sighters, which would make the maximum too high.
     var maxPerShot: Double?
 
     /// Individual shots grouped into Passen, one Passe per line: "10 9 10 8,5" (spaces or semicolons
@@ -124,7 +125,7 @@ extension Entry {
     var score: Score {
         Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount,
               scoredShotsKnown: !isLegacyImport || sighterCount != nil, maxFromSlash: !isLegacyImport,
-              percentFromResult: !isLegacyImport, maxPerShot: target?.scoring.highest)
+              percentFromResult: !isLegacyImport, maxPerShot: sighterCount == nil ? nil : target?.scoring.highest)
     }
 
     /// The result to show: as typed, else the points the Einzelschüsse or Passen add up to; empty without either.
