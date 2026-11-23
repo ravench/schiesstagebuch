@@ -153,7 +153,7 @@ final class ShootingTargetTests: ModelTestCase {
         // Swiss and ISSF first, then the other countries (from SIUSData) by name.
         let groups = TargetCatalog.grouped().map(\.group)
         XCTAssertEqual(Array(groups.prefix(2)), ["Schweiz", "ISSF"])
-        XCTAssertEqual(Array(groups.dropFirst(2)), groups.dropFirst(2).sorted())
+        XCTAssertEqual(Array(groups.dropFirst(2)), groups.dropFirst(2).sorted { $0.loc.localizedStandardCompare($1.loc) == .orderedAscending })
         XCTAssertTrue(groups.contains("Norwegen"))
         // Each group by name, numbers by their value.
         let names = ["VBS Scheibe A10 300 m", "SSV Scheibe A100 300 m", "VBS Scheibe A5 300 m", "ISSF Gewehr 50 m"]
