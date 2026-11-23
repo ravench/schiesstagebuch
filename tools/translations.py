@@ -404,87 +404,17 @@ T = {
     "Das Verkaufsdatum kann nicht vor dem Kaufdatum liegen. Verkaufte Waffen werden archiviert.": ("The date of sale can't be before the date of purchase. Sold firearms are archived.", "La date de vente ne peut pas précéder la date d'achat. Les armes vendues sont archivées.", "La data di vendita non può precedere la data di acquisto. Le armi vendute vengono archiviate."),
     "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
 
-    # Standblatt scanner
-    "Alle Summen stimmen mit dem Standblatt überein.": (
-        "All sums match the score strip.", "Toutes les sommes correspondent à la feuille de stand.",
-        "Tutte le somme corrispondono al foglio di tiro."),
-    "Aus Fotos wählen": ("Choose from photos", "Choisir dans les photos", "Scegli dalle foto"),
-    "Ein langes Standblatt auf mehreren Fotos wird in der gewählten Reihenfolge zusammengesetzt. Die Texterkennung läuft auf dem Gerät.": (
-        "A long score strip on several photos is joined in the order you pick them. Text recognition runs on the device.",
-        "Une longue feuille de stand sur plusieurs photos est assemblée dans l'ordre choisi. La reconnaissance du texte se fait sur l'appareil.",
-        "Un foglio di tiro lungo su più foto viene unito nell'ordine scelto. Il riconoscimento del testo avviene sul dispositivo."),
-    "Es wurden mehrere Standblätter erkannt. Wähle das gewünschte aus.": (
-        "Several score strips were found. Pick the one you want.",
-        "Plusieurs feuilles de stand ont été détectées. Choisissez celle que vous voulez.",
-        "Sono stati riconosciuti più fogli di tiro. Scegli quello desiderato."),
-    "Fehlende Schüsse: %@": ("Missing shots: %@", "Coups manquants : %@", "Colpi mancanti: %@"),
-    "Fotos zum Eintrag hinzufügen": ("Add photos to the entry", "Ajouter les photos à l'entrée", "Aggiungi le foto alla voce"),
-    "Handschrift wird nur ungefähr erkannt. Bitte alle Werte prüfen.": (
-        "Handwriting is only roughly recognised. Please check every value.",
-        "L'écriture manuscrite n'est reconnue qu'approximativement. Vérifiez toutes les valeurs.",
-        "La scrittura a mano viene riconosciuta solo in modo approssimativo. Controlla tutti i valori."),
-    "Hunderterwertung": ("Hundreds scoring (A100)", "Valeur sur 100 (A100)", "Punteggio su 100 (A100)"),
-    "Innenzehner": ("Inner tens", "Mouches", "Mouches"),
-    "Innenzehner: %@": ("Inner tens: %@", "Mouches : %@", "Mouches: %@"),
-    "Keine Schüsse erkannt. Fotografiere das Standblatt möglichst gerade und gut beleuchtet.": (
-        "No shots found. Photograph the score strip as straight and well lit as possible.",
-        "Aucun coup détecté. Photographiez la feuille de stand bien droite et bien éclairée.",
-        "Nessun colpo riconosciuto. Fotografa il foglio di tiro il più dritto e illuminato possibile."),
-    "Keine gedruckten Summen zum Vergleichen.": (
-        "No printed sums to compare with.", "Aucune somme imprimée pour comparer.", "Nessuna somma stampata da confrontare."),
-    "Kontrolle": ("Check", "Contrôle", "Controllo"),
-    "Liest Datum, Anlass, Einzelschüsse und Total von einem Standblatt.": (
-        "Reads date, event, individual shots and total from a score strip.",
-        "Lit la date, l'événement, les coups et le total d'une feuille de stand.",
-        "Legge data, evento, singoli colpi e totale da un foglio di tiro."),
-    "Nach dem Übernehmen kannst du im Eintrag alles anpassen, bevor du ihn sicherst.": (
-        "After applying you can adjust everything in the entry before saving it.",
-        "Après la reprise, vous pouvez tout modifier dans l'entrée avant de l'enregistrer.",
-        "Dopo l'applicazione puoi modificare tutto nella voce prima di salvarla."),
-    "Passe %@: gedruckt %@, gelesen %@": (
-        "Series %1$@: printed %2$@, read %3$@", "Passe %1$@ : imprimé %2$@, lu %3$@", "Serie %1$@: stampato %2$@, letto %3$@"),
     "Scheibe": ("Target", "Cible", "Bersaglio"),
-    "Standblatt": ("Score strip", "Feuille de stand", "Foglio di tiro"),
-    "Standblatt fotografieren": ("Photograph score strip", "Photographier la feuille de stand", "Fotografa il foglio di tiro"),
-    "Standblatt scannen": ("Scan score strip", "Scanner la feuille de stand", "Scansiona foglio di tiro"),
-    "Standblatt wird gelesen …": ("Reading score strip …", "Lecture de la feuille de stand …", "Lettura del foglio di tiro …"),
     "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighters", "%1$lld coups comptés + %2$lld coups d'essai", "%1$lld colpi di gara + %2$lld colpi di prova"),
     "Probeschüsse abziehen": ("Split off sighters", "Déduire les coups d'essai", "Scorporare i colpi di prova"),
     "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
         "The export only holds the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",
         "L'export ne contient que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste.",
         "L'esportazione contiene solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."),
-    "Total %@ liegt über dem Maximum von %@": (
-        "Total %1$@ is above the maximum of %2$@",
-        "Le total %1$@ dépasse le maximum de %2$@",
-        "Il totale %1$@ supera il massimo di %2$@"),
     "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": (
         "The result is above the maximum. Correct the result or the max. points.",
         "Le résultat dépasse le maximum. Corrige le résultat ou les points max.",
         "Il risultato supera il massimo. Correggi il risultato o i punti max."),
-    "Total: gedruckt %@, gelesen %@": ("Total: printed %1$@, read %2$@", "Total : imprimé %1$@, lu %2$@", "Totale: stampato %1$@, letto %2$@"),
-    "Unsicher gelesen, Schuss %@": ("Uncertain reading, shot %@", "Lecture incertaine, coup %@", "Lettura incerta, colpo %@"),
-    "Wiederholte Anzeigen (nicht gezählt)": (
-        "Repeated displays (not counted)", "Affichages répétés (non comptés)", "Visualizzazioni ripetute (non contate)"),
-    "Zehnerwertung": ("Tens scoring (A10)", "Valeur sur 10 (A10)", "Punteggio su 10 (A10)"),
-    "Übernehmen": ("Apply", "Reprendre", "Applica"),
-    "Trotzdem übernehmen": ("Apply anyway", "Reprendre quand même", "Applica comunque"),
-    "Zurück": ("Back", "Retour", "Indietro"),
-    "Summe stimmt nicht": ("Sum doesn't match", "La somme ne correspond pas", "La somma non corrisponde"),
-    "Summe nicht geprüft": ("Sum not checked", "Somme non vérifiée", "Somma non verificata"),
-    "Summe prüfen: %@": ("Check the sum: %@", "Vérifier la somme : %@", "Controllare la somma: %@"),
-    "Summe nicht geprüft, kein gedrucktes Total gelesen (Schüsse ergeben %@)": (
-        "Sum not checked, no printed total read (shots add up to %@)",
-        "Somme non vérifiée, aucun total imprimé lu (les coups font %@)",
-        "Somma non verificata, nessun totale stampato letto (i colpi danno %@)"),
-    "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben %@.": (
-        "No total was read on the score strip. The shots add up to %@.",
-        "Aucun total n'a été lu sur la feuille de stand. Les coups font %@.",
-        "Sul foglio di tiro non è stato letto nessun totale. I colpi danno %@."),
-    "Prüfe die Schüsse im Eintrag, bevor du ihn sicherst. Ein Hinweis steht in den Notizen.": (
-        "Check the shots in the entry before saving it. A note has been added.",
-        "Vérifiez les coups dans l'entrée avant de l'enregistrer. Une remarque a été ajoutée aux notes.",
-        "Controlla i colpi nella voce prima di salvarla. È stata aggiunta una nota."),
     "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.": ("The backup contains all entries, photos and master data. Restoring never duplicates existing entries. The last 10 backups are also kept in the Files app under On My iPhone › Schiesstagebuch › Backups.", "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique pas les entrées existantes. Les 10 dernières sauvegardes sont aussi conservées dans l'app Fichiers sous Sur mon iPhone › Schiesstagebuch › Backups.", "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica le voci esistenti. Gli ultimi 10 backup restano anche nell'app File in Sul mio iPhone › Schiesstagebuch › Backups."),
     "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
     "App von %@": ("App by %@", "App de %@", "App di %@"),
@@ -697,14 +627,6 @@ T = {
     "Schüsse vor der Erfassung": ("Shots before logging", "Coups avant l'enregistrement", "Colpi prima della registrazione"),
     "ausgebaut am %@": ("removed %@", "démonté le %@", "smontata il %@"),
     "montiert seit %@": ("fitted since %@", "monté depuis le %@", "montata dal %@"),
-    "Passe %@ hat %@ Schüsse, üblich sind 3, 4, 5, 6 oder 10.": (
-        "Series %1$@ has %2$@ shots; usual are 3, 4, 5, 6 or 10.",
-        "La passe %1$@ compte %2$@ coups ; l'usage est 3, 4, 5, 6 ou 10.",
-        "La serie %1$@ ha %2$@ colpi; di solito sono 3, 4, 5, 6 o 10."),
-    "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": (
-        "Left out so the series matches the printed sum: shot %@",
-        "Omis pour que la passe corresponde à la somme imprimée : coup %@",
-        "Omesso perché la serie corrisponda alla somma stampata: colpo %@"),
     # Scoring systems and IPSC
     "A-Treffer": ("A hits", "Impacts A", "Colpi A"),
     "C-Treffer": ("C hits", "Impacts C", "Colpi C"),

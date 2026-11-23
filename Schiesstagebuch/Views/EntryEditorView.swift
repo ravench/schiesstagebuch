@@ -100,7 +100,6 @@ struct EntryEditorView: View {
     @State private var pickerItems: [PhotosPickerItem] = []
     @State private var photoLoadFailed = false
     @State private var quickAdd: QuickAdd?
-    @State private var showingScanner = false
     @State private var didLoad = false
 
     enum QuickAdd: Identifiable { case weapon, ammunition; var id: Self { self } }
@@ -211,14 +210,6 @@ struct EntryEditorView: View {
                 // firearm and ammunition rows: one colour for every value that can be changed.
                 .tint(.accentColor)
 
-                Section {
-                    Button { showingScanner = true } label: {
-                        Label("Standblatt scannen", systemImage: "doc.text.viewfinder")
-                    }
-                } footer: {
-                    Text("Liest Datum, Anlass, Einzelschüsse und Total von einem Standblatt.")
-                }
-
                 if scoring == .ipsc {
                     IPSCStageSection(stage: $ipsc, shotCount: $shotCount, powerFactor: powerFactor)
                 } else {
@@ -320,7 +311,7 @@ struct EntryEditorView: View {
                 if new == .passeTotals, passeTotals.isEmpty { passeTotals = [PasseTotalDraft()] }
             }
             // Einzelschüsse always show a first Passe below the Probeschüsse: also in a Stich saved with
-            // Probeschüsse alone, after a scan that read no shots, or once the only Passe is deleted.
+            // Probeschüsse alone, or once the only Passe is deleted.
             .onChange(of: mode == .shots && passes.isEmpty, initial: true) { _, missing in
                 if missing { passes = [PassDraft(text: "")] }
             }
@@ -328,9 +319,6 @@ struct EntryEditorView: View {
                 Task { await loadPhotos(items) }
             }
             .alert("Nicht alle Fotos konnten geladen werden.", isPresented: $photoLoadFailed) {}
-            .sheet(isPresented: $showingScanner) {
-                StandblattScanView { scanned, scannedPhotos in applyScan(scanned, photos: scannedPhotos) }
-            }
             .sheet(item: $quickAdd) { kind in
                 switch kind {
                 case .weapon: WeaponEditorView(weapon: nil) { weapon = $0 }
@@ -587,29 +575,6 @@ struct EntryEditorView: View {
             return used
         }
         return active.count == 1 ? active.first : nil
-    }
-
-    /// Fills the form from a scanned Standblatt; nothing is saved until "Sichern".
-    private func applyScan(_ scanned: StandblattImport, photos scannedPhotos: [Data]) {
-        // A new Stich shows neither the date nor the Anlass (they are the Anlass's): the scan must not
-        // move or rename the Anlass behind the form (review 2026-11-10); the strip's title names the Stich.
-        if entry != nil, let scannedDate = scanned.date { date = scannedDate }
-        if !scanned.event.isEmpty {
-            if entry == nil {
-                if stich.isEmpty, scanned.event.caseInsensitiveCompare(event) != .orderedSame { stich = scanned.event }
-            } else if stichCount > 1, !event.isEmpty, scanned.event.caseInsensitiveCompare(event) != .orderedSame {
-                // In an event with several Stiche the strip usually names the Stich, e.g. "Sektionsstich".
-                stich = scanned.event
-            } else {
-                event = scanned.event
-            }
-        }
-        passes = scanned.passes.map { PassDraft(text: $0) }
-        mode = .shots
-        result = scanned.result
-        maxPoints = scanned.maxPoints
-        if !scanned.notes.isEmpty { notes = notes.isEmpty ? scanned.notes : notes + "\n" + scanned.notes }
-        for photo in scannedPhotos where photos.count < Limits.maxPhotos { photos.append(photo) }
     }
 
     private func loadPhotos(_ items: [PhotosPickerItem]) async {
