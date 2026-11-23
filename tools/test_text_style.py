@@ -23,7 +23,7 @@ GERMANISMS = {r"Webseiten?": "Website", r"oftmals": "oft", r"Los geht['’]s": "
               r"Displays?": "Bildschirm"}
 README = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "README.md")
 # Words that may be capitalised mid-sentence: names, products and screens they refer to.
-PROPER = {"Albisgüetli", "Apple", "Edit", "Elmiger", "Equipment", "Files", "Firearms", "Geco", "Grünig", "Log", "Maps",
+PROPER = {"Albisgüetli", "Apple", "Edit", "Elmiger", "Equipment", "Files", "Firearms", "Geco", "Grünig", "Kingdom", "Log", "Maps",
           "Menu", "My", "On", "Photos", "Ranges", "Settings", "ShootCounter-Export", "Swiss", "Weather"}
 
 
