@@ -118,8 +118,8 @@ def stats(values):
     }
 
 
-def fetch(bbox, px):
-    url = WMS.format(*bbox, px, px)
+def fetch(bbox, px, layer="ch.swisstopo.swissimage"):
+    url = WMS.format(*bbox, px, px).replace("ch.swisstopo.swissimage", layer)
     for attempt in range(4):
         try:
             with urllib.request.urlopen(url, timeout=60) as r:
@@ -239,9 +239,9 @@ def main(gpkg, out):
         w.writeheader()
         w.writerows(suspects)
 
-    def draw(path, center, size_m, px, chosen, others, lines, lane):
+    def draw(path, center, size_m, px, chosen, others, lines, lane, layer="ch.swisstopo.swissimage"):
         bbox = (center[0] - size_m / 2, center[1] - size_m / 2, center[0] + size_m / 2, center[1] + size_m / 2)
-        img = Image.open(io.BytesIO(fetch(bbox, px))).convert("RGB")
+        img = Image.open(io.BytesIO(fetch(bbox, px, layer))).convert("RGB")
         d = ImageDraw.Draw(img)
         scale = px / size_m
 
@@ -261,7 +261,12 @@ def main(gpkg, out):
         d.line([(10, px - 12), (10 + bar * scale, px - 12)], fill=(255, 255, 255), width=4)
         return img
 
+    # The 1:25 000 map (raster) draws the shooting lines from house to targets; show it next to the photo.
+    wanted = ("3CB70B40", "88E60D12", "736654BB", "9645EF24", "71CDDC5B", "5F5F3B63", "84660178",
+              "F29666B9", "09D3AD35", "359461CF", "315EF762", "95269187")
     for n, r in enumerate(suspects, 1):
+        if not r["target"].startswith(wanted):
+            continue
         firing, target = (r["firing_e"], r["firing_n"]), (r["target_e"], r["target_n"])
         cands = cands_by_target[r["target"]]
         chosen = [c["house"]["ring"] for c in cands if c["house"]["id"] == r["house"]]
@@ -272,13 +277,14 @@ def main(gpkg, out):
         slug = f"{n:02d}-{(r['d3'] or r['square']) + 0.8:.1f}-{r['target'][:8]}"
         try:
             a = draw(os.path.join(out, "a.jpg"), mid, size, 600, chosen, others, lines, [firing, target])
-            b = draw(os.path.join(out, "b.jpg"), firing, 100, 600, chosen, others, lines, [firing, target])
+            b = draw(os.path.join(out, "b.jpg"), mid, size, 600, [], [], [], [firing, target],
+                     "ch.swisstopo.pixelkarte-farbe")
             both = Image.new("RGB", (1210, 640), (0, 0, 0))
             both.paste(a, (0, 40))
             both.paste(b, (610, 40))
-            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  {len(cands)} houses  (bar 50 m | 10 m)",
+            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  {len(cands)} houses  photo | 1:25 000 map",
                                       fill=(255, 255, 255))
-            both.save(os.path.join(out, f"suspect-{slug}.jpg"), quality=85)
+            both.save(os.path.join(out, f"lk-{slug}.jpg"), quality=85)
         except Exception as e:  # noqa: BLE001
             print("image failed", slug, e)
 
