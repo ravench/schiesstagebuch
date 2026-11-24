@@ -61,6 +61,10 @@ class RepoTargetTests(unittest.TestCase):
             if "ring_diameters_mm" in t and "values" in t["scoring"] and t["id"] != "dk-koenigsscheibe":
                 self.assertLessEqual(max(t["scoring"]["values"]), 10, t["id"])
         self.assertEqual(self.targets["us-b6-50yd-slow"]["inner_ten_mm"], 43)
+        # Short names end at a word, not in the middle of one («Fullbore 300 yar»).
+        for t in foreign:
+            base = t["name"].rsplit(" (", 1)[0]
+            self.assertTrue(base == t["short_name"] or base.startswith(t["short_name"] + " "), t["id"])
         self.assertEqual(self.targets["no-dfs-300"]["distances_m"], [300])
 
     def test_issf_rings_match_the_rulebook(self):
