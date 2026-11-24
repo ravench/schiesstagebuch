@@ -154,19 +154,23 @@ def map_line_hits(line, cands):
     out = []
     for f in (0.2, 0.35, 0.5, 0.65, 0.8):
         p0 = (a[0] + u[0] * f * length, a[1] + u[1] * f * length)
-        s, last, dots = 6.0, 6.0, 0
+        # The walk follows the dots sideways, since the map's lines aren't always square to the row.
+        s, last, dots, off = 6.0, 6.0, 0, 0.0
         while s < MAX_FRONT + 20:
-            p = (p0[0] + n[0] * s, p0[1] + n[1] * s)
+            p = (p0[0] + n[0] * s + u[0] * off, p0[1] + n[1] * s + u[1] * off)
             if dark(p) is None:
                 break
             if dots >= 4 and solid(p):
                 out.append((p, s))
                 break
-            if any(dark((p[0] + u[0] * k * 0.5, p[1] + u[1] * k * 0.5)) for k in range(-6, 7)):
+            found = [k for k in sorted(range(-8, 9), key=abs)
+                     if dark((p[0] + u[0] * k * 0.5, p[1] + u[1] * k * 0.5))]
+            if found:
                 if s - last > 1.0:
                     dots += 1
+                    off += found[0] * 0.25
                 last = s
-            elif s - last > 14:
+            elif s - last > 20:
                 break
             s += 0.5
     return out
