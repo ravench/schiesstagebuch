@@ -14,16 +14,25 @@ title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
 url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"
 
 # The icon (Schiessverordnung VBS Anhang 2: light grey card, green chest figure 45 x 50 cm, 100 cm
-# scoring field). The figure's outline is the 3 zone of the SIUS STYX 50 m package (Sui PB5 sweep), in mm
-# from the centre. The inner fields' sizes are not published, so only the outer edge is drawn.
+# scoring field). The fields, in mm from the centre, from SIUS's B4 target (SiusData Target.ini): 4 = 200 mm
+# circle, 3 = the figure (body 450 wide from 180 above to 200 below the centre, stepped shoulders, head
+# 200 wide up to 300 above), 2 = 700 mm circle, 1 = 1000 mm circle.
 [[shapes]]
 rect = [-500, -500, 1000, 1000]
 fill = "grey"
 
 [[shapes]]
-polygon = [[-225, 171], [225, 171], [225, -217], [183, -231], [142, -242], [100, -250], [100, -328], [-100, -328], [-100, -250], [-142, -242], [-183, -231], [-225, -217]]
+polygon = [[-225, 200], [225, 200], [225, -180], [183, -195], [142, -206], [100, -214], [100, -300], [-100, -300], [-100, -214], [-142, -206], [-183, -195], [-225, -180]]
 fill = "green"
 
 [[shapes]]
 ellipse = [0, 0, 1000, 1000]
+line = "black"
+
+[[shapes]]
+ellipse = [0, 0, 700, 700]
+line = "black"
+
+[[shapes]]
+ellipse = [0, 0, 200, 200]
 line = "black"

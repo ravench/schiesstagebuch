@@ -1,0 +1,42 @@
+# Scheibe A6, 300 m: the A5 face (100 cm field, 60 cm black, rings of 20 cm) on a 120 x 120 cm card that
+# also scores: 6 = Ø 200 mm, 5 = Ø 400, 4 = Ø 600, 3 = Ø 800, 2 = Ø 1000, 1 = the rest of the card.
+# From SIUS's A6 target and its zone labels (SiusData Target.ini, 300 m range mode).
+id = "ch-300m-a6"
+name = "Scheibe A6 300 m"
+short_name = "A6"
+group = "Schweiz"
+distances_m = [300]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Scheibe A6"
+url = "https://www.sius.com"
+
+# The icon: the card scores too, so the rings are drawn as shapes, not as ring_diameters_mm
+# (which must match the scores one for one).
+[[shapes]]
+rect = [-600, -600, 1200, 1200]
+fill = "white"
+
+[[shapes]]
+ellipse = [0, 0, 1000, 1000]
+line = "black"
+
+[[shapes]]
+ellipse = [0, 0, 800, 800]
+line = "black"
+
+[[shapes]]
+ellipse = [0, 0, 600, 600]
+fill = "black"
+
+[[shapes]]
+ellipse = [0, 0, 400, 400]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 200, 200]
+line = "white"
