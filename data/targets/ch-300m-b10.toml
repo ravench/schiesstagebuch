@@ -8,8 +8,7 @@ group = "Schweiz"
 distances_m = [300]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
-# The icon: the card and green figure of B4, with the ten rings.
-face = "ch-300m-b4"
+# The icon: the card and green figure of B4 (its zone circles left out), with the ten rings.
 
 [scoring]
 # The only scores a shot can have, best first; 0 is a miss.
@@ -18,3 +17,11 @@ values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 [source]
 title = "Schiessverordnung VBS (SR 512.311), Anhang 2 Scheibenordnung"
 url = "https://www.swissshooting.ch/media/psslnqja/512311.pdf"
+
+[[shapes]]
+rect = [-500, -500, 1000, 1000]
+fill = "grey"
+
+[[shapes]]
+polygon = [[-225, 200], [225, 200], [225, -180], [183, -195], [142, -206], [100, -214], [100, -300], [-100, -300], [-100, -214], [-142, -206], [-183, -195], [-225, -180]]
+fill = "green"
