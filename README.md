@@ -20,9 +20,9 @@ match (Stich).
   record its position (Stellung): prone, kneeling, standing or rested; new matches
   start with the usual one for the firearm type (handguns and air rifles standing,
   ordnance and small-bore rifles prone).
-- **Scoring**: three ways to record the shots: a total, sighters (Probeschüsse) and
-  scored shots (Wertungsschüsse) apart, or every shot in its own box, one row per
-  Passe. With a maximum the app shows a percentage; a per-shot mean needs the scored
+- **Scoring**: three ways to record the shots: sighters (Probeschüsse) and scored
+  shots (Wertungsschüsse) as counts, a total per Passe, or every shot in its own box,
+  one row per Passe. With a maximum the app shows a percentage; a per-shot mean needs the scored
   shots. A result above the maximum is flagged and left out of the statistics.
 - **Master data**: firearms and shooting ranges in their own tabs, calibres and
   ammunition with optional lot numbers in Settings (Stammdaten). Anything can be archived instead of deleted,

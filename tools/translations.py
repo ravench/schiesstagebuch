@@ -377,7 +377,6 @@ T = {
     "Gebundenes Tagebuch": ("Hardcover journal", "Journal relié", "Diario rilegato"),
     "Probe": ("Sighters", "Essai", "Prova"),
     "Probeschüsse": ("Sighters", "Coups d'essai", "Colpi di prova"),
-    "Total": ("Total", "Total", "Totale"),
     "Schüsse total": ("Total shots", "Total des coups", "Totale colpi"),
     "Resultat (Punkte)": ("Result (points)", "Résultat (points)", "Risultato (punti)"),
     "Ablösung": ("Relay", "Relève", "Turno"),
