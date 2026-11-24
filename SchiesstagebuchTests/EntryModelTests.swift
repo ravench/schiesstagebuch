@@ -14,7 +14,8 @@ final class EntryModelTests: ModelTestCase {
         let total = addEntry(nil, on: day(1), shots: 10)
         let split = addEntry(nil, on: day(1), shots: 10); split.sighterCount = 2
         let shots = addEntry(nil, on: day(1), shots: 7); shots.sighterCount = 2; shots.shotValuesText = "10 9 8 7 6"
-        XCTAssertEqual(ShotEntryMode(of: total), .total)
+        XCTAssertEqual(ShotEntryMode(of: total), .split, "a count alone opens as Probe/Wertung")
+        XCTAssertNil(ShotEntryMode(rawValue: "total"), "a stored «Total» default falls back")
         XCTAssertEqual(ShotEntryMode(of: split), .split)
         XCTAssertEqual(ShotEntryMode(of: shots), .shots)
     }

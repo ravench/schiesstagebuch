@@ -28,7 +28,8 @@ struct EntryEditorView: View {
         _sighterBoxes = State(initialValue: ShotBoxes(text: entry.sighterValuesText))
         _passeTotals = State(initialValue: entry.passeTotals.map { PasseTotalDraft(shots: $0.shots, points: $0.points) })
         _mode = State(initialValue: ShotEntryMode(of: entry))
-        if let s = entry.sighterCount { _sighters = State(initialValue: s); _scored = State(initialValue: max(0, entry.shotCount - s)) }
+        let s = entry.sighterCount ?? 0
+        _sighters = State(initialValue: s); _scored = State(initialValue: max(0, entry.shotCount - s))
         _notes = State(initialValue: entry.notes); _photos = State(initialValue: entry.sortedPhotos.compactMap(\.imageData))
         if let shootingEvent = entry.shootingEvent {
             _scoring = State(initialValue: shootingEvent.scoringSystem); _division = State(initialValue: shootingEvent.ipscDivision)
@@ -69,12 +70,12 @@ struct EntryEditorView: View {
     @State private var position: ShootingPosition?
     @State private var target: ShootingTarget?
     @State private var shotCount = 0
-    @State private var mode: ShotEntryMode = .total
+    @State private var mode: ShotEntryMode = .split
     @State private var sight = SightSettings()
     @State private var weather: WeatherRecord?
     @AppStorage(Weapon.showSerialKey) private var showSerial = true
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
-    @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
+    @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .split
     @State private var sighters = 0
     @State private var scored = 0
     @State private var result = ""
@@ -302,11 +303,7 @@ struct EntryEditorView: View {
                     if old == .shots { sighters = sighterShotCount }
                     // The sum of the Passen or Einzelschüsse stays as the result in the other modes.
                     if let sum = summedResult(in: old) { result = sum }
-                    switch new {
-                    case .total: shotCount = total
-                    case .split: if old == .total { sighters = 0 }; scored = max(0, total - sighters)
-                    case .passeTotals, .shots: break
-                    }
+                    if new == .split { scored = max(0, total - sighters) }
                 }
                 if new == .passeTotals, passeTotals.isEmpty { passeTotals = [PasseTotalDraft()] }
             }
@@ -339,8 +336,6 @@ struct EntryEditorView: View {
             }
             .pickerStyle(.segmented)
             switch mode {
-            case .total:
-                countRow("Schusszahl", value: $shotCount, step: Self.CountStep.total)
             case .split:
                 countRow("Probeschüsse", value: $sighters, step: Self.CountStep.sighters)
                 countRow("Wertungsschüsse", value: $scored, step: Self.CountStep.scored)
@@ -454,13 +449,13 @@ struct EntryEditorView: View {
     private var currentScore: Score {
         Score(result: summedResult(in: mode) ?? result, maxPoints: maxPoints,
               shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
-              scoredShots: scoredShotsForScore, maxPerShot: mode == .total ? nil : target?.scoring.highest)
+              scoredShots: scoredShotsForScore, maxPerShot: target?.scoring.highest)
     }
 
     /// The result added up from the Passen or Einzelschüsse; nil when there are none, so the user types it.
     private func summedResult(in mode: ShotEntryMode) -> String? {
         switch mode {
-        case .total, .split: nil
+        case .split: nil
         case .passeTotals: enteredPasseTotals.isEmpty ? nil : enteredPasseTotals.resultText
         case .shots: Score.summedResult(passes: passes.map(\.text))
         }
@@ -469,7 +464,6 @@ struct EntryEditorView: View {
     /// All shots as the point form in `mode` counts them.
     private func shotTotal(in mode: ShotEntryMode) -> Int {
         switch mode {
-        case .total: shotCount
         case .split: sighters + scored
         case .passeTotals: sighters + enteredPasseTotals.shotCount
         case .shots: sighterShotCount + passShotCount
@@ -483,7 +477,6 @@ struct EntryEditorView: View {
     /// Shots the per-shot average divides by, as the current mode defines them.
     private var scoredShotsForScore: Int {
         switch mode {
-        case .total: shotCount
         case .split: scored
         case .passeTotals: enteredPasseTotals.shotCount
         case .shots: passShotCount
@@ -493,7 +486,6 @@ struct EntryEditorView: View {
     /// How far +/− moves each shot count. Scored shots go one by one, since Stiche
     /// often have odd sizes (e.g. 18).
     enum CountStep {
-        static let total = 5
         static let sighters = 1
         static let scored = 1
     }
@@ -610,16 +602,17 @@ struct EntryEditorView: View {
             target.ipscStage = ipsc
         }
         // IPSC has no sighters; the point fields stay as stored, like fields switched off in Settings.
-        let shotMode: ShotEntryMode = scoring == .ipsc ? .total : mode
-        switch shotMode {
-        case .total:
+        if scoring == .ipsc {
             target.shotCount = max(0, shotCount); target.sighterCount = nil
-        case .split:
-            target.shotCount = max(0, sighters) + max(0, scored); target.sighterCount = max(0, sighters)
-        case .passeTotals:
-            target.shotCount = max(0, sighters) + enteredPasseTotals.shotCount; target.sighterCount = max(0, sighters)
-        case .shots:
-            target.shotCount = sighterShotCount + passShotCount; target.sighterCount = sighterShotCount
+        } else {
+            switch mode {
+            case .split:
+                target.shotCount = max(0, sighters) + max(0, scored); target.sighterCount = max(0, sighters)
+            case .passeTotals:
+                target.shotCount = max(0, sighters) + enteredPasseTotals.shotCount; target.sighterCount = max(0, sighters)
+            case .shots:
+                target.shotCount = sighterShotCount + passShotCount; target.sighterCount = sighterShotCount
+            }
         }
         target.notes = notes
         if scoring == .rings { target.result = summedResult(in: mode) ?? result }

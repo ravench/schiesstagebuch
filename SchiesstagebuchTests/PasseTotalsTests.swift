@@ -23,7 +23,7 @@ final class PasseTotalsTests: ModelTestCase {
     }
 
     func testModeSitsBetweenSplitAndSingleShots() {
-        XCTAssertEqual(ShotEntryMode.allCases, [.total, .split, .passeTotals, .shots])
+        XCTAssertEqual(ShotEntryMode.allCases, [.split, .passeTotals, .shots])
         XCTAssertEqual(ShotEntryMode.passeTotals.rawValue, "passeTotals")
     }
 

@@ -12,7 +12,7 @@ struct SettingsView: View {
     @State private var importing = false
     @State private var importingLegacy = false
     @State private var message: String?
-    @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .total
+    @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .split
     @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
     @Query private var weapons: [Weapon]
     @AppStorage(Weapon.showSerialKey) private var showSerial = true

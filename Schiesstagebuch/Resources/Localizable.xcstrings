@@ -11559,29 +11559,6 @@
         }
       }
     },
-    "Total": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Totale"
-          }
-        }
-      }
-    },
     "Treffer": {
       "extractionState": "manual",
       "localizations": {
