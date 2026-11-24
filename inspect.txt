@@ -1,0 +1,158 @@
+32 feature tables
+- tlm_areale_freizeitareal (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, name, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_areale_name_uuid
+- tlm_areale_nutzungsareal (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, name, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_areale_name_uuid, ris_id
+- tlm_areale_schutzgebiet (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, name, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_grenzen_name_uuid
+- tlm_areale_verkehrsareal (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, name, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_areale_name_uuid
+- tlm_bauten_gebaeude_footprint (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, name, tlm_bauten_name_uuid, nutzung
+- tlm_bauten_leitung (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, stufe, netzebene, name, tlm_bauten_name_uuid
+- tlm_bauten_mauer (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet
+- tlm_bauten_sportbaute_lin (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_bauten_name_uuid, name
+- tlm_bauten_sportbaute_ply (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_bauten_name_uuid, name
+- tlm_bauten_staubaute (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_bauten_name_uuid, name
+- tlm_bauten_verbauung (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet
+- tlm_bauten_verkehrsbaute_lin (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, stufe
+- tlm_bauten_verkehrsbaute_ply (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet
+- tlm_bauten_versorgungsbaute_pkt (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet
+- tlm_bb_bodenbedeckung (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet
+- tlm_bb_einzelbaum (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet
+- tlm_eo_einzelobjekt (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, name, tlm_eo_name_uuid
+- tlm_gewaesser_fliessgewaesser (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_gewaesser_name_uuid, name, verlauf, tlm_gewaesser_lauf_uuid, gewiss_nr, lauf_nr, linst, gwl_nr, stufe
+- tlm_gewaesser_stehendes_gewaesser (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_gewaesser_name_uuid, name, tlm_gewaesser_lauf_uuid, gewiss_nr, lauf_nr, linst, gwl_nr, wasserstand_wechselnd
+- tlm_name_gelaendename (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_namen_name_uuid, name
+- tlm_namen_flurname (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_namen_name_uuid, name
+- tlm_namen_gebietsname (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_namen_name_uuid, name
+- tlm_namen_name_pkt (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, hoehe, tlm_namen_name_uuid, name
+- tlm_namen_siedlungsname (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_namen_name_uuid, name, einwohnerkategorie
+- tlm_namen_siedlungsname_zentrum (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_namen_name_uuid, name, einwohnerkategorie, tlm_siedlungsname_uuid
+- tlm_oev_eisenbahn (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, kunstbaute, anschlussgleis, achse_dkm, museumsbahn, auf_strasse, eroeffnungsdatum, stufe, ausser_betrieb, zahnradbahn, standseilbahn, betriebsbahn, tlm_oev_name_uuid, name, anzahl_spuren, verkehrsmittel
+- tlm_oev_haltestelle (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_oev_name_uuid, name, dienststellen_nummer
+- tlm_oev_schifffahrt (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_oev_name_uuid, name
+- tlm_oev_uebrige_bahn (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_oev_name_uuid, name, ausser_betrieb, stufe, betriebsbahn, eroeffnungsdatum
+- tlm_strassen_aus_einfahrt (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tlm_strassen_name_uuid, name, nummer
+- tlm_strassen_strasse (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, kunstbaute, wanderwege, befahrbarkeit, eroeffnungsdatum, stufe, richtungsgetrennt, tlm_strassen_name_uuid, name, belagsart, kreisel, verkehrsbeschraenkung, eigentuemer, verkehrsbedeutung, strassenname
+- tlm_strassen_strasseninfo (geom): id, geom, uuid, datum_aenderung, datum_erstellung, erstellung_jahr, erstellung_monat, grund_aenderung, herkunft, herkunft_jahr, herkunft_monat, objektart, revision_jahr, revision_monat, revision_qualitaet, tankstelle, restaurant, shop, toiletten, tlm_strassen_name_uuid, name
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Walenstadt': 2
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Rossboden/Rheinsand': 2
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Reppischtal': 2
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Hinterrhein - Rheinwald | Piazza di tiro Hinterrhein - Rheinwald': 2
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Bernhardzell': 2
+  tlm_areale_nutzungsareal.name = 'Wasserkraftwerk Wolfenschiessen': 1
+  tlm_areale_nutzungsareal.name = 'Schulhaus Schiesshausmatt': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Walenberg': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz St. Luzisteig': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Spittelberg': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Sensegraben': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Seltisberg': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz S-chanf': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Rouchgrat': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Ricken - Cholloch': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Magletsch': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Luthern - Bodenänzi': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Hintere Au': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Gnappiried': 1
+  tlm_areale_nutzungsareal.name = 'Schiessplatz Glaubenberg': 1
+  tlm_areale_verkehrsareal.name = 'Parkplatz Schiessanlage Riedertal': 1
+  tlm_areale_verkehrsareal.name = 'P+Rail Wolfenschiessen': 1
+  tlm_bauten_gebaeude_footprint.name = 'Wolfenschiessen Riedboden 300m': 2
+  tlm_bauten_gebaeude_footprint.name = 'Haslen Schiessegg 300m': 1
+  tlm_bauten_gebaeude_footprint.nutzung = 'Schiessstand': 2989
+  tlm_bauten_gebaeude_footprint.nutzung = 'Gasthof abgelegen, Schiessstand': 2
+  tlm_bauten_sportbaute_lin.objektart = 'Scheibenstand': 2883
+  tlm_gewaesser_fliessgewaesser.name = 'Schiessibach': 9
+  tlm_gewaesser_fliessgewaesser.name = 'Schiessend Bach': 5
+  tlm_gewaesser_fliessgewaesser.name = 'Schiessbach': 4
+  tlm_name_gelaendename.name = 'Schusslobena': 1
+  tlm_name_gelaendename.name = 'Schusslauizug': 1
+  tlm_namen_flurname.name = 'Schiessplatz': 4
+  tlm_namen_flurname.name = 'Schiessler': 2
+  tlm_namen_flurname.name = 'Schiessstand': 1
+  tlm_namen_flurname.name = 'Schiessplatz Geere': 1
+  tlm_namen_flurname.name = 'Schiessiwald': 1
+  tlm_namen_flurname.name = 'Schiessiacker': 1
+  tlm_namen_flurname.name = 'Schiesshornwald': 1
+  tlm_namen_flurname.name = 'Schiesshausmatte': 1
+  tlm_namen_flurname.name = 'Schiessgass': 1
+  tlm_namen_flurname.name = 'Schiesserwald': 1
+  tlm_namen_flurname.name = 'Schiesser': 1
+  tlm_namen_flurname.name = 'Schiessbachsite': 1
+  tlm_namen_flurname.name = 'Scheibenweid': 1
+  tlm_namen_flurname.name = 'Scheibenstand': 1
+  tlm_namen_flurname.name = 'Scheibenlehn': 1
+  tlm_namen_flurname.name = 'Scheibenhüsi': 1
+  tlm_namen_flurname.name = 'Scheibenböhl': 1
+  tlm_namen_flurname.name = 'Im Schiessbach': 1
+  tlm_namen_flurname.name = 'Enteschiessmüli': 1
+  tlm_namen_flurname.name = 'Derbyschuss': 1
+  tlm_namen_name_pkt.name = 'Schiesshorn': 1
+  tlm_namen_siedlungsname.name = 'Wolfenschiessen': 1
+  tlm_namen_siedlungsname.name = 'Schiessi': 1
+  tlm_namen_siedlungsname.name = 'Schiesserhof': 1
+  tlm_namen_siedlungsname.name = 'Schiessegg': 1
+  tlm_namen_siedlungsname.name = 'Scheibenschachen': 1
+  tlm_namen_siedlungsname.name = 'Scheibenhalde': 1
+  tlm_namen_siedlungsname.name = 'Scheibenberg': 1
+  tlm_namen_siedlungsname.name = 'Entenschiess': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Wolfenschiessen': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Schiessi': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Schiesserhof': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Schiessegg': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Scheibenschachen': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Scheibenhalde': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Scheibenberg': 1
+  tlm_namen_siedlungsname_zentrum.name = 'Entenschiess': 1
+  tlm_oev_haltestelle.name = 'Wolfenschiessen, Zelgli': 1
+  tlm_oev_haltestelle.name = 'Wolfenschiessen, Hauptstrasse': 1
+  tlm_oev_haltestelle.name = 'Wolfenschiessen, Bahnhof': 1
+  tlm_oev_haltestelle.name = 'Wolfenschiessen': 1
+  tlm_oev_haltestelle.name = 'Wil SG, Scheibenberg': 1
+  tlm_oev_haltestelle.name = 'Unterseen, Schiessstand Lehn': 1
+  tlm_oev_haltestelle.name = 'Steffisburg, Schiessstand': 1
+  tlm_oev_haltestelle.name = 'Pfäffikon SZ, Schiessstand': 1
+  tlm_oev_haltestelle.name = 'Obernau, Schiessstand Stalden': 1
+  tlm_oev_haltestelle.name = 'Haslen AI, Schiessegg': 1
+  tlm_oev_haltestelle.name = 'Dornach, Schiessstand': 1
+  tlm_oev_haltestelle.name = 'Bern, Scheibenrain': 1
+  tlm_oev_uebrige_bahn.name = 'Wolfenschiessen-Wissiflue': 1
+  tlm_oev_uebrige_bahn.name = 'Wolfenschiessen-Walibalm': 1
+  tlm_oev_uebrige_bahn.name = 'Wolfenschiessen-Grunggis': 1
+  tlm_oev_uebrige_bahn.name = 'Wolfenschiessen-Brändlen': 1
+tlm_bauten_sportbaute_lin.objektart values:
+  'Bobbahn': 1
+  'Laufbahn': 197
+  'Pferderennbahn': 30
+  'Rodelbahn': 25
+  'Scheibenstand': 2883
+  'Skisprungschanze': 24
+tlm_bauten_gebaeude_footprint names: 2991 of 2991 named
+  'Petit Lancy St-Georges 300/50/25m': 11
+  'Frauenfeld Schollenholz 300/50/25m': 11
+  'Sissach Limperg 300/50/25m': 8
+  'Schaffhausen Birch 300/50/25m': 8
+  'Zuchwil Feldacker 300/150/100/60/50/25m': 6
+  'Vicosoprano Dre Mota 300/100/50/25m': 6
+  'Bern-Riedbach Forst 300/50/25m': 6
+  'Aesch Schürfeld 300/50/25m': 6
+  'Thun Guntelsey 300/50/25m': 5
+  'Tesserete Pezzolo 50m': 5
+  'Stans Schwybogen 50/30/25m': 5
+  'Rapperswil-Jona Grunau 300/50/25m': 5
+  'Murgenthal Brunnrain 300/50m': 5
+  'Liestal Sichtern 300/50/25m': 5
+  'Hinwil Betzholz 300/50/25m': 5
+  'Bôle 300m': 5
+  'Bodio 50m': 5
+  'Bettingen 300/50m': 5
+  'Wiedlisbach Wangen a. A. Chleihölzli 300/50/25m': 4
+  'Volketswil Hegnau Dürrenbach 50/25m': 4
+  'Uster Mühleholz 300m': 4
+  'Urdorf Bergermoos 300m': 4
+  'Turbenthal 30m': 4
+  'Tumegl-Tomils Pro Lueng 300m': 4
+  'Tolochenaz Le Boiron 300/50m': 4
+tlm_bauten_sportbaute_lin names: 0 of 2883 named
+  None: 2883
+tlm_namen_siedlungsname.objektart values:
+  'Ort': 34254
+  'Ortsteil': 471
+  'Quartier': 1751
+  'Quartierteil': 18409
