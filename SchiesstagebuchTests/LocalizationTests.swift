@@ -8,18 +8,6 @@ final class LocalizationTests: XCTestCase {
         return bundle.localizedString(forKey: key, value: "<missing>", table: table)
     }
 
-    func testCameraUsageDescriptionTalksAboutStandblaetter() throws {
-        let expected = [
-            "de": "Standblätter direkt fotografieren und zum Eintrag speichern.",
-            "en": "Take photos of score strips and save them with the entry.",
-            "fr": "Photographier les feuilles de stand et les enregistrer avec l'entrée.",
-            "it": "Fotografare i fogli di tiro e salvarli con la voce.",
-        ]
-        for (lang, text) in expected {
-            XCTAssertEqual(try localized("NSCameraUsageDescription", lang, table: "InfoPlist"), text, lang)
-        }
-    }
-
     func testLocationUsageDescriptionInAllLanguages() throws {
         for lang in ["de", "en", "fr", "it"] {
             let text = try localized("NSLocationWhenInUseUsageDescription", lang, table: "InfoPlist")

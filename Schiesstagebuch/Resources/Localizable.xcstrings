@@ -760,29 +760,6 @@
         }
       }
     },
-    "Alle Summen stimmen mit dem Standblatt überein.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All sums match the score strip."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toutes les sommes correspondent à la feuille de stand."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutte le somme corrispondono al foglio di tiro."
-          }
-        }
-      }
-    },
     "Alle Waffen": {
       "extractionState": "manual",
       "localizations": {
@@ -1312,29 +1289,6 @@
         }
       }
     },
-    "Auf dem Standblatt wurde kein Total gelesen. Die Schüsse ergeben %@.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No total was read on the score strip. The shots add up to %@."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun total n'a été lu sur la feuille de stand. Les coups font %@."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sul foglio di tiro non è stato letto nessun totale. I colpi danno %@."
-          }
-        }
-      }
-    },
     "Auf der Karte gewählt": {
       "extractionState": "manual",
       "localizations": {
@@ -1469,29 +1423,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Disattivato"
-          }
-        }
-      }
-    },
-    "Aus Fotos wählen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose from photos"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisir dans les photos"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli dalle foto"
           }
         }
       }
@@ -3175,29 +3106,6 @@
         }
       }
     },
-    "Ein langes Standblatt auf mehreren Fotos wird in der gewählten Reihenfolge zusammengesetzt. Die Texterkennung läuft auf dem Gerät.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A long score strip on several photos is joined in the order you pick them. Text recognition runs on the device."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Une longue feuille de stand sur plusieurs photos est assemblée dans l'ordre choisi. La reconnaissance du texte se fait sur l'appareil."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un foglio di tiro lungo su più foto viene unito nell'ordine scelto. Il riconoscimento del testo avviene sul dispositivo."
-          }
-        }
-      }
-    },
     "Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.": {
       "extractionState": "manual",
       "localizations": {
@@ -3773,29 +3681,6 @@
         }
       }
     },
-    "Es wurden mehrere Standblätter erkannt. Wähle das gewünschte aus.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Several score strips were found. Pick the one you want."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plusieurs feuilles de stand ont été détectées. Choisissez celle que vous voulez."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sono stati riconosciuti più fogli di tiro. Scegli quello desiderato."
-          }
-        }
-      }
-    },
     "Export fehlgeschlagen: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -3838,29 +3723,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Colore"
-          }
-        }
-      }
-    },
-    "Fehlende Schüsse: %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Missing shots: %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Coups manquants : %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Colpi mancanti: %@"
           }
         }
       }
@@ -4281,29 +4143,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Foto non trovate"
-          }
-        }
-      }
-    },
-    "Fotos zum Eintrag hinzufügen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add photos to the entry"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajouter les photos à l'entrée"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi le foto alla voce"
           }
         }
       }
@@ -4860,29 +4699,6 @@
         }
       }
     },
-    "Handschrift wird nur ungefähr erkannt. Bitte alle Werte prüfen.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Handwriting is only roughly recognised. Please check every value."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'écriture manuscrite n'est reconnue qu'approximativement. Vérifiez toutes les valeurs."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La scrittura a mano viene riconosciuta solo in modo approssimativo. Controlla tutti i valori."
-          }
-        }
-      }
-    },
     "Hauptnummer": {
       "extractionState": "manual",
       "localizations": {
@@ -5063,29 +4879,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hit factor"
-          }
-        }
-      }
-    },
-    "Hunderterwertung": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hundreds scoring (A100)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Valeur sur 100 (A100)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Punteggio su 100 (A100)"
           }
         }
       }
@@ -5316,52 +5109,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."
-          }
-        }
-      }
-    },
-    "Innenzehner": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inner tens"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mouches"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mouches"
-          }
-        }
-      }
-    },
-    "Innenzehner: %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inner tens: %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mouches : %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mouches: %@"
           }
         }
       }
@@ -5970,29 +5717,6 @@
         }
       }
     },
-    "Keine Schüsse erkannt. Fotografiere das Standblatt möglichst gerade und gut beleuchtet.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No shots found. Photograph the score strip as straight and well lit as possible."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun coup détecté. Photographiez la feuille de stand bien droite et bien éclairée."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun colpo riconosciuto. Fotografa il foglio di tiro il più dritto e illuminato possibile."
-          }
-        }
-      }
-    },
     "Keine Sportgeräte": {
       "extractionState": "manual",
       "localizations": {
@@ -6062,29 +5786,6 @@
         }
       }
     },
-    "Keine gedruckten Summen zum Vergleichen.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No printed sums to compare with."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucune somme imprimée pour comparer."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessuna somma stampata da confrontare."
-          }
-        }
-      }
-    },
     "Keine passende Schiessanlage": {
       "extractionState": "manual",
       "localizations": {
@@ -6127,29 +5828,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "In ginocchio"
-          }
-        }
-      }
-    },
-    "Kontrolle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Check"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contrôle"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Controllo"
           }
         }
       }
@@ -6541,29 +6219,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "A terra"
-          }
-        }
-      }
-    },
-    "Liest Datum, Anlass, Einzelschüsse und Total von einem Standblatt.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reads date, event, individual shots and total from a score strip."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lit la date, l'événement, les coups et le total d'une feuille de stand."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Legge data, evento, singoli colpi e totale da un foglio di tiro."
           }
         }
       }
@@ -7760,29 +7415,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dopo giorni"
-          }
-        }
-      }
-    },
-    "Nach dem Übernehmen kannst du im Eintrag alles anpassen, bevor du ihn sicherst.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "After applying you can adjust everything in the entry before saving it."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Après la reprise, vous pouvez tout modifier dans l'entrée avant de l'enregistrer."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dopo l'applicazione puoi modificare tutto nella voce prima di salvarla."
           }
         }
       }
@@ -9075,52 +8707,6 @@
         }
       }
     },
-    "Passe %@ hat %@ Schüsse, üblich sind 3, 4, 5, 6 oder 10.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Series %1$@ has %2$@ shots; usual are 3, 4, 5, 6 or 10."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La passe %1$@ compte %2$@ coups ; l'usage est 3, 4, 5, 6 ou 10."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La serie %1$@ ha %2$@ colpi; di solito sono 3, 4, 5, 6 o 10."
-          }
-        }
-      }
-    },
-    "Passe %@: gedruckt %@, gelesen %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Series %1$@: printed %2$@, read %3$@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passe %1$@ : imprimé %2$@, lu %3$@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Serie %1$@: stampato %2$@, letto %3$@"
-          }
-        }
-      }
-    },
     "Passe %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -9669,29 +9255,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fucile di precisione / long range"
-          }
-        }
-      }
-    },
-    "Prüfe die Schüsse im Eintrag, bevor du ihn sicherst. Ein Hinweis steht in den Notizen.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Check the shots in the entry before saving it. A note has been added."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vérifiez les coups dans l'entrée avant de l'enregistrer. Une remarque a été ajoutée aux notes."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Controlla i colpi nella voce prima di salvarla. È stata aggiunta una nota."
           }
         }
       }
@@ -11605,98 +11168,6 @@
         }
       }
     },
-    "Standblatt": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Score strip"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Feuille de stand"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Foglio di tiro"
-          }
-        }
-      }
-    },
-    "Standblatt fotografieren": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Photograph score strip"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Photographier la feuille de stand"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fotografa il foglio di tiro"
-          }
-        }
-      }
-    },
-    "Standblatt scannen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan score strip"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scanner la feuille de stand"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scansiona foglio di tiro"
-          }
-        }
-      }
-    },
-    "Standblatt wird gelesen …": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reading score strip …"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lecture de la feuille de stand …"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lettura del foglio di tiro …"
-          }
-        }
-      }
-    },
     "Starkregen": {
       "extractionState": "manual",
       "localizations": {
@@ -11927,98 +11398,6 @@
         }
       }
     },
-    "Summe nicht geprüft": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sum not checked"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Somme non vérifiée"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Somma non verificata"
-          }
-        }
-      }
-    },
-    "Summe nicht geprüft, kein gedrucktes Total gelesen (Schüsse ergeben %@)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sum not checked, no printed total read (shots add up to %@)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Somme non vérifiée, aucun total imprimé lu (les coups font %@)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Somma non verificata, nessun totale stampato letto (i colpi danno %@)"
-          }
-        }
-      }
-    },
-    "Summe prüfen: %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Check the sum: %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vérifier la somme : %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Controllare la somma: %@"
-          }
-        }
-      }
-    },
-    "Summe stimmt nicht": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sum doesn't match"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La somme ne correspond pas"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La somma non corrisponde"
-          }
-        }
-      }
-    },
     "Tage zählen": {
       "extractionState": "manual",
       "localizations": {
@@ -12203,52 +11582,6 @@
         }
       }
     },
-    "Total %@ liegt über dem Maximum von %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total %1$@ is above the maximum of %2$@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le total %1$@ dépasse le maximum de %2$@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il totale %1$@ supera il massimo di %2$@"
-          }
-        }
-      }
-    },
-    "Total: gedruckt %@, gelesen %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total: printed %1$@, read %2$@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total : imprimé %1$@, lu %2$@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Totale: stampato %1$@, letto %2$@"
-          }
-        }
-      }
-    },
     "Treffer": {
       "extractionState": "manual",
       "localizations": {
@@ -12318,29 +11651,6 @@
         }
       }
     },
-    "Trotzdem übernehmen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apply anyway"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reprendre quand même"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Applica comunque"
-          }
-        }
-      }
-    },
     "USA": {
       "extractionState": "manual",
       "localizations": {
@@ -12383,29 +11693,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ora"
-          }
-        }
-      }
-    },
-    "Unsicher gelesen, Schuss %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uncertain reading, shot %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lecture incertaine, coup %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lettura incerta, colpo %@"
           }
         }
       }
@@ -12824,29 +12111,6 @@
         }
       }
     },
-    "Weggelassen, damit die Passe zur gedruckten Summe passt: Schuss %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Left out so the series matches the printed sum: shot %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Omis pour que la passe corresponde à la somme imprimée : coup %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Omesso perché la serie corrisponda alla somma stampata: colpo %@"
-          }
-        }
-      }
-    },
     "Weiter": {
       "extractionState": "manual",
       "localizations": {
@@ -13238,29 +12502,6 @@
         }
       }
     },
-    "Wiederholte Anzeigen (nicht gezählt)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Repeated displays (not counted)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Affichages répétés (non comptés)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Visualizzazioni ripetute (non contate)"
-          }
-        }
-      }
-    },
     "Willkommen": {
       "extractionState": "manual",
       "localizations": {
@@ -13445,29 +12686,6 @@
         }
       }
     },
-    "Zehnerwertung": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tens scoring (A10)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Valeur sur 10 (A10)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Punteggio su 10 (A10)"
-          }
-        }
-      }
-    },
     "Zeit": {
       "extractionState": "manual",
       "localizations": {
@@ -13579,29 +12797,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultima"
-          }
-        }
-      }
-    },
-    "Zurück": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Back"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Retour"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Indietro"
           }
         }
       }
@@ -15143,29 +14338,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Media per colpo"
-          }
-        }
-      }
-    },
-    "Übernehmen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apply"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reprendre"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Applica"
           }
         }
       }

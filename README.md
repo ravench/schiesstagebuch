@@ -24,9 +24,6 @@ match (Stich).
   scored shots (Wertungsschüsse) apart, or every shot in its own box, one row per
   Passe. With a maximum the app shows a percentage; a per-shot mean needs the scored
   shots. A result above the maximum is flagged and left out of the statistics.
-- **Score strips** (Standblätter): scan a printed score strip, or a handwritten sheet,
-  to fill in date, event, individual shots and total. The app checks what it read
-  against the printed sums and usual Passe lengths before it fills in the entry.
 - **Master data**: firearms and shooting ranges in their own tabs, calibres and
   ammunition with optional lot numbers in Settings (Stammdaten). Anything can be archived instead of deleted,
   so history and statistics stay intact. Firearms have an optional date of purchase
