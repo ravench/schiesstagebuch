@@ -2,8 +2,9 @@ import Foundation
 import SwiftData
 
 /// Target templates bundled with the app (Targets.json, built by tools/targets.py from
-/// data/targets): the Swiss military and SSV targets and the ISSF targets. Settings › Scheiben
-/// adds one as the user's own target, which they can then rename or change.
+/// data/targets): the Swiss military and SSV targets, the ISSF targets and other countries' sport
+/// targets from SIUSData. Settings › Scheiben adds one as the user's own target, which they can
+/// then rename or change.
 enum TargetCatalog {
     struct Item: Codable, Identifiable, Equatable {
         struct Scoring: Codable, Equatable {
