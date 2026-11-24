@@ -4,7 +4,7 @@ id = "dk-a10-reduced-200"
 name = "A10 Reduced 200 (DK)"
 short_name = "A10 Reduced 200"
 group = "Dänemark"
-distances_m = []
+distances_m = [200]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
 ring_diameters_mm = [66.8, 133.4, 200, 266.6, 333.4, 400, 466.8, 533.4, 600, 666.8]
 inner_ten_mm = 33.4
