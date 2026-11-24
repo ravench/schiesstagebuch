@@ -31,9 +31,9 @@ final class TargetFaceTests: XCTestCase {
         XCTAssertEqual(b4.shapes.first?.rect, [-500, -500, 1000, 1000])
         XCTAssertEqual(b4.shapes.first?.fill, "grey")
         XCTAssertEqual(b4.shapes[1].fill, "green")
-        // The rifle B10 is B4's card and figure with ten rings on top.
+        // The rifle B10 is B4's card and figure with ten rings on top, without B4's zone circles.
         let b10 = try XCTUnwrap(TargetCatalog.item(id: "ch-300m-b10")?.face)
-        XCTAssertEqual(Array(b10.shapes.prefix(b4.shapes.count)), b4.shapes)
+        XCTAssertEqual(b10.shapes, Array(b4.shapes.prefix(2)))
         XCTAssertEqual(b10.rings.count, 10)
         // The pistol B10 has the same card but the pistol figure, which sits higher.
         let pistol = try XCTUnwrap(TargetCatalog.item(id: "ch-50m-pistol-b10")?.face)
