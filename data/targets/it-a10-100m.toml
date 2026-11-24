@@ -1,0 +1,19 @@
+# A10 100m (Italien), from SIUS's target 236 in SiusData's Target.ini (ITA/TGA10AT1.TRG):
+# 10 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "it-a10-100m"
+name = "A10 100m (IT)"
+short_name = "A10 100m"
+group = "Italien"
+distances_m = [100]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [33.2, 66.6, 100, 133.2, 166.4, 199.8, 233.2, 266.4, 299.6, 333]
+inner_ten_mm = 16.65
+black_mm = 199.8
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), A10 100m"
+url = "https://www.sius.com"

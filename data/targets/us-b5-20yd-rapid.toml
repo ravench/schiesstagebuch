@@ -1,0 +1,20 @@
+# B5 20yd rapid (USA), from SIUS's target 643 in SiusData's Target.ini (USA/TGNRAB5.TRG):
+# 5 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "us-b5-20yd-rapid"
+name = "B5 20yd rapid (US)"
+short_name = "B5 20yd rapid"
+group = "USA"
+distances_m = [18]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [57, 95.4, 138, 189.4, 256]
+# The innermost circle is the X (US) or inner ten: it only breaks ties and scores 10.
+inner_ten_mm = 28.4
+black_mm = 95.4
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), B5 20yd rapid"
+url = "https://www.sius.com"

@@ -1,0 +1,19 @@
+# Schijf Woerden (Niederlande), from SIUS's target 142 in SiusData's Target.ini (NED/TGWOERDE.TRG):
+# 10 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "nl-schijf-woerden"
+name = "Schijf Woerden (NL)"
+short_name = "Schijf Woerden"
+group = "Niederlande"
+distances_m = []
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [28, 61, 95, 128, 161, 195, 228, 261, 295, 328]
+inner_ten_mm = 11
+black_mm = 195
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Schijf Woerden"
+url = "https://www.sius.com"

@@ -1,0 +1,19 @@
+# LR1 1000yd (USA), from SIUS's target 647 in SiusData's Target.ini (USA/TGLR1NRA.TRG):
+# 4 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "us-lr1-1000yd"
+name = "LR1 1000yd (US)"
+short_name = "LR1 1000yd"
+group = "USA"
+distances_m = [914]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [508, 762, 1117.6, 1524]
+inner_ten_mm = 254
+black_mm = 1117.6
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), LR1 1000yd"
+url = "https://www.sius.com"

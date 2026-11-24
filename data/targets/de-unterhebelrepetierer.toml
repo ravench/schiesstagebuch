@@ -1,0 +1,18 @@
+# Unterhebelrepetierer (Deutschland), from SIUS's target 132 in SiusData's Target.ini (GER/TGUnterH.TRG):
+# 6 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "de-unterhebelrepetierer"
+name = "Unterhebelrepetierer (DE)"
+short_name = "Unterhebelrepetierer"
+group = "Deutschland"
+distances_m = []
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [25, 50, 100, 150, 200, 250]
+black_mm = 250
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Unterhebelrepetierer"
+url = "https://www.sius.com"
