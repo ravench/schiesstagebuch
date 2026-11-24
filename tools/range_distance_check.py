@@ -107,6 +107,92 @@ def choose(cands, short_houses=()):
     return min(cands, key=lambda c: (not c["named"], c["nearest"]))
 
 
+LK = "ch.swisstopo.pixelkarte-farbe"
+MAP_RES = 0.5  # metres per pixel
+
+
+def map_line_hits(line, cands):
+    """Where the dotted shooting lines of the 1:25 000 map (raster) end at a building.
+
+    From five points along the target row it walks square to the row towards the houses while
+    there is a black dot within 3 m to the side (gaps up to 14 m), and stops where it reaches
+    solid black (a building). Returns the hit points (LV95) and their distances from the row.
+    """
+    from PIL import Image
+    a, u, length = row_frame(line)
+    n = (-u[1], u[0])
+    cx = sum(c["firing"][0] for c in cands) / len(cands)
+    cy = sum(c["firing"][1] for c in cands) / len(cands)
+    if (cx - a[0]) * n[0] + (cy - a[1]) * n[1] < 0:
+        n = (-n[0], -n[1])
+    pts = [line[0], line[-1]] + [c["firing"] for c in cands]
+    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+    size = max(max(xs) - min(xs), max(ys) - min(ys)) + 80
+    px = min(2000, int(size / MAP_RES))
+    centre = ((max(xs) + min(xs)) / 2, (max(ys) + min(ys)) / 2)
+    bbox = (centre[0] - size / 2, centre[1] - size / 2, centre[0] + size / 2, centre[1] + size / 2)
+    img = Image.open(io.BytesIO(fetch(bbox, px, LK))).convert("RGB")
+    pix = img.load()
+    scale = px / size
+
+    def dark(p):
+        x, y = int((p[0] - bbox[0]) * scale), int((bbox[3] - p[1]) * scale)
+        if not (0 <= x < px and 0 <= y < px):
+            return None
+        r, g, b = pix[x, y]
+        return max(r, g, b) < 90 and max(r, g, b) - min(r, g, b) < 40
+
+    def solid(p):
+        hits = total = 0
+        for i in range(-2, 3):
+            for j in range(-2, 3):
+                d = dark((p[0] + i * 0.4, p[1] + j * 0.4))
+                total += 1
+                hits += bool(d)
+        return hits >= 0.8 * total
+
+    out = []
+    for f in (0.2, 0.35, 0.5, 0.65, 0.8):
+        p0 = (a[0] + u[0] * f * length, a[1] + u[1] * f * length)
+        s, last, dots = 6.0, 6.0, 0
+        while s < MAX_FRONT + 20:
+            p = (p0[0] + n[0] * s, p0[1] + n[1] * s)
+            if dark(p) is None:
+                break
+            if dots >= 4 and solid(p):
+                out.append((p, s))
+                break
+            if any(dark((p[0] + u[0] * k * 0.5, p[1] + u[1] * k * 0.5)) for k in range(-6, 7)):
+                if s - last > 1.0:
+                    dots += 1
+                last = s
+            elif s - last > 14:
+                break
+            s += 0.5
+    return out
+
+
+def map_choice(line, cands):
+    """The candidate house the map's shooting lines lead to, and the map distance; (None, None) if unclear."""
+    try:
+        hits = map_line_hits(line, cands)
+    except Exception as e:  # noqa: BLE001
+        print("map failed", e)
+        return None, None
+    votes = {}
+    for p, _ in hits:
+        c = min(cands, key=lambda c: rc.ring_distance(p, c["house"]["ring"]))
+        if rc.ring_distance(p, c["house"]["ring"]) < 15:
+            votes[c["house"]["id"]] = votes.get(c["house"]["id"], 0) + 1
+    if not votes:
+        return None, None
+    best_id = max(votes, key=votes.get)
+    if votes[best_id] < 2:
+        return None, None
+    dists = sorted(s for _, s in hits)
+    return next(c for c in cands if c["house"]["id"] == best_id), dists[len(dists) // 2]
+
+
 def stats(values):
     if not values:
         return {}
@@ -170,6 +256,10 @@ def main(gpkg, out):
         best = choose(cands, short_houses)
         if best is None:
             continue
+        rule = best
+        mapped, map_distance = map_choice(t["line"], cands) if len(cands) > 1 else (None, None)
+        if mapped is not None:
+            best = mapped
         old = min(cands, key=lambda c: c["nearest"])
         line = t["line"]
         mid = rc.line_midpoint(line)
@@ -189,6 +279,9 @@ def main(gpkg, out):
             "named": best["named"], "overlap": round(best["overlap"], 2), "row_length": round(row_len, 1),
             "candidates": len(cands), "changed": old["house"]["id"] != best["house"]["id"],
             "old_nearest": round(old["nearest"], 2),
+            "rule_house": rule["house"]["id"], "map_changed": rule["house"]["id"] != best["house"]["id"],
+            "map_found": mapped is not None, "rule_square": round(rule["square"], 2),
+            "map_distance": round(map_distance, 1) if map_distance is not None else None,
             "trajectory": round(rc.dist2(traj["line"][0], traj["line"][-1]), 2) if traj else None,
             "firing_e": round(best["firing"][0], 2), "firing_n": round(best["firing"][1], 2),
             "target_e": round(mid[0], 2), "target_n": round(mid[1], 2),
@@ -226,65 +319,41 @@ def main(gpkg, out):
         json.dump(summary, f, indent=1)
     print(json.dumps(summary, indent=1))
 
-    # Aerial check of the firing building: 300 m lanes outside 285-315 m (+0.8 m) where more than
-    # one shooting house faces the targets. Left: whole lane; right: 100 m around the firing end.
-    # Red = chosen house, yellow = other candidate houses, cyan = target rows, white = the lane.
+    # Aerial check of every lane where the map's shooting lines changed the house.
     from PIL import Image, ImageDraw
-    suspects = [r for r in rows if r["nominal"] == 300 and r["candidates"] > 1
-                and abs((r["d3"] or r["square"]) + 0.8 - 300) > 15]
-    if not suspects:
-        return
-    with open(os.path.join(out, "suspects.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(suspects[0].keys()))
-        w.writeheader()
-        w.writerows(suspects)
-
-    def draw(path, center, size_m, px, chosen, others, lines, lane, layer="ch.swisstopo.swissimage"):
-        bbox = (center[0] - size_m / 2, center[1] - size_m / 2, center[0] + size_m / 2, center[1] + size_m / 2)
-        img = Image.open(io.BytesIO(fetch(bbox, px, layer))).convert("RGB")
-        d = ImageDraw.Draw(img)
-        scale = px / size_m
-
-        def xy(p):
-            return ((p[0] - bbox[0]) * scale, (bbox[3] - p[1]) * scale)
-
-        for ring in others:
-            d.line([xy(p) for p in ring], fill=(255, 220, 0), width=2)
-        for ring in chosen:
-            d.line([xy(p) for p in ring], fill=(255, 40, 40), width=2)
-        for line in lines:
-            d.line([xy(p) for p in line], fill=(0, 230, 255), width=3)
-        d.line([xy(p) for p in lane], fill=(255, 255, 255), width=1)
-        x, y = xy(lane[0])
-        d.ellipse((x - 4, y - 4, x + 4, y + 4), outline=(255, 255, 255), width=2)
-        bar = 50 if size_m > 200 else 10
-        d.line([(10, px - 12), (10 + bar * scale, px - 12)], fill=(255, 255, 255), width=4)
-        return img
-
-    # The 1:25 000 map (raster) draws the shooting lines from house to targets; show it next to the photo.
-    wanted = ("3CB70B40", "88E60D12", "736654BB", "9645EF24", "71CDDC5B", "5F5F3B63", "84660178",
-              "F29666B9", "09D3AD35", "359461CF", "315EF762", "95269187")
-    for n, r in enumerate(suspects, 1):
-        if not r["target"].startswith(wanted):
-            continue
+    changed = [r for r in rows if r["map_changed"]]
+    print(len(changed), "lanes changed by the map,", sum(r["map_found"] for r in rows), "found on the map")
+    ring_of = {}
+    for h in houses:
+        ring_of.setdefault(h["id"], []).append(h["ring"])
+    for n, r in enumerate(changed[:150], 1):
         firing, target = (r["firing_e"], r["firing_n"]), (r["target_e"], r["target_n"])
-        cands = cands_by_target[r["target"]]
-        chosen = [c["house"]["ring"] for c in cands if c["house"]["id"] == r["house"]]
-        others = [c["house"]["ring"] for c in cands if c["house"]["id"] != r["house"]]
         mid = ((firing[0] + target[0]) / 2, (firing[1] + target[1]) / 2)
-        size = r["square"] * 1.25
-        lines = [t["line"] for t in targets if rc.dist2(rc.line_midpoint(t["line"]), mid) < size]
-        slug = f"{n:02d}-{(r['d3'] or r['square']) + 0.8:.1f}-{r['target'][:8]}"
+        size = max(80, r["square"] * 1.25)
+        slug = f"{n:03d}-{r['nominal']}m-{r['rule_square']:.0f}to{r['square']:.0f}-{r['target'][:8]}"
         try:
-            a = draw(os.path.join(out, "a.jpg"), mid, size, 600, chosen, others, lines, [firing, target])
-            b = draw(os.path.join(out, "b.jpg"), mid, size, 600, [], [], [], [firing, target],
-                     "ch.swisstopo.pixelkarte-farbe")
+            panels = []
+            for layer in ("ch.swisstopo.swissimage", LK):
+                bbox = (mid[0] - size / 2, mid[1] - size / 2, mid[0] + size / 2, mid[1] + size / 2)
+                img = Image.open(io.BytesIO(fetch(bbox, 600, layer))).convert("RGB")
+                d = ImageDraw.Draw(img)
+                sc = 600 / size
+
+                def xy(p, bbox=bbox, sc=sc):
+                    return ((p[0] - bbox[0]) * sc, (bbox[3] - p[1]) * sc)
+
+                for ring in ring_of[r["rule_house"]]:
+                    d.line([xy(p) for p in ring], fill=(255, 40, 40), width=2)
+                for ring in ring_of[r["house"]]:
+                    d.line([xy(p) for p in ring], fill=(40, 255, 40), width=2)
+                d.line([xy(firing), xy(target)], fill=(255, 0, 255), width=1)
+                panels.append(img)
             both = Image.new("RGB", (1210, 640), (0, 0, 0))
-            both.paste(a, (0, 40))
-            both.paste(b, (610, 40))
-            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  {len(cands)} houses  photo | 1:25 000 map",
+            both.paste(panels[0], (0, 40))
+            both.paste(panels[1], (610, 40))
+            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  red = rule, green = map",
                                       fill=(255, 255, 255))
-            both.save(os.path.join(out, f"lk-{slug}.jpg"), quality=85)
+            both.save(os.path.join(out, f"map-{slug}.jpg"), quality=85)
         except Exception as e:  # noqa: BLE001
             print("image failed", slug, e)
 
