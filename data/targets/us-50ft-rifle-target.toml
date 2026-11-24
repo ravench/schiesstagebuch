@@ -2,7 +2,7 @@
 # 8 scoring zones from the circles and zone labels SIUS draws; values best first.
 id = "us-50ft-rifle-target"
 name = "50ft Rifle Target (US)"
-short_name = "50ft Rifle Targe"
+short_name = "50ft Rifle"
 group = "USA"
 distances_m = [15]
 # Outer diameter of each scoring ring from the centre outwards, in mm.

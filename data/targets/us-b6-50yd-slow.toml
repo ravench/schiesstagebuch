@@ -1,17 +1,19 @@
 # B6 50yd slow (USA), from SIUS's target 644 in SiusData's Target.ini (USA/TGNRAB6.TRG):
-# 7 scoring zones from the circles and zone labels SIUS draws; values best first.
+# 6 scoring zones from the circles and zone labels SIUS draws; values best first.
 id = "us-b6-50yd-slow"
 name = "B6 50yd slow (US)"
 short_name = "B6 50yd slow"
 group = "USA"
 distances_m = [46]
 # Outer diameter of each scoring ring from the centre outwards, in mm.
-ring_diameters_mm = [43, 85.2, 140.6, 203.2, 279.4, 375.8, 499.8]
+ring_diameters_mm = [85.2, 140.6, 203.2, 279.4, 375.8, 499.8]
+# The innermost circle is the X (US) or inner ten: it only breaks ties and scores 10.
+inner_ten_mm = 43
 black_mm = 203.2
 
 [scoring]
 # The only scores a shot can have, best first; 0 is a miss.
-values = [11, 10, 9, 8, 7, 6, 5, 0]
+values = [10, 9, 8, 7, 6, 5, 0]
 
 [source]
 title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), B6 50yd slow"

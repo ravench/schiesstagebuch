@@ -2,7 +2,7 @@
 # 10 scoring zones from the circles and zone labels SIUS draws; values best first.
 id = "hr-croatian-ar-target"
 name = "Croatian AR Target (HR)"
-short_name = "Croatian AR Targ"
+short_name = "Croatian AR"
 group = "Kroatien"
 distances_m = []
 # Outer diameter of each scoring ring from the centre outwards, in mm.

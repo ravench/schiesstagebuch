@@ -55,6 +55,16 @@ class RepoTargetTests(unittest.TestCase):
             self.assertTrue(t["name"].endswith(f"({code.upper()})"), t["id"])
             self.assertIn("SiusData", t["source"]["title"])
         self.assertEqual(self.targets["us-sr1-100y"]["scoring"]["values"], [10, 9, 8, 7, 6, 5, 0])
+        # The X (US) and the inner ten only break ties: SIUS draws them as one more circle, but no
+        # ring target of another country scores more than 10 (the Danish Königsscheibe counts 12 to 7).
+        for t in foreign:
+            if "ring_diameters_mm" in t and "values" in t["scoring"] and t["id"] != "dk-koenigsscheibe":
+                self.assertLessEqual(max(t["scoring"]["values"]), 10, t["id"])
+        self.assertEqual(self.targets["us-b6-50yd-slow"]["inner_ten_mm"], 43)
+        # Short names end at a word, not in the middle of one («Fullbore 300 yar»).
+        for t in foreign:
+            base = t["name"].rsplit(" (", 1)[0]
+            self.assertTrue(base == t["short_name"] or base.startswith(t["short_name"] + " "), t["id"])
         self.assertEqual(self.targets["no-dfs-300"]["distances_m"], [300])
 
     def test_field_figures_count_a_hit(self):

@@ -395,7 +395,7 @@ final class PRScreensTests: XCTestCase {
             }
             // While searching, the sheet's «Abbrechen» is hidden (CI: «No matches found»), so pull the
             // sheet down when it is not there; it closes without asking.
-            for _ in 0..<3 where app.searchFields.firstMatch.exists { // only the template list searches
+            for _ in 0..<3 where app.navigationBars["Vorlagen"].exists || app.searchFields.firstMatch.exists {
                 let cancel = app.buttons["Abbrechen"].firstMatch
                 if cancel.exists {
                     cancel.tap()

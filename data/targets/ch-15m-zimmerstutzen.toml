@@ -1,4 +1,4 @@
-# Zimmerstutzen target, 15 m: ten rings 4.5 mm apart, Ø 4.4 to 85.4 mm, black Ø 40.4 mm (the 4 to 10).
+# Zimmerstutzen target, 15 m: ten rings 4.5 mm apart, Ø 4.4 to 85.4 mm, black Ø 40.4 mm (the 6 to 10).
 # From SIUS's Zimmerstutzen target (SiusData Target.ini), which SIUS offers in its Swiss air rifle range mode.
 id = "ch-15m-zimmerstutzen"
 name = "Zimmerstutzenscheibe 15 m"
