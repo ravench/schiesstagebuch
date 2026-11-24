@@ -299,7 +299,7 @@ T = {
     "Mehr": ("More", "Plus", "Altro"),
     "Schiessen": ("Shooting", "Tir", "Tiro"),
     "Schiesstagebuch": ("Shooting Log", "Journal de tir", "Diario di tiro"),
-    "Schuss": ("shots", "coups", "colpi"),
+    "Schuss": ("Shots", "Coups", "Colpi"),  # a caption beside «Punkte» (tester 2026-11-19)
     "Schusszahl": ("Shots", "Nombre de coups", "Numero di colpi"),
     "Schwarzpulver": ("Black powder", "Poudre noire", "Polvere nera"),
     "Schüsse": ("Shots", "Coups", "Colpi"),
