@@ -323,43 +323,69 @@ def main(gpkg, out):
         json.dump(summary, f, indent=1)
     print(json.dumps(summary, indent=1))
 
-    # Aerial check of every lane where the map's shooting lines changed the house.
+    # Hand check: 300 m targets where the candidate houses differ by more than 3 m and the map line
+    # wasn't found. Photo and 1:25 000 map side by side, candidates numbered, two lanes per sheet.
     from PIL import Image, ImageDraw
-    changed = [r for r in rows if r["map_changed"]]
-    print(len(changed), "lanes changed by the map,", sum(r["map_found"] for r in rows), "found on the map")
-    ring_of = {}
-    for h in houses:
-        ring_of.setdefault(h["id"], []).append(h["ring"])
-    for n, r in enumerate(changed[:150], 1):
-        firing, target = (r["firing_e"], r["firing_n"]), (r["target_e"], r["target_n"])
-        mid = ((firing[0] + target[0]) / 2, (firing[1] + target[1]) / 2)
-        size = max(80, r["square"] * 1.25)
-        slug = f"{n:03d}-{r['nominal']}m-{r['rule_square']:.0f}to{r['square']:.0f}-{r['target'][:8]}"
+    colours = [(255, 40, 40), (40, 255, 40), (255, 220, 0), (255, 0, 255), (0, 160, 255), (255, 140, 0)]
+    todo = []
+    for t in targets:
+        r = next((x for x in rows if x["target"] == t["id"]), None)
+        if not r or r["nominal"] != 300 or r["map_found"]:
+            continue
+        c3 = [c for c in cands_by_target[t["id"]] if c["nominal"] == 300]
+        if len(c3) < 2 or max(c["square"] for c in c3) - min(c["square"] for c in c3) <= 3:
+            continue
+        todo.append((r, t, sorted(c3, key=lambda c: c["square"])[:6]))
+    print(len(todo), "lanes to check by hand")
+    with open(os.path.join(out, "handcheck.csv"), "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["sheet", "lane", "target", "name", "chosen", "candidate", "house", "square"])
+        for n, (r, t, c3) in enumerate(todo):
+            for k, c in enumerate(c3, 1):
+                w.writerow([n // 2 + 1, n + 1, t["id"], r["name"], int(c["house"]["id"] == r["house"]), k,
+                            c["house"]["id"], round(c["square"], 1)])
+
+    def panel(layer, mid, size, c3, line, firing_pts):
+        bbox = (mid[0] - size / 2, mid[1] - size / 2, mid[0] + size / 2, mid[1] + size / 2)
+        img = Image.open(io.BytesIO(fetch(bbox, 600, layer))).convert("RGB")
+        d = ImageDraw.Draw(img)
+        sc = 600 / size
+
+        def xy(p):
+            return ((p[0] - bbox[0]) * sc, (bbox[3] - p[1]) * sc)
+
+        d.line([xy(p) for p in line], fill=(0, 230, 255), width=3)
+        for k, c in enumerate(c3):
+            col = colours[k % len(colours)]
+            d.line([xy(p) for p in c["house"]["ring"]], fill=col, width=2)
+            x, y = xy(rc.centroid(c["house"]["ring"]))
+            d.rectangle((x - 7, y - 8, x + 7, y + 8), fill=(0, 0, 0))
+            d.text((x - 3, y - 6), str(k + 1), fill=col)
+        return img
+
+    sheets = {}
+    for n, (r, t, c3) in enumerate(todo):
+        mid_t = rc.line_midpoint(t["line"])
+        cx = sum(c["firing"][0] for c in c3) / len(c3)
+        cy = sum(c["firing"][1] for c in c3) / len(c3)
+        mid = ((mid_t[0] + cx) / 2, (mid_t[1] + cy) / 2)
+        size = max(c["square"] for c in c3) * 1.2
+        near = ((cx, cy), 120)
         try:
-            panels = []
-            for layer in ("ch.swisstopo.swissimage", LK):
-                bbox = (mid[0] - size / 2, mid[1] - size / 2, mid[0] + size / 2, mid[1] + size / 2)
-                img = Image.open(io.BytesIO(fetch(bbox, 600, layer))).convert("RGB")
-                d = ImageDraw.Draw(img)
-                sc = 600 / size
-
-                def xy(p, bbox=bbox, sc=sc):
-                    return ((p[0] - bbox[0]) * sc, (bbox[3] - p[1]) * sc)
-
-                for ring in ring_of[r["rule_house"]]:
-                    d.line([xy(p) for p in ring], fill=(255, 40, 40), width=2)
-                for ring in ring_of[r["house"]]:
-                    d.line([xy(p) for p in ring], fill=(40, 255, 40), width=2)
-                d.line([xy(firing), xy(target)], fill=(255, 0, 255), width=1)
-                panels.append(img)
-            both = Image.new("RGB", (1210, 640), (0, 0, 0))
-            both.paste(panels[0], (0, 40))
-            both.paste(panels[1], (610, 40))
-            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  red = rule, green = map",
-                                      fill=(255, 255, 255))
-            both.save(os.path.join(out, f"map-{slug}.jpg"), quality=85)
+            a = panel("ch.swisstopo.swissimage", mid, size, c3, t["line"], None)
+            b = panel(LK, mid, size, c3, t["line"], None)
+            za = panel("ch.swisstopo.swissimage", near[0], near[1], c3, t["line"], None)
+            zb = panel(LK, near[0], near[1], c3, t["line"], None)
         except Exception as e:  # noqa: BLE001
-            print("image failed", slug, e)
+            print("image failed", n, e)
+            continue
+        sheet = Image.new("RGB", (1210, 1290), (0, 0, 0))
+        for img, pos in ((a, (0, 40)), (b, (610, 40)), (za, (0, 690)), (zb, (610, 690))):
+            sheet.paste(img, pos)
+        label = f"lane {n + 1}: {r['name']}  " + "  ".join(f"{k + 1}={c['square']:.0f}m" for k, c in enumerate(c3))
+        ImageDraw.Draw(sheet).text((8, 10), label, fill=(255, 255, 255))
+        ImageDraw.Draw(sheet).text((8, 655), "close-up 120 m around the houses", fill=(255, 255, 255))
+        sheet.save(os.path.join(out, f"hand-{n + 1:03d}.jpg"), quality=80)
 
 
 if __name__ == "__main__":
