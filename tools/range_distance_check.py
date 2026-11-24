@@ -226,37 +226,47 @@ def main(gpkg, out):
         json.dump(summary, f, indent=1)
     print(json.dumps(summary, indent=1))
 
-    # Aerial crops: a spread of 50 m lanes (typical and off ones), and the 300 m lanes whose pairing changed.
-    fifty = sorted((r for r in rows if r["nominal"] == 50), key=lambda r: r["square"])
-    picks = []
-    if fifty:
-        step = max(1, len(fifty) // 12)
-        picks += fifty[::step][:12] + fifty[:3] + fifty[-3:]
-    picks += [r for r in rows if r["nominal"] == 300 and r["changed"]][:6]
-    picks += [r for r in rows if "Riedbach Forst" in r["name"] and r["nominal"] == 300]
-    three = sorted((r for r in rows if r["nominal"] == 300), key=lambda r: r["square"])
-    picks += three[:5] + three[-5:] + three[::len(three) // 6 or 1]
-    seen = set()
+    # Aerial check of 300 m target rows: 50 lanes spread evenly over 260-335 m, one per range.
+    # Each picture: firing end (left) and target end (right), 60 m wide, about 10 cm per pixel,
+    # the arrow at the target end points back to the firing line.
+    from PIL import Image, ImageDraw
     ring_by_house = {}
     for h in houses:
         ring_by_house.setdefault(h["id"], []).append(h["ring"])
-    line_by_target = {t["id"]: t["line"] for t in targets}
-    for r in picks:
-        if r["target"] in seen:
-            continue
-        seen.add(r["target"])
-        slug = f"{r['nominal']}m-{r['square']:.1f}-{r['target'][:8]}"
+    three = [r for r in rows if r["nominal"] == 300]
+    picks, used = [], set()
+    for k in range(50):
+        goal = 260 + k * 75 / 49
+        free = [r for r in three if r["house"] not in used and r["target"] not in used]
+        r = min(free, key=lambda r: abs(r["square"] - goal))
+        used.update((r["house"], r["target"]))
+        picks.append(r)
+    with open(os.path.join(out, "check300.csv"), "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(picks[0].keys()))
+        w.writeheader()
+        w.writerows(picks)
+    for n, r in enumerate(picks, 1):
         firing, target = (r["firing_e"], r["firing_n"]), (r["target_e"], r["target_n"])
-        mid = ((firing[0] + target[0]) / 2, (firing[1] + target[1]) / 2)
-        size = max(80, r["square"] * 1.3)
-        near = [h["ring"] for h in houses if rc.ring_distance(mid, h["ring"]) < size]
-        lines = [t["line"] for t in targets if rc.dist2(rc.line_midpoint(t["line"]), mid) < size]
+        lines = [t["line"] for t in targets if rc.dist2(rc.line_midpoint(t["line"]), target) < 60]
+        dx, dy = firing[0] - target[0], firing[1] - target[1]
+        length = math.hypot(dx, dy)
+        arrow = [target, (target[0] + dx / length * 8, target[1] + dy / length * 8)]
+        rings = [h["ring"] for h in houses if rc.ring_distance(firing, h["ring"]) < 40]
+        slug = f"{n:02d}-{r['square']:.1f}-{r['target'][:8]}"
         try:
-            picture(os.path.join(out, f"{slug}-overview.jpg"), mid, size, 800, near, lines, [firing, target])
-            picture(os.path.join(out, f"{slug}-firing.jpg"), firing, 40, 500, ring_by_house[r["house"]], [], [firing])
-            picture(os.path.join(out, f"{slug}-target.jpg"), target, 40, 500, [], [line_by_target[r["target"]]], [target])
+            picture(os.path.join(out, "f.jpg"), firing, 60, 600, rings, [], [firing])
+            picture(os.path.join(out, "t.jpg"), target, 60, 600, [], lines + [arrow], [target])
+            both = Image.new("RGB", (1210, 640), (0, 0, 0))
+            both.paste(Image.open(os.path.join(out, "f.jpg")), (0, 40))
+            both.paste(Image.open(os.path.join(out, "t.jpg")), (610, 40))
+            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  firing | target  (bar 5 m)",
+                                      fill=(255, 255, 255))
+            both.save(os.path.join(out, f"check300-{slug}.jpg"), quality=85)
         except Exception as e:  # noqa: BLE001
             print("image failed", slug, e)
+    for name in ("f.jpg", "t.jpg"):
+        if os.path.exists(os.path.join(out, name)):
+            os.remove(os.path.join(out, name))
 
 
 if __name__ == "__main__":
