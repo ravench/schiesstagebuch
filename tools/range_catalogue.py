@@ -16,7 +16,7 @@ the shooting house itself where one lies on its footprint, else the nearest addr
         [data/range-measurements.csv]
     python3 tools/range_catalogue.py app-json out/ranges.json Schiesstagebuch/Resources/SwissRanges.json
 
-True distances and height differences per target row come from data/range-measurements.csv
+True distances (100 m and up) and height differences per target row come from data/range-measurements.csv
 (measured from the firing line to the target row in swissTLM3D, firing house checked against the
 1:25 000 map and by hand); only rows marked confident are used.
 
@@ -836,8 +836,12 @@ def address_text(address):
 # ---------------------------------------------------------------------------
 # Measured distances (data/range-measurements.csv)
 
+MEASURED_FROM = 100  # 25 and 50 m stands are built to the metre: no measured distance for them
+
+
 def read_measurements(path):
     """Target row id -> {"distance", "metres", "rise", "confident"} from the measurements CSV.
+    Rows below MEASURED_FROM metres are skipped.
 
     metres: firing line to target row; rise: how much higher the targets are than the firing
     line (negative: lower), both in metres.
@@ -845,6 +849,8 @@ def read_measurements(path):
     out = {}
     with open(path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
+            if int(row["distance"]) < MEASURED_FROM:
+                continue
             out[row["target"]] = {
                 "distance": int(row["distance"]),
                 "metres": float(row["metres"]),

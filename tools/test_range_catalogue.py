@@ -653,7 +653,9 @@ class MeasurementTests(unittest.TestCase):
             m = rc.read_measurements(self.write(tmp, [
                 ["a", "h", "A 300m", "300", "298.4", "12.3", "1", ""],
                 ["b", "h", "A 300m", "300", "290.0", "", "0", "unsure house"],
+                ["c", "h", "A 50m", "50", "50.4", "0.1", "1", ""],
             ]))
+        self.assertNotIn("c", m)  # 25 and 50 m stands get no measured distance
         self.assertEqual(m["a"], {"distance": 300, "metres": 298.4, "rise": 12.3, "confident": True})
         self.assertEqual(m["b"]["rise"], None)
         self.assertFalse(m["b"]["confident"])
@@ -662,11 +664,11 @@ class MeasurementTests(unittest.TestCase):
         m = {"a": {"distance": 300, "metres": 298.4, "rise": 12.0, "confident": True},
              "b": {"distance": 300, "metres": 301.2, "rise": 14.0, "confident": True},
              "c": {"distance": 300, "metres": 280.0, "rise": 1.0, "confident": False},
-             "d": {"distance": 50, "metres": 50.6, "rise": -0.4, "confident": True}}
+             "d": {"distance": 100, "metres": 100.6, "rise": -0.4, "confident": True}}
         lanes = [self.lane(t) for t in "abcd"] + [self.lane("x"), self.lane("a", source="trajectory")]
         self.assertEqual(rc.measured_distances(lanes, m), [
             {"distance": 300, "from": 298, "to": 301, "rise": 13},
-            {"distance": 50, "from": 51, "to": 51, "rise": 0},
+            {"distance": 100, "from": 101, "to": 101, "rise": 0},
         ])
 
     def test_unconfident_only_gives_nothing(self):
@@ -704,10 +706,12 @@ class MeasurementTests(unittest.TestCase):
 
     def test_repository_measurements_are_valid(self):
         path = os.path.join(os.path.dirname(__file__), "..", "data", "range-measurements.csv")
+        with open(path, encoding="utf-8") as f:
+            self.assertTrue(all(int(r["distance"]) >= 100 for r in csv.DictReader(f)), "no 25 or 50 m rows")
         m = rc.read_measurements(path)
         self.assertGreater(len(m), 1000)
         for target, row in m.items():
-            self.assertIn(row["distance"], rc.NOMINAL_DISTANCES, target)
+            self.assertIn(row["distance"], (100, 300), target)
             if row["confident"]:  # unconfident rows are kept for the record, never shown
                 self.assertLessEqual(abs(row["metres"] - row["distance"]), row["distance"] * 0.10 + 2, target)
             if row["rise"] is not None:
