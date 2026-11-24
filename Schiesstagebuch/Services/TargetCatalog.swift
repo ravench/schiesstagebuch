@@ -80,7 +80,20 @@ enum TargetCatalog {
         return grouped(query.isEmpty ? items : items.filter { matches($0, query) })
     }
 
-    /// A new target of the user's, made from `item`.
+    /// Search among the user's targets: by name, or as the template it was made from («300», «Norwegen»).
+    static func matches(_ target: ShootingTarget, _ query: String) -> Bool {
+        if let item = item(id: target.templateID), matches(item, query) { return true }
+        return RangeSearch.words(query).allSatisfy { target.name.localizedStandardContains($0) }
+    }
+
+    /// What the Stich editor offers below the user's `targets`: the templates they have no target of.
+    static func templates(notIn targets: [ShootingTarget], matching query: String,
+                          in items: [Item] = items) -> [(group: String, items: [Item])] {
+        let taken = Set(targets.map(\.templateID))
+        return grouped(matching: query, in: items.filter { !taken.contains($0.id) })
+    }
+
+    /// A new target of the user's, made from `item`; not yet inserted.
     static func target(from item: Item) -> ShootingTarget {
         ShootingTarget(name: item.name, scoring: item.targetScoring, templateID: item.id)
     }

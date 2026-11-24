@@ -329,8 +329,7 @@ struct EntryEditorView: View {
     @ViewBuilder
     private var ringSections: some View {
         Section {
-            // Same colour as the values of the firearm and ammunition rows.
-            targetPicker.tint(.accentColor)
+            targetPicker
             Picker("Erfassung", selection: $mode) {
                 ForEach(ShotEntryMode.allCases) { Text($0.title).tag($0) }
             }
@@ -389,12 +388,10 @@ struct EntryEditorView: View {
         }
     }
 
-    /// The Stich's target; its scoring decides how single shots are entered. Targets are registered in Settings › Scheiben.
+    /// The Stich's target; its scoring decides how single shots are entered. One of the user's targets
+    /// (Settings › Scheiben) or a template, which becomes the user's target when the Stich is saved.
     private var targetPicker: some View {
-        Picker("Scheibe", selection: $target) {
-            Text("–").tag(ShootingTarget?.none)
-            ForEach(ShootingTarget.sorted(targets, for: weapon)) { Text($0.name).tag(Optional($0)) }
-        }
+        TargetPickerRow(selection: $target, targets: ShootingTarget.sorted(targets, for: weapon))
     }
 
     private var positionPicker: some View {
@@ -623,6 +620,8 @@ struct EntryEditorView: View {
         if features.contains(.weather) { target.weather = weather?.normalized() }
         if scoring == .rings {
             target.position = position
+            // A template picked in this editor is the user's target from now on.
+            if let picked = self.target, picked.modelContext == nil { context.insert(picked) }
             target.target = self.target // `target` here is the entry being saved
             target.maxPoints = maxPoints.flatMap { $0 > 0 ? $0 : nil }
             target.shotValuesText = mode == .shots ? Score.joinPasses(passes.map(\.text)) : ""

@@ -199,4 +199,29 @@ final class ShootingTargetTests: ModelTestCase {
         let found = TargetCatalog.grouped(matching: "A10").map(\.group)
         XCTAssertEqual(found.first, "Schweiz")
     }
+
+    /// The Stich editor offers the templates the user has no target of; one picked there is a target
+    /// only once the Stich is saved.
+    func testThePickerOffersTheTemplatesNotYetAdded() throws {
+        let a5 = TargetCatalog.target(from: try XCTUnwrap(TargetCatalog.item(id: "ch-300m-a5")))
+        XCTAssertNil(a5.modelContext, "a picked template is not saved before the Stich is")
+        XCTAssertEqual(try context.fetch(FetchDescriptor<ShootingTarget>()).count, 0)
+
+        let offered = { (targets: [ShootingTarget], query: String) in
+            TargetCatalog.templates(notIn: targets, matching: query).flatMap { $0.items.map(\.id) }
+        }
+        XCTAssertEqual(offered([], "").count, TargetCatalog.items.count)
+        XCTAssertTrue(offered([], "A5 300").contains("ch-300m-a5"))
+        XCTAssertFalse(offered([a5], "A5 300").contains("ch-300m-a5"), "the user's own A5 stands for the template")
+        XCTAssertEqual(offered([a5], "").count, TargetCatalog.items.count - 1)
+
+        // The user's targets are found by their name, and as the template they came from.
+        let own = ShootingTarget(name: "Klappscheibe Verein", scoring: .values([1, 0]))
+        XCTAssertTrue(TargetCatalog.matches(own, "klapp verein"))
+        XCTAssertFalse(TargetCatalog.matches(own, "300"))
+        XCTAssertTrue(TargetCatalog.matches(a5, "300 m"))
+        XCTAssertTrue(TargetCatalog.matches(a5, ""))
+        a5.name = "Meine Fünfer"
+        XCTAssertTrue(TargetCatalog.matches(a5, "fünfer"))
+    }
 }
