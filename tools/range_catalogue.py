@@ -939,7 +939,10 @@ def build(tlm_path, manual_path, out_dir, release="", addresses_path=None, measu
     if measurements_path:
         measurements = read_measurements(measurements_path)
         for rng in ranges:
-            rng["measured"] = measured_distances(rng["lanes"], measurements)
+            # Only the distances the range lists: its name says which stands it has
+            # ("Zürich-Albisgütli 25m" shares its lanes with the 300/50 m house next door).
+            rng["measured"] = [m for m in measured_distances(rng["lanes"], measurements)
+                               if m["distance"] in rng["distances"]]
     if manual_path != "-":
         with open(manual_path, encoding="utf-8") as f:
             ranges += manual_ranges(json.load(f))

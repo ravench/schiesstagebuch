@@ -689,6 +689,19 @@ class MeasurementTests(unittest.TestCase):
         self.assertEqual(rng["measured"], [{"distance": 300, "from": 301, "to": 301, "rise": 9}])
         self.assertEqual(rc.app_catalogue(catalogue)["ranges"][0]["measured"], rng["measured"])
 
+    def test_build_keeps_only_the_listed_distances(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "tlm.gpkg")
+            GeoPackageTests.make_gpkg(self, path)
+            # The fixture's range has 300 and 50 m; a 100 m reading of the same row is dropped.
+            measurements = self.write(tmp, [["T1", "H1", "Fänglen", "100", "100.3", "0.2", "1", ""]])
+            out = os.path.join(tmp, "out")
+            rc.build(path, "-", out, "2026-02", None, measurements)
+            with open(os.path.join(out, "ranges.json")) as f:
+                catalogue = json.load(f)
+        self.assertEqual(catalogue["ranges"][0]["distances"], [300, 50])
+        self.assertNotIn("measured", catalogue["ranges"][0])
+
     def test_repository_measurements_are_valid(self):
         path = os.path.join(os.path.dirname(__file__), "..", "data", "range-measurements.csv")
         m = rc.read_measurements(path)
