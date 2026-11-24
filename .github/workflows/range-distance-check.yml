@@ -38,7 +38,7 @@ jobs:
       - name: Publish
         run: |
           cd out
-          git init -q -b range-distance-check-2-2
+          git init -q -b range-distance-check-2
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
