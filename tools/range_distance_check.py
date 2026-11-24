@@ -323,69 +323,95 @@ def main(gpkg, out):
         json.dump(summary, f, indent=1)
     print(json.dumps(summary, indent=1))
 
-    # Hand check: 300 m targets where the candidate houses differ by more than 3 m and the map line
-    # wasn't found. Photo and 1:25 000 map side by side, candidates numbered, two lanes per sheet.
+    # Height check: swissALTI3D terrain (height service) at the firing point and the target row,
+    # against the TLM Z values, for 150 lanes spread over all distances.
+    def alti(p):
+        url = f"https://api3.geo.admin.ch/rest/services/height?easting={p[0]:.2f}&northing={p[1]:.2f}&sr=2056"
+        for attempt in range(4):
+            try:
+                with urllib.request.urlopen(url, timeout=30) as r:
+                    return float(json.load(r)["height"])
+            except Exception as e:  # noqa: BLE001
+                print("height retry", e)
+                time.sleep(2 ** attempt)
+        return None
+
+    sample = [r for r in rows if r["dz"] is not None and r["nominal"] in (25, 50, 300)]
+    sample = sample[:: max(1, len(sample) // 150)][:150]
+    with open(os.path.join(out, "heights.csv"), "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["target", "name", "nominal", "tlm_dz", "alti_firing", "alti_target", "alti_dz"])
+        for r in sample:
+            zf, zt = alti((r["firing_e"], r["firing_n"])), alti((r["target_e"], r["target_n"]))
+            w.writerow([r["target"], r["name"], r["nominal"], r["dz"], zf, zt,
+                        round(zt - zf, 2) if zf is not None and zt is not None else ""])
+
+    # Second look at the unsure hand picks: big close-ups so the start of the dotted line is visible.
+    # Per lane: LK map 160 m without outlines, LK 60 m with thin outlines, photo 60 m with outlines,
+    # photo 60 m without. Candidates numbered as on the first sheets (sorted by distance).
     from PIL import Image, ImageDraw
     colours = [(255, 40, 40), (40, 255, 40), (255, 220, 0), (255, 0, 255), (0, 160, 255), (255, 140, 0)]
-    todo = []
-    for t in targets:
-        r = next((x for x in rows if x["target"] == t["id"]), None)
-        if not r or r["nominal"] != 300 or r["map_found"]:
-            continue
-        c3 = [c for c in cands_by_target[t["id"]] if c["nominal"] == 300]
-        if len(c3) < 2 or max(c["square"] for c in c3) - min(c["square"] for c in c3) <= 3:
-            continue
-        todo.append((r, t, sorted(c3, key=lambda c: c["square"])[:6]))
-    print(len(todo), "lanes to check by hand")
-    with open(os.path.join(out, "handcheck.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(["sheet", "lane", "target", "name", "chosen", "candidate", "house", "square"])
-        for n, (r, t, c3) in enumerate(todo):
-            for k, c in enumerate(c3, 1):
-                w.writerow([n // 2 + 1, n + 1, t["id"], r["name"], int(c["house"]["id"] == r["house"]), k,
-                            c["house"]["id"], round(c["square"], 1)])
+    here = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(here, "range_hand_houses.csv"), encoding="utf-8") as f:
+        hand = {r["target"]: r for r in csv.DictReader(f)}
+    by_id = {t["id"]: t for t in targets}
 
-    def panel(layer, mid, size, c3, line, firing_pts):
-        bbox = (mid[0] - size / 2, mid[1] - size / 2, mid[0] + size / 2, mid[1] + size / 2)
-        img = Image.open(io.BytesIO(fetch(bbox, 600, layer))).convert("RGB")
+    def panel(layer, centre, size, px, c3, line, outlines):
+        bbox = (centre[0] - size / 2, centre[1] - size / 2, centre[0] + size / 2, centre[1] + size / 2)
+        img = Image.open(io.BytesIO(fetch(bbox, px, layer))).convert("RGB")
         d = ImageDraw.Draw(img)
-        sc = 600 / size
+        sc = px / size
 
         def xy(p):
             return ((p[0] - bbox[0]) * sc, (bbox[3] - p[1]) * sc)
 
         d.line([xy(p) for p in line], fill=(0, 230, 255), width=3)
-        for k, c in enumerate(c3):
-            col = colours[k % len(colours)]
-            d.line([xy(p) for p in c["house"]["ring"]], fill=col, width=2)
-            x, y = xy(rc.centroid(c["house"]["ring"]))
-            d.rectangle((x - 7, y - 8, x + 7, y + 8), fill=(0, 0, 0))
-            d.text((x - 3, y - 6), str(k + 1), fill=col)
+        if outlines:
+            for k, c in enumerate(c3):
+                col = colours[k % len(colours)]
+                d.line([xy(p) for p in c["house"]["ring"]], fill=col, width=1)
+                x, y = xy(c["firing"])
+                d.ellipse((x - 5, y - 5, x + 5, y + 5), outline=col, width=2)
+                d.text((x + 7, y - 6), str(k + 1), fill=col)
+        d.line([(10, px - 12), (10 + 10 * sc, px - 12)], fill=(0, 0, 0), width=5)  # 10 m
         return img
 
-    sheets = {}
-    for n, (r, t, c3) in enumerate(todo):
-        mid_t = rc.line_midpoint(t["line"])
+    n = 0
+    for tid, h in hand.items():
+        if h["status"] != "unsure" or tid not in by_id:
+            continue
+        t = by_id[tid]
+        c3 = sorted([c for c in cands_by_target[tid] if c["nominal"] == 300], key=lambda c: c["square"])[:6]
+        if not c3:
+            continue
         cx = sum(c["firing"][0] for c in c3) / len(c3)
         cy = sum(c["firing"][1] for c in c3) / len(c3)
-        mid = ((mid_t[0] + cx) / 2, (mid_t[1] + cy) / 2)
-        size = max(c["square"] for c in c3) * 1.2
-        near = ((cx, cy), 120)
+        mid = rc.line_midpoint(t["line"])
+        # Look a little towards the targets so the first dots are in the picture.
+        dx, dy = mid[0] - cx, mid[1] - cy
+        ln = math.hypot(dx, dy) or 1
+        near = (cx + dx / ln * 15, cy + dy / ln * 15)
         try:
-            a = panel("ch.swisstopo.swissimage", mid, size, c3, t["line"], None)
-            b = panel(LK, mid, size, c3, t["line"], None)
-            za = panel("ch.swisstopo.swissimage", near[0], near[1], c3, t["line"], None)
-            zb = panel(LK, near[0], near[1], c3, t["line"], None)
+            a = panel(LK, near, 160, 700, c3, t["line"], False)
+            b = panel(LK, near, 60, 700, c3, t["line"], True)
+            c = panel("ch.swisstopo.swissimage", near, 60, 700, c3, t["line"], True)
+            d = panel("ch.swisstopo.swissimage", near, 60, 700, c3, t["line"], False)
         except Exception as e:  # noqa: BLE001
-            print("image failed", n, e)
+            print("image failed", tid, e)
             continue
-        sheet = Image.new("RGB", (1210, 1290), (0, 0, 0))
-        for img, pos in ((a, (0, 40)), (b, (610, 40)), (za, (0, 690)), (zb, (610, 690))):
+        n += 1
+        sheet = Image.new("RGB", (1410, 1450), (0, 0, 0))
+        for img, pos in ((a, (0, 40)), (b, (710, 40)), (c, (0, 750)), (d, (710, 750))):
             sheet.paste(img, pos)
-        label = f"lane {n + 1}: {r['name']}  " + "  ".join(f"{k + 1}={c['square']:.0f}m" for k, c in enumerate(c3))
+        chosen = next((k + 1 for k, cc in enumerate(c3) if cc["house"]["id"] == h["house"]), "?")
+        label = (f"{h['name']}  pick {chosen}  " + "  ".join(f"{k + 1}={cc['square']:.1f}m" for k, cc in enumerate(c3))
+                 + f"   note: {h['note']}")
         ImageDraw.Draw(sheet).text((8, 10), label, fill=(255, 255, 255))
-        ImageDraw.Draw(sheet).text((8, 655), "close-up 120 m around the houses", fill=(255, 255, 255))
-        sheet.save(os.path.join(out, f"hand-{n + 1:03d}.jpg"), quality=80)
+        ImageDraw.Draw(sheet).text((8, 720), "map 160 m (no outlines) | map 60 m | photo 60 m | photo 60 m (no outlines)",
+                                   fill=(255, 255, 255))
+        sheet.save(os.path.join(out, f"verify-{n:03d}.jpg"), quality=85)
+        with open(os.path.join(out, "verify.csv"), "a", encoding="utf-8") as f:
+            f.write(f"{n},{tid},{h['name']},{chosen}," + ";".join(c3_["house"]["id"] for c3_ in c3) + "\n")
 
 
 if __name__ == "__main__":
