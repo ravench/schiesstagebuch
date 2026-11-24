@@ -13,13 +13,13 @@ enum NearbyRanges {
     /// Approximate location (iOS "Precise: off") can be a few km off; worse than this is not used.
     static let maxAccuracy: CLLocationAccuracy = 3_000
 
-    struct Match: Equatable {
-        let range: ShootingRange
+    struct Match<Range: Equatable>: Equatable {
+        let range: Range
         let distance: CLLocationDistance
     }
 
     /// Ranges with a saved position, nearest first.
-    static func byDistance(_ ranges: [ShootingRange], from location: CLLocation) -> [Match] {
+    static func byDistance<R: RangePlace & Equatable>(_ ranges: [R], from location: CLLocation) -> [Match<R>] {
         ranges.compactMap { r in
             guard let lat = r.latitude, let lon = r.longitude else { return nil }
             return Match(range: r, distance: location.distance(from: CLLocation(latitude: lat, longitude: lon)))
@@ -29,7 +29,7 @@ enum NearbyRanges {
 
     /// The range to pre-select, or nil when none is close enough or the position is too vague to tell
     /// two ranges apart. With approximate location the nearest range must be clearly the closest.
-    static func preselection(_ ranges: [ShootingRange], from location: CLLocation) -> Match? {
+    static func preselection<R: RangePlace & Equatable>(_ ranges: [R], from location: CLLocation) -> Match<R>? {
         let accuracy = location.horizontalAccuracy
         guard accuracy >= 0, accuracy <= maxAccuracy else { return nil }
         let matches = byDistance(ranges, from: location)
@@ -40,20 +40,27 @@ enum NearbyRanges {
 
     /// Like `preselection`, but only while the range field is still empty:
     /// a range the user picked before the position arrived is never replaced.
-    static func preselection(_ ranges: [ShootingRange], from location: CLLocation, current: ShootingRange?) -> Match? {
+    static func preselection<R: RangePlace & Equatable>(_ ranges: [R], from location: CLLocation, current: ShootingRange?) -> Match<R>? {
         guard current == nil else { return nil }
         return preselection(ranges, from: location)
     }
 
-    /// Picker order: ranges within `nearbyRadius` by distance, then the rest in their given (alphabetical) order.
-    static func pickerOrder(_ ranges: [ShootingRange], from location: CLLocation?) -> [ShootingRange] {
+    /// Picker order: ranges within `nearbyRadius` by distance, then the rest in their given order.
+    static func pickerOrder<R: RangePlace>(_ ranges: [R], from location: CLLocation?) -> [R] {
         guard let location else { return ranges }
-        let near = byDistance(ranges, from: location).filter { $0.distance <= nearbyRadius }.map(\.range)
-        return near + ranges.filter { !near.contains($0) }
+        // By index: the list can be the whole catalogue.
+        let near = ranges.indices.compactMap { i -> (index: Int, distance: CLLocationDistance)? in
+            guard let lat = ranges[i].latitude, let lon = ranges[i].longitude else { return nil }
+            let distance = location.distance(from: CLLocation(latitude: lat, longitude: lon))
+            return distance <= nearbyRadius ? (i, distance) : nil
+        }
+        .sorted { $0.distance < $1.distance }.map(\.index)
+        let isNear = Set(near)
+        return near.map { ranges[$0] } + ranges.indices.filter { !isNear.contains($0) }.map { ranges[$0] }
     }
 
     /// Distance for the picker subtitle when the range is nearby, else nil.
-    static func subtitle(for range: ShootingRange, from location: CLLocation?, locale: Locale = .current) -> String? {
+    static func subtitle(for range: some RangePlace, from location: CLLocation?, locale: Locale = .current) -> String? {
         guard let location, let lat = range.latitude, let lon = range.longitude else { return nil }
         let d = location.distance(from: CLLocation(latitude: lat, longitude: lon))
         return d <= nearbyRadius ? format(d, locale: locale) : nil
@@ -75,7 +82,7 @@ enum NearbyRanges {
 
     /// Only new entries for today: a back-dated entry was shot somewhere else.
     static func applies(isNewEntry: Bool, enabled: Bool, date: Date, now: Date = .now,
-                        calendar: Calendar = .current, ranges: [ShootingRange]) -> Bool {
+                        calendar: Calendar = .current, ranges: [some RangePlace]) -> Bool {
         isNewEntry && enabled && calendar.isDate(date, inSameDayAs: now)
             && ranges.contains { $0.latitude != nil && $0.longitude != nil }
     }

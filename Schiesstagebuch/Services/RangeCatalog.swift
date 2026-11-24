@@ -2,10 +2,11 @@ import Foundation
 import SwiftData
 
 /// Swiss shooting ranges bundled with the app (SwissRanges.json, built by
-/// tools/range_catalogue.py from swisstopo's swissTLM3D). Imported into SwiftData only when
-/// the user agrees, so they can rename, archive or delete them like their own ranges.
+/// tools/range_catalogue.py from swisstopo's swissTLM3D). A catalogue only (Raven 2026-11-24): the
+/// range pickers offer its ranges beside the user's own, and a range becomes the user's record, which
+/// iCloud syncs, when an Anlass at it is saved (`RangeChoice`).
 enum RangeCatalog {
-    struct Item: Codable, Identifiable, Equatable {
+    struct Item: Codable, Identifiable, Hashable {
         let id: String
         let name: String
         let place: String
@@ -31,9 +32,6 @@ enum RangeCatalog {
     /// evaluates `!catalogID.isEmpty` wrongly on the store.
     private static let noCatalogID = String()
 
-    /// Set once the first-launch question was answered on this device.
-    static let askedKey = "rangeCatalogAsked.v1"
-
     static let file: File? = {
         guard let url = Bundle.main.url(forResource: "SwissRanges", withExtension: "json"),
               let data = try? Data(contentsOf: url) else { return nil }
@@ -46,74 +44,51 @@ enum RangeCatalog {
         try JSONDecoder().decode(File.self, from: data)
     }
 
-    /// Ask on first launch, unless this device already asked or catalogue ranges arrived
-    /// through iCloud from another device.
-    @MainActor
-    static func shouldAsk(_ context: ModelContext, defaults: UserDefaults = .standard) -> Bool {
-        guard !defaults.bool(forKey: askedKey), !items.isEmpty else { return false }
-        return !hasCatalogueRanges(context)
-    }
-
-    @MainActor
-    static func hasCatalogueRanges(_ context: ModelContext) -> Bool {
-        let none = noCatalogID
-        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { $0.catalogID != none })
-        return ((try? context.fetchCount(descriptor)) ?? 0) > 0
-    }
-
-    /// Ranges the user added themselves within this distance of a catalogue range are taken
-    /// to be the same place: they get linked instead of duplicated.
+    /// A range of the user's this close to a catalogue range is taken to be the same place: it
+    /// stands for the catalogue range, which the pickers then leave out.
     static let sameRangeMetres = 150.0
-
-    /// Adds every catalogue range that isn't there yet. The user's own ranges close to a
-    /// catalogue range are linked to it and only get the values they lack (position, height,
-    /// direction, distances); their name stays. Returns the number of ranges added.
-    @MainActor
-    @discardableResult
-    static func importAll(_ items: [Item] = items, into context: ModelContext) -> Int {
-        let existing = (try? context.fetch(FetchDescriptor<ShootingRange>())) ?? []
-        var known = Set(existing.map(\.catalogID).filter { !$0.isEmpty })
-        var own = existing.filter { $0.catalogID.isEmpty }
-        var added = 0
-        for item in items where !known.contains(item.id) {
-            known.insert(item.id)
-            if let index = own.firstIndex(where: { isNear($0, item) }) {
-                fill(own[index], from: item)
-                own.remove(at: index)
-                continue
-            }
-            context.insert(makeRange(item))
-            added += 1
-        }
-        try? context.save()
-        return added
-    }
 
     /// A new range with everything the catalogue knows about it; not yet inserted.
     static func makeRange(_ item: Item) -> ShootingRange {
         let range = ShootingRange(name: item.name, place: item.place)
+        range.catalogID = item.id
         range.latitude = item.lat
         range.longitude = item.lon
-        fill(range, from: item)
+        range.address = item.address ?? ""
+        range.shootingBearing = item.bearing.map(Compass.normalized)
+        range.altitude = item.alt
+        range.distances = item.distances
         return range
     }
 
-    private static func fill(_ range: ShootingRange, from item: Item) {
-        range.catalogID = item.id
-        if range.latitude == nil || range.longitude == nil {
-            range.latitude = item.lat
-            range.longitude = item.lon
-        }
-        if range.place.isEmpty { range.place = item.place }
-        if range.address.isEmpty, let address = item.address { range.address = address }
-        if range.shootingBearing == nil { range.shootingBearing = item.bearing.map(Compass.normalized) }
-        if range.altitude == nil { range.altitude = item.alt }
-        if range.distances.isEmpty { range.distances = item.distances }
+    static func isNear(_ range: ShootingRange, _ item: Item) -> Bool {
+        guard let lat = range.latitude, let lon = range.longitude else { return false }
+        // A degree of latitude is 111 km: the cheap check spares the trigonometry for nearly all of the catalogue.
+        return abs(lat - item.lat) < 0.01 && distance(lat, lon, item.lat, item.lon) <= sameRangeMetres
     }
 
-    private static func isNear(_ range: ShootingRange, _ item: Item) -> Bool {
-        guard let lat = range.latitude, let lon = range.longitude else { return false }
-        return distance(lat, lon, item.lat, item.lon) <= sameRangeMetres
+    /// Until 2026-11 the whole catalogue could be copied into the user's ranges, and iCloud synced all of
+    /// it. A catalogue range no Anlass was shot at, still named as the catalogue names it and not
+    /// archived, goes: its catalogue entry stands in for it. A backup can bring such ranges back, so
+    /// this runs at every start. Returns the number of ranges removed.
+    @MainActor
+    @discardableResult
+    static func removeUnused(_ context: ModelContext, items: [Item] = items, now: Date = .now) -> Int {
+        let none = noCatalogID
+        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { $0.catalogID != none })
+        guard let all = try? context.fetch(descriptor) else { return 0 }
+        let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        // A range made in the last day may be one another device just picked, its Anlass not synced yet.
+        let settled = now.addingTimeInterval(-86_400)
+        var removed = 0
+        for range in all {
+            guard let item = byID[range.catalogID], !range.isArchived, (range.events ?? []).isEmpty,
+                  range.name == item.name, range.place == item.place, range.createdAt < settled else { continue }
+            context.delete(range)
+            removed += 1
+        }
+        if removed > 0 { try? context.save() }
+        return removed
     }
 
     /// Great-circle distance in metres.
@@ -125,7 +100,7 @@ enum RangeCatalog {
         return 2 * r * asin(min(1, sqrt(a)))
     }
 
-    /// With iCloud sync two devices can import the catalogue before they see each other's
+    /// With iCloud sync two devices can pick the same catalogue range before they see each other's
     /// ranges. Merge duplicates (same catalogue id) into the oldest record, moving its events.
     /// Returns the number of records merged away.
     @MainActor
@@ -147,5 +122,75 @@ enum RangeCatalog {
         }
         if merged > 0 { try? context.save() }
         return merged
+    }
+}
+
+/// What the range search and the order by distance need to know of a range.
+protocol RangePlace {
+    var name: String { get }
+    var place: String { get }
+    var address: String { get }
+    var distances: [Int] { get }
+    var latitude: Double? { get }
+    var longitude: Double? { get }
+}
+
+extension ShootingRange: RangePlace {}
+
+/// A range as the pickers offer it: the user's record, or a catalogue range the user has no record of.
+enum RangeChoice: RangePlace, Identifiable, Hashable {
+    case record(ShootingRange)
+    case item(RangeCatalog.Item)
+
+    var id: String {
+        switch self {
+        case let .record(range): range.id.uuidString
+        case let .item(item): item.id
+        }
+    }
+
+    var name: String { record?.name ?? item?.name ?? "" }
+    var place: String { record?.place ?? item?.place ?? "" }
+    var address: String { record?.address ?? item?.address ?? "" }
+    var distances: [Int] { record?.distances ?? item?.distances ?? [] }
+    var latitude: Double? { record != nil ? record?.latitude : item?.lat }
+    var longitude: Double? { record != nil ? record?.longitude : item?.lon }
+
+    var record: ShootingRange? { if case let .record(range) = self { range } else { nil } }
+    var item: RangeCatalog.Item? { if case let .item(item) = self { item } else { nil } }
+
+    /// The user's ranges that are not archived, then the catalogue ranges none of the user's stands for:
+    /// by its catalogue id (an archived one too: the user put that range away), or by lying at the same place.
+    static func all(_ records: [ShootingRange], catalogue: [RangeCatalog.Item] = RangeCatalog.items) -> [RangeChoice] {
+        let taken = Set(records.map(\.catalogID))
+        let own = records.filter { $0.catalogID.isEmpty && $0.latitude != nil }
+        return records.filter { !$0.isArchived }.map(RangeChoice.record)
+            + catalogue.filter { item in !taken.contains(item.id) && !own.contains { RangeCatalog.isNear($0, item) } }
+                .map(RangeChoice.item)
+    }
+
+    /// The range to put on an Anlass. A catalogue range gives a new one that is not inserted yet: the
+    /// editor inserts it when the Anlass is saved (`saved(in:)`), so a cancelled Anlass leaves nothing behind.
+    func range() -> ShootingRange {
+        switch self {
+        case let .record(range): range
+        case let .item(item): RangeCatalog.makeRange(item)
+        }
+    }
+
+    /// Whether `range` is this choice: the record itself, or the range made of this catalogue entry.
+    func stands(for range: ShootingRange?) -> Bool {
+        switch self {
+        case let .record(record): record == range
+        case let .item(item): range?.modelContext == nil && range?.catalogID == item.id
+        }
+    }
+}
+
+extension ShootingRange {
+    /// The range as an Anlass stores it: one picked from the catalogue becomes the user's range now.
+    func saved(in context: ModelContext) -> ShootingRange {
+        if modelContext == nil { context.insert(self) }
+        return self
     }
 }

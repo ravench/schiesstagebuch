@@ -5,7 +5,7 @@ import CoreLocation
 enum RangeSearch {
     /// True when every word of `query` is found in the range's name, place or address,
     /// or names one of its distances ("300", "300m", "300 m"). Case and accent insensitive.
-    static func matches(_ range: ShootingRange, _ query: String) -> Bool {
+    static func matches(_ range: some RangePlace, _ query: String) -> Bool {
         words(query).allSatisfy { matches(range, word: $0) }
     }
 
@@ -30,7 +30,7 @@ enum RangeSearch {
         return Int(w)
     }
 
-    private static func matches(_ range: ShootingRange, word: String) -> Bool {
+    private static func matches(_ range: some RangePlace, word: String) -> Bool {
         if let d = distance(in: word), range.distances.contains(d) { return true }
         return range.name.localizedStandardContains(word)
             || range.place.localizedStandardContains(word)
@@ -38,16 +38,21 @@ enum RangeSearch {
     }
 
     /// The picker list: nearby ranges first (see `NearbyRanges.pickerOrder`), narrowed to `query`.
-    /// A selected range that is not in `ranges` (archived) is kept at the end so it stays visible.
-    static func results(_ ranges: [ShootingRange], matching query: String,
-                        from location: CLLocation? = nil, keeping selection: ShootingRange? = nil) -> [ShootingRange] {
-        var list = NearbyRanges.pickerOrder(ranges, from: location)
-        if let selection, !list.contains(selection) { list.append(selection) }
-        return list.filter { matches($0, query) }
+    static func results<R: RangePlace>(_ ranges: [R], matching query: String, from location: CLLocation? = nil) -> [R] {
+        NearbyRanges.pickerOrder(ranges, from: location).filter { matches($0, query) }
+    }
+
+    /// The picker list of the user's ranges and the catalogue. A selected range that none of `choices`
+    /// stands for (it is archived) is kept at the end so it stays visible.
+    static func results(_ choices: [RangeChoice], matching query: String,
+                        from location: CLLocation? = nil, keeping selection: ShootingRange?) -> [RangeChoice] {
+        var list = choices
+        if let selection, !list.contains(where: { $0.stands(for: selection) }) { list.append(.record(selection)) }
+        return results(list, matching: query, from: location)
     }
 
     /// Second line of a picker row: place and, when nearby, the distance from here.
-    static func subtitle(for range: ShootingRange, from location: CLLocation?, locale: Locale = .current) -> String? {
+    static func subtitle(for range: some RangePlace, from location: CLLocation?, locale: Locale = .current) -> String? {
         let parts = [range.place.trimmingCharacters(in: .whitespaces),
                      NearbyRanges.subtitle(for: range, from: location, locale: locale) ?? ""]
             .filter { !$0.isEmpty }

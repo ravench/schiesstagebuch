@@ -48,7 +48,7 @@ struct EntryEditorView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(filter: #Predicate<Weapon> { !$0.isArchived }, sort: \Weapon.name) private var weapons: [Weapon]
-    @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
+    @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @Query(filter: #Predicate<Ammunition> { !$0.isArchived }, sort: \Ammunition.name) private var ammunitions: [Ammunition]
     @Query(sort: \Entry.date, order: .reverse) private var allEntries: [Entry]
     @Query(sort: \ShootingTarget.name) private var targets: [ShootingTarget]
@@ -588,7 +588,7 @@ struct EntryEditorView: View {
         let moved = !Calendar.current.isDate(date, inSameDayAs: shootingEvent.date)
         shootingEvent.add(target)
         shootingEvent.setDate(date)
-        shootingEvent.range = range
+        shootingEvent.range = range?.saved(in: context)
         shootingEvent.name = event.trimmingCharacters(in: .whitespaces)
         target.stich = stich.trimmingCharacters(in: .whitespaces)
         target.relay = relay.trimmingCharacters(in: .whitespaces); target.targetNumber = targetNumber.trimmingCharacters(in: .whitespaces)

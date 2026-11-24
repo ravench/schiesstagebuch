@@ -458,16 +458,16 @@ final class PRScreensTests: XCTestCase {
     /// The list of ranges: a new range with «Aktuellen Standort verwenden», then the list's search field.
     func testRanges() {
         tab("Anlagen")
-        if openMenu(app.navigationBars.buttons["Hinzufügen"].firstMatch, showing: "Schweizer Schiessanlagen übernehmen") {
-            // The menu's own «Hinzufügen» comes after the bar's button of the same name.
+        // «Hinzufügen» opens the new range; on a base branch it opens a menu whose last item does.
+        app.navigationBars.buttons["Hinzufügen"].firstMatch.tap()
+        let here = app.buttons["Aktuellen Standort verwenden"].firstMatch
+        if !here.waitForExistence(timeout: 3) {
             let items = app.buttons.matching(NSPredicate(format: "label == %@", "Hinzufügen"))
             items.element(boundBy: items.count - 1).tap()
-            XCTAssertTrue(app.buttons["Aktuellen Standort verwenden"].waitForExistence(timeout: 5), "No current-location button")
-            snap("19b-Neue-Schiessanlage")
-            app.buttons["Abbrechen"].firstMatch.tap()
-        } else {
-            XCTFail("No menu to add a range")
         }
+        XCTAssertTrue(here.waitForExistence(timeout: 5), "No current-location button")
+        snap("19b-Neue-Schiessanlage")
+        app.buttons["Abbrechen"].firstMatch.tap()
         let search = app.searchFields.firstMatch
         if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
         guard search.waitForExistence(timeout: 5) else { return XCTFail("No search field in the ranges list") }
@@ -583,11 +583,13 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// The range list in the Anlass editor, ending with «Schiessanlage hinzufügen».
+    /// The range list in the Anlass editor: the user's ranges, then the catalogue's; a search without a
+    /// match ends with «Schiessanlage hinzufügen».
     private func rangeStop() {
         if open(app.staticTexts["Schiessanlage"].firstMatch) {
             let search = app.searchFields.firstMatch
             if search.waitForExistence(timeout: 5) {
+                snap("03b0-Schiessanlage-Liste")
                 search.tap()
                 search.typeText("Keine solche Anlage\n") // Return: no blinking caret in the screen
                 snap("03b-Schiessanlage-ohne-Treffer")

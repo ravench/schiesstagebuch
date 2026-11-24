@@ -75,9 +75,24 @@ final class RangeSearchTests: ModelTestCase {
         let active = range("Albisgüetli")
         let archived = range("Alte Anlage")
         archived.isArchived = true
-        XCTAssertEqual(RangeSearch.results([active], matching: "", keeping: archived), [active, archived])
-        XCTAssertEqual(RangeSearch.results([active], matching: "alte", keeping: archived), [archived])
-        XCTAssertEqual(RangeSearch.results([active], matching: "", keeping: active), [active])
+        let choices = [RangeChoice.record(active)]
+        XCTAssertEqual(RangeSearch.results(choices, matching: "", keeping: archived), [.record(active), .record(archived)])
+        XCTAssertEqual(RangeSearch.results(choices, matching: "alte", keeping: archived), [.record(archived)])
+        XCTAssertEqual(RangeSearch.results(choices, matching: "", keeping: active), choices)
+        XCTAssertEqual(RangeSearch.results(choices, matching: "", keeping: nil), choices)
+    }
+
+    /// The catalogue's ranges are searched as the user's are; one picked but not saved yet is its catalogue row.
+    func testCatalogueRangesAreSearchedBesideTheUsers() {
+        let item = RangeCatalog.Item(id: "tlm:T", name: "Thun Guntelsey 300/50/25m", place: "Thun", lat: 46.733, lon: 7.603,
+                                     bearing: nil, alt: nil, distances: [300, 50, 25], address: "Allmendstrasse 1, 3600 Thun")
+        let choices = [RangeChoice.record(range("Albisgüetli")), .item(item)]
+        XCTAssertEqual(RangeSearch.results(choices, matching: "thun 25", keeping: nil), [.item(item)])
+        XCTAssertEqual(RangeSearch.results(choices, matching: "3600", keeping: nil), [.item(item)])
+        XCTAssertEqual(RangeSearch.results(choices, matching: "", keeping: RangeChoice.item(item).range()), choices)
+        let here = CLLocation(latitude: 46.734, longitude: 7.604)
+        XCTAssertEqual(RangeSearch.results(choices, matching: "", from: here, keeping: nil).first, .item(item), "the nearby one first")
+        XCTAssertEqual(RangeSearch.subtitle(for: RangeChoice.item(item), from: nil), "Thun")
     }
 
     func testSubtitleShowsPlaceAndNearbyDistance() {

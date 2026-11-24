@@ -1,22 +1,17 @@
 import SwiftUI
-import SwiftData
 
 /// First launch: an animated intro says the app is asking a few preferences to set itself up, then the
-/// shooter picks the scoring systems, which sport-shooter fields to record, the wording and, in Switzerland, whether to
-/// prefill the shooting ranges. Everything can be changed later in Settings.
+/// shooter picks the scoring systems, which sport-shooter fields to record and the wording. Everything can
+/// be changed later in Settings.
 struct WelcomeView: View {
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     /// No intro animation with Reduce Motion, nor in screenshot runs, whose screens must not
     /// depend on when the screenshot is taken.
     private var reduceMotion: Bool { systemReduceMotion || ScreenshotData.isActive }
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @AppStorage(Wording.sportsEquipmentKey) private var sportsEquipment = false
     @AppStorage(ScoringSystem.enabledKey) private var scoringSystems = ""
-    /// Decided once when the screen opens, so the row doesn't vanish while it is shown.
-    @State private var offerRanges = false
-    @State private var importRanges = false
     /// Flips on appear and drives the intro animation and the step-by-step reveal of the sections.
     @State private var shown = false
 
@@ -50,19 +45,6 @@ struct WelcomeView: View {
                 }
                 .welcomeReveal(step: 2, shown: shown, reduceMotion: reduceMotion)
 
-                if offerRanges {
-                    Section {
-                        Toggle(isOn: $importRanges) {
-                            Label("Schweizer Schiessanlagen übernehmen", systemImage: "mappin.and.ellipse")
-                        }
-                    } header: {
-                        Text("Schiessanlagen")
-                    } footer: {
-                        Text("Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später im Tab «Anlagen».")
-                    }
-                    .welcomeReveal(step: 3, shown: shown, reduceMotion: reduceMotion)
-                }
-
                 Section {
                     Toggle(isOn: $sportsEquipment) {
                         Label("«Sportgeräte» statt «Waffen»", systemImage: "textformat")
@@ -72,24 +54,21 @@ struct WelcomeView: View {
                 } footer: {
                     Text("Ändert nur die Wörter in der App, deine Daten bleiben gleich.")
                 }
-                .welcomeReveal(step: 4, shown: shown, reduceMotion: reduceMotion)
+                .welcomeReveal(step: 3, shown: shown, reduceMotion: reduceMotion)
             }
             .navigationTitle("Willkommen")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Starten") {
-                        FirstRun.finish(importingRanges: offerRanges && importRanges, into: context)
+                        FirstRun.finish()
                         dismiss()
                     }
                     .bold()
                 }
             }
-            .onAppear {
-                offerRanges = FirstRun.offersRanges(context)
-                shown = true
-            }
+            .onAppear { shown = true }
         }
-        // Closing without the button would skip the range question.
+        // Only «Starten» closes it for good.
         .interactiveDismissDisabled()
     }
 }

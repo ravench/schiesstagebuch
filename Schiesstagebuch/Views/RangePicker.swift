@@ -1,10 +1,12 @@
 import SwiftUI
 import CoreLocation
 
-/// The range field of the entry and event forms: opens a searchable list instead of a menu,
-/// since the Swiss catalogue holds almost 2000 ranges. The list ends with «Schiessanlage hinzufügen».
+/// The range field of the entry and event forms: opens a searchable list of the user's ranges and,
+/// after them, the Swiss catalogue's almost 2000. The list ends with «Schiessanlage hinzufügen».
+/// A catalogue range picked here is not saved yet: the form saves it with the Anlass (`saved(in:)`).
 struct RangePickerRow: View {
     @Binding var selection: ShootingRange?
+    /// All of the user's ranges, archived ones too: they hide their catalogue entries.
     let ranges: [ShootingRange]
     var location: CLLocation?
 
@@ -30,12 +32,16 @@ struct RangePickerList: View {
     @State private var added = false
 
     var body: some View {
-        let shown = RangeSearch.results(ranges, matching: search, from: location, keeping: selection)
+        let shown = RangeSearch.results(RangeChoice.all(ranges), matching: search, from: location, keeping: selection)
         List {
-            if RangeSearch.words(search).isEmpty { row(nil) }
-            ForEach(shown) { row($0) }
-            if shown.isEmpty {
-                Text("Keine passende Schiessanlage").foregroundStyle(.secondary)
+            Section {
+                if RangeSearch.words(search).isEmpty { row(nil) }
+                ForEach(shown) { row($0) }
+                if shown.isEmpty {
+                    Text("Keine passende Schiessanlage").foregroundStyle(.secondary)
+                }
+            } footer: {
+                if shown.contains(where: { $0.item != nil }) { Text(RangeCatalog.attribution) }
             }
             // Last row, so it shows when nothing matches or at the end of the list.
             Button { adding = true } label: { Label("Schiessanlage hinzufügen", systemImage: "plus") }
@@ -54,17 +60,17 @@ struct RangePickerList: View {
         if added { dismiss() }
     }
 
-    private func row(_ range: ShootingRange?) -> some View {
+    private func row(_ choice: RangeChoice?) -> some View {
         Button {
-            selection = range
+            selection = choice?.range()
             dismiss()
         } label: {
             HStack {
-                PickerOption(title: range?.name ?? "–",
-                             subtitle: range.flatMap { RangeSearch.subtitle(for: $0, from: location) })
+                PickerOption(title: choice?.name ?? "–",
+                             subtitle: choice.flatMap { RangeSearch.subtitle(for: $0, from: location) })
                     .foregroundStyle(.primary)
                 Spacer()
-                if selection == range { Image(systemName: "checkmark").foregroundStyle(.tint) }
+                if choice?.stands(for: selection) ?? (selection == nil) { Image(systemName: "checkmark").foregroundStyle(.tint) }
             }
         }
     }
