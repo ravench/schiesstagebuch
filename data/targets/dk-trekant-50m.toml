@@ -1,0 +1,59 @@
+# Trekant til 50 meter (Dänemark), SIUS's target 95 in SiusData's Target.ini (DEN/T3Kant50.TRG).
+# A black triangle cut across into ten zones: 10 at the tip, 1 at the base.
+id = "dk-trekant-50m"
+name = "Trekant 50 m (DK)"
+short_name = "Trekant 50 m"
+group = "Dänemark"
+distances_m = [50]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Trekant til 50 meter"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-90, -40, 180, 180]
+fill = "white"
+
+[[shapes]]
+polygon = [[-79.5, 132.7], [0, -5], [79.5, 132.7]]
+fill = "black"
+
+[[shapes]]
+polygon = [[-8, 8.3], [8, 8.3], [-8, 8.3]]
+line = "white"
+
+[[shapes]]
+polygon = [[-16, 22.1], [16, 22.1], [-16, 22.1]]
+line = "white"
+
+[[shapes]]
+polygon = [[-24, 36], [24, 36], [-24, 36]]
+line = "white"
+
+[[shapes]]
+polygon = [[-32, 49.8], [32, 49.8], [-32, 49.8]]
+line = "white"
+
+[[shapes]]
+polygon = [[-40, 63.7], [40, 63.7], [-40, 63.7]]
+line = "white"
+
+[[shapes]]
+polygon = [[-48, 77.5], [48, 77.5], [-48, 77.5]]
+line = "white"
+
+[[shapes]]
+polygon = [[-56, 91.4], [56, 91.4], [-56, 91.4]]
+line = "white"
+
+[[shapes]]
+polygon = [[-64, 105.3], [64, 105.3], [-64, 105.3]]
+line = "white"
+
+[[shapes]]
+polygon = [[-72, 119.1], [72, 119.1], [-72, 119.1]]
+line = "white"

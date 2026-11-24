@@ -1,0 +1,19 @@
+# 15m riffel 1984 (Dänemark), SIUS's target 87 in SiusData's Target.ini (DEN/TGM84.TRG).
+# Rings from SIUS's circles; the 7 and 6 are labelled, the 10 to 8 follow inwards.
+id = "dk-15m-riffel-1984"
+name = "15 m Riffel 1984 (DK)"
+short_name = "15 m Riffel 1984"
+group = "Dänemark"
+distances_m = [15]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [13, 26, 46, 66, 86]
+inner_ten_mm = 9
+black_mm = 41
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 15m riffel 1984"
+url = "https://www.sius.com"

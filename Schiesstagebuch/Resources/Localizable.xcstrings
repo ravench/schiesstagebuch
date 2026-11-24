@@ -4768,6 +4768,29 @@
         }
       }
     },
+    "Grossbritannien": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "United Kingdom"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royaume-Uni"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regno Unito"
+          }
+        }
+      }
+    },
     "Grünig + Elmiger, Rad 1": {
       "extractionState": "manual",
       "localizations": {
@@ -5621,6 +5644,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dati dei calibri"
+          }
+        }
+      }
+    },
+    "Kanada": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canada"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canada"
           }
         }
       }

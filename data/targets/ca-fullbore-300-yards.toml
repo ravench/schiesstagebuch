@@ -1,0 +1,40 @@
+# 300y (Kanada), SIUS's target 570 in SiusData's Target.ini (CSF/TG300y.TRG).
+# Fullbore (ICFRA) target: 5, 4 and 3 are rings (Ø 130, Ø 260, Ø 390 mm), the 2 is
+# the rest of the square card. The dashed V-bull inside the 5 only breaks ties.
+id = "ca-fullbore-300-yards"
+name = "Fullbore 300 yards (CA)"
+short_name = "Fullbore 300 yards"
+group = "Kanada"
+distances_m = [274]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 2, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 300y"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-600, -600, 1200, 1200]
+fill = "white"
+
+[[shapes]]
+ellipse = [0, 0, 560, 560]
+fill = "black"
+
+[[shapes]]
+ellipse = [0, 0, 390, 390]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 260, 260]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 130, 130]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 65, 65]
+line = "white"

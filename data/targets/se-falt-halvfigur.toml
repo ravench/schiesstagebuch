@@ -1,0 +1,27 @@
+# Half Figure (Schweden), SIUS's target 452 in SiusData's Target.ini (SWE/TGHALFIG.TRG).
+# A field figure (fältskytte): a hit anywhere on it counts 1.
+id = "se-falt-halvfigur"
+name = "Fält Halvfigur (SE)"
+short_name = "Fält Halvfigur"
+group = "Schweden"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Half Figure"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-400, -460, 800, 800]
+fill = "white"
+
+[[shapes]]
+polygon = [[-279, 74], [-282, 283], [244, 283], [246, 235], [265, 218], [279, 180], [265, 130], [256, 74], [265, -8], [265, -70], [246, -157], [238, -172], [212, -193], [99, -233], [70, -245], [76, -260], [56.5, -373], [38.5, -404], [19, -417], [-36, -425], [-87, -411], [-114, -373], [-134, -260], [-114, -233], [-214, -165], [-262, -104]]
+fill = "black"
+
+[[shapes]]
+polygon = [[146, 283], [151, 248], [151, 74], [151, -75], [127, -131], [38.5, -175], [26, -203], [29, -233], [38.5, -286], [26, -327], [-14, -345], [-57, -340], [-87, -317], [-102, -283], [-102, -233], [-87, -159], [-102, -116], [-134, -64], [-146, 74], [-166, 283]]
+line = "white"

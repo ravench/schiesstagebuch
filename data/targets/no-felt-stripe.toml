@@ -1,0 +1,36 @@
+# Stripe (Norwegen), SIUS's target 544 in SiusData's Target.ini (NOR/TGStripe.TRG).
+# A field figure: a hit anywhere on it counts 1. SIUS also draws the inner zone; it only breaks ties
+# («innertreff»), so it has no value of its own here.
+id = "no-felt-stripe"
+name = "Felt Stripe (NO)"
+short_name = "Felt Stripe"
+group = "Norwegen"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Stripe"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-200, -200, 400, 400]
+fill = "white"
+
+[[shapes]]
+polygon = [[152.5, -77.5], [-152.5, -77.5], [-152.5, 77.5], [152.5, 77.5]]
+fill = "black"
+
+[[shapes]]
+polygon = [[132.5, -57.5], [-132.5, -57.5], [-132.5, 57.5], [132.5, 57.5]]
+line = "white"
+
+[[shapes]]
+polygon = [[112.5, -37.5], [-112.5, -37.5], [-112.5, 37.5], [112.5, 37.5]]
+line = "white"
+
+[[shapes]]
+polygon = [[45, -15], [-45, -15], [-45, 15], [45, 15]]
+line = "white"
