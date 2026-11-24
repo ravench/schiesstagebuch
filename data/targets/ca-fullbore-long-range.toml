@@ -1,9 +1,9 @@
 # Long Range (Kanada), SIUS's target 576 in SiusData's Target.ini (CSF/TGLongRa.TRG).
 # Fullbore (ICFRA) target: 5, 4 and 3 are rings (Ø 510, Ø 915, Ø 1830 mm), the 2 is
-# the rest of the square card. The dashed V-bull inside the 5 only breaks ties.
+# the rest of the card (SIUS: 2400 x 1800 mm, raised here to hold the 3 ring). The dashed V-bull inside the 5 only breaks ties.
 id = "ca-fullbore-long-range"
 name = "Fullbore Long Range (CA)"
-short_name = "Fullbore Long Ra"
+short_name = "Fullbore Long Range"
 group = "Kanada"
 distances_m = []
 
@@ -16,7 +16,7 @@ title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Long Range"
 url = "https://www.sius.com"
 
 [[shapes]]
-rect = [-1200, -900, 2400, 1800]
+rect = [-1200, -915, 2400, 1830]
 fill = "white"
 
 [[shapes]]

@@ -3,7 +3,7 @@
 # the rest of the square card. The dashed V-bull inside the 5 only breaks ties.
 id = "ca-fullbore-600-yards"
 name = "Fullbore 600 yards (CA)"
-short_name = "Fullbore 600 yar"
+short_name = "Fullbore 600 yards"
 group = "Kanada"
 distances_m = [549]
 

@@ -2,7 +2,7 @@
 # A field figure (fältskytte): a hit anywhere on it counts 1.
 id = "se-falt-tredjedelsfigur"
 name = "Fält Tredjedelsfigur (SE)"
-short_name = "Fält Tredjedelsf"
+short_name = "Fält Tredjedelsfigur"
 group = "Schweden"
 distances_m = []
 

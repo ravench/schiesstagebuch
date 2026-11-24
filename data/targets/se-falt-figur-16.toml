@@ -1,5 +1,6 @@
 # Fi16 (Schweden), SIUS's target 73 in SiusData's Target.ini (SWE/TGFIG16.TRG).
 # A field figure (fältskytte): a hit anywhere on it counts 1.
+# The icon's card is cut around the figure; SIUS draws it on a 1 m card above the aim point.
 id = "se-falt-figur-16"
 name = "Fält Figur 16 (SE)"
 short_name = "Fält Figur 16"
@@ -15,7 +16,7 @@ title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Fi16"
 url = "https://www.sius.com"
 
 [[shapes]]
-rect = [-500, -500, 1000, 1000]
+rect = [-264, -476, 610, 610]
 fill = "white"
 
 [[shapes]]
