@@ -206,6 +206,33 @@ struct RangeMapSection: View {
     }
 }
 
+/// True distances of a catalogue range and how high its targets are (swissTLM3D), e.g.
+/// "300 m   ~298 m · Scheiben ~12 m höher". Shown only for distances measured with confidence.
+struct RangeMeasuredSection: View {
+    let measured: [RangeCatalog.Measured]
+
+    var body: some View {
+        if !measured.isEmpty {
+            Section {
+                ForEach(measured, id: \.self) { m in
+                    LabeledContent {
+                        VStack(alignment: .trailing) {
+                            Text(m.distanceText).monospacedDigit()
+                            if let rise = m.riseText { Text(rise).font(.footnote) }
+                        }
+                    } label: {
+                        Text(verbatim: "\(m.distance) m")
+                    }
+                }
+            } header: {
+                Text("Gemessene Distanzen")
+            } footer: {
+                Text("Von der Schützenlinie bis zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; wer im oberen Stock schiesst, zielt weniger hoch.")
+            }
+        }
+    }
+}
+
 /// Optional shooting direction of a range: a switch, then a compass rose and a slider in 5° steps.
 struct RangeBearingRow: View {
     @Binding var bearing: Double?

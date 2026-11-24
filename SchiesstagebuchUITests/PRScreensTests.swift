@@ -500,6 +500,23 @@ final class PRScreensTests: XCTestCase {
         search.tap()
         search.typeText("Oster\n") // return hides the keyboard
         snap("19-Schiessanlagen-Suche")
+        // A catalogue range with measured distances: «~298 m», «Scheiben ~12 m höher».
+        let cancel = app.buttons["Abbrechen"].firstMatch
+        if cancel.exists { cancel.tap() } // leaves the search, so the bar's menu is back
+        if openMenu(app.navigationBars.buttons["Hinzufügen"].firstMatch, showing: "Schweizer Schiessanlagen übernehmen") {
+            app.buttons["Schweizer Schiessanlagen übernehmen"].firstMatch.tap()
+            if app.buttons["OK"].firstMatch.waitForExistence(timeout: 30) { app.buttons["OK"].firstMatch.tap() }
+            search.tap()
+            search.typeText("Stettlen\n")
+            if open(app.staticTexts["Stettlen 300m"].firstMatch) {
+                let header = app.staticTexts["Gemessene Distanzen"].firstMatch
+                XCTAssertTrue(header.waitForExistence(timeout: 5), "No measured distances")
+                reveal(header)
+                snap("19c-Schiessanlage-gemessen")
+            }
+        } else {
+            XCTFail("No menu to import the Swiss ranges")
+        }
     }
 
     /// Starts the app again with `arguments` on top of the usual ones.

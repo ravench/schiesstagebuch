@@ -69,6 +69,69 @@ final class RangeCatalogTests: ModelTestCase {
         XCTAssertNil(file.ranges[1].address)
     }
 
+    // MARK: Measured distances
+
+    func testDecodesMeasuredDistances() throws {
+        let json = """
+        {"source": "swissTLM3D © swisstopo", "ranges": [
+          {"id": "tlm:X", "name": "Riedbach", "place": "Bern", "lat": 46.95, "lon": 7.44, "distances": [300, 50],
+           "measured": [{"distance": 300, "from": 296, "to": 301, "rise": 12}, {"distance": 50, "from": 51, "to": 51}]},
+          {"id": "tlm:Y", "name": "Moos", "place": "Moos", "lat": 46.9, "lon": 7.4, "distances": [300]}
+        ]}
+        """
+        let file = try RangeCatalog.decode(Data(json.utf8))
+        XCTAssertEqual(file.ranges[0].measured, [RangeCatalog.Measured(distance: 300, from: 296, to: 301, rise: 12),
+                                                 RangeCatalog.Measured(distance: 50, from: 51, to: 51, rise: nil)])
+        XCTAssertNil(file.ranges[1].measured)
+    }
+
+    func testMeasuredTextsCarryATilde() {
+        let one = RangeCatalog.Measured(distance: 300, from: 301, to: 301, rise: 12)
+        XCTAssertTrue(one.distanceText.hasPrefix("~"))
+        XCTAssertTrue(one.distanceText.contains("301"))
+        XCTAssertFalse(one.distanceText.contains("–"))
+        let span = RangeCatalog.Measured(distance: 300, from: 296, to: 306, rise: -3)
+        XCTAssertTrue(span.distanceText.hasPrefix("~"))
+        XCTAssertTrue(span.distanceText.contains("296–306"))
+        let up = one.riseText ?? "", down = span.riseText ?? ""
+        XCTAssertTrue(up.contains("~12"), up)
+        XCTAssertTrue(down.contains("~3"), down)
+        XCTAssertNotEqual(up.replacingOccurrences(of: "12", with: "3"), down, "higher and lower read differently")
+        let level = RangeCatalog.Measured(distance: 50, from: 50, to: 50, rise: 0)
+        XCTAssertNotNil(level.riseText)
+        XCTAssertFalse(level.riseText?.contains("~") ?? true)
+        XCTAssertNil(RangeCatalog.Measured(distance: 50, from: 50, to: 50, rise: nil).riseText)
+    }
+
+    func testMeasuredOnlyForCatalogueRanges() throws {
+        let own = ShootingRange(name: "Keller")
+        XCTAssertNil(RangeCatalog.item(for: own))
+        XCTAssertEqual(RangeCatalog.measured(for: own), [])
+        let unknown = ShootingRange(name: "Weg")
+        unknown.catalogID = "tlm:not-in-the-catalogue"
+        XCTAssertEqual(RangeCatalog.measured(for: unknown), [])
+        // Only 100 m and up are measured: Albisgüetli's 300 m, not its 50 or 25 m.
+        let albis = try XCTUnwrap(RangeCatalog.items.first { $0.name == "Zürich-Albisgütli 300/50m" })
+        XCTAssertEqual(albis.measured?.map(\.distance), [300])
+        XCTAssertNil(RangeCatalog.items.first { $0.name == "Zürich-Albisgütli 25m" }?.measured)
+        // Every bundled measurement is plausible: span within 25 % of the nominal distance, longest first.
+        for item in RangeCatalog.items {
+            let measured = item.measured ?? []
+            XCTAssertEqual(measured.map(\.distance), measured.map(\.distance).sorted(by: >), item.id)
+            for m in measured {
+                XCTAssertGreaterThanOrEqual(m.distance, 100, item.id)
+                XCTAssertLessThanOrEqual(m.from, m.to, item.id)
+                XCTAssertLessThan(abs(m.from - m.distance), m.distance / 4 + 1, item.id)
+                XCTAssertLessThan(abs(m.to - m.distance), m.distance / 4 + 1, item.id)
+            }
+            if let first = measured.first {
+                let range = ShootingRange(name: item.name)
+                range.catalogID = item.id
+                XCTAssertEqual(RangeCatalog.measured(for: range).first, first)
+            }
+        }
+    }
+
     // MARK: First-launch question
 
     func testAsksOnceOnAFreshDevice() throws {
