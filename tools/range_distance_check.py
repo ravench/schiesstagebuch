@@ -323,6 +323,54 @@ def main(gpkg, out):
         json.dump(summary, f, indent=1)
     print(json.dumps(summary, indent=1))
 
+    # The data file for the catalogue (data/range-measurements.csv): per target row the firing
+    # house (hand list first, then the map line, then the rule), the distance (+0.8 m, see the
+    # report), how much higher the targets lie, and whether we're confident about it.
+    here = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(here, "range_hand_houses.csv"), encoding="utf-8") as f:
+        hand = {r["target"]: r for r in csv.DictReader(f)}
+    by_target = {t["id"]: t for t in targets}
+    measurements = []
+    for r in rows:
+        t, nominal = by_target[r["target"]], r["nominal"]
+        if nominal is None:
+            continue
+        cands = cands_by_target[t["id"]]
+        house_id, reason = r["house"], ""
+        h = hand.get(t["id"])
+        same = [c for c in cands if c["nominal"] == nominal]
+        spread = max(c["square"] for c in same) - min(c["square"] for c in same) if same else 0
+        if h:
+            house_id = h["house"]
+            confident = h["status"] == "sure"
+            reason = "hand" if confident else "hand, unsure"
+        elif r["map_found"]:
+            confident, reason = True, "map line"
+        elif len(same) <= 1 or spread <= 3:
+            confident, reason = True, "one house" if len(same) <= 1 else "houses agree"
+        else:
+            confident, reason = False, "several houses"
+        c = next((c for c in cands if c["house"]["id"] == house_id), None)
+        if c is None:
+            continue
+        mid = rc.line_midpoint(t["line"])
+        zf, zt = z_at(c["house"]["ring"], c["firing"]), z_at(t["line"], mid)
+        rise = zt - zf if zf is not None and zt is not None else None
+        metres = math.hypot(c["square"], rise or 0) + 0.8
+        # 25/50 m stands may differ by 2 % (Reglement 51.065 §18); further off is a pairing mistake.
+        if confident and nominal < 300 and abs(metres - nominal) > nominal * 0.02 + 1.5:
+            confident, reason = False, reason + ", off the nominal distance"
+        measurements.append({"target": t["id"], "house": house_id, "name": c["house"].get("name") or "",
+                             "distance": nominal, "metres": round(metres, 1),
+                             "rise": round(rise, 1) if rise is not None else "",
+                             "confident": int(confident), "reason": reason})
+    measurements.sort(key=lambda m: (m["name"], -m["distance"], m["target"]))
+    with open(os.path.join(out, "range-measurements.csv"), "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(measurements[0]))
+        w.writeheader()
+        w.writerows(measurements)
+    print(len(measurements), "measurements,", sum(m["confident"] for m in measurements), "confident")
+
     # Height check: swissALTI3D terrain (height service) at the firing point and the target row,
     # against the TLM Z values, for 150 lanes spread over all distances.
     def alti(p):
