@@ -408,6 +408,7 @@ final class PRScreensTests: XCTestCase {
         }
         tab("Tagebuch")
         guard open(app.staticTexts["Obligatorisch"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
+        pickTemplateTarget()
         let shots = app.buttons["Einzelschüsse"].firstMatch
         reveal(shots)
         shots.tap()
@@ -436,6 +437,31 @@ final class PRScreensTests: XCTestCase {
         keys.element(boundBy: keys.count - 1).tap()
         reveal(app.staticTexts["Max. Punkte"].firstMatch)
         snap("21e-Max-Punkte-von-der-Scheibe")
+    }
+
+    /// The Stich editor's «Scheibe» row lists the user's targets and, below them, the templates not added
+    /// yet. A searched template is picked and shows in the row; then the A5 is picked back for the stops
+    /// that follow. A base branch whose row is still a menu has no such row: the stops are skipped.
+    private func pickTemplateTarget() {
+        let row = app.buttons["targetPicker"].firstMatch
+        reveal(row)
+        guard row.exists else { return }
+        row.tap()
+        let field = app.searchFields.firstMatch
+        guard field.waitForExistence(timeout: 3) else { return XCTFail("No search in the Stich's target list") }
+        snap("21g-Stich-Scheibe-waehlen")
+        field.tap()
+        field.typeText("Zimmerstutzen\n")
+        snap("21g2-Stich-Scheibe-Suche")
+        let template = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Zimmerstutzen")).firstMatch
+        guard template.waitForExistence(timeout: 3) else { return XCTFail("No Zimmerstutzen template in the Stich's target list") }
+        template.tap()
+        reveal(row)
+        snap("21g3-Stich-Scheibe-aus-Vorlage")
+        row.tap()
+        let a5 = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "A5 300 m")).firstMatch
+        guard a5.waitForExistence(timeout: 3) else { return XCTFail("No A5 among the Stich's targets") }
+        a5.tap()
     }
 
     /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered. With a card
