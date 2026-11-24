@@ -93,10 +93,17 @@ def candidates(target, houses):
     return out
 
 
-def choose(cands):
-    """Name lists the distance, house straight across, then nearest."""
+def choose(cands, short_houses=()):
+    """Name lists the distance, house straight across, then nearest.
+
+    A house that is the firing house of a 25 or 50 m row is skipped for a longer row when
+    another house of the range faces it too: that's a pistol stand in front of the 300 m house.
+    """
     if not cands:
         return None
+    longer = [c for c in cands if not (c["house"]["id"] in short_houses and (c["nominal"] or 0) >= 100)]
+    if len(longer) < len(cands) and any(c["named"] for c in longer):
+        cands = longer
     return min(cands, key=lambda c: (not c["named"], c["overlap"] < 0.3, c["nearest"]))
 
 
@@ -152,9 +159,15 @@ def main(gpkg, out):
     print(len(houses), "house rings,", len(targets), "target rows,", len(trajectories), "trajectories")
 
     rows, ambiguous = [], []
+    cands_by_target = {t["id"]: candidates(t, houses) for t in targets}
+    short_houses = set()
+    for cands in cands_by_target.values():
+        first = choose(cands)
+        if first and first["nominal"] in (25, 50) and first["overlap"] >= 0.3:
+            short_houses.add(first["house"]["id"])
     for t in targets:
-        cands = candidates(t, houses)
-        best = choose(cands)
+        cands = cands_by_target[t["id"]]
+        best = choose(cands, short_houses)
         if best is None:
             continue
         old = min(cands, key=lambda c: c["nearest"])
@@ -220,6 +233,7 @@ def main(gpkg, out):
         step = max(1, len(fifty) // 12)
         picks += fifty[::step][:12] + fifty[:3] + fifty[-3:]
     picks += [r for r in rows if r["nominal"] == 300 and r["changed"]][:6]
+    picks += [r for r in rows if "Riedbach Forst" in r["name"] and r["nominal"] == 300]
     seen = set()
     ring_by_house = {}
     for h in houses:
