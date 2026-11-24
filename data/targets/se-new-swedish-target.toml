@@ -2,7 +2,7 @@
 # 10 scoring zones from the circles and zone labels SIUS draws; values best first.
 id = "se-new-swedish-target"
 name = "New Swedish target (SE)"
-short_name = "New Swedish targ"
+short_name = "New Swedish"
 group = "Schweden"
 distances_m = []
 # Outer diameter of each scoring ring from the centre outwards, in mm.
