@@ -1,0 +1,40 @@
+# 300m (Kanada), SIUS's target 573 in SiusData's Target.ini (CSF/TG300m.TRG).
+# Fullbore (ICFRA) target: 5, 4 and 3 are rings (Ø 140, Ø 280, Ø 420 mm), the 2 is
+# the rest of the square card. The dashed V-bull inside the 5 only breaks ties.
+id = "ca-fullbore-300-m"
+name = "Fullbore 300 m (CA)"
+short_name = "Fullbore 300 m"
+group = "Kanada"
+distances_m = [300]
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [5, 4, 3, 2, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 300m"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-600, -600, 1200, 1200]
+fill = "white"
+
+[[shapes]]
+ellipse = [0, 0, 600, 600]
+fill = "black"
+
+[[shapes]]
+ellipse = [0, 0, 420, 420]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 280, 280]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 140, 140]
+line = "white"
+
+[[shapes]]
+ellipse = [0, 0, 70, 70]
+line = "white"

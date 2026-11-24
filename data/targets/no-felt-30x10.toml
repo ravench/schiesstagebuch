@@ -1,0 +1,32 @@
+# 30x10 (Norwegen), SIUS's target 543 in SiusData's Target.ini (NOR/TG3010.TRG).
+# A field figure: a hit anywhere on it counts 1. SIUS also draws the inner zone; it only breaks ties
+# («innertreff»), so it has no value of its own here.
+id = "no-felt-30x10"
+name = "Felt 30x10 (NO)"
+short_name = "Felt 30x10"
+group = "Norwegen"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 30x10"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-200, -200, 400, 400]
+fill = "white"
+
+[[shapes]]
+polygon = [[170, -70], [-170, -70], [-170, 70], [170, 70]]
+fill = "black"
+
+[[shapes]]
+polygon = [[150, -50], [-150, -50], [-150, 50], [150, 50]]
+line = "white"
+
+[[shapes]]
+polygon = [[60, -20], [-60, -20], [-60, 20], [60, 20]]
+line = "white"

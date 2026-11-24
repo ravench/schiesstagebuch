@@ -1,0 +1,19 @@
+# PP2550 HS (Österreich), from SIUS's target 130 in SiusData's Target.ini (AUT/TGPPHiSe.TRG):
+# 10 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "at-pp2550-hs"
+name = "PP2550 HS (AT)"
+short_name = "PP2550 HS"
+group = "Österreich"
+distances_m = []
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
+inner_ten_mm = 25
+black_mm = 200
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), PP2550 HS"
+url = "https://www.sius.com"

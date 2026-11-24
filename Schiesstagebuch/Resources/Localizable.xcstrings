@@ -2577,6 +2577,29 @@
         }
       }
     },
+    "Deutschland": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Germany"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allemagne"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Germania"
+          }
+        }
+      }
+    },
     "Diabolo, Luftgewehrkugel, Luftgewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -2941,6 +2964,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "crepuscolo"
+          }
+        }
+      }
+    },
+    "Dänemark": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denmark"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danemark"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danimarca"
           }
         }
       }
@@ -4124,6 +4170,29 @@
         }
       }
     },
+    "Frankreich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "France"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "France"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Francia"
+          }
+        }
+      }
+    },
     "Fällig %@": {
       "extractionState": "manual",
       "localizations": {
@@ -4534,6 +4603,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fusto"
+          }
+        }
+      }
+    },
+    "Grossbritannien": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "United Kingdom"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royaume-Uni"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regno Unito"
           }
         }
       }
@@ -5044,6 +5136,29 @@
         }
       }
     },
+    "Italien": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Italia"
+          }
+        }
+      }
+    },
     "Jagdgewehr": {
       "extractionState": "manual",
       "localizations": {
@@ -5276,6 +5391,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dati dei calibri"
+          }
+        }
+      }
+    },
+    "Kanada": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canada"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canada"
           }
         }
       }
@@ -5713,6 +5851,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lenti correttive"
+          }
+        }
+      }
+    },
+    "Kroatien": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Croatia"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Croatie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Croazia"
           }
         }
       }
@@ -6426,6 +6587,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Temperatura dell'aria"
+          }
+        }
+      }
+    },
+    "Luxemburg": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luxembourg"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luxembourg"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lussemburgo"
           }
         }
       }
@@ -7718,6 +7902,29 @@
         }
       }
     },
+    "Niederlande": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Netherlands"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pays-Bas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paesi Bassi"
+          }
+        }
+      }
+    },
     "Niederschlag": {
       "extractionState": "manual",
       "localizations": {
@@ -7806,6 +8013,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ancora nessuna voce"
+          }
+        }
+      }
+    },
+    "Norwegen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Norway"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Norvège"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Norvegia"
           }
         }
       }
@@ -9696,6 +9926,29 @@
         }
       }
     },
+    "Scheibe, Land oder Distanz": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target, country or distance"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cible, pays ou distance"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersaglio, paese o distanza"
+          }
+        }
+      }
+    },
     "Scheiben": {
       "extractionState": "manual",
       "localizations": {
@@ -10152,6 +10405,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Polvere nera"
+          }
+        }
+      }
+    },
+    "Schweden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sweden"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suède"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svezia"
           }
         }
       }
@@ -11375,6 +11651,29 @@
         }
       }
     },
+    "USA": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USA"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "États-Unis"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USA"
+          }
+        }
+      }
+    },
     "Uhrzeit": {
       "extractionState": "manual",
       "localizations": {
@@ -11831,6 +12130,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avanti"
+          }
+        }
+      }
+    },
+    "Weitere Länder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other countries"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autres pays"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altri paesi"
           }
         }
       }
@@ -13924,6 +14246,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cambia solo le parole nell'app, i tuoi dati restano invariati."
+          }
+        }
+      }
+    },
+    "Österreich": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Austria"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autriche"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Austria"
           }
         }
       }

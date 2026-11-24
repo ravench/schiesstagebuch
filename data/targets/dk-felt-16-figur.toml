@@ -1,0 +1,27 @@
+# 16FIG (Dänemark), SIUS's target 84 in SiusData's Target.ini (DEN/TG16FIG.TRG).
+# A field figure: a hit anywhere on it counts 1.
+id = "dk-felt-16-figur"
+name = "Felt 16 Figur (DK)"
+short_name = "Felt 16 Figur"
+group = "Dänemark"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 16FIG"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-500, -500, 1000, 1000]
+fill = "white"
+
+[[shapes]]
+polygon = [[110, -80], [225, 115], [-225, 115], [-110, -80]]
+fill = "black"
+
+[[shapes]]
+polygon = [[114.5, -71.5], [106.2, -83.3], [96.8, -94.1], [86.2, -103.9], [74.7, -112.5], [62.3, -119.8], [49.2, -125.7], [35.5, -130.2], [21.5, -133.3], [7.2, -134.8], [-7.2, -134.8], [-21.5, -133.3], [-35.5, -130.2], [-49.2, -125.7], [-62.3, -119.8], [-74.7, -112.5], [-86.2, -103.9], [-96.8, -94.1], [-106.2, -83.3], [-114.5, -71.5]]
+fill = "black"

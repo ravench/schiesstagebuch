@@ -39,9 +39,48 @@ class RepoTargetTests(unittest.TestCase):
 
     def test_every_target_in_the_repo_is_fine(self):
         self.assertGreaterEqual(len(self.targets), 16)
-        self.assertEqual({t["group"] for t in self.targets.values()}, {"Schweiz", "ISSF"})
+        countries = {"Österreich", "Deutschland", "Dänemark", "Frankreich", "Kroatien", "Italien", "Luxemburg",
+                     "Niederlande", "Norwegen", "Schweden", "USA", "Kanada", "Grossbritannien"}
+        self.assertLessEqual({t["group"] for t in self.targets.values()}, {"Schweiz", "ISSF"} | countries)
         for t in self.targets.values():
             self.assertEqual(targets.problems(t), [], t["_file"])
+
+    def test_other_countries_name_their_country(self):
+        # Targets of other countries (from SIUSData) end in their country code, so «A10 Reduced 200 (DK)»
+        # and «(SE)» can be told apart in a Stich, and their ids start with it.
+        foreign = [t for t in self.targets.values() if t["group"] not in ("Schweiz", "ISSF")]
+        self.assertGreaterEqual(len(foreign), 40)
+        for t in foreign:
+            code = t["id"].split("-")[0]
+            self.assertTrue(t["name"].endswith(f"({code.upper()})"), t["id"])
+            self.assertIn("SiusData", t["source"]["title"])
+        self.assertEqual(self.targets["us-sr1-100y"]["scoring"]["values"], [10, 9, 8, 7, 6, 5, 0])
+        # The X (US) and the inner ten only break ties: SIUS draws them as one more circle, but no
+        # ring target of another country scores more than 10 (the Danish Königsscheibe counts 12 to 7).
+        for t in foreign:
+            if "ring_diameters_mm" in t and "values" in t["scoring"] and t["id"] != "dk-koenigsscheibe":
+                self.assertLessEqual(max(t["scoring"]["values"]), 10, t["id"])
+        self.assertEqual(self.targets["us-b6-50yd-slow"]["inner_ten_mm"], 43)
+        # Short names end at a word, not in the middle of one («Fullbore 300 yar»).
+        for t in foreign:
+            base = t["name"].rsplit(" (", 1)[0]
+            self.assertTrue(base == t["short_name"] or base.startswith(t["short_name"] + " "), t["id"])
+        self.assertEqual(self.targets["no-dfs-300"]["distances_m"], [300])
+
+    def test_field_figures_count_a_hit(self):
+        # Norwegian, Swedish and Danish field figures (added by hand from SIUSData's drawings): a hit
+        # anywhere on the figure counts 1, so their only values are 1 and 0; the figure is drawn black.
+        figures = [t for t in self.targets.values() if "-felt-" in t["id"] or t["id"].startswith("se-falt-")]
+        self.assertGreaterEqual(len(figures), 40)
+        for t in figures:
+            self.assertEqual(t["scoring"]["values"], [1, 0], t["id"])
+            self.assertTrue(any(s.get("fill") == "black" for s in t["shapes"][1:]), t["id"])
+        # Fullbore: the 2 is the rest of the square card, so it has shapes and no rings.
+        lr = self.targets["ca-fullbore-300-yards"]
+        self.assertEqual(lr["scoring"]["values"], [5, 4, 3, 2, 0])
+        self.assertEqual(lr["shapes"][0]["rect"], [-600, -600, 1200, 1200])
+        self.assertEqual(self.targets["dk-trekant-50m"]["scoring"]["values"], list(range(10, -1, -1)))
+        self.assertEqual(self.targets["no-sprint-luft"]["ring_diameters_mm"], [22, 48.6, 75.2, 101.8, 128.4, 155])
 
     def test_issf_rings_match_the_rulebook(self):
         self.assertEqual(self.targets["issf-10m-air-rifle"]["ring_diameters_mm"][0], 0.5)
@@ -192,10 +231,36 @@ class FaceTests(unittest.TestCase):
         for t in all_targets:
             self.assertIsNotNone(targets.face(t, by_id), t["id"])
         self.assertEqual(targets.face(by_id["ch-300m-a100"], by_id), targets.face(by_id["ch-300m-a10"], by_id))
-        # The B figure (SIUS Sui PB5 sweep) is 45 x 50 cm.
-        figure = by_id["ch-300m-b4"]["shapes"][1]["polygon"]
-        xs, ys = [p[0] for p in figure], [p[1] for p in figure]
-        self.assertEqual((max(xs) - min(xs), max(ys) - min(ys)), (450, 499))
+        def size(polygon):
+            xs, ys = [p[0] for p in polygon], [p[1] for p in polygon]
+            return max(xs) - min(xs), max(ys) - min(ys)
+
+        # The B figures are 45 x 50 cm: SIUS's rifle B4 one, and the pistol one (Sui PB5 sweep) that sits higher.
+        rifle = by_id["ch-300m-b4"]["shapes"][1]["polygon"]
+        pistol = by_id["ch-50m-pistol-b5"]["shapes"][1]["polygon"]
+        self.assertEqual(size(rifle), (450, 500))
+        self.assertEqual(size(pistol), (450, 499))
+        self.assertEqual(by_id["ch-50m-pistol-b10"]["shapes"][1]["polygon"], pistol)
+        self.assertLess(min(p[1] for p in pistol), min(p[1] for p in rifle), "the pistol figure's head is higher")
+        # The rifle B10 draws the B4 face; the pistol B10 its own, with the pistol figure.
+        self.assertEqual(targets.face(by_id["ch-300m-b10"], by_id)["shapes"][1]["polygon"], rifle)
+        self.assertEqual(targets.face(by_id["ch-50m-pistol-b10"], by_id)["shapes"][1]["polygon"], pistol)
+        # SIUS's Morgarten figure: 46 x 101 cm.
+        self.assertEqual(size(by_id["ch-50m-morgarten-f5"]["shapes"][1]["polygon"]), (460, 1010))
+
+    def test_targets_from_siusdata(self):
+        by_id = {t["id"]: t for t in targets.load()}
+        a6 = by_id["ch-300m-a6"]
+        self.assertEqual(a6["scoring"]["values"], [6, 5, 4, 3, 2, 1, 0])
+        self.assertEqual(a6["shapes"][0]["rect"], [-600, -600, 1200, 1200], "the 1 is the rest of the 120 cm card")
+        self.assertEqual(by_id["ch-300m-f5"]["scoring"]["values"], [5, 4, 3, 0], "SIUS draws only the 5, 4 and the figure")
+        zimmer = by_id["ch-15m-zimmerstutzen"]
+        self.assertEqual(zimmer["distances_m"], [15])
+        rings = zimmer["ring_diameters_mm"]
+        self.assertEqual(len(rings), 10)
+        self.assertTrue(all(abs(b - a - 9) < 1e-9 for a, b in zip(rings, rings[1:])), "rings 4.5 mm wide")
+        for t in (a6, by_id["ch-300m-f5"], zimmer):
+            self.assertEqual(targets.problems(t), [], t["id"])
 
 
 if __name__ == "__main__":

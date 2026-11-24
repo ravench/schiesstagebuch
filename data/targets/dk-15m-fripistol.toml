@@ -1,0 +1,18 @@
+# 15m fripistol (Dänemark), from SIUS's target 90 in SiusData's Target.ini (DEN/TG15mFP.TRG):
+# 10 scoring zones from the circles and zone labels SIUS draws; values best first.
+id = "dk-15m-fripistol"
+name = "15m fripistol (DK)"
+short_name = "15m fripistol"
+group = "Dänemark"
+distances_m = [15]
+# Outer diameter of each scoring ring from the centre outwards, in mm.
+ring_diameters_mm = [12, 27, 42, 57, 72, 87, 102, 117, 132, 147]
+black_mm = 72
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), 15m fripistol"
+url = "https://www.sius.com"

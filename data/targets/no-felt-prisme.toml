@@ -1,0 +1,36 @@
+# Prisme (Norwegen), SIUS's target 545 in SiusData's Target.ini (NOR/TGPrisme.TRG).
+# A field figure: a hit anywhere on it counts 1. SIUS also draws the inner zone; it only breaks ties
+# («innertreff»), so it has no value of its own here.
+id = "no-felt-prisme"
+name = "Felt Prisme (NO)"
+short_name = "Felt Prisme"
+group = "Norwegen"
+distances_m = []
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss.
+values = [1, 0]
+
+[source]
+title = "SIUS SiusData 2.0.7.6, Scheibendefinitionen (Target.ini), Prisme"
+url = "https://www.sius.com"
+
+[[shapes]]
+rect = [-200, -200, 400, 400]
+fill = "white"
+
+[[shapes]]
+polygon = [[0, -94.9], [-189.8, 0], [0, 94.9], [189.8, 0]]
+fill = "black"
+
+[[shapes]]
+polygon = [[0, -72.5], [-145, 0], [0, 72.5], [145, 0]]
+line = "white"
+
+[[shapes]]
+polygon = [[0, -50], [-100, 0], [0, 50], [100, 0]]
+line = "white"
+
+[[shapes]]
+polygon = [[0, -20], [-40, 0], [0, 20], [40, 0]]
+line = "white"
