@@ -120,6 +120,37 @@ final class EditorPickerUITests: XCTestCase {
         XCTAssertTrue(keys.firstMatch.waitForNonExistence(timeout: 3), "The value buttons stayed while a text field is edited")
     }
 
+    /// A template picked in the Stich's «Scheibe» list is no target of the user's before the Stich is saved,
+    /// and one after: it then shows in Einstellungen › Scheiben (Raven 2026-11-24).
+    func testATemplatePickedInAStichBecomesTheUsersTarget() {
+        let event = app.staticTexts["Obligatorisch"].firstMatch
+        XCTAssertTrue(event.waitForExistence(timeout: 10))
+        event.tap()
+        let add = app.buttons["Stich hinzufügen"].firstMatch
+        XCTAssertTrue(add.waitForExistence(timeout: 5), "The Anlass screen did not open")
+        add.tap()
+        let row = app.buttons["targetPicker"].firstMatch
+        XCTAssertTrue(scroll(to: row), "No «Scheibe» row")
+        row.tap()
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "No search in the target list")
+        field.tap()
+        field.typeText("Zimmerstutzen\n")
+        let template = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Zimmerstutzenscheibe")).firstMatch
+        XCTAssertTrue(template.waitForExistence(timeout: 5), "The template is not offered")
+        template.tap()
+        let save = app.buttons["Sichern"].firstMatch
+        XCTAssertTrue(save.waitForExistence(timeout: 5), "Not back in the Stich")
+        save.tap()
+        XCTAssertTrue(add.waitForExistence(timeout: 5), "The Stich was not saved")
+        app.tabBars.buttons["Einstellungen"].firstMatch.tap()
+        let targets = app.staticTexts["Scheiben"].firstMatch
+        XCTAssertTrue(scroll(to: targets), "No «Scheiben» in the settings")
+        targets.tap()
+        XCTAssertTrue(app.staticTexts["Zimmerstutzenscheibe 15 m"].firstMatch.waitForExistence(timeout: 5),
+                      "The picked template is not among the user's targets")
+    }
+
     /// The result sits below the shots and is a field only while no shots add up to it (tester feedback 2026-11-13).
     func testResultIsTheSumOfTheShots() {
         let entry = app.staticTexts["Feldschiessen"].firstMatch

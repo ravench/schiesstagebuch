@@ -73,41 +73,67 @@ struct TargetRow: View {
     }
 }
 
-/// The bundled templates (Targets.json) by group; tapping one adds it to the user's targets.
-/// Swiss and ISSF templates are listed open; the other countries sit closed under «Weitere Länder»
-/// so the list stays short (Raven 2026-11-23). A search shows every matching template, open.
+/// The bundled templates (Targets.json) by group, as sections of a list. Swiss and ISSF templates are
+/// listed open; the other countries sit closed under «Weitere Länder» so the list stays short
+/// (Raven 2026-11-23). A search shows every matching template, open.
+struct TargetTemplateSections<Row: View>: View {
+    let groups: [(group: String, items: [TargetCatalog.Item])]
+    let searching: Bool
+    @ViewBuilder let row: (TargetCatalog.Item) -> Row
+    @State private var openCountries: Set<String> = []
+
+    var body: some View {
+        let main = groups.filter { searching || TargetCatalog.mainGroups.contains($0.group) }
+        let others = searching ? [] : groups.filter { !TargetCatalog.mainGroups.contains($0.group) }
+        ForEach(main, id: \.group) { group in
+            Section(group.group.loc) {
+                ForEach(group.items) { row($0) }
+            }
+        }
+        if !others.isEmpty {
+            Section("Weitere Länder") {
+                ForEach(others, id: \.group) { group in
+                    DisclosureGroup(isExpanded: Binding(
+                        get: { openCountries.contains(group.group) },
+                        set: { if $0 { openCountries.insert(group.group) } else { openCountries.remove(group.group) } })) {
+                        ForEach(group.items) { row($0) }
+                    } label: {
+                        LabeledContent(group.group.loc) { Text(verbatim: "\(group.items.count)") }
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct TargetTemplateRow: View {
+    let item: TargetCatalog.Item
+
+    var body: some View {
+        HStack(spacing: 12) {
+            TargetFaceView(face: item.face)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.name)
+                Text(verbatim: item.targetScoring.summary)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+/// Settings › Scheiben › «Aus Vorlage hinzufügen»: tapping a template adds it to the user's targets.
 struct TargetTemplateList: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var targets: [ShootingTarget]
     @State private var search = ""
-    @State private var openCountries: Set<String> = []
 
     var body: some View {
         NavigationStack {
             let groups = TargetCatalog.grouped(matching: search)
-            let searching = !search.trimmingCharacters(in: .whitespaces).isEmpty
-            let main = groups.filter { searching || TargetCatalog.mainGroups.contains($0.group) }
-            let others = searching ? [] : groups.filter { !TargetCatalog.mainGroups.contains($0.group) }
             List {
-                ForEach(main, id: \.group) { group in
-                    Section(group.group.loc) {
-                        ForEach(group.items) { row($0) }
-                    }
-                }
-                if !others.isEmpty {
-                    Section("Weitere Länder") {
-                        ForEach(others, id: \.group) { group in
-                            DisclosureGroup(isExpanded: Binding(
-                                get: { openCountries.contains(group.group) },
-                                set: { if $0 { openCountries.insert(group.group) } else { openCountries.remove(group.group) } })) {
-                                ForEach(group.items) { row($0) }
-                            } label: {
-                                LabeledContent(group.group.loc) { Text(verbatim: "\(group.items.count)") }
-                            }
-                        }
-                    }
-                }
+                TargetTemplateSections(groups: groups, searching: !search.trimmingCharacters(in: .whitespaces).isEmpty, row: row)
             }
             .overlay {
                 if groups.isEmpty { ContentUnavailableView.search(text: search) }
@@ -127,14 +153,8 @@ struct TargetTemplateList: View {
             context.insert(TargetCatalog.target(from: item))
             dismiss()
         } label: {
-            HStack(spacing: 12) {
-                TargetFaceView(face: item.face)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.name)
-                    Text(verbatim: item.targetScoring.summary)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+            HStack {
+                TargetTemplateRow(item: item)
                 Spacer()
                 if added { Image(systemName: "checkmark").foregroundStyle(.secondary) }
             }
@@ -144,9 +164,99 @@ struct TargetTemplateList: View {
     }
 }
 
+/// The «Scheibe» row of the Stich editor: opens the user's targets and, below them, the templates they
+/// have no target of yet (Raven 2026-11-24), so a target need not be set up in the settings first.
+struct TargetPickerRow: View {
+    @Binding var selection: ShootingTarget?
+    /// The user's targets, in the order to list them.
+    let targets: [ShootingTarget]
+
+    var body: some View {
+        NavigationLink {
+            TargetPickerList(selection: $selection, targets: targets)
+        } label: {
+            LabeledContent("Scheibe") {
+                Text(selection?.name ?? "–").lineLimit(2).multilineTextAlignment(.trailing)
+            }
+        }
+        .accessibilityIdentifier("targetPicker") // «Scheibe» is also the light on the target
+    }
+}
+
+/// A template picked here is a target that is not saved yet: it becomes the user's (and syncs) when the
+/// Stich is saved, so a cancelled Stich leaves nothing behind. The list ends with «Eigene Scheibe».
+struct TargetPickerList: View {
+    @Binding var selection: ShootingTarget?
+    let targets: [ShootingTarget]
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var search = ""
+    @State private var adding = false
+    @State private var added = false
+
+    var body: some View {
+        let searching = !search.trimmingCharacters(in: .whitespaces).isEmpty
+        let own = targets.filter { TargetCatalog.matches($0, search) }
+        let templates = TargetCatalog.templates(notIn: targets, matching: search)
+        List {
+            Section {
+                if !searching { row(nil) }
+                ForEach(own) { row($0) }
+                if own.isEmpty && templates.isEmpty { Text("Keine Treffer").foregroundStyle(.secondary) }
+            }
+            TargetTemplateSections(groups: templates, searching: searching) { item in
+                Button {
+                    selection = TargetCatalog.target(from: item)
+                    dismiss()
+                } label: {
+                    HStack {
+                        TargetTemplateRow(item: item)
+                        Spacer()
+                        if let selection, selection.modelContext == nil, selection.templateID == item.id { checkmark }
+                    }
+                }
+                .foregroundStyle(.primary)
+            }
+            // Last row, so it shows when nothing matches or at the end of the list.
+            Button { adding = true } label: { Label("Eigene Scheibe", systemImage: "plus") }
+        }
+        .sheet(isPresented: $adding, onDismiss: closeIfAdded) {
+            TargetEditorView(target: nil) { selection = $0; added = true }
+        }
+        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Scheibe, Land oder Distanz")
+        .autocorrectionDisabled()
+        .navigationTitle("Scheibe")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    /// Back to the Stich once a new target was saved; it is already the selection.
+    private func closeIfAdded() {
+        if added { dismiss() }
+    }
+
+    private var checkmark: some View { Image(systemName: "checkmark").foregroundStyle(.tint) }
+
+    @ViewBuilder
+    private func row(_ target: ShootingTarget?) -> some View {
+        Button {
+            selection = target
+            dismiss()
+        } label: {
+            HStack {
+                if let target { TargetRow(target: target) } else { Text(verbatim: "–") }
+                Spacer()
+                if selection == target { checkmark }
+            }
+        }
+        .foregroundStyle(.primary)
+    }
+}
+
 /// Add or edit a target: its name and either a range (min to max) or a list of fixed values.
 struct TargetEditorView: View {
     let target: ShootingTarget?
+    /// Called with a new target once it is saved.
+    var onCreate: ((ShootingTarget) -> Void)?
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -225,6 +335,7 @@ struct TargetEditorView: View {
         if target == nil { context.insert(t) }
         t.name = name.trimmingCharacters(in: .whitespaces)
         t.edit(scoring: scoring)
+        if target == nil { onCreate?(t) }
         dismiss()
     }
 }
