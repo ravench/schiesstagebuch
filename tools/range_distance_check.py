@@ -94,7 +94,7 @@ def candidates(target, houses):
 
 
 def choose(cands, short_houses=()):
-    """Name lists the distance, house straight across, then nearest.
+    """A house whose name lists the distance, then the nearest.
 
     A house that is the firing house of a 25 or 50 m row is skipped for a longer row when
     another house of the range faces it too: that's a pistol stand in front of the 300 m house.
@@ -104,7 +104,7 @@ def choose(cands, short_houses=()):
     longer = [c for c in cands if not (c["house"]["id"] in short_houses and (c["nominal"] or 0) >= 100)]
     if len(longer) < len(cands) and any(c["named"] for c in longer):
         cands = longer
-    return min(cands, key=lambda c: (not c["named"], c["overlap"] < 0.3, c["nearest"]))
+    return min(cands, key=lambda c: (not c["named"], c["nearest"]))
 
 
 def stats(values):
@@ -234,6 +234,8 @@ def main(gpkg, out):
         picks += fifty[::step][:12] + fifty[:3] + fifty[-3:]
     picks += [r for r in rows if r["nominal"] == 300 and r["changed"]][:6]
     picks += [r for r in rows if "Riedbach Forst" in r["name"] and r["nominal"] == 300]
+    three = sorted((r for r in rows if r["nominal"] == 300), key=lambda r: r["square"])
+    picks += three[:5] + three[-5:] + three[::len(three) // 6 or 1]
     seen = set()
     ring_by_house = {}
     for h in houses:
