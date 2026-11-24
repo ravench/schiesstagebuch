@@ -501,8 +501,11 @@ final class PRScreensTests: XCTestCase {
         search.typeText("Oster\n") // return hides the keyboard
         snap("19-Schiessanlagen-Suche")
         // A catalogue range with measured distances: «~298 m», «Scheiben ~12 m höher».
-        let cancel = app.buttons["Abbrechen"].firstMatch
-        if cancel.exists { cancel.tap() } // leaves the search, so the bar's menu is back
+        // Leave the search, so the bar's menu is back: «Abbrechen» until iOS 26, an ✕ «Schließen» on iOS 27.
+        for label in ["Abbrechen", "Schließen", "Schliessen"] {
+            let close = app.buttons[label].firstMatch
+            if close.exists { close.tap(); break }
+        }
         if openMenu(app.navigationBars.buttons["Hinzufügen"].firstMatch, showing: "Schweizer Schiessanlagen übernehmen") {
             app.buttons["Schweizer Schiessanlagen übernehmen"].firstMatch.tap()
             if app.buttons["OK"].firstMatch.waitForExistence(timeout: 30) { app.buttons["OK"].firstMatch.tap() }
