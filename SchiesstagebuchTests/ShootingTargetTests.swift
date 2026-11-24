@@ -153,7 +153,7 @@ final class ShootingTargetTests: ModelTestCase {
         // Swiss and ISSF first, then the other countries (from SIUSData) by name.
         let groups = TargetCatalog.grouped().map(\.group)
         XCTAssertEqual(Array(groups.prefix(2)), ["Schweiz", "ISSF"])
-        XCTAssertEqual(Array(groups.dropFirst(2)), groups.dropFirst(2).sorted())
+        XCTAssertEqual(Array(groups.dropFirst(2)), groups.dropFirst(2).sorted { $0.loc.localizedStandardCompare($1.loc) == .orderedAscending })
         XCTAssertTrue(groups.contains("Norwegen"))
         // Each group by name, numbers by their value.
         let names = ["VBS Scheibe A10 300 m", "SSV Scheibe A100 300 m", "VBS Scheibe A5 300 m", "ISSF Gewehr 50 m"]
@@ -167,5 +167,31 @@ final class ShootingTargetTests: ModelTestCase {
         let made = TargetCatalog.target(from: b4)
         XCTAssertEqual(made.templateID, "ch-300m-b4")
         XCTAssertEqual(made.name, b4.name)
+    }
+
+    func testTemplateSearchFindsNameCountryAndDistance() {
+        let items = TargetCatalog.items
+        let names = { (query: String) in TargetCatalog.grouped(matching: query).flatMap { $0.items.map(\.id) } }
+        XCTAssertEqual(names("").count, items.count, "no query: every template")
+        XCTAssertEqual(Set(names("Norwegen")), Set(items.filter { $0.group == "Norwegen" }.map(\.id)))
+        XCTAssertFalse(names("Norwegen").isEmpty)
+        // A distance in metres, with or without the unit, and words together.
+        let at300 = names("300 m")
+        XCTAssertTrue(at300.contains("ch-300m-a5"))
+        XCTAssertFalse(at300.contains("ch-50m-p10"))
+        XCTAssertEqual(names("A5 300"), names("a5 300m"))
+        XCTAssertTrue(names("A5 300").contains("ch-300m-a5"))
+        XCTAssertFalse(names("A5 300").contains("ch-50m-kka5"))
+        XCTAssertTrue(names("nichtvorhanden").isEmpty)
+    }
+
+    func testOtherCountriesFollowSwissAndISSF() {
+        let groups = TargetCatalog.grouped().map(\.group)
+        XCTAssertEqual(Array(groups.prefix(2)), TargetCatalog.mainGroups)
+        let others = groups.dropFirst(2).map(\.loc)
+        XCTAssertEqual(others, others.sorted { $0.localizedStandardCompare($1) == .orderedAscending })
+        // A search keeps the order: Swiss before the other countries.
+        let found = TargetCatalog.grouped(matching: "A10").map(\.group)
+        XCTAssertEqual(found.first, "Schweiz")
     }
 }

@@ -2,8 +2,9 @@ import Foundation
 import SwiftData
 
 /// Target templates bundled with the app (Targets.json, built by tools/targets.py from
-/// data/targets): the Swiss military and SSV targets and the ISSF targets. Settings › Scheiben
-/// adds one as the user's own target, which they can then rename or change.
+/// data/targets): the Swiss military and SSV targets, the ISSF targets and other countries' sport
+/// targets from SIUSData. Settings › Scheiben adds one as the user's own target, which they can
+/// then rename or change.
 enum TargetCatalog {
     struct Item: Codable, Identifiable, Equatable {
         struct Scoring: Codable, Equatable {
@@ -15,7 +16,7 @@ enum TargetCatalog {
         let id: String
         let name: String
         let shortName: String
-        /// "Schweiz" or "ISSF": the section of the template list.
+        /// "Schweiz", "ISSF" or a country in German, e.g. "Norwegen": the section of the template list.
         let group: String
         let distances: [Int]
         let scoring: Scoring
@@ -48,12 +49,35 @@ enum TargetCatalog {
         try JSONDecoder().decode([Item].self, from: data)
     }
 
-    /// Templates by group, Swiss ones first, each group by name (A5 before A10; tester 2026-11-17).
+    /// The groups shown first and open; the other countries' groups follow by name, closed until tapped.
+    static let mainGroups = ["Schweiz", "ISSF"]
+
+    /// Templates by group, Swiss ones first, then ISSF, then the other countries by their name in the
+    /// app's language; each group by name (A5 before A10; tester 2026-11-17).
     static func grouped(_ items: [Item] = items) -> [(group: String, items: [Item])] {
-        let order = ["Schweiz", "ISSF"]
+        let rank = { (group: String) in mainGroups.firstIndex(of: group) ?? mainGroups.count }
         return Dictionary(grouping: items, by: \.group)
-            .sorted { (order.firstIndex(of: $0.key) ?? order.count, $0.key) < (order.firstIndex(of: $1.key) ?? order.count, $1.key) }
+            .sorted { a, b in
+                rank(a.key) != rank(b.key) ? rank(a.key) < rank(b.key)
+                    : a.key.loc.localizedStandardCompare(b.key.loc) == .orderedAscending
+            }
             .map { (group: $0.key, items: $0.value.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }) }
+    }
+
+    /// Template search: every word of `query` is in the name, the short name or the group (in German or the
+    /// app's language, e.g. «Norwegen» or «Norway»), or names one of its distances ("300", "300m", "300 m").
+    static func matches(_ item: Item, _ query: String) -> Bool {
+        RangeSearch.words(query).allSatisfy { word in
+            if let d = RangeSearch.distance(in: word), item.distances.contains(d) { return true }
+            return item.name.localizedStandardContains(word) || item.shortName.localizedStandardContains(word)
+                || item.group.localizedStandardContains(word) || item.group.loc.localizedStandardContains(word)
+        }
+    }
+
+    /// The template list for `query`: all groups when it is empty, else only the matching templates.
+    static func grouped(matching query: String, in items: [Item] = items) -> [(group: String, items: [Item])] {
+        let query = query.trimmingCharacters(in: .whitespaces)
+        return grouped(query.isEmpty ? items : items.filter { matches($0, query) })
     }
 
     /// A new target of the user's, made from `item`.

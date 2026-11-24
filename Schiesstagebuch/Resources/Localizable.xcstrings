@@ -10317,6 +10317,29 @@
         }
       }
     },
+    "Scheibe, Land oder Distanz": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target, country or distance"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cible, pays ou distance"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersaglio, paese o distanza"
+          }
+        }
+      }
+    },
     "Scheiben": {
       "extractionState": "manual",
       "localizations": {
@@ -12797,6 +12820,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avanti"
+          }
+        }
+      }
+    },
+    "Weitere Länder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other countries"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autres pays"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altri paesi"
           }
         }
       }

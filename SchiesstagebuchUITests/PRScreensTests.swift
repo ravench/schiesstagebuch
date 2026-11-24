@@ -379,7 +379,32 @@ final class PRScreensTests: XCTestCase {
             // Held near the top: at the sheet's bottom edge the row was already hittable, so it never scrolled.
             topStop(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Ustertag-Scheibe 25 m")).firstMatch,
                     "21b2-Scheiben-Vorlagen-Ustertag")
-            app.buttons["Abbrechen"].firstMatch.tap()
+            // The other countries sit closed under «Weitere Länder» at the end; Norwegen opened.
+            let norway = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Norwegen")).firstMatch
+            topStop(norway, "21b3-Scheiben-Vorlagen-Weitere-Laender")
+            if norway.exists && norway.isHittable {
+                norway.tap()
+                snap("21b4-Scheiben-Vorlagen-Norwegen")
+            }
+            // A search for a distance shows the matching templates of every group.
+            let field = app.searchFields.firstMatch
+            if field.waitForExistence(timeout: 3) {
+                field.tap()
+                field.typeText("300\n") // Return: no keyboard in the screen
+                snap("21b5-Scheiben-Vorlagen-Suche")
+            }
+            // While searching, the sheet's «Abbrechen» is hidden (CI: «No matches found»), so pull the
+            // sheet down when it is not there; it closes without asking.
+            for _ in 0..<3 where app.navigationBars["Vorlagen"].exists || app.searchFields.firstMatch.exists {
+                let cancel = app.buttons["Abbrechen"].firstMatch
+                if cancel.exists {
+                    cancel.tap()
+                } else {
+                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12))
+                        .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
+                }
+                sleep(1)
+            }
         }
         tab("Tagebuch")
         guard open(app.staticTexts["Obligatorisch"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
