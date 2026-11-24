@@ -226,47 +226,61 @@ def main(gpkg, out):
         json.dump(summary, f, indent=1)
     print(json.dumps(summary, indent=1))
 
-    # Aerial check of 300 m target rows: 50 lanes spread evenly over 260-335 m, one per range.
-    # Each picture: firing end (left) and target end (right), 60 m wide, about 10 cm per pixel,
-    # the arrow at the target end points back to the firing line.
+    # Aerial check of the firing building: 300 m lanes outside 285-315 m (+0.8 m) where more than
+    # one shooting house faces the targets. Left: whole lane; right: 100 m around the firing end.
+    # Red = chosen house, yellow = other candidate houses, cyan = target rows, white = the lane.
     from PIL import Image, ImageDraw
-    ring_by_house = {}
-    for h in houses:
-        ring_by_house.setdefault(h["id"], []).append(h["ring"])
-    three = [r for r in rows if r["nominal"] == 300]
-    picks, used = [], set()
-    for k in range(50):
-        goal = 260 + k * 75 / 49
-        free = [r for r in three if r["house"] not in used and r["target"] not in used]
-        r = min(free, key=lambda r: abs(r["square"] - goal))
-        used.update((r["house"], r["target"]))
-        picks.append(r)
-    with open(os.path.join(out, "check300.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(picks[0].keys()))
+    suspects = [r for r in rows if r["nominal"] == 300 and r["candidates"] > 1
+                and abs((r["d3"] or r["square"]) + 0.8 - 300) > 15]
+    if not suspects:
+        return
+    with open(os.path.join(out, "suspects.csv"), "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(suspects[0].keys()))
         w.writeheader()
-        w.writerows(picks)
-    for n, r in enumerate(picks, 1):
+        w.writerows(suspects)
+
+    def draw(path, center, size_m, px, chosen, others, lines, lane):
+        bbox = (center[0] - size_m / 2, center[1] - size_m / 2, center[0] + size_m / 2, center[1] + size_m / 2)
+        img = Image.open(io.BytesIO(fetch(bbox, px))).convert("RGB")
+        d = ImageDraw.Draw(img)
+        scale = px / size_m
+
+        def xy(p):
+            return ((p[0] - bbox[0]) * scale, (bbox[3] - p[1]) * scale)
+
+        for ring in others:
+            d.line([xy(p) for p in ring], fill=(255, 220, 0), width=2)
+        for ring in chosen:
+            d.line([xy(p) for p in ring], fill=(255, 40, 40), width=2)
+        for line in lines:
+            d.line([xy(p) for p in line], fill=(0, 230, 255), width=3)
+        d.line([xy(p) for p in lane], fill=(255, 255, 255), width=1)
+        x, y = xy(lane[0])
+        d.ellipse((x - 4, y - 4, x + 4, y + 4), outline=(255, 255, 255), width=2)
+        bar = 50 if size_m > 200 else 10
+        d.line([(10, px - 12), (10 + bar * scale, px - 12)], fill=(255, 255, 255), width=4)
+        return img
+
+    for n, r in enumerate(suspects, 1):
         firing, target = (r["firing_e"], r["firing_n"]), (r["target_e"], r["target_n"])
-        lines = [t["line"] for t in targets if rc.dist2(rc.line_midpoint(t["line"]), target) < 60]
-        dx, dy = firing[0] - target[0], firing[1] - target[1]
-        length = math.hypot(dx, dy)
-        arrow = [target, (target[0] + dx / length * 8, target[1] + dy / length * 8)]
-        rings = [h["ring"] for h in houses if rc.ring_distance(firing, h["ring"]) < 40]
-        slug = f"{n:02d}-{r['square']:.1f}-{r['target'][:8]}"
+        cands = cands_by_target[r["target"]]
+        chosen = [c["house"]["ring"] for c in cands if c["house"]["id"] == r["house"]]
+        others = [c["house"]["ring"] for c in cands if c["house"]["id"] != r["house"]]
+        mid = ((firing[0] + target[0]) / 2, (firing[1] + target[1]) / 2)
+        size = r["square"] * 1.25
+        lines = [t["line"] for t in targets if rc.dist2(rc.line_midpoint(t["line"]), mid) < size]
+        slug = f"{n:02d}-{(r['d3'] or r['square']) + 0.8:.1f}-{r['target'][:8]}"
         try:
-            picture(os.path.join(out, "f.jpg"), firing, 60, 600, rings, [], [firing])
-            picture(os.path.join(out, "t.jpg"), target, 60, 600, [], lines + [arrow], [target])
+            a = draw(os.path.join(out, "a.jpg"), mid, size, 600, chosen, others, lines, [firing, target])
+            b = draw(os.path.join(out, "b.jpg"), firing, 100, 600, chosen, others, lines, [firing, target])
             both = Image.new("RGB", (1210, 640), (0, 0, 0))
-            both.paste(Image.open(os.path.join(out, "f.jpg")), (0, 40))
-            both.paste(Image.open(os.path.join(out, "t.jpg")), (610, 40))
-            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  firing | target  (bar 5 m)",
+            both.paste(a, (0, 40))
+            both.paste(b, (610, 40))
+            ImageDraw.Draw(both).text((8, 10), f"{slug}  {r['name']}  {len(cands)} houses  (bar 50 m | 10 m)",
                                       fill=(255, 255, 255))
-            both.save(os.path.join(out, f"check300-{slug}.jpg"), quality=85)
+            both.save(os.path.join(out, f"suspect-{slug}.jpg"), quality=85)
         except Exception as e:  # noqa: BLE001
             print("image failed", slug, e)
-    for name in ("f.jpg", "t.jpg"):
-        if os.path.exists(os.path.join(out, name)):
-            os.remove(os.path.join(out, name))
 
 
 if __name__ == "__main__":
