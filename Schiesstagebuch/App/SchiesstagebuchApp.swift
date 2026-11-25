@@ -51,6 +51,7 @@ struct SchiesstagebuchApp: App {
                     CaliberCatalog.followRenames(container.mainContext)
                     CaliberCatalog.removeUnused(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
+                    RangeCatalog.removeUnused(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
                     TargetCatalog.deduplicate(container.mainContext)
                     if WeatherRecord.moveToStiche(in: container.mainContext) { try? container.mainContext.save() }

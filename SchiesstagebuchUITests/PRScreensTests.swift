@@ -412,10 +412,16 @@ final class PRScreensTests: XCTestCase {
         let shots = app.buttons["Einzelschüsse"].firstMatch
         reveal(shots)
         shots.tap()
+        // A tap that did not take (CI 2026-11-24, after the target list) is tapped once more.
+        if !shots.wait(for: \.isSelected, toEqual: true, timeout: 2) { shots.tap() }
         let shot = app.buttons["Schuss 1"].firstMatch
         // The Scheibe row above the segments leaves the shots below the screen's edge.
         reveal(shot)
-        guard shot.waitForExistence(timeout: 3) else { return XCTFail("No shot buttons for the A5 target") }
+        guard shot.waitForExistence(timeout: 3) else {
+            let target = app.buttons["targetPicker"].firstMatch
+            return XCTFail("No shot buttons for the A5 target (Einzelschüsse selected: \(shots.exists && shots.isSelected), "
+                           + "target row: \(target.exists ? target.label : "not on screen"))")
+        }
         shot.tap()
         snap("21c-Einzelschuesse-Feste-Werte")
         // Another row's box takes the value buttons with it, then the first box gets them back.
@@ -462,6 +468,8 @@ final class PRScreensTests: XCTestCase {
         let a5 = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "A5 300 m")).firstMatch
         guard a5.waitForExistence(timeout: 3) else { return XCTFail("No A5 among the Stich's targets") }
         a5.tap()
+        // Back in the Stich before the next tap: on a slow runner it otherwise lands while the list slides out.
+        XCTAssertTrue(row.waitForExistence(timeout: 5), "The target list did not close")
     }
 
     /// Einstellungen › SSV-Lizenzkarte without a card: the page where the licence is entered. With a card
@@ -484,16 +492,16 @@ final class PRScreensTests: XCTestCase {
     /// The list of ranges: a new range with «Aktuellen Standort verwenden», then the list's search field.
     func testRanges() {
         tab("Anlagen")
-        if openMenu(app.navigationBars.buttons["Hinzufügen"].firstMatch, showing: "Schweizer Schiessanlagen übernehmen") {
-            // The menu's own «Hinzufügen» comes after the bar's button of the same name.
+        // «Hinzufügen» opens the new range; on a base branch it opens a menu whose last item does.
+        app.navigationBars.buttons["Hinzufügen"].firstMatch.tap()
+        let here = app.buttons["Aktuellen Standort verwenden"].firstMatch
+        if !here.waitForExistence(timeout: 3) {
             let items = app.buttons.matching(NSPredicate(format: "label == %@", "Hinzufügen"))
             items.element(boundBy: items.count - 1).tap()
-            XCTAssertTrue(app.buttons["Aktuellen Standort verwenden"].waitForExistence(timeout: 5), "No current-location button")
-            snap("19b-Neue-Schiessanlage")
-            app.buttons["Abbrechen"].firstMatch.tap()
-        } else {
-            XCTFail("No menu to add a range")
         }
+        XCTAssertTrue(here.waitForExistence(timeout: 5), "No current-location button")
+        snap("19b-Neue-Schiessanlage")
+        app.buttons["Abbrechen"].firstMatch.tap()
         let search = app.searchFields.firstMatch
         if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
         guard search.waitForExistence(timeout: 5) else { return XCTFail("No search field in the ranges list") }
@@ -609,11 +617,13 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// The range list in the Anlass editor, ending with «Schiessanlage hinzufügen».
+    /// The range list in the Anlass editor: the user's ranges, then the catalogue's; a search without a
+    /// match ends with «Schiessanlage hinzufügen».
     private func rangeStop() {
         if open(app.staticTexts["Schiessanlage"].firstMatch) {
             let search = app.searchFields.firstMatch
             if search.waitForExistence(timeout: 5) {
+                snap("03b0-Schiessanlage-Liste")
                 search.tap()
                 search.typeText("Keine solche Anlage\n") // Return: no blinking caret in the screen
                 snap("03b-Schiessanlage-ohne-Treffer")

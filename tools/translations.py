@@ -148,8 +148,10 @@ T = {
     "Fotos nicht gefunden": ("Photos not found", "Photos introuvables", "Foto non trovate"),
     "Fotos übernommen": ("Photos brought over", "Photos reprises", "Foto riprese"),
     "Fällig %@": ("Due %@", "À faire %@", "Da fare %@"),
-    "Füge die Anlagen hinzu, auf denen du schiesst.": (
-        "Add the ranges where you shoot.", "Ajoutez les stands où vous tirez.", "Aggiungi i poligoni dove spari."),
+    "Hier stehen die Anlagen, auf denen du geschossen hast. Beim Anlass wählst du sie aus allen Schweizer Schiessanlagen oder fügst eine eigene hinzu.": (
+        "The ranges you have shot at are listed here. In an event you pick the range from all Swiss shooting ranges or add your own.",
+        "Les stands où tu as tiré figurent ici. Dans un événement, tu choisis le stand parmi tous les stands de tir suisses ou tu ajoutes le tien.",
+        "Qui trovi i poligoni in cui hai sparato. Nell'evento scegli il poligono tra tutti i poligoni di tiro svizzeri o aggiungi il tuo."),
     "Gefunden": ("Found", "Trouvé", "Trovato"),
     "Gesamt": ("All time", "Total", "Totale"),
     "Hinzufügen": ("Add", "Ajouter", "Aggiungi"),
@@ -266,9 +268,6 @@ T = {
     "Notizen (optional)": ("Notes (optional)", "Notes (facultatif)", "Note (facoltativo)"),
     "optional": ("optional", "facultatif", "facoltativo"),
     "OK": ("OK", "OK", "OK"),
-    "%lld Anlagen hinzugefügt.": ("%lld ranges added.", "%lld stands ajoutés.", "%lld poligoni aggiunti."),
-    "Schiessanlagen übernommen": ("Ranges added", "Stands ajoutés", "Poligoni aggiunti"),
-    "Schweizer Schiessanlagen übernehmen": ("Add Swiss shooting ranges", "Ajouter les stands de tir suisses", "Aggiungi i poligoni svizzeri"),
     "Ohne Kaliber": ("No calibre", "Sans calibre", "Senza calibro"),
     "Ordonnanzpistole": ("Service pistol", "Pistolet d'ordonnance", "Pistola d'ordinanza"),
     "Ort": ("Place", "Lieu", "Luogo"),
@@ -479,10 +478,6 @@ T = {
         "Choose which extra fields your entries show.",
         "Choisis les champs supplémentaires de tes entrées.",
         "Scegli quali campi aggiuntivi mostrano le tue voci."),
-    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später im Tab «Anlagen».": (
-        "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later in the Ranges tab.",
-        "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard dans l'onglet Stands.",
-        "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi nella scheda Poligoni."),
     "Eigene Filter": ("My filters", "Mes filtres", "I miei filtri"),
     "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
     "Filter erfassen": ("Record filters", "Saisir les filtres", "Registra i filtri"),

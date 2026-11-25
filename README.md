@@ -63,9 +63,10 @@ match (Stich).
   screen) that calls firearms «Sportgeräte» (English: equipment) throughout the app.
   The default is «Waffen». Only the wording changes; data, backups and the CSV keep
   «Waffe».
-- **Swiss shooting ranges**: on first launch the app offers to fill the shooting range
-  list with all Swiss ranges, with place, altitude, distances and shooting direction
-  (data: © swisstopo). See [Shooting range catalogue](#shooting-range-catalogue).
+- **Swiss shooting ranges**: an event's range is picked from the ranges you have shot at
+  and a catalogue of all Swiss ranges, with place, altitude, distances and shooting
+  direction (data: © swisstopo). Only the ranges you use become yours and sync through
+  iCloud. See [Shooting range catalogue](#shooting-range-catalogue).
 - **SSV licence card** (Einstellungen › SSV-Lizenzkarte): enter the licence number to show
   the card with its barcodes at the range; once entered it gets its own tab «Lizenzkarte»,
   while editing stays in Settings. The card's credit card data is never stored.

@@ -18,9 +18,6 @@ final class SportFeaturesTests: ModelTestCase {
         try await super.tearDown()
     }
 
-    private let albis = RangeCatalog.Item(id: "tlm:A", name: "Schiessanlage Albisgüetli", place: "Zürich",
-                                          lat: 47.3561, lon: 8.5098, bearing: 251.5, alt: 486, distances: [300, 50, 25])
-
     // MARK: Switches
 
     func testEverythingIsOffByDefault() {
@@ -134,19 +131,9 @@ final class SportFeaturesTests: ModelTestCase {
 
     // MARK: First run
 
-    func testWelcomeShowsOnceAndAnswersTheRangeQuestion() throws {
+    func testWelcomeShowsOnce() {
         XCTAssertTrue(FirstRun.shouldShow(defaults: defaults))
-        XCTAssertEqual(FirstRun.offersRanges(context, defaults: defaults), !RangeCatalog.items.isEmpty)
-        FirstRun.finish(importingRanges: false, [albis], into: context, defaults: defaults)
+        FirstRun.finish(defaults: defaults)
         XCTAssertFalse(FirstRun.shouldShow(defaults: defaults))
-        XCTAssertFalse(FirstRun.offersRanges(context, defaults: defaults), "range question counts as answered")
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ShootingRange>()), 0)
-    }
-
-    func testWelcomeImportsRangesWhenAsked() throws {
-        FirstRun.finish(importingRanges: true, [albis], into: context, defaults: defaults)
-        let ranges = try context.fetch(FetchDescriptor<ShootingRange>())
-        XCTAssertEqual(ranges.map(\.catalogID), ["tlm:A"])
-        XCTAssertTrue(defaults.bool(forKey: RangeCatalog.askedKey))
     }
 }
