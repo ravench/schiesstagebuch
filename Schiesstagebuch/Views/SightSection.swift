@@ -7,6 +7,8 @@ struct SightSection: View {
     @Binding var sight: SightSettings
     var aperture: SightSettings.Aperture = .both
     var fields: SportFeatures = SportFeatures.sightFields
+    /// The firearm's: how the clicks read, and no rows at all for a sight without adjustment.
+    var diopterMode: DiopterMode = .direct
     @AppStorage(FilterCatalog.key) private var catalogData = Data()
     /// What the fields held when they were switched off, by title: switched on again they come back.
     @State private var lastValues: [String: Double] = [:]
@@ -21,7 +23,7 @@ struct SightSection: View {
             }
             if fields.contains(.iris) { rulerRow("Iris", value: $sight.irisSize) }
             if fields.contains(.ring), aperture != .iris { rulerRow("Ringkorn", value: $sight.ringSize) }
-            if fields.contains(.diopter) { diopterRows }
+            if fields.contains(.diopter), diopterMode != .fixed { diopterRows }
             if fields.contains(.bipod), aperture != .iris {
                 rulerRow("Zweibeinstütze", value: $sight.bipodLength, unit: " cm", start: 20,
                          scale: SightSettings.bipodRulerScale, clamp: SightSettings.clampBipod)
@@ -57,9 +59,9 @@ struct SightSection: View {
                                                       set: { sight.diopter.switchOn($0, last: &lastDiopter, start: DiopterClicks()) }))
         if sight.diopter != nil {
             clickStepper("Höhenverstellung", value: Binding(get: { sight.diopter?.up ?? 0 }, set: { sight.diopter?.up = $0 }),
-                         up: "%lld hoch", down: "%lld tief")
+                         up: diopterMode.formats.up, down: diopterMode.formats.down)
             clickStepper("Seitenverstellung", value: Binding(get: { sight.diopter?.right ?? 0 }, set: { sight.diopter?.right = $0 }),
-                         up: "%lld rechts", down: "%lld links")
+                         up: diopterMode.formats.right, down: diopterMode.formats.left)
         }
     }
 

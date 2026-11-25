@@ -248,6 +248,8 @@ struct WeaponEditorView: View {
     @State private var serviceShots = 0
     @State private var serviceDays = 0
     @State private var dayCountingRaw = ""
+    @State private var diopterModeRaw = ""
+    @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var choosingCalibers = false
     @State private var editingBarrel: Barrel?
     @State private var addingBarrel = false
@@ -312,6 +314,17 @@ struct WeaponEditorView: View {
                     }
                 } footer: {
                     Text("Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.")
+                }
+
+                // Only for those who record the clicks (Einstellungen › Sportschützen).
+                if features.contains(.diopter) {
+                    Section {
+                        Picker("Diopterkorrekturen", selection: $diopterModeRaw) {
+                            ForEach(DiopterMode.allCases) { Text($0.title).tag($0.rawValue) }
+                        }
+                    } footer: {
+                        Text("So ist die Visierung beschriftet: mit der Richtung, in die der Treffer wandert («hoch»), oder mit «bei»: so drehen, wenn die Schüsse hoch liegen. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.")
+                    }
                 }
 
                 if weapon != nil {
@@ -451,6 +464,7 @@ struct WeaponEditorView: View {
         cleaningShots = weapon.cleaningIntervalShots; cleaningDays = weapon.cleaningIntervalDays
         serviceShots = weapon.serviceIntervalShots; serviceDays = weapon.serviceIntervalDays
         dayCountingRaw = weapon.dayCountingRaw
+        diopterModeRaw = weapon.diopterModeRaw
         didLoad = true
     }
 
@@ -467,6 +481,7 @@ struct WeaponEditorView: View {
         target.cleaningIntervalShots = cleaningShots; target.cleaningIntervalDays = cleaningDays
         target.serviceIntervalShots = serviceShots; target.serviceIntervalDays = serviceDays
         target.dayCountingRaw = dayCountingRaw
+        target.diopterModeRaw = diopterModeRaw
         if weapon == nil {
             context.insert(target)
             let barrel = Barrel(calibers: [])

@@ -1,16 +1,40 @@
 import Foundation
 
+/// How a firearm's sight is adjusted, set per firearm (tester 2026-11-24): its knobs say where the hits go
+/// («hoch», «rechts»), or they say «bei»: turn this way when the hits are high or right; or it has no adjustment.
+enum DiopterMode: String, CaseIterable, Identifiable {
+    /// «fixed», not «none»: `weapon?.diopterMode == .none` would ask whether there is a weapon.
+    case direct = "", bei, fixed
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .direct: "Direkt (hoch)".loc
+        case .bei: "Bei (bei hoch)".loc
+        case .fixed: "Keine Verstellung".loc
+        }
+    }
+
+    /// The format keys of the clicks up, down, right and left.
+    var formats: (up: String, down: String, right: String, left: String) {
+        self == .bei ? ("%lld bei hoch", "%lld bei tief", "%lld bei rechts", "%lld bei links")
+                     : ("%lld hoch", "%lld tief", "%lld rechts", "%lld links")
+    }
+}
+
 /// The clicks turned on the diopter during a Stich (Raven 2026-11-10): up (negative: down) and
-/// right (negative: left).
+/// right (negative: left); on a «bei» sight towards «bei hoch» and «bei rechts».
 struct DiopterClicks: Equatable, Hashable {
     var up = 0
     var right = 0
 
     static let range = -99...99
 
-    /// E.g. «2 hoch, 1 links»; «0» when nothing was turned.
-    var text: String {
-        let parts = [Self.text(up, "%lld hoch", "%lld tief"), Self.text(right, "%lld rechts", "%lld links")].compactMap { $0 }
+    /// E.g. «2 hoch, 1 links», on a «bei» sight «2 bei hoch, 1 bei links»; «0» when nothing was turned.
+    func text(_ mode: DiopterMode = .direct) -> String {
+        let keys = mode.formats
+        let parts = [Self.text(up, keys.up, keys.down), Self.text(right, keys.right, keys.left)].compactMap { $0 }
         return parts.isEmpty ? "0" : parts.joined(separator: ", ")
     }
 

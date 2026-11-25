@@ -308,6 +308,18 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// The firearm editor of a sport shooter who records diopter corrections: how this firearm's sight is marked.
+    func testDiopterMode() {
+        relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
+        tab("Waffen")
+        guard open(app.staticTexts["Stgw 90"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let mode = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Diopterkorrekturen")).firstMatch
+        reveal(mode)
+        guard mode.exists else { return XCTFail("No diopter mode in the firearm editor") }
+        XCTAssertTrue(openMenu(mode, showing: "Keine Verstellung"), "No menu with the diopter modes")
+        snap("07s-Diopterkorrekturen-pro-Waffe")
+    }
+
     /// The firearm editor with a reminder set while notifications are switched off for the app.
     func testReminderHint() {
         relaunch(adding: ["-notificationsDenied"])

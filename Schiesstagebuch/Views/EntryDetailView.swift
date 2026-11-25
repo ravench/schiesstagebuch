@@ -123,7 +123,7 @@ struct EntryDetailView: View {
                     }
                     row("Iris", sight.irisSize.map(SightSettings.format))
                     row("Ringkorn", sight.ringSize.map(SightSettings.format))
-                    row("Diopterkorrekturen", sight.diopter?.text)
+                    row("Diopterkorrekturen", sight.diopter?.text(entry.weapon?.diopterMode ?? .direct))
                     row("Zweibeinstütze", sight.bipodLength.map { "\(SightSettings.format($0)) cm" })
                 }
             }
