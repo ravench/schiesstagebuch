@@ -6,11 +6,19 @@ struct PickedLocation: Equatable {
     var address: String
     var latitude: Double
     var longitude: Double
+    /// Metres above sea level, known only for the device's own position: Apple Maps gives none for an address.
+    var altitude: Double?
 
-    init(address: String, latitude: Double, longitude: Double) {
+    init(address: String, latitude: Double, longitude: Double, altitude: Double? = nil) {
         self.address = address
         self.latitude = latitude
         self.longitude = longitude
+        self.altitude = altitude
+    }
+
+    /// The height of a position fix in whole metres, nil when the fix has none (vertical accuracy below zero).
+    static func altitude(of fix: CLLocation) -> Double? {
+        fix.verticalAccuracy > 0 ? fix.altitude.rounded() : nil
     }
 
     /// One line from the parts a geocoder gives, e.g. "Uetlibergstrasse 341, 8045 Zürich"; missing parts are left out.
@@ -151,7 +159,7 @@ struct PlaceField: View {
         }
     }
 
-    /// Town, address and position of where the device is; without a network only the position.
+    /// Town, address, position and height of where the device is; without a network only position and height.
     private func use(_ here: CLLocation) async {
         let found = try? await CLGeocoder().reverseGeocodeLocation(here).first
         if let town = found?.locality, !town.isEmpty {
@@ -160,7 +168,8 @@ struct PlaceField: View {
         }
         location = PickedLocation(address: PickedLocation.address(street: found?.thoroughfare, number: found?.subThoroughfare,
                                                                   postalCode: found?.postalCode, town: found?.locality),
-                                  latitude: here.coordinate.latitude, longitude: here.coordinate.longitude)
+                                  latitude: here.coordinate.latitude, longitude: here.coordinate.longitude,
+                                  altitude: PickedLocation.altitude(of: here))
         completer.clear()
         focused = false
     }

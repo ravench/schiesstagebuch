@@ -607,6 +607,10 @@ struct RangeEditorView: View {
                 }
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
             }
+            // «Aktuellen Standort verwenden» knows how high the device is (tester 2026-11-24).
+            .onChange(of: location) { _, new in
+                if let height = new?.altitude { altitude = height }
+            }
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
