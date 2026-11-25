@@ -10300,19 +10300,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "shots"
+            "value": "Shots"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "coups"
+            "value": "Coups"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "colpi"
+            "value": "Colpi"
           }
         }
       }

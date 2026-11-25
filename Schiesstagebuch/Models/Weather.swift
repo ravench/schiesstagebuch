@@ -72,7 +72,7 @@ extension WeatherField {
             o("glaring", "grell", "sun.max.fill"),
             o("diffuse", "diffus", "sun.dust"),
             o("dusk", "Dämmerung", "sunset"),
-            o("artificial", "Kunstlicht", "lamp.ceiling"),
+            o("artificial", "Kunstlicht", "light.overhead.right"), // a floodlight: the range is outdoors (tester 2026-11-24)
             o("dark_lit_target", "dunkel, Scheibe beleuchtet", "moon.stars"),
         ])),
         .init(key: "sun_direction", label: "Sonne zum Schützen", icon: "sun.max", kind: .select([
