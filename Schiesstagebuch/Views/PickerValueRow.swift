@@ -14,6 +14,12 @@ struct PickerValueRow<Options: View>: View {
     let add: () -> Void
     @ViewBuilder let options: () -> Options
 
+    /// As the system's pickers in the same form show their value: in the tint from iOS 26 on, grey before.
+    /// (`.secondary` in a menu label is a pale tint, which read as switched off; Raven 2026-11-24.)
+    private static var valueStyle: AnyShapeStyle {
+        if #available(iOS 26, *) { AnyShapeStyle(.tint) } else { AnyShapeStyle(Color(uiColor: .secondaryLabel)) }
+    }
+
     var body: some View {
         HStack(spacing: 6) {
             Text(title)
@@ -32,7 +38,7 @@ struct PickerValueRow<Options: View>: View {
                     Image(systemName: "chevron.up.chevron.down")
                         .imageScale(.small)
                 }
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Self.valueStyle)
             }
             // Keep «add new» at the bottom even when the menu opens upwards.
             .menuOrder(.fixed)
