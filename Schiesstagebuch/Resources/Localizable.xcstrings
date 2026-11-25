@@ -1749,29 +1749,6 @@
         }
       }
     },
-    "Bei (bei hoch)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "“Bei” (when high)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "« Bei » (si haut)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "«Bei» (se alto)"
-          }
-        }
-      }
-    },
     "Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.": {
       "extractionState": "manual",
       "localizations": {
@@ -2964,29 +2941,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Correzioni della diottra"
-          }
-        }
-      }
-    },
-    "Direkt (hoch)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Direct (up)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Direct (haut)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Diretto (alto)"
           }
         }
       }
@@ -5966,6 +5920,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "In ginocchio"
+          }
+        }
+      }
+    },
+    "Korrektur": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correction"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correction"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correzione"
           }
         }
       }
@@ -10961,29 +10938,6 @@
         }
       }
     },
-    "So ist die Visierung beschriftet: mit der Richtung, in die der Treffer wandert («hoch»), oder mit «bei»: so drehen, wenn die Schüsse hoch liegen. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "How the sight is marked: with the direction the hit moves (“up”), or with “bei”: turn this way when the shots are high. With no adjustment, a match shows no diopter corrections."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le marquage de la visée : la direction dans laquelle l'impact se déplace (« haut »), ou « bei » : tourner ainsi quand les coups sont hauts. Sans réglage, la cible n'affiche pas de corrections du dioptre."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Com'è marcata la mira: con la direzione in cui si sposta il colpo («alto»), oppure con «bei»: girare così quando i colpi sono alti. Senza regolazione, il bersaglio non mostra correzioni della diottra."
-          }
-        }
-      }
-    },
     "Sonne zum Schützen": {
       "extractionState": "manual",
       "localizations": {
@@ -12801,6 +12755,29 @@
         }
       }
     },
+    "Wähle, was auf den Knöpfen deines Diopters steht. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick what is printed on your sight’s knobs. With no adjustment, a match shows no diopter corrections."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisis ce qui est inscrit sur les boutons de ton dioptre. Sans réglage, la cible n'affiche pas de corrections du dioptre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli cosa è scritto sulle manopole della tua diottra. Senza regolazione, il bersaglio non mostra correzioni della diottra."
+          }
+        }
+      }
+    },
     "Wähle, welche Felder deine Einträge zusätzlich zeigen.": {
       "extractionState": "manual",
       "localizations": {
@@ -13146,6 +13123,29 @@
         }
       }
     },
+    "bei hoch, bei rechts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "when high, when right"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "si haut, si à droite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "se alto, se a destra"
+          }
+        }
+      }
+    },
     "bis %@": {
       "extractionState": "manual",
       "localizations": {
@@ -13464,6 +13464,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "molto caldo"
+          }
+        }
+      }
+    },
+    "hoch, rechts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "up, right"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "haut, droite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "alto, destra"
           }
         }
       }
