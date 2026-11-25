@@ -533,7 +533,6 @@ final class PRScreensTests: XCTestCase {
         XCTAssertTrue(header.waitForExistence(timeout: 5), "No measured distances")
         snap("19c-Schiessanlage-gemessen")
     }
-    }
 
     /// A range's editor: the compass dial the shooting direction is set on.
     func testRangeDirection() {
