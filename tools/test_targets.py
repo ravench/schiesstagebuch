@@ -263,5 +263,16 @@ class FaceTests(unittest.TestCase):
             self.assertEqual(targets.problems(t), [], t["id"])
 
 
+    def test_knabenschiessen_is_a6_plus_the_scheibentreffer(self):
+        # Raven 2026-11-25: the Knabenschiessen target was missing. A6 rings 6 to 1, +1 for every hit: 5 shots, 35 at most.
+        by_id = {t["id"]: t for t in targets.load()}
+        knaben = by_id["ch-300m-knabenschiessen"]
+        self.assertEqual(knaben["scoring"]["values"], [v + 1 for v in by_id["ch-300m-a6"]["scoring"]["values"][:-1]] + [0])
+        self.assertEqual(5 * max(knaben["scoring"]["values"]), 35)
+        self.assertEqual(targets.face(knaben, by_id), targets.face(by_id["ch-300m-a6"], by_id))
+        self.assertEqual(knaben["distances_m"], [300])
+        self.assertEqual(targets.problems(knaben), [])
+
+
 if __name__ == "__main__":
     unittest.main()

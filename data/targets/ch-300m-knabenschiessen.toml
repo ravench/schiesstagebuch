@@ -1,0 +1,17 @@
+# Target of the Zürcher Knabenschiessen, Sturmgewehr 90 at 300 m: the A-Scheibe in 6 rings (the A6 face), and
+# every shot that hits the target scores 1 more, the «Scheibentreffer». 5 shots, at most 35 = 5 x (6 + 1).
+# Which face: SIUS's 300 m range mode has the program «Knabenschiessen», 5 shots on the A6 (CtmShoot2 Sui).
+id = "ch-300m-knabenschiessen"
+name = "Knabenschiessen-Scheibe 300 m"
+short_name = "Knabenschiessen"
+group = "Schweiz"
+distances_m = [300]
+face = "ch-300m-a6"
+
+[scoring]
+# The only scores a shot can have, best first; 0 is a miss. A6's 6 to 1, each plus the Scheibentreffer.
+values = [7, 6, 5, 4, 3, 2, 0]
+
+[source]
+title = "blue News, Maximalpunktzahl am Knabenschiessen fast unmöglich (14.09.2025)"
+url = "https://www.bluewin.ch/de/news/vermischtes/maximalpunktzahl-am-knabenschiessen-fast-unmoeglich-2869944.html"
