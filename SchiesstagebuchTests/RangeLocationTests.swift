@@ -1,4 +1,5 @@
 import XCTest
+import CoreLocation
 @testable import Schiesstagebuch
 
 final class RangeLocationTests: ModelTestCase {
@@ -33,5 +34,16 @@ final class RangeLocationTests: ModelTestCase {
         XCTAssertEqual(PickedLocation.address(street: "Allmend", number: nil, postalCode: nil, town: "Thun"), "Allmend, Thun")
         XCTAssertEqual(PickedLocation.address(street: nil, number: "", postalCode: "3600", town: "Thun"), "3600 Thun")
         XCTAssertEqual(PickedLocation.address(street: nil, number: nil, postalCode: nil, town: nil), "", "no network: position only")
+    }
+
+    /// «Aktuellen Standort verwenden» fills the range's «Höhe» from the fix, where the fix has a height.
+    func testAltitudeComesFromAFixThatHasOne() {
+        let here = CLLocationCoordinate2D(latitude: 47.3975, longitude: 8.4471)
+        let fix = CLLocation(coordinate: here, altitude: 412.6, horizontalAccuracy: 30, verticalAccuracy: 8, timestamp: .now)
+        XCTAssertEqual(PickedLocation.altitude(of: fix), 413)
+        let flat = CLLocation(coordinate: here, altitude: 0, horizontalAccuracy: 30, verticalAccuracy: -1, timestamp: .now)
+        XCTAssertNil(PickedLocation.altitude(of: flat), "no height in this fix: the field stays as it is")
+        XCTAssertNil(PickedLocation(address: "Gyrhalde 3, 8952 Schlieren", latitude: 47.3975, longitude: 8.4471).altitude,
+                     "an address from Apple Maps has none")
     }
 }
