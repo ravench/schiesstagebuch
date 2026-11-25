@@ -8,10 +8,11 @@ enum DiopterMode: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// As the knobs read (Raven 2026-11-25): the shooter picks what is printed on the sight.
     var title: String {
         switch self {
-        case .direct: "Direkt (hoch)".loc
-        case .bei: "Bei (bei hoch)".loc
+        case .direct: "hoch, rechts".loc
+        case .bei: "bei hoch, bei rechts".loc
         case .fixed: "Keine Verstellung".loc
         }
     }

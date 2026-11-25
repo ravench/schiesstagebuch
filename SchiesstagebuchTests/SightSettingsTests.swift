@@ -90,6 +90,16 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertEqual(s.fitted(to: .both), s)
     }
 
+    /// The firearm's choice reads like its knobs (Raven 2026-11-25): «hoch, rechts» or «bei hoch, bei rechts».
+    func testDiopterModesReadLikeTheKnobs() throws {
+        XCTAssertEqual(DiopterMode.allCases.map(\.title), ["hoch, rechts", "bei hoch, bei rechts", "Keine Verstellung"].map(\.loc))
+        let path = try XCTUnwrap(Bundle.main.path(forResource: "en", ofType: "lproj"))
+        let en = try XCTUnwrap(Bundle(path: path))
+        let english = ["hoch, rechts", "bei hoch, bei rechts", "Keine Verstellung", "Korrektur"].map { en.localizedString(forKey: $0, value: "<missing>", table: nil) }
+        XCTAssertEqual(english, ["up, right", "when high, when right", "No adjustment", "Correction"])
+        XCTAssertEqual(en.localizedString(forKey: "%lld bei hoch", value: "<missing>", table: nil), "%lld when high")
+    }
+
     func testEveryFilterColourIsTranslated() throws {
         for lang in ["en", "fr", "it"] {
             let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))

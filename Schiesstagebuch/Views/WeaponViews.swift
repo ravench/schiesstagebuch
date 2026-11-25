@@ -319,11 +319,11 @@ struct WeaponEditorView: View {
                 // Only for those who record the clicks (Einstellungen › Sportschützen).
                 if features.contains(.diopter) {
                     Section {
-                        Picker("Diopterkorrekturen", selection: $diopterModeRaw) {
+                        Picker("Korrektur", selection: $diopterModeRaw) {
                             ForEach(DiopterMode.allCases) { Text($0.title).tag($0.rawValue) }
                         }
                     } footer: {
-                        Text("So ist die Visierung beschriftet: mit der Richtung, in die der Treffer wandert («hoch»), oder mit «bei»: so drehen, wenn die Schüsse hoch liegen. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.")
+                        Text("Wähle, was auf den Knöpfen deines Diopters steht. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.")
                     }
                 }
 
