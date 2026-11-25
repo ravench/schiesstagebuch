@@ -1,7 +1,7 @@
 name: Range catalogue
 # Builds the shooting range catalogue from swisstopo swissTLM3D plus the hand-made indoor
 # list (data/indoor-ranges.json), adds street addresses from swisstopo's official building
-# address directory, and uploads ranges.json / ranges.csv as a build artifact.
+# address directory, the measured distances (data/range-measurements.csv), and uploads ranges.json / ranges.csv as a build artifact.
 # Runs on demand, and on pull requests that change the builder or the list.
 # Licence: swissTLM3D and amtliches Gebäudeadressverzeichnis © swisstopo (commercial use allowed).
 on:
@@ -78,7 +78,7 @@ jobs:
         run: |
           mkdir -p out
           python3 tools/range_catalogue.py build "$GPKG" data/indoor-ranges.json out "$RELEASE" "$ADDRESSES" \
-            | tee out/stats.txt
+            data/range-measurements.csv | tee out/stats.txt
           cp "$WORK/inspect.txt" out/
           {
             echo "### Range catalogue (swissTLM3D $RELEASE)"

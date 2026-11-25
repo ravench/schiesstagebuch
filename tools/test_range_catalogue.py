@@ -636,5 +636,87 @@ class GeoPackageTests(unittest.TestCase):
         self.assertEqual([r["name"] for r in catalogue["ranges"]], ["Schiessanlage Fänglen"])
         self.assertEqual(list(catalogue["attribution"]), ["swisstopo"])
 
+class MeasurementTests(unittest.TestCase):
+    def write(self, tmp, rows):
+        path = os.path.join(tmp, "measurements.csv")
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["target", "house", "name", "distance", "metres", "rise", "confident", "reason"])
+            w.writerows(rows)
+        return path
+
+    def lane(self, target, source="pairing"):
+        return {"ids": ["h", target], "source": source}
+
+    def test_read_measurements(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            m = rc.read_measurements(self.write(tmp, [
+                ["a", "h", "A 300m", "300", "298.4", "12.3", "1", ""],
+                ["b", "h", "A 300m", "300", "290.0", "", "0", "unsure house"],
+                ["c", "h", "A 50m", "50", "50.4", "0.1", "1", ""],
+            ]))
+        self.assertNotIn("c", m)  # 25 and 50 m stands get no measured distance
+        self.assertEqual(m["a"], {"distance": 300, "metres": 298.4, "rise": 12.3, "confident": True})
+        self.assertEqual(m["b"]["rise"], None)
+        self.assertFalse(m["b"]["confident"])
+
+    def test_span_and_median_rise_per_distance(self):
+        m = {"a": {"distance": 300, "metres": 298.4, "rise": 12.0, "confident": True},
+             "b": {"distance": 300, "metres": 301.2, "rise": 14.0, "confident": True},
+             "c": {"distance": 300, "metres": 280.0, "rise": 1.0, "confident": False},
+             "d": {"distance": 100, "metres": 100.6, "rise": -0.4, "confident": True}}
+        lanes = [self.lane(t) for t in "abcd"] + [self.lane("x"), self.lane("a", source="trajectory")]
+        self.assertEqual(rc.measured_distances(lanes, m), [
+            {"distance": 300, "from": 298, "to": 301, "rise": 13},
+            {"distance": 100, "from": 101, "to": 101, "rise": 0},
+        ])
+
+    def test_unconfident_only_gives_nothing(self):
+        m = {"c": {"distance": 300, "metres": 280.0, "rise": None, "confident": False}}
+        self.assertEqual(rc.measured_distances([self.lane("c")], m), [])
+        m = {"c": {"distance": 300, "metres": 299.6, "rise": None, "confident": True}}
+        self.assertEqual(rc.measured_distances([self.lane("c")], m), [{"distance": 300, "from": 300, "to": 300}])
+
+    def test_build_and_app_catalogue_carry_measurements(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "tlm.gpkg")
+            GeoPackageTests.make_gpkg(self, path)
+            measurements = self.write(tmp, [["T1", "H1", "Fänglen", "300", "301.3", "8.6", "1", ""]])
+            out = os.path.join(tmp, "out")
+            stats = rc.build(path, "-", out, "2026-02", None, measurements)
+            with open(os.path.join(out, "ranges.json")) as f:
+                catalogue = json.load(f)
+        self.assertEqual(stats["ranges with a measured distance"], 1)
+        rng = catalogue["ranges"][0]
+        self.assertEqual(rng["measured"], [{"distance": 300, "from": 301, "to": 301, "rise": 9}])
+        self.assertEqual(rc.app_catalogue(catalogue)["ranges"][0]["measured"], rng["measured"])
+
+    def test_build_keeps_only_the_listed_distances(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "tlm.gpkg")
+            GeoPackageTests.make_gpkg(self, path)
+            # The fixture's range has 300 and 50 m; a 100 m reading of the same row is dropped.
+            measurements = self.write(tmp, [["T1", "H1", "Fänglen", "100", "100.3", "0.2", "1", ""]])
+            out = os.path.join(tmp, "out")
+            rc.build(path, "-", out, "2026-02", None, measurements)
+            with open(os.path.join(out, "ranges.json")) as f:
+                catalogue = json.load(f)
+        self.assertEqual(catalogue["ranges"][0]["distances"], [300, 50])
+        self.assertNotIn("measured", catalogue["ranges"][0])
+
+    def test_repository_measurements_are_valid(self):
+        path = os.path.join(os.path.dirname(__file__), "..", "data", "range-measurements.csv")
+        with open(path, encoding="utf-8") as f:
+            self.assertTrue(all(int(r["distance"]) >= 100 for r in csv.DictReader(f)), "no 25 or 50 m rows")
+        m = rc.read_measurements(path)
+        self.assertGreater(len(m), 1000)
+        for target, row in m.items():
+            self.assertIn(row["distance"], (100, 300), target)
+            if row["confident"]:  # unconfident rows are kept for the record, never shown
+                self.assertLessEqual(abs(row["metres"] - row["distance"]), row["distance"] * 0.10 + 2, target)
+            if row["rise"] is not None:
+                self.assertLess(abs(row["rise"]), 100, target)
+
+
 if __name__ == "__main__":
     unittest.main()

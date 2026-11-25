@@ -12,8 +12,13 @@ the shooting house itself where one lies on its footprint, else the nearest addr
 
     python3 tools/range_catalogue.py latest-gpkg stac-items.json   # prints "<release> <url>"
     python3 tools/range_catalogue.py inspect swisstlm3d.gpkg
-    python3 tools/range_catalogue.py build swisstlm3d.gpkg data/indoor-ranges.json out/ [release] [addresses.csv]
+    python3 tools/range_catalogue.py build swisstlm3d.gpkg data/indoor-ranges.json out/ [release] [addresses.csv] \
+        [data/range-measurements.csv]
     python3 tools/range_catalogue.py app-json out/ranges.json Schiesstagebuch/Resources/SwissRanges.json
+
+True distances (100 m and up) and height differences per target row come from data/range-measurements.csv
+(measured from the firing line to the target row in swissTLM3D, firing house checked against the
+1:25 000 map and by hand); only rows marked confident are used.
 
 The build writes out/ranges.json (for the app) and out/ranges.csv (for checking against
 other lists). Licence: swissTLM3D and the building addresses © swisstopo (open data,
@@ -829,6 +834,60 @@ def address_text(address):
 
 
 # ---------------------------------------------------------------------------
+# Measured distances (data/range-measurements.csv)
+
+MEASURED_FROM = 100  # 25 and 50 m stands are built to the metre: no measured distance for them
+
+
+def read_measurements(path):
+    """Target row id -> {"distance", "metres", "rise", "confident"} from the measurements CSV.
+    Rows below MEASURED_FROM metres are skipped.
+
+    metres: firing line to target row; rise: how much higher the targets are than the firing
+    line (negative: lower), both in metres.
+    """
+    out = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if int(row["distance"]) < MEASURED_FROM:
+                continue
+            out[row["target"]] = {
+                "distance": int(row["distance"]),
+                "metres": float(row["metres"]),
+                "rise": float(row["rise"]) if row.get("rise") not in (None, "") else None,
+                "confident": row["confident"].strip().lower() in ("1", "true", "yes"),
+            }
+    return out
+
+
+def lane_target(lane):
+    """The target row id of a paired lane; None for trajectory lanes."""
+    return lane["ids"][1] if lane.get("source") == "pairing" and len(lane.get("ids", [])) > 1 else None
+
+
+def measured_distances(lanes, measurements):
+    """Per nominal distance of a range: the span of the confident measured distances and the
+    median height difference, e.g. [{"distance": 300, "from": 298, "to": 301, "rise": 12}].
+    Whole metres, longest distance first. Distances without a confident measurement are left out.
+    """
+    by_distance = {}
+    for lane in lanes:
+        m = measurements.get(lane_target(lane))
+        if m and m["confident"]:
+            by_distance.setdefault(m["distance"], []).append(m)
+    out = []
+    for distance, ms in sorted(by_distance.items(), reverse=True):
+        metres = [m["metres"] for m in ms]
+        entry = {"distance": distance, "from": round(min(metres)), "to": round(max(metres))}
+        rises = sorted(m["rise"] for m in ms if m["rise"] is not None)
+        if rises:
+            entry["rise"] = round(rises[len(rises) // 2] if len(rises) % 2
+                                  else (rises[len(rises) // 2 - 1] + rises[len(rises) // 2]) / 2)
+        out.append(entry)
+    return out
+
+
+# ---------------------------------------------------------------------------
 # Output
 
 def round_bearing(bearing):
@@ -860,6 +919,8 @@ def range_record(rng):
             record["addressMetres"] = round(address["metres"])
     if rng.get("indoor"):
         record["indoor"] = True
+    if rng.get("measured"):
+        record["measured"] = rng["measured"]
     if rng["lanes"]:
         record["lanes"] = [{
             "distance": lane["distance"],
@@ -870,8 +931,9 @@ def range_record(rng):
     return record
 
 
-def build(tlm_path, manual_path, out_dir, release="", addresses_path=None):
-    """manual_path "-" builds from swisstopo alone; without addresses_path ranges get no address."""
+def build(tlm_path, manual_path, out_dir, release="", addresses_path=None, measurements_path=None):
+    """manual_path "-" builds from swisstopo alone; without addresses_path ranges get no address,
+    without measurements_path no measured distances."""
     houses, targets, trajectories, tlm_places = read_tlm(tlm_path)
     lanes = build_lanes(houses, targets, trajectories)
     ranges = group_lanes(lanes)
@@ -880,6 +942,13 @@ def build(tlm_path, manual_path, out_dir, release="", addresses_path=None):
     if addresses_path:
         index = read_addresses(addresses_path, cells_near([r["firing"] for r in ranges]))
         assign_addresses(ranges, houses, index)
+    if measurements_path:
+        measurements = read_measurements(measurements_path)
+        for rng in ranges:
+            # Only the distances the range lists: its name says which stands it has
+            # ("Zürich-Albisgütli 25m" shares its lanes with the 300/50 m house next door).
+            rng["measured"] = [m for m in measured_distances(rng["lanes"], measurements)
+                               if m["distance"] in rng["distances"]]
     if manual_path != "-":
         with open(manual_path, encoding="utf-8") as f:
             ranges += manual_ranges(json.load(f))
@@ -914,6 +983,7 @@ def build(tlm_path, manual_path, out_dir, release="", addresses_path=None):
         "  without direction (no target row found)": sum(r["id"].startswith("tlm:") and r["bearing"] is None
                                                           for r in ranges),
         "indoor ranges from the hand-made list": sum(r["id"].startswith("manual:") for r in ranges),
+        "ranges with a measured distance": sum(bool(r.get("measured")) for r in ranges),
     }
     tlm = [r for r in ranges if r["id"].startswith("tlm:")]
     metres = sorted(r["address"]["metres"] for r in tlm if r.get("address"))
@@ -1002,6 +1072,8 @@ def app_catalogue(catalogue):
             item["indoor"] = True
         if r.get("street") or r.get("zip"):
             item["address"] = address_text(r)
+        if r.get("measured"):
+            item["measured"] = r["measured"]
         items.append(item)
     with_addresses = any("address" in item for item in items)
     return {"source": "Schiessanlagen: " + (ADDRESS_ATTRIBUTION if with_addresses else "swissTLM3D © swisstopo"),
@@ -1028,7 +1100,7 @@ def main(argv):
         return 0
     if len(argv) >= 4 and argv[0] == "build":
         stats = build(argv[1], argv[2], argv[3], argv[4] if len(argv) > 4 else "",
-                      argv[5] if len(argv) > 5 else None)
+                      argv[5] if len(argv) > 5 else None, argv[6] if len(argv) > 6 else None)
         for key, value in stats.items():
             print(f"{key}: {value}")
         return 0
