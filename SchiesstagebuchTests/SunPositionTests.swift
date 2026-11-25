@@ -80,6 +80,18 @@ final class SunPositionTests: ModelTestCase {
         XCTAssertTrue(Compass.label(for: 315).hasSuffix("315°"))
     }
 
+    /// The dial of the shooting direction: north is up, the screen's y runs down.
+    func testATouchOnTheDialGivesItsDirectionInSteps() {
+        XCTAssertEqual(Compass.bearing(right: 0, down: -80), 0)
+        XCTAssertEqual(Compass.bearing(right: 80, down: 0), 90)
+        XCTAssertEqual(Compass.bearing(right: 0, down: 80), 180)
+        XCTAssertEqual(Compass.bearing(right: -80, down: 0), 270)
+        XCTAssertEqual(Compass.bearing(right: -50, down: -50), 315)
+        // 62° snaps to 60°, and just left of north to 0, not 360.
+        XCTAssertEqual(Compass.bearing(right: sin(62 * Double.pi / 180), down: -cos(62 * Double.pi / 180)), 60)
+        XCTAssertEqual(Compass.bearing(right: -1, down: -80), 0)
+    }
+
     func testBackupKeepsBearingAndAltitude() throws {
         let r = ShootingRange(name: "Albisgüetli"); context.insert(r)
         r.shootingBearing = 225; r.altitude = 495

@@ -539,11 +539,13 @@ struct AmmunitionEditorView: View {
 // MARK: - Shooting ranges
 
 struct RangeListView: View {
+    /// The pin of a place: the target symbol stands for the targets (tester 2026-11-19).
+    static let icon = "mappin.and.ellipse"
+
     @Environment(\.modelContext) private var context
     @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @State private var showArchived = false
     @State private var adding = false
-    @State private var importedCount: Int?
     @State private var search = ""
 
     private var hasCatalogueRanges: Bool { ranges.contains { !$0.catalogID.isEmpty } }
@@ -563,35 +565,17 @@ struct RangeListView: View {
         }
         .overlay {
             if ranges.isEmpty {
-                ContentUnavailableView("Keine Schiessanlagen", systemImage: "mappin.and.ellipse",
-                                       description: Text("Füge die Anlagen hinzu, auf denen du schiesst."))
+                ContentUnavailableView("Keine Schiessanlagen", systemImage: Self.icon,
+                                       description: Text("Hier stehen die Anlagen, auf denen du geschossen hast. Beim Anlass wählst du sie aus allen Schweizer Schiessanlagen oder fügst eine eigene hinzu."))
             }
         }
         .navigationTitle("Schiessanlagen")
         .searchable(text: $search, prompt: "Schiessanlage suchen")
         .toolbar {
             Toggle(isOn: $showArchived) { Label("Archivierte", systemImage: "archivebox") }.toggleStyle(.button)
-            Menu {
-                Button { adding = true } label: { Label("Hinzufügen", systemImage: "plus") }
-                if !RangeCatalog.items.isEmpty {
-                    Button {
-                        UserDefaults.standard.set(true, forKey: RangeCatalog.askedKey)
-                        importedCount = RangeCatalog.importAll(into: context)
-                    } label: {
-                        Label("Schweizer Schiessanlagen übernehmen", systemImage: "square.and.arrow.down.on.square")
-                    }
-                }
-            } label: {
-                Label("Hinzufügen", systemImage: "plus")
-            }
+            Button { adding = true } label: { Label("Hinzufügen", systemImage: "plus") }
         }
         .sheet(isPresented: $adding) { RangeEditorView(range: nil) }
-        .alert("Schiessanlagen übernommen", isPresented: Binding(get: { importedCount != nil },
-                                                                 set: { if !$0 { importedCount = nil } })) {
-            Button("OK") { importedCount = nil }
-        } message: {
-            Text("\(importedCount ?? 0) Anlagen hinzugefügt.")
-        }
     }
 }
 
@@ -622,6 +606,10 @@ struct RangeEditorView: View {
                     Text("Optional. Mit Ort und Schussrichtung schlägt die App vor, woher die Sonne kommt.")
                 }
                 if range != nil { Toggle("Archiviert", isOn: $isArchived) }
+            }
+            // «Aktuellen Standort verwenden» knows how high the device is (tester 2026-11-24).
+            .onChange(of: location) { _, new in
+                if let height = new?.altitude { altitude = height }
             }
             .interactiveDismissDisabled() // only Abbrechen or Sichern closes it
             .navigationTitle(range == nil ? "Neue Schiessanlage".loc : "Schiessanlage bearbeiten".loc)

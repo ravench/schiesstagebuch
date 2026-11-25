@@ -3,21 +3,6 @@ import SwiftData
 @testable import Schiesstagebuch
 
 final class RangeCatalogTests: ModelTestCase {
-    private var defaults: UserDefaults!
-    private let suite = "RangeCatalogTests"
-
-    override func setUp() async throws {
-        try await super.setUp()
-        defaults = UserDefaults(suiteName: suite)
-        defaults.removePersistentDomain(forName: suite)
-    }
-
-    override func tearDown() async throws {
-        defaults.removePersistentDomain(forName: suite)
-        defaults = nil
-        try await super.tearDown()
-    }
-
     private let albis = RangeCatalog.Item(id: "tlm:A", name: "Schiessanlage Albisgüetli", place: "Zürich",
                                           lat: 47.3561, lon: 8.5098, bearing: 251.5, alt: 486, distances: [300, 50, 25],
                                           address: "Uetlibergstrasse 341, 8045 Zürich")
@@ -132,89 +117,101 @@ final class RangeCatalogTests: ModelTestCase {
         }
     }
 
-    // MARK: First-launch question
+    // MARK: Catalogue ranges beside the user's own
 
-    func testAsksOnceOnAFreshDevice() throws {
-        XCTAssertTrue(RangeCatalog.shouldAsk(context, defaults: defaults))
-        defaults.set(true, forKey: RangeCatalog.askedKey)
-        XCTAssertFalse(RangeCatalog.shouldAsk(context, defaults: defaults), "answered: never ask again")
+    func testACatalogueRangeIsMadeWithEverythingTheCatalogueKnows() {
+        let range = RangeCatalog.makeRange(albis)
+        XCTAssertEqual(range.name, "Schiessanlage Albisgüetli")
+        XCTAssertEqual(range.catalogID, "tlm:A")
+        XCTAssertEqual(range.place, "Zürich")
+        XCTAssertEqual(range.latitude, 47.3561)
+        XCTAssertEqual(range.longitude, 8.5098)
+        XCTAssertEqual(range.shootingBearing, 251.5)
+        XCTAssertEqual(range.altitude, 486)
+        XCTAssertEqual(range.distances, [300, 50, 25])
+        XCTAssertEqual(range.address, "Uetlibergstrasse 341, 8045 Zürich")
+        let bare = RangeCatalog.makeRange(thun)
+        XCTAssertNil(bare.shootingBearing)
+        XCTAssertEqual(bare.address, "", "no address in the catalogue: none set")
     }
 
-    func testDoesNotAskWhenAnotherDeviceAlreadyImported() throws {
-        let synced = ShootingRange(name: "Schiessanlage Albisgüetli")
-        synced.catalogID = "tlm:A"
-        context.insert(synced)
-        try context.save()
-        XCTAssertFalse(RangeCatalog.shouldAsk(context, defaults: defaults))
+    func testChoicesAreTheUsersRangesThenTheCatalogue() throws {
+        XCTAssertEqual(RangeChoice.all([], catalogue: [albis, thun]), [.item(albis), .item(thun)])
+
+        let mine = ShootingRange(name: "Mein Stand")
+        let used = RangeCatalog.makeRange(thun)
+        XCTAssertEqual(RangeChoice.all([mine, used], catalogue: [albis, thun]), [.record(mine), .record(used), .item(albis)],
+                       "the user's record stands for its catalogue range")
+        XCTAssertEqual(RangeChoice.all([mine, used], catalogue: [albis, thun]).map(\.name),
+                       ["Mein Stand", "Schiessanlage Guntelsey", "Schiessanlage Albisgüetli"])
+
+        used.isArchived = true
+        XCTAssertEqual(RangeChoice.all([mine, used], catalogue: [albis, thun]), [.record(mine), .item(albis)],
+                       "an archived range is put away, its catalogue range with it")
     }
 
-    func testOwnRangesAloneStillAsk() throws {
-        context.insert(ShootingRange(name: "Mein Stand"))
-        try context.save()
-        XCTAssertTrue(RangeCatalog.shouldAsk(context, defaults: defaults))
-    }
-
-    // MARK: Import
-
-    func testImportAddsEveryRangeOnce() throws {
-        XCTAssertEqual(RangeCatalog.importAll([albis, thun], into: context), 2)
-        let all = try ranges()
-        XCTAssertEqual(all.map(\.name), ["Schiessanlage Albisgüetli", "Schiessanlage Guntelsey"])
-        let first = all[0]
-        XCTAssertEqual(first.catalogID, "tlm:A")
-        XCTAssertEqual(first.place, "Zürich")
-        XCTAssertEqual(first.latitude, 47.3561)
-        XCTAssertEqual(first.longitude, 8.5098)
-        XCTAssertEqual(first.shootingBearing, 251.5)
-        XCTAssertEqual(first.altitude, 486)
-        XCTAssertEqual(first.distances, [300, 50, 25])
-        XCTAssertEqual(first.address, "Uetlibergstrasse 341, 8045 Zürich")
-        XCTAssertNil(all[1].shootingBearing)
-        XCTAssertEqual(all[1].address, "", "no address in the catalogue: none set")
-
-        XCTAssertEqual(RangeCatalog.importAll([albis, thun], into: context), 0, "a second import adds nothing")
-        XCTAssertEqual(try ranges().count, 2)
-    }
-
-    func testOwnRangeNearbyIsLinkedNotDuplicated() throws {
-        let own = ShootingRange(name: "Albisgüetli", place: "")
+    func testOwnRangeAtTheSamePlaceStandsForTheCatalogueRange() {
+        let own = ShootingRange(name: "Albisgüetli")
         own.latitude = 47.3565   // about 45 m from the catalogue position
         own.longitude = 8.5100
-        own.shootingBearing = 250
-        context.insert(own)
-        try context.save()
-
-        XCTAssertEqual(RangeCatalog.importAll([albis, thun], into: context), 1)
-        let all = try ranges()
-        XCTAssertEqual(all.count, 2)
-        XCTAssertEqual(own.name, "Albisgüetli", "the user's name stays")
-        XCTAssertEqual(own.catalogID, "tlm:A")
-        XCTAssertEqual(own.shootingBearing, 250, "the user's own direction stays")
-        XCTAssertEqual(own.altitude, 486, "missing values are filled in")
-        XCTAssertEqual(own.place, "Zürich")
-        XCTAssertEqual(own.distances, [300, 50, 25])
-        XCTAssertEqual(own.address, "Uetlibergstrasse 341, 8045 Zürich", "a missing address is filled in")
-    }
-
-    func testOwnAddressStays() throws {
-        let own = ShootingRange(name: "Albisgüetli", place: "Zürich")
-        own.address = "Albisgüetli, Zürich"
-        own.latitude = 47.3562
-        own.longitude = 8.5099
-        context.insert(own)
-        try context.save()
-        XCTAssertEqual(RangeCatalog.importAll([albis], into: context), 0)
-        XCTAssertEqual(own.address, "Albisgüetli, Zürich", "the user's own address stays")
-    }
-
-    func testOwnRangeFarAwayStaysSeparate() throws {
-        let own = ShootingRange(name: "Mein Stand")
-        own.latitude = 47.40
+        XCTAssertEqual(RangeChoice.all([own], catalogue: [albis, thun]), [.record(own), .item(thun)])
+        own.latitude = 47.40     // far away: both are offered
         own.longitude = 8.55
-        context.insert(own)
-        XCTAssertEqual(RangeCatalog.importAll([albis], into: context), 1)
-        XCTAssertEqual(own.catalogID, "")
-        XCTAssertEqual(try ranges().count, 2)
+        XCTAssertEqual(RangeChoice.all([own], catalogue: [albis, thun]), [.record(own), .item(albis), .item(thun)])
+    }
+
+    /// Picking a catalogue range saves nothing; the Anlass saved with it does.
+    func testACatalogueRangeBecomesTheUsersWhenItsAnlassIsSaved() throws {
+        let choice = RangeChoice.item(albis)
+        let picked = choice.range()
+        XCTAssertNil(picked.modelContext)
+        XCTAssertEqual(try ranges().count, 0, "a cancelled Anlass leaves nothing behind")
+        XCTAssertTrue(choice.stands(for: picked))
+        XCTAssertFalse(RangeChoice.item(thun).stands(for: picked))
+        XCTAssertFalse(choice.stands(for: nil))
+
+        let event = ShootingEvent(date: day(3), range: picked.saved(in: context)); context.insert(event)
+        try context.save()
+        XCTAssertEqual(try ranges().map(\.catalogID), ["tlm:A"])
+        XCTAssertTrue(picked.saved(in: context) === picked, "saved once")
+        XCTAssertEqual(try ranges().count, 1)
+        XCTAssertFalse(choice.stands(for: picked), "now the user's record is offered, not the catalogue range")
+        XCTAssertEqual(RangeChoice.all(try ranges(), catalogue: [albis, thun]), [.record(picked), .item(thun)])
+    }
+
+    // MARK: Catalogue ranges copied earlier
+
+    func testUnusedCatalogueRangesGo() throws {
+        let old = day(1), now = day(30)
+        func catalogueRange(_ item: RangeCatalog.Item) -> ShootingRange {
+            let range = RangeCatalog.makeRange(item); range.createdAt = old; context.insert(range)
+            return range
+        }
+        let unused = catalogueRange(albis)
+        let used = catalogueRange(thun)
+        let event = ShootingEvent(date: day(3), range: used); context.insert(event)
+        let mine = ShootingRange(name: "Mein Stand"); mine.createdAt = old; context.insert(mine)
+        try context.save()
+
+        XCTAssertEqual(RangeCatalog.removeUnused(context, items: [albis, thun], now: now), 1)
+        XCTAssertEqual(try ranges().map(\.name), ["Mein Stand", "Schiessanlage Guntelsey"])
+        XCTAssertTrue(unused.isDeleted || unused.modelContext == nil)
+        XCTAssertEqual(event.range, used)
+        XCTAssertEqual(RangeCatalog.removeUnused(context, items: [albis, thun], now: now), 0, "idempotent")
+    }
+
+    func testCatalogueRangesTheUserTouchedStay() throws {
+        let old = day(1), now = day(30)
+        let renamed = RangeCatalog.makeRange(albis); renamed.name = "Albisgüetli"; renamed.createdAt = old
+        let archived = RangeCatalog.makeRange(thun); archived.isArchived = true; archived.createdAt = old
+        let other = RangeCatalog.Item(id: "tlm:C", name: "Schiessanlage Riedbach", place: "Bern", lat: 46.95, lon: 7.44,
+                                      bearing: nil, alt: nil, distances: [300])
+        // Just picked on another device: its Anlass may not have synced yet.
+        let fresh = RangeCatalog.makeRange(other); fresh.createdAt = now.addingTimeInterval(-600)
+        for range in [renamed, archived, fresh] { context.insert(range) }
+        try context.save()
+        XCTAssertEqual(RangeCatalog.removeUnused(context, items: [albis, thun, other], now: now), 0)
+        XCTAssertEqual(try ranges().count, 3)
     }
 
     func testDistance() {
@@ -247,7 +244,7 @@ final class RangeCatalogTests: ModelTestCase {
     // MARK: Backup
 
     func testBackupKeepsCatalogueIdAndDistances() throws {
-        RangeCatalog.importAll([albis], into: context)
+        context.insert(RangeCatalog.makeRange(albis))
         let data = try Backup.export(context)
         let targetContainer = try ModelContainer(for: SchiesstagebuchApp.schema,
                                                  configurations: ModelConfiguration(isStoredInMemoryOnly: true,

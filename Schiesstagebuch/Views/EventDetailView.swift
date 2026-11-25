@@ -178,7 +178,8 @@ struct EventEditorView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-    @Query(filter: #Predicate<ShootingRange> { !$0.isArchived }, sort: \ShootingRange.name) private var ranges: [ShootingRange]
+    /// Archived ones too: the range list leaves those out, and the catalogue ranges they stand for.
+    @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @Query(sort: \Entry.date, order: .reverse) private var allEntries: [Entry]
     @Query private var allEvents: [ShootingEvent]
     @AppStorage(ScoringSystem.enabledKey) private var enabledScoring = ""
@@ -187,7 +188,7 @@ struct EventEditorView: View {
     @State private var date = Date.now
     @State private var range: ShootingRange?
     /// The range picked by position, shown with its distance until the user picks another.
-    @State private var autoRange: NearbyRanges.Match?
+    @State private var autoRange: NearbyRanges.Match<ShootingRange>?
     @State private var here = OneShotLocation()
     @State private var name = ""
     @FocusState private var nameFocused: Bool
@@ -272,7 +273,7 @@ struct EventEditorView: View {
         // A new match starts with the division and power factor of the last one.
         if let last = ShootingEvent.lastIPSC(in: allEvents) { division = last.ipscDivision; powerFactor = last.ipscPowerFactor }
         scoring = ScoringSystem.forNewEvent(enabled: ScoringSystem.enabled(from: enabledScoring))
-        if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges) {
+        if NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: RangeChoice.all(ranges)) {
             here.request()
         }
     }
@@ -281,16 +282,19 @@ struct EventEditorView: View {
 
     /// Selects the range you are at once the position arrives, unless you picked one yourself meanwhile.
     private func applyNearestRange(_ location: CLLocation?) {
+        // The catalogue's ranges too: the app knows a range you have not shot at before.
+        let choices = RangeChoice.all(ranges)
         guard event == nil, let location,
-              NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: ranges),
-              let match = NearbyRanges.preselection(ranges, from: location, current: range)
+              NearbyRanges.applies(isNewEntry: true, enabled: rangeByLocation, date: date, ranges: choices),
+              let match = NearbyRanges.preselection(choices, from: location, current: range)
         else { return }
-        range = match.range; autoRange = match
+        let picked = match.range.range()
+        range = picked; autoRange = .init(range: picked, distance: match.distance)
     }
 
     private func save() {
         guard let event else {
-            let event = ShootingEvent(date: date, name: name.trimmingCharacters(in: .whitespaces), range: range)
+            let event = ShootingEvent(date: date, name: name.trimmingCharacters(in: .whitespaces), range: range?.saved(in: context))
             context.insert(event)
             event.scoringSystem = scoring
             if scoring == .ipsc { event.setIPSC(division: division, powerFactor: powerFactor) }
@@ -301,7 +305,7 @@ struct EventEditorView: View {
         }
         let moved = !Calendar.current.isDate(date, inSameDayAs: event.date)
         event.name = name.trimmingCharacters(in: .whitespaces)
-        event.range = range
+        event.range = range?.saved(in: context)
         event.setDate(date)
         event.scoringSystem = scoring
         if scoring == .ipsc { event.setIPSC(division: division, powerFactor: powerFactor) }

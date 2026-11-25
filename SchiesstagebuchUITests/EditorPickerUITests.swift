@@ -120,6 +120,33 @@ final class EditorPickerUITests: XCTestCase {
         XCTAssertTrue(keys.firstMatch.waitForNonExistence(timeout: 3), "The value buttons stayed while a text field is edited")
     }
 
+    /// A catalogue range picked for a new Anlass is the user's range once the Anlass is saved: the «Anlagen»
+    /// tab then lists it, and nothing else of the catalogue (Raven 2026-11-24).
+    func testACatalogueRangePickedForAnAnlassBecomesTheUsersRange() {
+        let new = app.buttons["Neuer Anlass"].firstMatch
+        XCTAssertTrue(new.waitForExistence(timeout: 10))
+        new.tap()
+        let row = app.staticTexts["Schiessanlage"].firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5), "No «Schiessanlage» row")
+        row.tap()
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "No search in the range list")
+        field.tap()
+        field.typeText("Guntelsey\n")
+        let range = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Guntelsey")).firstMatch
+        XCTAssertTrue(range.waitForExistence(timeout: 5), "The catalogue range is not offered")
+        range.tap()
+        let save = app.buttons["Sichern"].firstMatch
+        XCTAssertTrue(save.waitForExistence(timeout: 5), "Not back in the Anlass")
+        save.tap()
+        XCTAssertTrue(app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5), "The Anlass was not saved")
+        app.tabBars.buttons["Anlagen"].firstMatch.tap()
+        let listed = { (name: String) in self.app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", name)).firstMatch }
+        XCTAssertTrue(listed("Guntelsey").waitForExistence(timeout: 5), "The picked range is not among the user's ranges")
+        XCTAssertTrue(listed("Ostermundigen").exists, "The sample range is gone")
+        XCTAssertFalse(listed("Aadorf").exists, "The catalogue is in the user's ranges")
+    }
+
     /// A template picked in the Stich's «Scheibe» list is no target of the user's before the Stich is saved,
     /// and one after: it then shows in Einstellungen › Scheiben (Raven 2026-11-24).
     func testATemplatePickedInAStichBecomesTheUsersTarget() {

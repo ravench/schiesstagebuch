@@ -139,29 +139,6 @@
         }
       }
     },
-    "%lld Anlagen hinzugefügt.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld ranges added."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld stands ajoutés."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld poligoni aggiunti."
-          }
-        }
-      }
-    },
     "%lld Einträge": {
       "extractionState": "manual",
       "localizations": {
@@ -4216,52 +4193,6 @@
         }
       }
     },
-    "Füge die Anlagen hinzu, auf denen du schiesst.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add the ranges where you shoot."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajoutez les stands où vous tirez."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi i poligoni dove spari."
-          }
-        }
-      }
-    },
-    "Füllt deine Liste der Schiessanlagen mit allen Schweizer Anlagen vor, mit Ort, Höhe, Distanzen und Schussrichtung (Daten: swisstopo). Geht auch später im Tab «Anlagen».": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prefills your list of ranges with all Swiss shooting ranges, with location, altitude, distances and shooting direction (data: swisstopo). You can also do this later in the Ranges tab."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pré-remplit ta liste avec tous les stands de tir suisses, avec lieu, altitude, distances et direction de tir (données : swisstopo). Possible aussi plus tard dans l'onglet Stands."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precompila la tua lista con tutti i poligoni di tiro svizzeri, con luogo, altitudine, distanze e direzione di tiro (dati: swisstopo). Possibile anche più tardi nella scheda Poligoni."
-          }
-        }
-      }
-    },
     "Für Sportschützen": {
       "extractionState": "manual",
       "localizations": {
@@ -4810,6 +4741,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Produttore (facoltativo)"
+          }
+        }
+      }
+    },
+    "Hier stehen die Anlagen, auf denen du geschossen hast. Beim Anlass wählst du sie aus allen Schweizer Schiessanlagen oder fügst eine eigene hinzu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The ranges you have shot at are listed here. In an event you pick the range from all Swiss shooting ranges or add your own."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les stands où tu as tiré figurent ici. Dans un événement, tu choisis le stand parmi tous les stands de tir suisses ou tu ajoutes le tien."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qui trovi i poligoni in cui hai sparato. Nell'evento scegli il poligono tra tutti i poligoni di tiro svizzeri o aggiungi il tuo."
           }
         }
       }
@@ -10225,29 +10179,6 @@
         }
       }
     },
-    "Schiessanlagen übernommen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ranges added"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stands ajoutés"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Poligoni aggiunti"
-          }
-        }
-      }
-    },
     "Schiessen": {
       "extractionState": "manual",
       "localizations": {
@@ -10392,19 +10323,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "shots"
+            "value": "Shots"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "coups"
+            "value": "Coups"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "colpi"
+            "value": "Colpi"
           }
         }
       }
@@ -10543,29 +10474,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Svizzera"
-          }
-        }
-      }
-    },
-    "Schweizer Schiessanlagen übernehmen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Add Swiss shooting ranges"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajouter les stands de tir suisses"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi i poligoni svizzeri"
           }
         }
       }
