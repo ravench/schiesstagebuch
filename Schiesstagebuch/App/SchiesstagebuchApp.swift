@@ -132,7 +132,7 @@ struct RootView: View {
             if crowded {
                 NavigationStack {
                     List {
-                        NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: "target") }
+                        NavigationLink { RangeListView() } label: { Label("Schiessanlagen", systemImage: RangeListView.icon) }
                         NavigationLink { SettingsView(inMore: true) } label: { Label("Einstellungen", systemImage: "gearshape") }
                     }
                     .navigationTitle("Mehr")
@@ -142,7 +142,7 @@ struct RootView: View {
             } else {
                 // «Anlagen», not the page's «Schiessanlagen»: five German labels do not fit an iPhone otherwise.
                 NavigationStack { RangeListView() }
-                    .tabItem { Label("Anlagen", systemImage: "target") }
+                    .tabItem { Label("Anlagen", systemImage: RangeListView.icon) }
                     .tag("ranges")
                 SettingsView()
                     .tabItem { Label("Einstellungen", systemImage: "gearshape") }

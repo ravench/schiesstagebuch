@@ -539,6 +539,9 @@ struct AmmunitionEditorView: View {
 // MARK: - Shooting ranges
 
 struct RangeListView: View {
+    /// The pin of a place: the target symbol stands for the targets (tester 2026-11-19).
+    static let icon = "mappin.and.ellipse"
+
     @Environment(\.modelContext) private var context
     @Query(sort: \ShootingRange.name) private var ranges: [ShootingRange]
     @State private var showArchived = false
@@ -562,7 +565,7 @@ struct RangeListView: View {
         }
         .overlay {
             if ranges.isEmpty {
-                ContentUnavailableView("Keine Schiessanlagen", systemImage: "mappin.and.ellipse",
+                ContentUnavailableView("Keine Schiessanlagen", systemImage: Self.icon,
                                        description: Text("Hier stehen die Anlagen, auf denen du geschossen hast. Beim Anlass wählst du sie aus allen Schweizer Schiessanlagen oder fügst eine eigene hinzu."))
             }
         }
