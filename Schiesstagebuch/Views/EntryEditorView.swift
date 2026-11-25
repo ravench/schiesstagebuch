@@ -222,7 +222,8 @@ struct EntryEditorView: View {
                 if !sightFields.isEmpty {
                     // Per firearm: the values the section remembers for a field switched off are the
                     // old firearm's, and must not come back on the new one.
-                    SightSection(sight: $sight, aperture: aperture, fields: sightFields).id(weapon?.id)
+                    SightSection(sight: $sight, aperture: aperture, fields: sightFields,
+                                 diopterMode: weapon?.diopterMode ?? .direct).id(weapon?.id)
                 }
                 if features.contains(.weather) {
                     WeatherSection(weather: $weather, day: date, time: time, range: range)
@@ -407,6 +408,8 @@ struct EntryEditorView: View {
         if entry == nil { position = ShootingPosition.following(position, from: old?.category, to: new?.category) }
         // The first Stich takes the sight settings of the last entry with this weapon, but never
         // throws away values the user has typed already.
+        // Clicks typed for the old firearm have no rows on one without adjustment.
+        if new?.diopterMode == .fixed { sight.diopter = nil }
         if firstStich {
             sight = SightSettings.carriedOver(from: sight, to: new, in: allEntries)
             weather = WeatherRecord.carriedOver(from: weather, to: new, in: allEntries)

@@ -148,6 +148,8 @@ final class Weapon: ArchivableItem {
     var serviceIntervalDays: Int = 0
     /// When the day interval starts: "" = app default, else a `DayCounting` raw value.
     var dayCountingRaw: String = ""
+    /// How the sight is adjusted, a `DiopterMode` raw value: "" = direct.
+    var diopterModeRaw: String = ""
     /// Manufacturer (Hersteller), optional, e.g. "SIG Sauer".
     var manufacturer: String = ""
     /// Main serial number (Hauptnummer), optional. Each barrel has its own number.
@@ -159,6 +161,8 @@ final class Weapon: ArchivableItem {
     var saleDate: Date?
 
     init(name: String) { self.name = name }
+
+    var diopterMode: DiopterMode { DiopterMode(rawValue: diopterModeRaw) ?? .direct }
 
     /// A sale may be on the purchase day but not before it. Missing dates are always valid.
     static func ownershipDatesValid(purchase: Date?, sale: Date?, calendar: Calendar = .current) -> Bool {

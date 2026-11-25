@@ -323,6 +323,98 @@
         }
       }
     },
+    "%lld bei hoch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld when high"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld si haut"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld se alto"
+          }
+        }
+      }
+    },
+    "%lld bei links": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld when left"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld si à gauche"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld se a sinistra"
+          }
+        }
+      }
+    },
+    "%lld bei rechts": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld when right"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld si à droite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld se a destra"
+          }
+        }
+      }
+    },
+    "%lld bei tief": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld when low"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld si bas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld se basso"
+          }
+        }
+      }
+    },
     "%lld hoch": {
       "extractionState": "manual",
       "localizations": {
@@ -1657,6 +1749,29 @@
         }
       }
     },
+    "Bei (bei hoch)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Bei” (when high)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "« Bei » (si haut)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Bei» (se alto)"
+          }
+        }
+      }
+    },
     "Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.": {
       "extractionState": "manual",
       "localizations": {
@@ -2849,6 +2964,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Correzioni della diottra"
+          }
+        }
+      }
+    },
+    "Direkt (hoch)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct (up)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direct (haut)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diretto (alto)"
           }
         }
       }
@@ -5713,6 +5851,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun risultato"
+          }
+        }
+      }
+    },
+    "Keine Verstellung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No adjustment"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas de réglage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna regolazione"
           }
         }
       }
@@ -10704,6 +10865,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Visibilità dei bersagli"
+          }
+        }
+      }
+    },
+    "So ist die Visierung beschriftet: mit der Richtung, in die der Treffer wandert («hoch»), oder mit «bei»: so drehen, wenn die Schüsse hoch liegen. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How the sight is marked: with the direction the hit moves (“up”), or with “bei”: turn this way when the shots are high. With no adjustment, a match shows no diopter corrections."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le marquage de la visée : la direction dans laquelle l'impact se déplace (« haut »), ou « bei » : tourner ainsi quand les coups sont hauts. Sans réglage, la cible n'affiche pas de corrections du dioptre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Com'è marcata la mira: con la direzione in cui si sposta il colpo («alto»), oppure con «bei»: girare così quando i colpi sono alti. Senza regolazione, il bersaglio non mostra correzioni della diottra."
           }
         }
       }

@@ -30,10 +30,26 @@ final class SightSettingsTests: ModelTestCase {
 
     /// «2 hoch, 1 links»: the clicks of each direction, nothing for 0.
     func testDiopterClicksText() {
-        XCTAssertEqual(DiopterClicks().text, "0")
-        XCTAssertEqual(DiopterClicks(up: 2).text, String(format: "%lld hoch".loc, 2))
-        XCTAssertEqual(DiopterClicks(up: -3, right: 1).text, String(format: "%lld tief".loc, 3) + ", " + String(format: "%lld rechts".loc, 1))
-        XCTAssertEqual(DiopterClicks(right: -1).text, String(format: "%lld links".loc, 1))
+        XCTAssertEqual(DiopterClicks().text(), "0")
+        XCTAssertEqual(DiopterClicks(up: 2).text(), String(format: "%lld hoch".loc, 2))
+        XCTAssertEqual(DiopterClicks(up: -3, right: 1).text(), String(format: "%lld tief".loc, 3) + ", " + String(format: "%lld rechts".loc, 1))
+        XCTAssertEqual(DiopterClicks(right: -1).text(), String(format: "%lld links".loc, 1))
+    }
+
+    /// A firearm whose sight says «bei»: the same clicks read «2 bei hoch, 1 bei links» (tester 2026-11-24).
+    func testDiopterClicksReadAsTheFirearmsSightIsMarked() {
+        let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
+        XCTAssertEqual(stgw.diopterMode, .direct, "a firearm starts as before: hoch, rechts")
+        let clicks = DiopterClicks(up: 2, right: -1)
+        stgw.diopterModeRaw = DiopterMode.bei.rawValue
+        XCTAssertEqual(clicks.text(stgw.diopterMode), String(format: "%lld bei hoch".loc, 2) + ", " + String(format: "%lld bei links".loc, 1))
+        XCTAssertEqual(DiopterClicks(up: -1, right: 3).text(.bei),
+                       String(format: "%lld bei tief".loc, 1) + ", " + String(format: "%lld bei rechts".loc, 3))
+        XCTAssertEqual(DiopterClicks().text(.bei), "0")
+        // Clicks recorded before the firearm was set to «no adjustment» still read, the plain way.
+        XCTAssertEqual(clicks.text(.fixed), clicks.text(.direct))
+        stgw.diopterModeRaw = "something newer"
+        XCTAssertEqual(stgw.diopterMode, .direct)
     }
 
     func testLastUsedComesFromNewestEntryWithSameWeapon() throws {
@@ -170,7 +186,7 @@ final class SightSettingsTests: ModelTestCase {
         let header = lines[0].components(separatedBy: ";")
         let row = lines[1].components(separatedBy: ";")
         XCTAssertEqual(header.count, row.count)
-        XCTAssertTrue(row.contains(clicks.text))
+        XCTAssertTrue(row.contains(clicks.text()))
         XCTAssertTrue(row.contains(SightSettings.format(3.6)))
         XCTAssertTrue(row.contains(SightSettings.format(1.8)))
         XCTAssertTrue(row.contains(SightSettings.format(32.5)))
