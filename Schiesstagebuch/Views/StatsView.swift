@@ -267,6 +267,7 @@ struct RangeDetailView: View {
     var body: some View {
         ItemStatsList(entries: range.entries ?? []) {
             if !range.place.isEmpty || range.coordinate != nil { RangeMapSection(range: range) }
+            RangeMeasuredSection(measured: RangeCatalog.measured(for: range))
         } breakdowns: { entries in
             Section { BreakdownChart(title: term("Pro Waffe"), entries: entries, key: \.weapon, label: \.name) }
             Section { BreakdownChart(title: "Pro Anlass", entries: entries,

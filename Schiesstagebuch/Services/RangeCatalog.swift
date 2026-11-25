@@ -18,6 +18,46 @@ enum RangeCatalog {
         /// Street address with postcode, e.g. "Steigstrasse 12, 8355 Aadorf": the shooting
         /// house's own official address, else the nearest one (swisstopo building addresses).
         var address: String?
+        /// Distances measured in swissTLM3D, longest first; nil or empty when none is confident.
+        var measured: [Measured]?
+    }
+
+    /// The true distance of one nominal distance of a range and how high its targets are,
+    /// measured in swissTLM3D from the firing line to the target row. Only rows whose firing
+    /// house was confirmed (on the 1:25 000 map or by hand) are measured; about ±2 m.
+    struct Measured: Codable, Equatable, Hashable {
+        /// Nominal distance, e.g. 300.
+        let distance: Int
+        /// Shortest and longest target row of this distance, whole metres.
+        let from: Int
+        let to: Int
+        /// How much higher the targets are than the firing line, metres; negative when lower.
+        var rise: Int?
+
+        /// "~301 m", or "~298–306 m" when the target rows differ.
+        var distanceText: String {
+            from == to ? String(localized: "~\(from) m") : String(localized: "~\(from)–\(to) m")
+        }
+
+        /// "Scheiben ~12 m höher", "Scheiben ~3 m tiefer", "Scheiben auf gleicher Höhe"; nil when unknown.
+        var riseText: String? {
+            guard let rise else { return nil }
+            if rise > 0 { return String(localized: "Scheiben ~\(rise) m höher") }
+            if rise < 0 { return String(localized: "Scheiben ~\(-rise) m tiefer") }
+            return String(localized: "Scheiben auf gleicher Höhe")
+        }
+    }
+
+    private static let byID: [String: Item] = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+
+    /// The catalogue entry a range was imported from; nil for the user's own ranges.
+    static func item(for range: ShootingRange) -> Item? {
+        range.catalogID.isEmpty ? nil : byID[range.catalogID]
+    }
+
+    /// Measured distances of a catalogue range, longest first; empty when there are none.
+    static func measured(for range: ShootingRange) -> [Measured] {
+        item(for: range)?.measured ?? []
     }
 
     struct File: Codable {

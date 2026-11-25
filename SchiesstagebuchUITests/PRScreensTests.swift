@@ -520,6 +520,30 @@ final class PRScreensTests: XCTestCase {
         search.tap()
         search.typeText("Oster\n") // return hides the keyboard
         snap("19-Schiessanlagen-Suche")
+        // A catalogue range with measured distances («~298 m», «Scheiben ~12 m höher»): picked for a new
+        // Anlass, it is the user's range once the Anlass is saved. Leave the search first, so the list shows it:
+        // «Abbrechen» until iOS 26, an ✕ «Schließen» on iOS 27.
+        for label in ["Abbrechen", "Schließen", "Schliessen"] {
+            let close = app.buttons[label].firstMatch
+            if close.exists { close.tap(); break }
+        }
+        tab("Tagebuch")
+        guard open(app.buttons["Neuer Anlass"].firstMatch), open(app.staticTexts["Schiessanlage"].firstMatch) else {
+            return XCTFail("No range list in a new Anlass")
+        }
+        let field = app.searchFields.firstMatch
+        guard field.waitForExistence(timeout: 5) else { return XCTFail("No search in the range list") }
+        field.tap()
+        field.typeText("Stettlen\n")
+        let stettlen = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Stettlen 300m")).firstMatch
+        guard open(stettlen), open(app.buttons["Sichern"].firstMatch) else { return XCTFail("Stettlen 300m not picked") }
+        XCTAssertTrue(app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5), "The Anlass was not saved")
+        tab("Anlagen")
+        guard open(app.staticTexts["Stettlen 300m"].firstMatch) else { return XCTFail("Stettlen 300m is not in «Anlagen»") }
+        let header = app.staticTexts["Gemessene Distanzen"].firstMatch
+        reveal(header)
+        XCTAssertTrue(header.waitForExistence(timeout: 5), "No measured distances")
+        snap("19c-Schiessanlage-gemessen")
     }
 
     /// A range's editor: the compass dial the shooting direction is set on.

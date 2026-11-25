@@ -4492,6 +4492,29 @@
         }
       }
     },
+    "Gemessene Distanzen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measured distances"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distances mesurées"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distanze misurate"
+          }
+        }
+      }
+    },
     "Gesamt": {
       "extractionState": "manual",
       "localizations": {
@@ -10087,6 +10110,75 @@
         }
       }
     },
+    "Scheiben auf gleicher Höhe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Targets at the same height"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles à la même hauteur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli alla stessa altezza"
+          }
+        }
+      }
+    },
+    "Scheiben ~%lld m höher": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Targets ~%lld m higher"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles ~%lld m plus haut"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli ~%lld m più in alto"
+          }
+        }
+      }
+    },
+    "Scheiben ~%lld m tiefer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Targets ~%lld m lower"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles ~%lld m plus bas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli ~%lld m più in basso"
+          }
+        }
+      }
+    },
     "Scheiben-Nr.": {
       "extractionState": "manual",
       "localizations": {
@@ -11923,6 +12015,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ripreso dal meteo di Apple (%@)"
+          }
+        }
+      }
+    },
+    "Von der Schützenlinie bis zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; wer im oberen Stock schiesst, zielt weniger hoch.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the firing line to the targets, measured in swissTLM3D (© swisstopo), accurate to about ±2 m. The height is from the ground; shooting from an upper floor, you aim less high."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De la ligne de tir aux cibles, mesuré dans swissTLM3D (© swisstopo), à environ ±2 m près. La hauteur part du sol ; en tirant depuis un étage, on vise moins haut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dalla linea di tiro ai bersagli, misurato in swissTLM3D (© swisstopo), con una precisione di circa ±2 m. L'altezza è dal suolo; sparando da un piano superiore si mira meno in alto."
           }
         }
       }
@@ -14269,6 +14384,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "ultimo %@"
+          }
+        }
+      }
+    },
+    "~%lld m": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%lld m"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%lld m"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%lld m"
+          }
+        }
+      }
+    },
+    "~%lld–%lld m": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%lld–%lld m"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%lld–%lld m"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~%lld–%lld m"
           }
         }
       }
