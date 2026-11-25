@@ -502,6 +502,24 @@ final class PRScreensTests: XCTestCase {
         snap("19-Schiessanlagen-Suche")
     }
 
+    /// A range's editor: the compass dial the shooting direction is set on.
+    func testRangeDirection() {
+        tab("Anlagen")
+        guard open(app.staticTexts["Schiessanlage Ostermundigen"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else {
+            return XCTFail("No editor for the sample range")
+        }
+        let dial = app.descendants(matching: .any)["bearingDial"].firstMatch
+        XCTAssertTrue(dial.waitForExistence(timeout: 5), "No dial for the shooting direction")
+        // The sheet opens half high with the dial cut off. One swipe from the middle of the screen, the sheet's bar,
+        // brings it up; a second one would start on the dial and turn it.
+        app.swipeUp(velocity: .slow)
+        XCTAssertTrue(app.switches["Archiviert"].firstMatch.wait(for: \.isHittable, toEqual: true, timeout: 5), "The sheet did not open fully")
+        // A touch right of the dial's middle turns the arrow east (in points: the element is the whole row).
+        dial.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).withOffset(CGVector(dx: 80, dy: 0)).tap()
+        XCTAssertEqual(dial.value as? String, "O · 90°")
+        snap("19c-Schussrichtung")
+    }
+
     /// Starts the app again with `arguments` on top of the usual ones.
     private func relaunch(adding arguments: [String]) {
         app.terminate()

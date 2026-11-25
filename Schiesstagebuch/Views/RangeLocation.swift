@@ -206,7 +206,7 @@ struct RangeMapSection: View {
     }
 }
 
-/// Optional shooting direction of a range: a switch, then a compass rose and a slider in 5° steps.
+/// Optional shooting direction of a range: a switch, then a compass dial to turn, in 5° steps.
 struct RangeBearingRow: View {
     @Binding var bearing: Double?
 
@@ -219,32 +219,69 @@ struct RangeBearingRow: View {
             }
         }
         if let value = bearing {
-            HStack(spacing: 12) {
-                CompassArrow(degrees: value).frame(width: 36, height: 36)
-                Slider(value: Binding(get: { value }, set: { bearing = Compass.normalized(($0 / 5).rounded() * 5) }),
-                       in: 0...355, step: 5) {
-                    Text("Schussrichtung")
-                }
-            }
+            CompassDial(degrees: Binding(get: { value }, set: { bearing = $0 }))
+                .frame(width: 200, height: 200)
+                .frame(maxWidth: .infinity)
             Text("Richtung von der Schützenlinie zu den Scheiben. 0° = Nord, 90° = Ost.")
                 .font(.footnote).foregroundStyle(.secondary)
         }
     }
 }
 
-/// A small compass rose with an arrow pointing along the shooting direction.
-struct CompassArrow: View {
-    let degrees: Double
+/// A compass rose to set a direction on (tester 2026-11-24: the slider did not work well): a touch or
+/// a drag anywhere on it turns the arrow there, in 5° steps.
+struct CompassDial: View {
+    @Binding var degrees: Double
+
+    private func turn(to touch: CGPoint, in size: CGSize) {
+        let dx = touch.x - size.width / 2, dy = touch.y - size.height / 2
+        // In the very middle a hair's move would swing the arrow around.
+        if hypot(dx, dy) > 12 { degrees = Compass.bearing(right: dx, down: dy) }
+    }
 
     var body: some View {
-        ZStack {
-            Circle().strokeBorder(.secondary, lineWidth: 1)
-            Text("N".loc).font(.system(size: 8, weight: .bold)).foregroundStyle(.secondary)
-                .frame(maxHeight: .infinity, alignment: .top).padding(.top, 1)
-            Image(systemName: "location.north.fill")
-                .font(.system(size: 14)).foregroundStyle(.tint)
+        GeometryReader { geo in
+            let radius = min(geo.size.width, geo.size.height) / 2
+            ZStack {
+                Circle().fill(Color(uiColor: .tertiarySystemFill))
+                Circle().strokeBorder(.secondary, lineWidth: 1)
+                // A tick every 15°, none where the four letters stand.
+                ForEach(Array(stride(from: 0, to: 360, by: 15)).filter { $0 % 90 != 0 }, id: \.self) { angle in
+                    Capsule().fill(.secondary)
+                        .frame(width: 1.5, height: angle % 45 == 0 ? 10 : 6)
+                        .frame(maxHeight: .infinity, alignment: .top).padding(.top, 5)
+                        .rotationEffect(.degrees(Double(angle)))
+                }
+                ForEach(0..<4, id: \.self) { quarter in
+                    let angle = Double(quarter) * .pi / 2
+                    Text(Compass.points[quarter * 2].loc)
+                        .font(.footnote.bold()).foregroundStyle(quarter == 0 ? .primary : .secondary)
+                        .offset(x: sin(angle) * (radius - 14), y: -cos(angle) * (radius - 14))
+                }
+                // The arrow: from the middle to the ticks.
+                VStack(spacing: -2) {
+                    Image(systemName: "arrowtriangle.up.fill").font(.system(size: 18))
+                    Capsule().frame(width: 4, height: max(0, radius - 46))
+                }
+                .foregroundStyle(.tint)
+                .frame(maxHeight: .infinity, alignment: .top).padding(.top, 26)
                 .rotationEffect(.degrees(degrees))
+                Circle().fill(.tint).frame(width: 10, height: 10)
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
+            .contentShape(Circle())
+            // No minimum distance: the drag is the dial's from the first touch, not the form's scrolling.
+            .gesture(DragGesture(minimumDistance: 0).onChanged { turn(to: $0.location, in: geo.size) })
+            // A short tap in a list is not reported as a drag.
+            .simultaneousGesture(SpatialTapGesture().onEnded { turn(to: $0.location, in: geo.size) })
         }
-        .accessibilityHidden(true)
+        .sensoryFeedback(.selection, trigger: degrees)
+        .accessibilityElement()
+        .accessibilityIdentifier("bearingDial")
+        .accessibilityLabel("Schussrichtung")
+        .accessibilityValue(Compass.label(for: degrees))
+        .accessibilityAdjustableAction { direction in
+            degrees = Compass.normalized(degrees + (direction == .increment ? Compass.dialStep : -Compass.dialStep))
+        }
     }
 }

@@ -93,6 +93,14 @@ enum Compass {
         return d > 180 ? d - 360 : d
     }
 
+    /// The steps of the dial the shooting direction is set on.
+    static let dialStep = 5.0
+
+    /// The direction of a touch on a dial with north on top, `right` of and `down` from its middle, in steps.
+    static func bearing(right: Double, down: Double, step: Double = dialStep) -> Double {
+        normalized((atan2(right, -down) * 180 / .pi / step).rounded() * step)
+    }
+
     /// Nearest of the eight compass points.
     static func point(for degrees: Double) -> String {
         points[Int((normalized(degrees) / 45).rounded()) % 8]
