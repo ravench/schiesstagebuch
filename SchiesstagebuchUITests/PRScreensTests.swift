@@ -308,13 +308,6 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// A Stich's page from «Ausrüstung» down: the position is one row like the others.
-    func testEntryEquipment() {
-        tab("Tagebuch")
-        guard openStich("Feldschiessen") else { return XCTFail("The Stich did not open") }
-        topStop(app.staticTexts["Ausrüstung"].firstMatch, "02b-Eintrag-Ausruestung")
-    }
-
     /// The firearm editor of a sport shooter who records diopter corrections: how this firearm's sight is marked.
     func testDiopterMode() {
         relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
@@ -362,6 +355,13 @@ final class PRScreensTests: XCTestCase {
         relaunch(adding: ["-screenTourChangelog", notes.path, "-changelogShownBuild", "none"])
         XCTAssertTrue(app.navigationBars["Neu in dieser Version"].waitForExistence(timeout: 10), "The release notes did not open")
         snap("20-Neu-in-dieser-Version")
+    }
+
+    /// A Stich's page from «Ausrüstung» down: the position is one row like the others.
+    func testEntryEquipment() {
+        tab("Tagebuch")
+        guard openStich("Feldschiessen") else { return XCTFail("The Stich did not open") }
+        topStop(app.staticTexts["Ausrüstung"].firstMatch, "02b-Eintrag-Ausruestung")
     }
 
     /// A new stage with only IPSC scoring switched on: the stage and the hits with their footer.
