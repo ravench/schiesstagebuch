@@ -285,27 +285,30 @@ final class PRScreensTests: XCTestCase {
         tab("Tagebuch")
         guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
         topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17-Sportschuetzen-Felder")
-        // The diopter corrections switched on: the clicks up or down and right or left.
+        if turnDiopter() { snap("17b-Diopterkorrekturen") }
+    }
+
+    /// Switches the diopter corrections on in the open Stich editor and turns two clicks up and one left:
+    /// «2 hoch, 1 links». False without the switch.
+    private func turnDiopter() -> Bool {
         let diopter = app.switches.matching(NSPredicate(format: "label BEGINSWITH %@", "Diopterkorrekturen")).firstMatch
-        if diopter.exists {
-            let toggle = diopter.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5))
+        guard diopter.exists else { return false }
+        let toggle = diopter.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5))
+        toggle.tap()
+        let height = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Höhenverstellung")).firstMatch
+        let side = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Seitenverstellung")).firstMatch
+        // The first tap after the drag does not always switch it on (the stop showed it off now and then).
+        if !height.waitForExistence(timeout: 3) { toggle.tap() }
+        if height.waitForExistence(timeout: 3), side.exists {
+            height.buttons["Increment"].tap(); height.buttons["Increment"].tap()
+            side.buttons["Decrement"].tap()
+            // Switched off and on again, the clicks are still there.
             toggle.tap()
-            // Two clicks up, one left: «2 hoch, 1 links».
-            let height = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Höhenverstellung")).firstMatch
-            let side = app.steppers.matching(NSPredicate(format: "label BEGINSWITH %@", "Seitenverstellung")).firstMatch
-            // The first tap after the drag does not always switch it on (the stop showed it off now and then).
-            if !height.waitForExistence(timeout: 3) { toggle.tap() }
-            if height.waitForExistence(timeout: 3), side.exists {
-                height.buttons["Increment"].tap(); height.buttons["Increment"].tap()
-                side.buttons["Decrement"].tap()
-                // Switched off and on again, the clicks are still there.
-                toggle.tap()
-                _ = height.waitForNonExistence(timeout: 3)
-                toggle.tap()
-                _ = height.waitForExistence(timeout: 3)
-            }
-            snap("17b-Diopterkorrekturen")
+            _ = height.waitForNonExistence(timeout: 3)
+            toggle.tap()
+            _ = height.waitForExistence(timeout: 3)
         }
+        return true
     }
 
     /// The firearm editor of a sport shooter who records diopter corrections: how this firearm's sight is marked.
@@ -318,6 +321,13 @@ final class PRScreensTests: XCTestCase {
         guard mode.exists else { return XCTFail("No diopter mode in the firearm editor") }
         XCTAssertTrue(openMenu(mode, showing: "Keine Verstellung"), "No menu with the diopter modes")
         snap("07s-Diopterkorrekturen-pro-Waffe")
+        // A «bei» sight: the same two clicks up and one left read by the knob's names, «2 bei tief, 1 bei rechts».
+        guard pick("bei hoch, bei rechts") else { return XCTFail("No «bei» mode to pick") }
+        app.buttons["Sichern"].firstMatch.tap()
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
+        topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17c-Sportschuetzen-Felder-bei")
+        if turnDiopter() { snap("17c2-Diopterkorrekturen-bei") }
     }
 
     /// The firearm editor with a reminder set while notifications are switched off for the app.

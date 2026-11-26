@@ -17,22 +17,23 @@ enum DiopterMode: String, CaseIterable, Identifiable {
         }
     }
 
-    /// The format keys of the clicks up, down, right and left.
+    /// The format keys of the clicks that move the hits up, down, right and left. A «bei» knob is named after
+    /// where the hits lie, so the same click has the opposite name: hits up is «bei tief» (Raven 2026-11-26).
     var formats: (up: String, down: String, right: String, left: String) {
-        self == .bei ? ("%lld bei hoch", "%lld bei tief", "%lld bei rechts", "%lld bei links")
+        self == .bei ? ("%lld bei tief", "%lld bei hoch", "%lld bei links", "%lld bei rechts")
                      : ("%lld hoch", "%lld tief", "%lld rechts", "%lld links")
     }
 }
 
 /// The clicks turned on the diopter during a Stich (Raven 2026-11-10): up (negative: down) and
-/// right (negative: left); on a «bei» sight towards «bei hoch» and «bei rechts».
+/// right (negative: left), always as the hits move; a «bei» sight only names them differently.
 struct DiopterClicks: Equatable, Hashable {
     var up = 0
     var right = 0
 
     static let range = -99...99
 
-    /// E.g. «2 hoch, 1 links», on a «bei» sight «2 bei hoch, 1 bei links»; «0» when nothing was turned.
+    /// E.g. «2 hoch, 1 links», on a «bei» sight the same clicks «2 bei tief, 1 bei rechts»; «0» when nothing was turned.
     func text(_ mode: DiopterMode = .direct) -> String {
         let keys = mode.formats
         let parts = [Self.text(up, keys.up, keys.down), Self.text(right, keys.right, keys.left)].compactMap { $0 }

@@ -36,15 +36,16 @@ final class SightSettingsTests: ModelTestCase {
         XCTAssertEqual(DiopterClicks(right: -1).text(), String(format: "%lld links".loc, 1))
     }
 
-    /// A firearm whose sight says «bei»: the same clicks read «2 bei hoch, 1 bei links» (tester 2026-11-24).
+    /// A firearm whose sight says «bei»: the clicks are stored as the hits move and only read by the knob's
+    /// names, 2 up and 1 left as «2 bei tief, 1 bei rechts» (tester 2026-11-24, Raven 2026-11-26).
     func testDiopterClicksReadAsTheFirearmsSightIsMarked() {
         let stgw = Weapon(name: "Stgw 90"); context.insert(stgw)
         XCTAssertEqual(stgw.diopterMode, .direct, "a firearm starts as before: hoch, rechts")
         let clicks = DiopterClicks(up: 2, right: -1)
         stgw.diopterModeRaw = DiopterMode.bei.rawValue
-        XCTAssertEqual(clicks.text(stgw.diopterMode), String(format: "%lld bei hoch".loc, 2) + ", " + String(format: "%lld bei links".loc, 1))
+        XCTAssertEqual(clicks.text(stgw.diopterMode), String(format: "%lld bei tief".loc, 2) + ", " + String(format: "%lld bei rechts".loc, 1))
         XCTAssertEqual(DiopterClicks(up: -1, right: 3).text(.bei),
-                       String(format: "%lld bei tief".loc, 1) + ", " + String(format: "%lld bei rechts".loc, 3))
+                       String(format: "%lld bei hoch".loc, 1) + ", " + String(format: "%lld bei links".loc, 3))
         XCTAssertEqual(DiopterClicks().text(.bei), "0")
         // Clicks recorded before the firearm was set to «no adjustment» still read, the plain way.
         XCTAssertEqual(clicks.text(.fixed), clicks.text(.direct))
