@@ -6913,6 +6913,29 @@
         }
       }
     },
+    "Mehr anzeigen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show more"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher plus"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra altro"
+          }
+        }
+      }
+    },
     "Mehrere Anlagen passen": {
       "extractionState": "manual",
       "localizations": {
@@ -11444,29 +11467,6 @@
         }
       }
     },
-    "Suche löschen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clear search"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Effacer la recherche"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancella ricerca"
-          }
-        }
-      }
-    },
     "Suchen": {
       "extractionState": "manual",
       "localizations": {
@@ -12291,6 +12291,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Altro bersaglio"
+          }
+        }
+      }
+    },
+    "Weniger anzeigen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show less"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher moins"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra meno"
           }
         }
       }
