@@ -191,7 +191,6 @@ T = {
     "Eigene Scheibe": ("Own target", "Cible personnalisée", "Bersaglio personalizzato"),
     "Aus Vorlage hinzufügen": ("Add from template", "Ajouter depuis un modèle", "Aggiungi da modello"),
     "Vorlagen": ("Templates", "Modèles", "Modelli"),
-    "Weitere Länder": ("Other countries", "Autres pays", "Altri paesi"),
     "Scheibe, Land oder Distanz": ("Target, country or distance", "Cible, pays ou distance", "Bersaglio, paese o distanza"),
     "Schweiz": ("Switzerland", "Suisse", "Svizzera"),
     "ISSF": ("ISSF", "ISSF", "ISSF"),

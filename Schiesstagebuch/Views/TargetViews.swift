@@ -73,29 +73,28 @@ struct TargetRow: View {
     }
 }
 
-/// The bundled templates (Targets.json) by group, as sections of a list. Swiss and ISSF templates are
-/// listed open; the other countries sit closed under «Weitere Länder» so the list stays short
-/// (Raven 2026-11-23). A search shows every matching template, open.
+/// The bundled templates (Targets.json) by group. Every group is a closed row with its count, the same
+/// for all countries (tester 2026-11-25; before, the Swiss and ISSF ones were listed open). A search
+/// shows every matching template, open.
 struct TargetTemplateSections<Row: View>: View {
     let groups: [(group: String, items: [TargetCatalog.Item])]
     let searching: Bool
     @ViewBuilder let row: (TargetCatalog.Item) -> Row
-    @State private var openCountries: Set<String> = []
+    @State private var openGroups: Set<String> = []
 
     var body: some View {
-        let main = groups.filter { searching || TargetCatalog.mainGroups.contains($0.group) }
-        let others = searching ? [] : groups.filter { !TargetCatalog.mainGroups.contains($0.group) }
-        ForEach(main, id: \.group) { group in
-            Section(group.group.loc) {
-                ForEach(group.items) { row($0) }
+        if searching {
+            ForEach(groups, id: \.group) { group in
+                Section(group.group.loc) {
+                    ForEach(group.items) { row($0) }
+                }
             }
-        }
-        if !others.isEmpty {
-            Section("Weitere Länder") {
-                ForEach(others, id: \.group) { group in
+        } else if !groups.isEmpty {
+            Section {
+                ForEach(groups, id: \.group) { group in
                     DisclosureGroup(isExpanded: Binding(
-                        get: { openCountries.contains(group.group) },
-                        set: { if $0 { openCountries.insert(group.group) } else { openCountries.remove(group.group) } })) {
+                        get: { openGroups.contains(group.group) },
+                        set: { if $0 { openGroups.insert(group.group) } else { openGroups.remove(group.group) } })) {
                         ForEach(group.items) { row($0) }
                     } label: {
                         LabeledContent(group.group.loc) { Text(verbatim: "\(group.items.count)") }
