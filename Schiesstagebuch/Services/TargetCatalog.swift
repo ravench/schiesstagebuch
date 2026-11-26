@@ -49,7 +49,7 @@ enum TargetCatalog {
         try JSONDecoder().decode([Item].self, from: data)
     }
 
-    /// The groups shown first and open; the other countries' groups follow by name, closed until tapped.
+    /// The groups listed first; the other countries' groups follow by name.
     static let mainGroups = ["Schweiz", "ISSF"]
 
     /// Templates by group, Swiss ones first, then ISSF, then the other countries by their name in the

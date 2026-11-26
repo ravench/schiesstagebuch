@@ -12272,29 +12272,6 @@
         }
       }
     },
-    "Weitere Länder": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Other countries"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Autres pays"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Altri paesi"
-          }
-        }
-      }
-    },
     "Weitere Läufe nur für Wechselläufe oder nach einem Laufwechsel. Dann zählt die App die Schüsse auch pro Lauf.": {
       "extractionState": "manual",
       "localizations": {

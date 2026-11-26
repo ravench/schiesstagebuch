@@ -387,11 +387,14 @@ final class PRScreensTests: XCTestCase {
         snap("21-Scheiben")
         if open(app.buttons["Hinzufügen"].firstMatch), open(app.buttons["Aus Vorlage hinzufügen"].firstMatch) {
             snap("21b-Scheiben-Vorlagen")
+            // Every country is a closed row; Schweiz opened. (A base branch that lists the Swiss ones open has no such row.)
+            let swiss = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Schweiz")).firstMatch
+            if swiss.waitForExistence(timeout: 2) { swiss.tap() }
             // The figure targets further down the list, such as the Ustertag ones with the Uster arms.
             // Held near the top: at the sheet's bottom edge the row was already hittable, so it never scrolled.
             topStop(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "Ustertag-Scheibe 25 m")).firstMatch,
                     "21b2-Scheiben-Vorlagen-Ustertag")
-            // The other countries sit closed under «Weitere Länder» at the end; Norwegen opened.
+            // The other countries follow, closed; Norwegen opened.
             let norway = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Norwegen")).firstMatch
             topStop(norway, "21b3-Scheiben-Vorlagen-Weitere-Laender")
             if norway.exists && norway.isHittable {
