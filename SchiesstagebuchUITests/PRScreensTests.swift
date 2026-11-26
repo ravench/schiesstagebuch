@@ -308,18 +308,6 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
-    /// The journal row of an Anlass with two Stiche: their number beside the list symbol, then range and firearm.
-    func testJournalRowWithSeveralStiche() {
-        tab("Tagebuch")
-        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
-        app.buttons["Sichern"].firstMatch.tap()
-        guard app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5) else {
-            return XCTFail("The second Stich was not saved")
-        }
-        back()
-        snap("01c-Tagebuch-mehrere-Stiche")
-    }
-
     /// The firearm editor of a sport shooter who records diopter corrections: how this firearm's sight is marked.
     func testDiopterMode() {
         relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
@@ -755,6 +743,18 @@ final class PRScreensTests: XCTestCase {
         }
         XCTAssertTrue(app.staticTexts[".32 S&W Long Wadcutter"].waitForExistence(timeout: 5), "No wadcutter row")
         snap("11c-Kaliber-32-SW")
+    }
+
+    /// The journal row of an Anlass with two Stiche: their number beside the list symbol, then range and firearm.
+    func testJournalRowWithSeveralStiche() {
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
+        app.buttons["Sichern"].firstMatch.tap()
+        guard app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5) else {
+            return XCTFail("The second Stich was not saved")
+        }
+        back()
+        snap("01c-Tagebuch-mehrere-Stiche")
     }
 
     /// The Swiss cadet round, found by the name on its box.
