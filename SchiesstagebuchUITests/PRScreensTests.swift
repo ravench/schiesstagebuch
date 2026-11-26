@@ -308,6 +308,13 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// A Stich's page from «Ausrüstung» down: the position is one row like the others.
+    func testEntryEquipment() {
+        tab("Tagebuch")
+        guard openStich("Feldschiessen") else { return XCTFail("The Stich did not open") }
+        topStop(app.staticTexts["Ausrüstung"].firstMatch, "02b-Eintrag-Ausruestung")
+    }
+
     /// The firearm editor of a sport shooter who records diopter corrections: how this firearm's sight is marked.
     func testDiopterMode() {
         relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
