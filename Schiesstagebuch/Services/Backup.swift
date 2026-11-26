@@ -58,7 +58,6 @@ enum Backup {
         var caliberIDs: [UUID]?; var defaultCaliberID: UUID?
         var cleaningIntervalShots: Int; var cleaningIntervalDays: Int
         var serviceIntervalShots: Int; var serviceIntervalDays: Int
-        var dayCounting: String?
         var diopterMode: String?
         var serialNumber: String?
         var extraSerials: [PartSerial]?
@@ -157,7 +156,7 @@ enum Backup {
                       caliberIDs: nil, defaultCaliberID: nil,
                       cleaningIntervalShots: $0.cleaningIntervalShots, cleaningIntervalDays: $0.cleaningIntervalDays,
                       serviceIntervalShots: $0.serviceIntervalShots, serviceIntervalDays: $0.serviceIntervalDays,
-                      dayCounting: $0.dayCountingRaw, diopterMode: $0.diopterModeRaw, serialNumber: $0.serialNumber,
+                      diopterMode: $0.diopterModeRaw, serialNumber: $0.serialNumber,
                       extraSerials: $0.extraSerials, manufacturer: $0.manufacturer,
                       purchaseDate: $0.purchaseDate, saleDate: $0.saleDate)
             },
@@ -397,7 +396,7 @@ enum Backup {
             w.categoryRaw = d.category ?? WeaponCategory.other.rawValue
             w.cleaningIntervalShots = d.cleaningIntervalShots; w.cleaningIntervalDays = d.cleaningIntervalDays
             w.serviceIntervalShots = d.serviceIntervalShots; w.serviceIntervalDays = d.serviceIntervalDays
-            w.dayCountingRaw = d.dayCounting ?? ""; w.diopterModeRaw = d.diopterMode ?? ""
+            w.diopterModeRaw = d.diopterMode ?? ""
             w.serialNumber = d.serialNumber ?? ""
             w.extraSerials = d.extraSerials ?? []
             w.manufacturer = d.manufacturer ?? ""

@@ -599,48 +599,25 @@
         }
       }
     },
-    "Ab wann Erinnerungen nach Tagen zählen. Pro Sportgerät kannst du das ändern.": {
+    "Ab wann Erinnerungen nach Tagen zählen.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When day-based reminders start counting. You can change this per item of equipment."
+            "value": "When day-based reminders start counting."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "À partir de quand les rappels en jours comptent. Modifiable pour chaque équipement."
+            "value": "À partir de quand les rappels en jours comptent."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni attrezzo."
-          }
-        }
-      }
-    },
-    "Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When day-based reminders start counting. You can change this per firearm."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "À partir de quand les rappels en jours comptent. Modifiable pour chaque arme."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni arma."
+            "value": "Da quando contano i promemoria in giorni."
           }
         }
       }
@@ -11256,29 +11233,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Predefinito"
-          }
-        }
-      }
-    },
-    "Standard (%@)": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Default (%@)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Par défaut (%@)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Predefinito (%@)"
           }
         }
       }

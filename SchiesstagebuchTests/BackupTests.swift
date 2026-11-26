@@ -15,7 +15,6 @@ final class BackupTests: ModelTestCase {
         let lot = AmmoLot(number: "TH-17", notes: "Kiste 3"); context.insert(lot); lot.ammunition = ammo
         let oldLot = AmmoLot(number: "TH-09"); context.insert(oldLot); oldLot.ammunition = ammo; oldLot.isArchived = true
         let weapon = Weapon(name: "Stgw 90"); context.insert(weapon)
-        weapon.dayCountingRaw = DayCounting.fromMaintenance.rawValue
         weapon.diopterModeRaw = DiopterMode.bei.rawValue
         weapon.serialNumber = "A 123456"
         weapon.extraSerials = [PartSerial(label: "Verschluss", number: "V 98765")]
@@ -41,7 +40,6 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(restored.range?.address, "Uetlibergstrasse 341, 8045 Zürich")
         XCTAssertEqual(restored.range?.latitude, 47.357)
         XCTAssertEqual(restored.range?.longitude, 8.505)
-        XCTAssertEqual(restored.weapon?.dayCountingRaw, DayCounting.fromMaintenance.rawValue)
         XCTAssertEqual(restored.weapon?.diopterMode, .bei)
         XCTAssertEqual(restored.weapon?.serialNumber, "A 123456")
         XCTAssertEqual(restored.weapon?.extraSerials.map(\.label), ["Verschluss"])

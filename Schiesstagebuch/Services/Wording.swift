@@ -30,8 +30,6 @@ enum Wording {
         "Anlass, Anlage, Waffe …": "Anlass, Anlage, Sportgerät …",
         "Lege deine Waffen mit ihren Kalibern an.": "Lege deine Sportgeräte mit ihren Kalibern an.",
         "Seriennummer in der Waffenauswahl": "Seriennummer in der Sportgeräteauswahl",
-        "Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.":
-            "Ab wann Erinnerungen nach Tagen zählen. Pro Sportgerät kannst du das ändern.",
         "Archivierte Waffen erscheinen nicht mehr bei neuen Einträgen, bleiben aber in Tagebuch und Statistik.":
             "Archivierte Sportgeräte erscheinen nicht mehr bei neuen Einträgen, bleiben aber in Tagebuch und Statistik.",
         "Einträge bleiben erhalten, verlieren aber die Waffe. Archivieren behält alles.":
