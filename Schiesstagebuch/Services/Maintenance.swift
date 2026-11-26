@@ -76,8 +76,6 @@ struct MaintenanceStatus {
 }
 
 extension Weapon {
-    var dayCounting: DayCounting { DayCounting(rawValue: dayCountingRaw) ?? .appDefault }
-
     func status(_ kind: MaintenanceKind) -> MaintenanceStatus {
         // A service includes a cleaning, so it resets the cleaning counters too.
         let records = (maintenance ?? []).filter { kind == .service ? $0.kind == .service : true }
@@ -87,7 +85,7 @@ extension Weapon {
             guard let lastDate else { return true }
             return Calendar.current.startOfDay(for: e.date) > Calendar.current.startOfDay(for: lastDate)
         }
-        let countingStart: Date? = switch dayCounting {
+        let countingStart: Date? = switch DayCounting.appDefault {
         case .fromMaintenance: lastDate
         case .fromFirstUse: lastDate == nil ? nil : since.map(\.date).min()
         }

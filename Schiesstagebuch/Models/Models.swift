@@ -146,8 +146,6 @@ final class Weapon: ArchivableItem {
     var cleaningIntervalDays: Int = 0
     var serviceIntervalShots: Int = 0
     var serviceIntervalDays: Int = 0
-    /// When the day interval starts: "" = app default, else a `DayCounting` raw value.
-    var dayCountingRaw: String = ""
     /// How the sight is adjusted, a `DiopterMode` raw value: "" = direct.
     var diopterModeRaw: String = ""
     /// Manufacturer (Hersteller), optional, e.g. "SIG Sauer".

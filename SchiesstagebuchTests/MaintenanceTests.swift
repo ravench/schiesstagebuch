@@ -12,7 +12,7 @@ final class MaintenanceTests: ModelTestCase {
         weapon.cleaningIntervalDays = 30
         weapon.serviceIntervalShots = 1000
         weapon.serviceIntervalDays = 365
-        weapon.dayCountingRaw = DayCounting.fromMaintenance.rawValue
+        UserDefaults.standard.set(DayCounting.fromMaintenance.rawValue, forKey: DayCounting.defaultsKey)
         context.insert(weapon)
     }
 
@@ -111,7 +111,7 @@ final class MaintenanceTests: ModelTestCase {
     }
 
     func testDaysFromFirstUseWaitForTheNextEntry() throws {
-        weapon.dayCountingRaw = DayCounting.fromFirstUse.rawValue
+        UserDefaults.standard.set(DayCounting.fromFirstUse.rawValue, forKey: DayCounting.defaultsKey)
         log(.cleaning, on: day(2))
         try context.save()
         var s = weapon.status(.cleaning)
@@ -129,21 +129,11 @@ final class MaintenanceTests: ModelTestCase {
     }
 
     func testWaitingTextAloneWithoutShotInterval() throws {
-        weapon.dayCountingRaw = DayCounting.fromFirstUse.rawValue
+        UserDefaults.standard.set(DayCounting.fromFirstUse.rawValue, forKey: DayCounting.defaultsKey)
         weapon.cleaningIntervalShots = 0
         log(.cleaning, on: day(2))
         try context.save()
         XCTAssertEqual(weapon.status(.cleaning).dueText, "Tage zählen ab dem nächsten Schuss".loc)
-    }
-
-    func testWeaponFollowsAppDefaultUnlessOverridden() {
-        weapon.dayCountingRaw = ""
-        UserDefaults.standard.set(DayCounting.fromMaintenance.rawValue, forKey: DayCounting.defaultsKey)
-        XCTAssertEqual(weapon.dayCounting, .fromMaintenance)
-        UserDefaults.standard.set(DayCounting.fromFirstUse.rawValue, forKey: DayCounting.defaultsKey)
-        XCTAssertEqual(weapon.dayCounting, .fromFirstUse)
-        weapon.dayCountingRaw = DayCounting.fromMaintenance.rawValue
-        XCTAssertEqual(weapon.dayCounting, .fromMaintenance)
     }
 
     func testAppDefaultIsFirstUse() {

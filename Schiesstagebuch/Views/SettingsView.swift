@@ -133,7 +133,7 @@ struct SettingsView: View {
             } header: {
                 Text("Erinnerungen")
             } footer: {
-                Text(term("Ab wann Erinnerungen nach Tagen zählen. Pro Waffe kannst du das ändern.").loc)
+                Text("Ab wann Erinnerungen nach Tagen zählen.")
             }
 
             Section {

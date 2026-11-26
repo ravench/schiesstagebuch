@@ -247,7 +247,6 @@ struct WeaponEditorView: View {
     @State private var cleaningDays = 0
     @State private var serviceShots = 0
     @State private var serviceDays = 0
-    @State private var dayCountingRaw = ""
     @State private var diopterModeRaw = ""
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
     @State private var choosingCalibers = false
@@ -305,15 +304,6 @@ struct WeaponEditorView: View {
                             if let url = URL(string: UIApplication.openNotificationSettingsURLString) { openURL(url) }
                         }
                     }
-                }
-
-                Section {
-                    Picker("Tage zählen", selection: $dayCountingRaw) {
-                        Text(String(localized: "Standard (\(DayCounting.appDefault.title))")).tag("")
-                        ForEach(DayCounting.allCases) { Text($0.title).tag($0.rawValue) }
-                    }
-                } footer: {
-                    Text("Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.")
                 }
 
                 // Only for those who record the clicks (Einstellungen › Sportschützen).
@@ -447,7 +437,13 @@ struct WeaponEditorView: View {
         } header: {
             Label("Erinnerung \(kind.title)", systemImage: kind.icon)
         } footer: {
-            Text("Erinnert, sobald eine der beiden Grenzen seit der letzten \(kind.title) erreicht ist.")
+            // One view: of two, the form shows only the first.
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Erinnert, sobald eine der beiden Grenzen seit der letzten \(kind.title) erreicht ist.")
+                if kind == .service {
+                    Text("Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.")
+                }
+            }
         }
     }
 
@@ -463,7 +459,6 @@ struct WeaponEditorView: View {
         isArchived = weapon.isArchived
         cleaningShots = weapon.cleaningIntervalShots; cleaningDays = weapon.cleaningIntervalDays
         serviceShots = weapon.serviceIntervalShots; serviceDays = weapon.serviceIntervalDays
-        dayCountingRaw = weapon.dayCountingRaw
         diopterModeRaw = weapon.diopterModeRaw
         didLoad = true
     }
@@ -480,7 +475,6 @@ struct WeaponEditorView: View {
         target.isArchived = isArchived
         target.cleaningIntervalShots = cleaningShots; target.cleaningIntervalDays = cleaningDays
         target.serviceIntervalShots = serviceShots; target.serviceIntervalDays = serviceDays
-        target.dayCountingRaw = dayCountingRaw
         target.diopterModeRaw = diopterModeRaw
         if weapon == nil {
             context.insert(target)

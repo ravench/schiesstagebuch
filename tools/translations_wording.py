@@ -35,10 +35,6 @@ S = {
         "Ajoute tes équipements avec leurs calibres.",
         "Aggiungi i tuoi attrezzi con i loro calibri."),
     "Seriennummer in der Sportgeräteauswahl": ("Serial number in equipment picker", "Numéro de série dans le choix d'équipement", "Numero di serie nella scelta dell'attrezzo"),
-    "Ab wann Erinnerungen nach Tagen zählen. Pro Sportgerät kannst du das ändern.": (
-        "When day-based reminders start counting. You can change this per item of equipment.",
-        "À partir de quand les rappels en jours comptent. Modifiable pour chaque équipement.",
-        "Da quando contano i promemoria in giorni. Puoi cambiarlo per ogni attrezzo."),
     "Archivierte Sportgeräte erscheinen nicht mehr bei neuen Einträgen, bleiben aber in Tagebuch und Statistik.": (
         "Archived equipment no longer appears for new entries but stays in the log and statistics.",
         "Les équipements archivés n'apparaissent plus pour les nouvelles entrées, mais restent dans le journal et les statistiques.",
