@@ -308,6 +308,16 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// The firearm editor with a date of purchase: the date sits in the switch's row.
+    func testOwnershipDates() {
+        tab("Waffen")
+        guard open(app.staticTexts["Stgw 90"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch) else { return }
+        let bought = app.switches.matching(NSPredicate(format: "label BEGINSWITH %@", "Kaufdatum")).firstMatch
+        guard bought.waitForExistence(timeout: 3) else { return XCTFail("No date of purchase in the firearm editor") }
+        bought.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+        snap("07t-Waffe-Kaufdatum")
+    }
+
     /// The firearm editor of a sport shooter who records diopter corrections: how this firearm's sight is marked.
     func testDiopterMode() {
         relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather

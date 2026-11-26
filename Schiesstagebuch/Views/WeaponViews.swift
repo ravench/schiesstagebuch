@@ -552,15 +552,20 @@ struct OptionalDateRow: View {
     let range: ClosedRange<Date>
 
     var body: some View {
-        Toggle(title, isOn: Binding(
-            get: { date != nil },
-            set: { date = $0 ? OptionalDateRow.startDate(today: .now, in: range) : nil }
-        ))
-        if let value = date {
-            DatePicker(title, selection: Binding(get: { value }, set: { date = Calendar.current.startOfDay(for: $0) }),
-                       in: range, displayedComponents: .date)
-                .labelsHidden()
-                .frame(maxWidth: .infinity, alignment: .trailing)
+        // One row: the date alone on a second row read like a rendering mistake (tester 2026-11-26).
+        HStack {
+            Text(title)
+            Spacer()
+            if let value = date {
+                DatePicker(title, selection: Binding(get: { value }, set: { date = Calendar.current.startOfDay(for: $0) }),
+                           in: range, displayedComponents: .date)
+                    .labelsHidden()
+            }
+            Toggle(title, isOn: Binding(
+                get: { date != nil },
+                set: { date = $0 ? OptionalDateRow.startDate(today: .now, in: range) : nil }
+            ))
+            .labelsHidden()
         }
     }
 
