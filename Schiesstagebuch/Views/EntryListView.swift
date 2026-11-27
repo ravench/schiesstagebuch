@@ -186,6 +186,8 @@ struct EntryListView: View {
 
 struct EntryRow: View {
     let entry: Entry
+    /// The day's column grows with the text size; fixed at 40 pt, «28» broke into two lines.
+    @ScaledMetric(relativeTo: .title3) private var dayWidth: CGFloat = 40
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -195,7 +197,7 @@ struct EntryRow: View {
                 Text(entry.date, format: .dateTime.weekday(.abbreviated))
                     .font(.caption2).foregroundStyle(.secondary)
             }
-            .frame(width: 40)
+            .frame(width: dayWidth)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(entry.title)
@@ -234,6 +236,8 @@ struct EntryRow: View {
 /// A list row for an event with several Stiche.
 struct EventRow: View {
     let event: ShootingEvent
+    /// The day's column grows with the text size; fixed at 40 pt, «28» broke into two lines.
+    @ScaledMetric(relativeTo: .title3) private var dayWidth: CGFloat = 40
     /// The Stiche to count, e.g. those matching a search.
     let entries: [Entry]
 
@@ -250,7 +254,7 @@ struct EventRow: View {
                 Text(event.date, format: .dateTime.weekday(.abbreviated))
                     .font(.caption2).foregroundStyle(.secondary)
             }
-            .frame(width: 40)
+            .frame(width: dayWidth)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(event.name.isEmpty ? "Schiessen".loc : event.name)

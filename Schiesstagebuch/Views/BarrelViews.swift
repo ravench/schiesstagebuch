@@ -51,7 +51,9 @@ struct BarrelRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
                     Text(barrel.displayName).font(.headline)
-                    if barrel.isRemoved { Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small) }
+                    if barrel.isRemoved {
+                        Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small).accessibilityLabel(Text("Ausgebaut"))
+                    }
                     if showsDefault && barrel.isDefault { Text("Standard").font(.caption).foregroundStyle(.secondary) }
                     Spacer()
                     Text("\(barrel.totalShots.formatted()) Schuss").monospacedDigit().foregroundStyle(.secondary)

@@ -34,6 +34,9 @@ struct LicenceCardScreen: View {
                             .font(.footnote).foregroundStyle(.white.opacity(0.8))
                             .multilineTextAlignment(.center)
                     }
+                    // On an iPad the card filled the screen and both barcodes were below the fold.
+                    .frame(maxWidth: 480)
+                    .frame(maxWidth: .infinity)
                     .padding()
                 }
                 .background(LicenceCardStyle.background.ignoresSafeArea())

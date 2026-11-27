@@ -23,7 +23,10 @@ struct ShotBoxesRow: View {
     /// Posted by the row that opens its value buttons (object: its `id`).
     private static let keysOpened = Notification.Name("ShotBoxesRow.keysOpened")
 
-    private let columns = [GridItem(.adaptive(minimum: 44, maximum: 52), spacing: 6)]
+    /// The boxes grow with the text size: at the accessibility sizes «10.9» was cut off in a box of fixed size.
+    @ScaledMetric(relativeTo: .body) private var boxWidth: CGFloat = 44
+    @ScaledMetric(relativeTo: .body) private var boxHeight: CGFloat = 34
+    private var columns: [GridItem] { [GridItem(.adaptive(minimum: boxWidth, maximum: boxWidth + 8), spacing: 6)] }
 
     private var fixedValues: [Double]? {
         if case let .values(list) = scoring { return list }
@@ -119,13 +122,14 @@ struct ShotBoxesRow: View {
             }
             .multilineTextAlignment(.center)
             .monospacedDigit()
-            .frame(height: 34)
+            .frame(height: boxHeight)
             .background(
                 RoundedRectangle(cornerRadius: 6)
                     .strokeBorder(border, lineWidth: active || !isAllowed(value) ? 2 : 1)
             )
             .accessibilityLabel(Text("Schuss \(i + 1)"))
-            .accessibilityValue(Text(verbatim: value))
+            // Not by the red border alone: VoiceOver says that the value does not fit the target.
+            .accessibilityValue(Text(verbatim: isAllowed(value) ? value : "\(value), \("ungültig".loc)"))
         }
     }
 }

@@ -62,7 +62,9 @@ struct WeaponRow: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(weapon.name).font(.headline)
-                if weapon.isArchived { Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small) }
+                if weapon.isArchived {
+                    Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small).accessibilityLabel(Text("Archiviert"))
+                }
                 if weapon.needsMaintenance {
                     Image(systemName: "bell.badge.fill").foregroundStyle(.red).imageScale(.small)
                         .accessibilityLabel("Pflege fällig")
@@ -99,6 +101,8 @@ struct MaintenanceBadge: View {
             .padding(.horizontal, 8).padding(.vertical, 3)
             .background(color.opacity(0.15), in: Capsule())
             .foregroundStyle(color)
+            // Not by the colour alone: orange and green look the same to VoiceOver.
+            .accessibilityValue(Text(status.stateText))
     }
 }
 

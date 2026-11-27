@@ -100,6 +100,7 @@ struct EntryEditorView: View {
     @State private var photos: [Data] = []
     @State private var pickerItems: [PhotosPickerItem] = []
     @State private var photoLoadFailed = false
+    @Environment(\.dynamicTypeSize) private var typeSize
     /// Picked photos are still being read: «Sichern» waits, or the Stich was saved without them.
     @State private var loadingPhotos = false
     @State private var quickAdd: QuickAdd?
@@ -164,16 +165,21 @@ struct EntryEditorView: View {
                     if scoring != .ipsc {
                         // Side by side: both are a number or two. The relay takes only what it needs, so
                         // the longer «Scheiben-Nr.» is never cut off (tester 2026-11-17).
-                        HStack(spacing: 12) {
-                            Text("Ablösung").fixedSize()
-                            TextField("–", text: $relay).multilineTextAlignment(.trailing).frame(width: 48)
-                                .accessibilityLabel(Text("Ablösung"))
-                            Divider()
-                            Text("Scheiben-Nr.").fixedSize()
-                            TextField("–", text: $targetNumber).multilineTextAlignment(.trailing)
-                                .accessibilityLabel(Text("Scheiben-Nr."))
+                        // At the accessibility text sizes one below the other: side by side the second
+                        // field has no room left.
+                        if typeSize.isAccessibilitySize {
+                            LabeledContent("Ablösung") { relayField }.keyboardType(.numbersAndPunctuation)
+                            LabeledContent("Scheiben-Nr.") { targetNumberField }.keyboardType(.numbersAndPunctuation)
+                        } else {
+                            HStack(spacing: 12) {
+                                Text("Ablösung").fixedSize()
+                                relayField.frame(width: 48)
+                                Divider()
+                                Text("Scheiben-Nr.").fixedSize()
+                                targetNumberField
+                            }
+                            .keyboardType(.numbersAndPunctuation)
                         }
-                        .keyboardType(.numbersAndPunctuation)
                     }
                     // Switched off, the Stich has no time: one entered afterwards, or shot at a time nobody noted.
                     HStack(spacing: 12) {
@@ -331,6 +337,14 @@ struct EntryEditorView: View {
                 }
             }
         }
+    }
+
+    private var relayField: some View {
+        TextField("–", text: $relay).multilineTextAlignment(.trailing).accessibilityLabel(Text("Ablösung"))
+    }
+
+    private var targetNumberField: some View {
+        TextField("–", text: $targetNumber).multilineTextAlignment(.trailing).accessibilityLabel(Text("Scheiben-Nr."))
     }
 
     /// Shots and result of a Stich scored in points.
