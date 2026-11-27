@@ -62,7 +62,7 @@ final class LocalizationTests: XCTestCase {
             "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.",
             "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.",
             "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.",
-            "Der Export enthält nur Verweise auf %lld Fotos in deiner Mediathek. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind."
+            "Der Export enthält nur Verweise auf Fotos in deiner Mediathek (%lld). Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind."
         ]
         for key in hints {
             for lang in ["en", "fr", "it"] {
@@ -74,7 +74,7 @@ final class LocalizationTests: XCTestCase {
             }
         }
         XCTAssertEqual(Wording.sportsEquipment[hints[1]], hints[2])
-        XCTAssertTrue(try localized(hints[3], "en").hasPrefix("The export only holds references to %lld photos"))
+        XCTAssertTrue(try localized(hints[3], "en").hasPrefix("The export only holds references to photos in your library (%lld)"))
     }
 
     func testShotBoxLabelIsTranslated() throws {

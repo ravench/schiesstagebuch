@@ -65,25 +65,25 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fotos von Scheiben und Resultaten zu einem Eintrag hinzufügen."
+            "value": "Beim Import aus «Schusszähler-Schiesstagebuch» die Fotos der alten Einträge aus der Mediathek übernehmen."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add photos of targets and results to an entry."
+            "value": "Bring over the photos of the old entries from your library when importing from “Schusszähler-Schiesstagebuch”."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajouter des photos de cibles et de résultats à une entrée."
+            "value": "Reprendre de la photothèque les photos des anciennes entrées lors de l'import depuis « Schusszähler-Schiesstagebuch »."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aggiungere foto di bersagli e risultati a una voce."
+            "value": "Riprendere dalla libreria le foto delle vecchie voci durante l'importazione da «Schusszähler-Schiesstagebuch»."
           }
         }
       }

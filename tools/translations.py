@@ -97,10 +97,15 @@ T = {
         "The file could not be read. Expected ShootCounter-Export.tsv or data.db.",
         "Le fichier n'a pas pu être lu. Fichier attendu : ShootCounter-Export.tsv ou data.db.",
         "Impossibile leggere il file. Previsto: ShootCounter-Export.tsv o data.db."),
-    "Der Export enthält nur Verweise auf %lld Fotos in deiner Mediathek. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": (
-        "The export only holds references to %lld photos in your library. They are found if the photos are still on this device or in iCloud Photos.",
-        "L'export ne contient que des références vers %lld photos de votre photothèque. Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud.",
-        "L'esportazione contiene solo riferimenti a %lld foto della tua libreria. Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."),
+    "Der Export enthält nur Verweise auf Fotos in deiner Mediathek (%lld). Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": (
+        "The export only holds references to photos in your library (%lld). They are found if the photos are still on this device or in iCloud Photos.",
+        "L'export ne contient que des références vers des photos de votre photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud.",
+        "L'esportazione contiene solo riferimenti a foto della tua libreria (%lld). Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."),
+    "Zeilen ohne lesbares Datum": ("Lines without a readable date", "Lignes sans date lisible", "Righe senza data leggibile"),
+    "Ohne Zugriff auf die Fotomediathek können die Fotos nicht übernommen werden. Erlaube den Zugriff in den Einstellungen des iPhones, oder schalte «Fotos aus der Fotomediathek übernehmen» aus.": (
+        "Without access to the photo library the photos cannot be brought over. Allow the access in the settings of the iPhone, or switch off bringing over the photos.",
+        "Sans accès à la photothèque, les photos ne peuvent pas être reprises. Autorise l'accès dans les réglages de l'iPhone ou désactive « Reprendre les photos de la photothèque ».",
+        "Senza accesso alla libreria foto le foto non possono essere riprese. Consenti l'accesso nelle impostazioni dell'iPhone oppure disattiva «Riprendi le foto dalla libreria»."),
     "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.": (
         "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms.",
         "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes.",

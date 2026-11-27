@@ -815,6 +815,17 @@ final class PRScreensTests: XCTestCase {
         snap("01c-Tagebuch-mehrere-Stiche")
     }
 
+    /// The import from Schusszähler: its sheet before a file is chosen, with a title that fits.
+    func testLegacyImportSheet() {
+        tab("Einstellungen")
+        let row = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Import aus")).firstMatch
+        reveal(row)
+        guard open(row), app.buttons["Datei wählen …"].firstMatch.waitForExistence(timeout: 5) else {
+            return XCTFail("The import sheet did not open")
+        }
+        snap("08s-Import-Schusszaehler")
+    }
+
     /// The Swiss cadet round, found by the name on its box.
     func testKadettenpatrone() {
         tab("Einstellungen")

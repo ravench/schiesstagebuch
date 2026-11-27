@@ -207,6 +207,28 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(p75.calibers.map(\.catalogID), [item.id])
     }
 
+    /// A later import of the same file: ammunition the user gave a calibre keeps it in the preview.
+    func testKnownAmmunitionKeepsItsCalibreInALaterImport() throws {
+        let nineMM = Caliber(name: "9x19 mm", category: "Kurzwaffe"); context.insert(nineMM)
+        context.insert(Ammunition(name: "9mm Geco", caliber: nineMM))
+        try context.save()
+        let rows = LegacyImport.parseTSV("Datum\tSchiessanlage\tAnlass\tWaffe\tSchusszahl\tMunition\tResultat\tBemerkungen\n"
+            + "01.02.2026\t\tTraining\tP220\t50\t9mm Geco\t\t\n02.02.2026\t\tTraining\tP220\t50\tSpezial\t\t\n")
+        let plan = LegacyImport.plan(rows, context: context)
+        XCTAssertEqual(plan.ammoCaliber["9mm Geco"], "9x19 mm")
+        XCTAssertNil(plan.ammoCaliber["Spezial"], "unknown text, nothing in the catalogue: the user picks")
+    }
+
+    /// Lines without a readable date are left out, and counted for the preview.
+    func testLinesWithoutAReadableDateAreCounted() throws {
+        let url = FileManager.default.temporaryDirectory.appending(path: "legacy-\(UUID().uuidString).tsv")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data((tsv + "\n32.01.2026\tAlbisgüetli\tTraining\tP75\t20\t9x19\t\t\t\n").utf8).write(to: url)
+        let file = try LegacyImport.readCounting(url)
+        XCTAssertEqual(file.rows.count, 2)
+        XCTAssertEqual(file.skipped, 1)
+    }
+
     func testReadsTheOldAppsSQLiteDatabase() throws {
         // Same columns (with their original spelling) as the real data.db: table "wepon".
         let url = FileManager.default.temporaryDirectory.appending(path: "legacy-\(UUID().uuidString).db")
@@ -249,6 +271,10 @@ final class LegacyImportTests: ModelTestCase {
         XCTAssertEqual(WeaponCategory.guess(from: "K31 Langgewehr"), .serviceCarbine)
         XCTAssertEqual(WeaponCategory.guess(from: "P75"), .pistol)
         XCTAssertEqual(WeaponCategory.guess(from: "Unknown thing"), .other)
+        // «sauer» alone means a hunting rifle; SIG Sauer's pistols must not follow it.
+        XCTAssertEqual(WeaponCategory.guess(from: "SIG Sauer P229"), .pistol)
+        XCTAssertEqual(WeaponCategory.guess(from: "Sig Sauer P365"), .pistol)
+        XCTAssertEqual(WeaponCategory.guess(from: "Sauer 404"), .huntingRifle)
     }
 
     /// Rows as they are in the real old-app export (data.db, 2025–2026).

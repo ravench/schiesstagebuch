@@ -133,6 +133,13 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(CaliberCatalog.removeUnused(context, defaults: defaults), 1)
     }
 
+    /// A text that only starts several names is no match: the import must not preselect the first of them.
+    func testAmbiguousPrefixMatchesNothing() {
+        XCTAssertNil(CaliberCatalog.match("7.62"))
+        XCTAssertNil(CaliberCatalog.match("8"))
+        XCTAssertNotNil(CaliberCatalog.match("9x19"), "an exact name or alias still matches")
+    }
+
     func testRareCatalogueEntriesHideUntilTheUserHasThem() throws {
         // Raven 2026-11-12: calibre-data's rare calibres stay behind the search; a record always shows.
         let choices = CaliberChoice.all([])
