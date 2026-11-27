@@ -372,6 +372,17 @@ enum ShotEntryMode: String, CaseIterable, Identifiable {
     static let defaultsKey = "defaultShotEntryMode"
     var id: Self { self }
 
+    /// The scored shots typed in this mode: what «Probe/Wertung» takes over when the editor leaves it. Passen or
+    /// Einzelschüsse with none typed give 0, and the count from before stays; the Probeschüsse never count here,
+    /// or a Stich with 3 of them came back from an empty «Pro Passe» with 0 Wertungsschüsse (review 2026-11-27).
+    func typedScored(split: Int, passen: Int, singles: Int) -> Int {
+        switch self {
+        case .split: split
+        case .passeTotals: passen
+        case .shots: singles
+        }
+    }
+
     var title: String {
         switch self {
         case .split: "Probe/Wertung".loc
@@ -386,6 +397,24 @@ enum ShotEntryMode: String, CaseIterable, Identifiable {
         // A count alone (an import, a Stich from before «Total» went) opens with all shots as scored.
         else { self = .split }
     }
+}
+
+/// A decimal number in a text field, typed with a point or a comma whatever the region: `.number` reads
+/// «12,34» as 1234 in Switzerland and «10.9» as 10 in Germany (review 2026-11-27).
+struct DecimalInput: ParseableFormatStyle, ParseStrategy {
+    func format(_ value: Double) -> String { ScoreFormat.points(value) }
+
+    func parse(_ text: String) throws -> Double {
+        let plain = text.filter { !$0.isWhitespace && $0 != "'" && $0 != "’" }.replacingOccurrences(of: ",", with: ".")
+        guard let value = Double(plain), value.isFinite else { throw CocoaError(.formatting) }
+        return value
+    }
+
+    var parseStrategy: DecimalInput { self }
+}
+
+extension FormatStyle where Self == DecimalInput {
+    static var decimalInput: DecimalInput { DecimalInput() }
 }
 
 enum ScoreFormat {
