@@ -16,6 +16,8 @@ struct PhotoGrid: View {
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .contentShape(Rectangle())
                             .onTapGesture { preview = i }
+                            .accessibilityLabel(Text("Foto \(i + 1)"))
+                            .accessibilityAddTraits(.isButton)
                             .overlay(alignment: .topTrailing) {
                                 if editable {
                                     Button { photos.remove(at: i) } label: {
@@ -24,6 +26,7 @@ struct PhotoGrid: View {
                                             .foregroundStyle(.white, .black.opacity(0.6))
                                     }
                                     .buttonStyle(.plain).padding(4)
+                                    .accessibilityLabel(Text("Foto löschen"))
                                 }
                             }
                     }

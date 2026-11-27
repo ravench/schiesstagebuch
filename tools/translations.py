@@ -123,10 +123,19 @@ T = {
         "Enregistrez votre première séance de tir avec +.",
         "Registra la tua prima giornata di tiro con +."),
     "Erfassen": ("Log", "Saisir", "Registra"),
-    "Erinnert, sobald eine der beiden Grenzen seit der letzten %@ erreicht ist.": (
-        "Reminds you as soon as either limit is reached since the last %@.",
-        "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière %@.",
-        "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima %@."),
+    "Erinnert, sobald eine der beiden Grenzen seit der letzten Reinigung erreicht ist.": (
+        "Reminds you as soon as either limit is reached since the last cleaning.",
+        "Vous rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage.",
+        "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima pulizia."),
+    "Erinnert, sobald eine der beiden Grenzen seit dem letzten Service erreicht ist.": (
+        "Reminds you as soon as either limit is reached since the last service.",
+        "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière révision.",
+        "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima revisione."),
+    "Frühere Stiche": ("Earlier matches", "Cibles précédentes", "Bersagli precedenti"),
+    "Frühere Anlässe": ("Earlier events", "Événements précédents", "Eventi precedenti"),
+    "Vorschläge": ("Suggestions", "Suggestions", "Suggerimenti"),
+    "Foto %lld": ("Photo %lld", "Photo %lld", "Foto %lld"),
+    "Foto löschen": ("Delete photo", "Supprimer la photo", "Elimina foto"),
     "Erinnerung %@": ("Reminder: %@", "Rappel : %@", "Promemoria: %@"),
     "Erinnerungen stellst du unter Bearbeiten ein.": (
         "Set reminders under Edit.", "Les rappels se règlent sous Modifier.", "I promemoria si impostano in Modifica."),

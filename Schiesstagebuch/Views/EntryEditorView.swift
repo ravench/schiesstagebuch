@@ -156,6 +156,7 @@ struct EntryEditorView: View {
                             Menu {
                                 ForEach(recentStiche, id: \.self) { s in Button(s) { stich = s } }
                             } label: { Image(systemName: "clock.arrow.circlepath") }
+                            .accessibilityLabel(Text("Frühere Stiche"))
                         }
                     }
                     if scoring != .ipsc {
@@ -164,9 +165,11 @@ struct EntryEditorView: View {
                         HStack(spacing: 12) {
                             Text("Ablösung").fixedSize()
                             TextField("–", text: $relay).multilineTextAlignment(.trailing).frame(width: 48)
+                                .accessibilityLabel(Text("Ablösung"))
                             Divider()
                             Text("Scheiben-Nr.").fixedSize()
                             TextField("–", text: $targetNumber).multilineTextAlignment(.trailing)
+                                .accessibilityLabel(Text("Scheiben-Nr."))
                         }
                         .keyboardType(.numbersAndPunctuation)
                     }

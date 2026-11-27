@@ -51,7 +51,7 @@ struct EntryDetailView: View {
                         metric("Resultat", entry.resultText.isEmpty ? "–" : entry.resultText)
                     }
                 }
-                .frame(height: 64)
+                .frame(minHeight: 64) // at least; the figures grow with Larger Text
             }
 
             if entry.scoringSystem == .ipsc {
