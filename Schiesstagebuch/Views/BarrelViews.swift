@@ -233,6 +233,7 @@ struct BarrelEditorView: View {
         if barrel == nil { context.insert(target) }
         target.name = name.trimmingCharacters(in: .whitespaces)
         target.serialNumber = serialNumber.trimmingCharacters(in: .whitespaces)
+        target.keepEntries(changingCalibersTo: sortedSelection)
         target.calibers = sortedSelection
         target.installedOn = hasInstalled ? installedOn : nil
         target.removedOn = hasRemoved ? max(removedOn, target.installedOn ?? removedOn) : nil

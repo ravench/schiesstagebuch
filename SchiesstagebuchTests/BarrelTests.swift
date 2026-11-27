@@ -443,6 +443,46 @@ final class BarrelTests: ModelTestCase {
         XCTAssertEqual(weapon.barrel(for: cal, on: day(25)), second)
     }
 
+    /// A calibre corrected on a barrel (.223 Rem → 5.56 NATO): the shots logged with the old calibre stay its.
+    func testChangingABarrelsCalibreKeepsItsEntries() throws {
+        let rem = Caliber(name: ".223 Remington", category: "Langwaffe"); context.insert(rem)
+        let nato = Caliber(name: "5.56x45 mm NATO", category: "Langwaffe"); context.insert(nato)
+        let other = Caliber(name: "9x19 mm", category: "Kurzwaffe"); context.insert(other)
+        let rifleBarrel = barrel("Lauf", rem); rifleBarrel.isDefault = true
+        _ = barrel("Wechselsystem", other)
+        let old = shoot(rem, on: day(2), shots: 120)
+        try context.save()
+        XCTAssertEqual(rifleBarrel.loggedShots, 120)
+
+        rifleBarrel.keepEntries(changingCalibersTo: [nato])
+        rifleBarrel.calibers = [nato]
+        XCTAssertEqual(old.barrel, rifleBarrel, "pinned: no barrel fits .223 any more")
+        XCTAssertEqual(rifleBarrel.loggedShots, 120)
+
+        // Adding a calibre loses none: nothing is pinned.
+        let later = shoot(nato, on: day(3), shots: 10)
+        rifleBarrel.keepEntries(changingCalibersTo: [nato, rem])
+        XCTAssertNil(later.barrel)
+    }
+
+    /// One barrel with a number, earlier shots or an expected life is listed on the firearm's page.
+    func testASingleBarrelWithSomethingOfItsOwnIsShown() throws {
+        let cal = Caliber(name: "7.5x55 mm Swiss", category: "Langwaffe"); context.insert(cal)
+        let only = barrel("", cal)
+        XCTAssertFalse(weapon.showsBarrels, "a plain single barrel adds nothing")
+        only.expectedLifeShots = 10_000
+        XCTAssertTrue(weapon.showsBarrels)
+        only.expectedLifeShots = 0; only.serialNumber = " "
+        XCTAssertFalse(weapon.showsBarrels)
+        only.serialNumber = "L 4711"
+        XCTAssertTrue(weapon.showsBarrels)
+        only.serialNumber = ""; only.previousShots = 500
+        XCTAssertTrue(weapon.showsBarrels)
+        only.previousShots = 0
+        _ = barrel("Zweiter", cal)
+        XCTAssertTrue(weapon.showsBarrels, "several barrels always show")
+    }
+
     /// A Drilling is a hunting rifle with a rifled barrel and two shotgun barrels, all fitted at
     /// once: each entry counts for the barrel of its calibre, the firearm counts everything.
     func testDrillingCountsRifleAndShotgunBarrelsSeparately() throws {
