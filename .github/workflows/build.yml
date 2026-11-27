@@ -17,6 +17,9 @@ defaults:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    # Reads the code, nothing else.
+    permissions:
+      contents: read
     # Official SwiftLint image with a pinned version, so results don't change under us.
     container: ghcr.io/realm/swiftlint:0.59.1
     steps:
@@ -51,6 +54,9 @@ jobs:
   tools:
     # The Python checks need no Mac.
     runs-on: ubuntu-latest
+    # Reads the code, nothing else.
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
         with:
