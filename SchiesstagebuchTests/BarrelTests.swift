@@ -426,6 +426,23 @@ final class BarrelTests: ModelTestCase {
 
     // MARK: - Combination guns
 
+    /// A second barrel of the same calibre, added without «Montiert ab», must not take over the shots
+    /// logged before it existed.
+    func testASecondBarrelWithoutDatesLeavesTheHistoryWithTheFirst() throws {
+        let cal = Caliber(name: "5.6 mm GP 90", category: "Langwaffe"); context.insert(cal)
+        let first = barrel("Original", cal); first.createdAt = day(1); first.isDefault = true
+        let old = shoot(cal, on: day(2), shots: 3000)
+        let second = barrel("Ersatz", cal); second.createdAt = day(20)
+        try context.save()
+        XCTAssertEqual(weapon.barrel(for: cal, on: day(2)), first)
+        XCTAssertEqual(old.effectiveBarrel, first)
+        XCTAssertEqual(weapon.barrel(for: cal, on: day(25)), first, "without dates the first stays the match; the editor asks which one")
+        // With a fitted date the replacement takes over from that day.
+        second.installedOn = day(20)
+        XCTAssertEqual(weapon.barrel(for: cal, on: day(2)), first)
+        XCTAssertEqual(weapon.barrel(for: cal, on: day(25)), second)
+    }
+
     /// A Drilling is a hunting rifle with a rifled barrel and two shotgun barrels, all fitted at
     /// once: each entry counts for the barrel of its calibre, the firearm counts everything.
     func testDrillingCountsRifleAndShotgunBarrelsSeparately() throws {

@@ -170,9 +170,14 @@ final class Weapon: ArchivableItem {
 
     var ownershipDatesValid: Bool { Self.ownershipDatesValid(purchase: purchaseDate, sale: saleDate) }
 
-    /// A weapon that gets a sale date is archived. Changing or removing the date keeps the current state.
-    static func archivedAfterSaleChange(isArchived: Bool, from old: Date?, to new: Date?) -> Bool {
-        old == nil && new != nil ? true : isArchived
+    /// A weapon that gets a sale date is archived (`bySale`). Changing the date keeps the state; taking it
+    /// away again in the same editor undoes what the date did, or a firearm whose sale date was switched
+    /// on by mistake vanished from the list after «Sichern» (review 2026-11-27).
+    static func archivedAfterSaleChange(isArchived: Bool, bySale: Bool = false,
+                                        from old: Date?, to new: Date?) -> (archived: Bool, bySale: Bool) {
+        if old == nil, new != nil, !isArchived { return (true, true) }
+        if new == nil, bySale { return (false, false) }
+        return (isArchived, bySale)
     }
 
     /// Key of the setting that shows serial numbers in weapon pickers (on by default).

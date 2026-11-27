@@ -45,17 +45,29 @@ final class WeaponOwnershipTests: ModelTestCase {
     }
 
     func testEnteringASaleDateArchives() {
-        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: false, from: nil, to: day(10)))
-        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: nil, to: day(10)))
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: false, from: nil, to: day(10)).archived)
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: nil, to: day(10)).archived)
     }
 
     func testChangingOrRemovingTheSaleDateKeepsTheArchiveState() {
         // The user un-archived a sold weapon: moving the date must not archive it again.
-        XCTAssertFalse(Weapon.archivedAfterSaleChange(isArchived: false, from: day(10), to: day(12)))
-        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: day(10), to: day(12)))
+        XCTAssertFalse(Weapon.archivedAfterSaleChange(isArchived: false, from: day(10), to: day(12)).archived)
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: day(10), to: day(12)).archived)
         // Removing the date does not un-archive.
-        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: day(10), to: nil))
-        XCTAssertFalse(Weapon.archivedAfterSaleChange(isArchived: false, from: nil, to: nil))
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, from: day(10), to: nil).archived)
+        XCTAssertFalse(Weapon.archivedAfterSaleChange(isArchived: false, from: nil, to: nil).archived)
+    }
+
+    /// Switched on by mistake and off again in the same editor: the firearm must not stay archived.
+    func testTakingTheSaleDateAwayAgainUndoesItsArchiving() {
+        let on = Weapon.archivedAfterSaleChange(isArchived: false, from: nil, to: day(10))
+        XCTAssertTrue(on.archived && on.bySale)
+        let off = Weapon.archivedAfterSaleChange(isArchived: on.archived, bySale: on.bySale, from: day(10), to: nil)
+        XCTAssertFalse(off.archived || off.bySale)
+        // Archived before the editor opened: the date coming and going changes nothing.
+        let was = Weapon.archivedAfterSaleChange(isArchived: true, from: nil, to: day(10))
+        XCTAssertTrue(was.archived && !was.bySale)
+        XCTAssertTrue(Weapon.archivedAfterSaleChange(isArchived: true, bySale: was.bySale, from: day(10), to: nil).archived)
     }
 
     func testBackupKeepsPurchaseAndSaleDates() throws {
