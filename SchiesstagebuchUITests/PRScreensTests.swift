@@ -741,6 +741,27 @@ final class PRScreensTests: XCTestCase {
         snap("11b-Kaliber-Snider")
     }
 
+    /// Below «Pro Waffe» the next charts follow, no list of the firearms; the page ends with «Pro Schiessanlage».
+    func testStatisticsCharts() {
+        tab("Statistik")
+        stop("05e-Statistik-Pro-Waffe", chart: "Pro Waffe")
+        scroll()
+        snap("05f-Statistik-Ende")
+    }
+
+    /// A chart with more bars than its limit (two here, ten in the app; the sample data has three firearms):
+    /// the biggest ones and «Mehr anzeigen», then all of them.
+    func testBreakdownLimit() {
+        relaunch(adding: ["-breakdownLines", "2"])
+        tab("Statistik")
+        stop("05g-Statistik-Mehr-anzeigen", chart: "Pro Waffe")
+        let more = app.buttons["Mehr anzeigen"].firstMatch
+        if more.exists {
+            more.tap()
+            snap("05h-Statistik-Weniger-anzeigen")
+        }
+    }
+
     /// The .32 S&W rows in the calibre list: the wadcutter, seated flush, shows only its case.
     func testWadcutter() {
         tab("Einstellungen")

@@ -247,11 +247,25 @@ struct ShotsOverTimeChart: View {
 }
 
 /// Horizontal bars of shots per group (weapon, range, ammunition …).
+/// How many bars a breakdown chart shows before «Mehr anzeigen» (tester 2026-11-26: a chart of 30 ranges is too long).
+enum BreakdownLimit {
+    /// Ten; the screens tour sets a smaller number with `-breakdownLines`, its sample data has no chart that long.
+    static var lines: Int {
+        let set = UserDefaults.standard.integer(forKey: "breakdownLines")
+        return set > 0 ? set : 10
+    }
+
+    static func shown<Row>(_ rows: [Row], all: Bool, lines: Int = lines) -> [Row] {
+        all ? rows : Array(rows.prefix(lines))
+    }
+}
+
 struct BreakdownChart<Key: Hashable>: View {
     let title: String
     let entries: [Entry]
     let key: (Entry) -> Key?
     let label: (Key) -> String
+    @State private var showAll = false
 
     private struct Row: Identifiable { let key: Key; let name: String; let shots: Int; var id: Key { key } }
 
@@ -269,10 +283,12 @@ struct BreakdownChart<Key: Hashable>: View {
     }
 
     var body: some View {
+        let rows = rows
+        let shown = BreakdownLimit.shown(rows, all: showAll)
         if !rows.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title.loc).font(.headline)
-                Chart(rows) { row in
+                Chart(shown) { row in
                     BarMark(x: .value("Schüsse", row.shots), y: .value(title, row.name))
                         .foregroundStyle(by: .value(title, row.name))
                         .annotation(position: .trailing) {
@@ -282,7 +298,12 @@ struct BreakdownChart<Key: Hashable>: View {
                 }
                 .chartLegend(.hidden)
                 .chartXAxis(.hidden)
-                .frame(height: CGFloat(rows.count) * 34 + 10)
+                .frame(height: CGFloat(shown.count) * 34 + 10)
+                if rows.count > BreakdownLimit.lines {
+                    // Borderless: a plain button would make the whole row with the chart its tap area.
+                    Button((showAll ? "Weniger anzeigen" : "Mehr anzeigen").loc) { showAll.toggle() }
+                        .buttonStyle(.borderless)
+                }
             }
         }
     }

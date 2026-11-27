@@ -4,13 +4,11 @@ import SwiftData
 struct StatsView: View {
     @Environment(\.term) private var term
     @Query(sort: \Entry.date) private var entries: [Entry]
-    @Query(sort: \Weapon.name) private var weapons: [Weapon]
     @State private var period: StatsPeriod = .all
-    @State private var rangeSearch = ""
 
     var body: some View {
-        // Once per body, not once per use: the body re-evaluates on every keystroke of the range search.
         let filtered = entries.filter { period.contains($0.date) }
+        // No lists of firearms and ranges here: their figures are in their own tabs (tester 2026-11-26).
         return NavigationStack {
             List {
                 Section { PeriodPicker(period: $period, entries: entries) }
@@ -21,21 +19,6 @@ struct StatsView: View {
                 if PositionResultsChart.shows(filtered) { Section { PositionResultsChart(entries: filtered) } }
                 Section {
                     BreakdownChart(title: term("Pro Waffe"), entries: filtered, key: \.weapon, label: \.name)
-                }
-                if !weapons.isEmpty {
-                Section(term("Waffen").loc) {
-                    ForEach(weapons) { w in
-                        NavigationLink {
-                            WeaponStatsView(weapon: w)
-                        } label: {
-                            HStack {
-                                WeaponIcon(category: w.category).frame(width: 40, height: 16).foregroundStyle(.secondary)
-                                StatsLinkRow(name: w.name, subtitle: w.caliberSummary, archived: w.isArchived,
-                                             shots: filtered.filter { $0.weapon == w }.totalShots)
-                            }
-                        }
-                    }
-                }
                 }
                 let stiche = StichStats.named(in: filtered)
                 if !stiche.isEmpty {
@@ -61,37 +44,6 @@ struct StatsView: View {
                 }
                 Section {
                     BreakdownChart(title: "Pro Schiessanlage", entries: filtered, key: \.range, label: \.name)
-                }
-                let usedRanges = RangeStats.used(in: filtered)
-                if !usedRanges.isEmpty {
-                Section("Schiessanlagen") {
-                    if usedRanges.count > 1 {
-                        HStack {
-                            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-                            TextField("Schiessanlage suchen", text: $rangeSearch)
-                                .autocorrectionDisabled()
-                            if !rangeSearch.isEmpty {
-                                Button { rangeSearch = "" } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel("Suche löschen")
-                            }
-                        }
-                    }
-                    let shown = usedRanges.filter { RangeStats.matches($0.range, rangeSearch.trimmingCharacters(in: .whitespaces)) }
-                    if shown.isEmpty {
-                        Text("Keine passende Schiessanlage").foregroundStyle(.secondary)
-                    }
-                    ForEach(shown) { item in
-                        NavigationLink {
-                            RangeDetailView(range: item.range)
-                        } label: {
-                            StatsLinkRow(name: item.range.name, subtitle: item.range.place,
-                                         archived: item.range.isArchived, shots: item.shots)
-                        }
-                    }
-                }
                 }
             }
             .navigationTitle("Statistik")

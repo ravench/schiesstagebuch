@@ -104,10 +104,4 @@ final class RangeSearchTests: ModelTestCase {
         let unnamed = range("Ohne Ort")
         XCTAssertNil(RangeSearch.subtitle(for: unnamed, from: here, locale: ch))
     }
-
-    func testStatisticsSearchUsesSameRules() {
-        let r = range("Albisgüetli", place: "Zürich", distances: [300])
-        XCTAssertTrue(RangeStats.matches(r, "zurich 300 m"))
-        XCTAssertFalse(RangeStats.matches(r, "zurich 50"))
-    }
 }
