@@ -433,6 +433,10 @@ T = {
     "Erinnerungen": ("Reminders", "Rappels", "Promemoria"),
     "Tage zählen": ("Count days", "Compter les jours", "Conta i giorni"),
     "Tage zählen ab dem nächsten Schuss": ("Days count from the next shot", "Les jours comptent dès le prochain tir", "I giorni contano dal prossimo colpo"),
+    "Tage zählen ab der ersten erfassten Reinigung": (
+        "Days count from the first recorded cleaning", "Les jours comptent dès le premier nettoyage saisi", "I giorni contano dalla prima pulizia registrata"),
+    "Tage zählen ab dem ersten erfassten Service": (
+        "Days count from the first recorded service", "Les jours comptent dès la première révision saisie", "I giorni contano dalla prima revisione registrata"),
     "Nr.": ("No.", "N°", "N."),
     "Seriennummer (optional)": ("Serial number (optional)", "Numéro de série (facultatif)", "Numero di serie (facoltativo)"),
     "Kauf und Verkauf": ("Purchase and sale", "Achat et vente", "Acquisto e vendita"),

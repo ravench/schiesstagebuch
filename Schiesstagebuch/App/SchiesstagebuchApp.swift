@@ -94,7 +94,15 @@ struct RootView: View {
     @State private var whatsNew: [String] = []
     @State private var showWhatsNew = false
 
-    private var dueCount: Int { MaintenanceNotifier.dueCount(weapons) }
+    /// Read so that the tab's number is worked out again when the app comes to the front (a reminder may have
+    /// become due meanwhile) and when «Tage zählen» changes; neither touches the firearms the query watches.
+    @Environment(\.scenePhase) private var scenePhase
+    @AppStorage(DayCounting.defaultsKey) private var dayCounting: DayCounting = .fromFirstUse
+
+    private var dueCount: Int {
+        _ = (scenePhase, dayCounting)
+        return MaintenanceNotifier.dueCount(weapons)
+    }
     /// With a licence card there are six tabs, one too many for a narrow tab bar. The system's own «Mehr»
     /// puts a second navigation bar on each of its pages, so the ranges and the settings share this one.
     private var crowded: Bool { sizeClass == .compact && LicenceCard.hasCard(licenceCards) }
