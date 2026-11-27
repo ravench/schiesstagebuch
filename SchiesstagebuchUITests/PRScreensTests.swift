@@ -367,6 +367,13 @@ final class PRScreensTests: XCTestCase {
         snap("20-Neu-in-dieser-Version")
     }
 
+    /// A Stich's page from «Ausrüstung» down: the position is one row like the others.
+    func testEntryEquipment() {
+        tab("Tagebuch")
+        guard openStich("Feldschiessen") else { return XCTFail("The Stich did not open") }
+        topStop(app.staticTexts["Ausrüstung"].firstMatch, "02b-Eintrag-Ausruestung")
+    }
+
     /// A new stage with only IPSC scoring switched on: the stage and the hits with their footer.
     func testIPSCEntry() {
         relaunch(adding: ["-scoringSystems.v1", "ipsc"])

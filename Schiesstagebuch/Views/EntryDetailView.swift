@@ -6,6 +6,7 @@ struct EntryDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SportFeatures.key) private var features: SportFeatures = []
+    @ScaledMetric(relativeTo: .body) private var positionIconSize: CGFloat = 22
     @State private var editing = false
     @State private var confirmDelete = false
     /// The screen pops first and deletes in `onDisappear`, so it never renders a deleted entry.
@@ -100,8 +101,15 @@ struct EntryDetailView: View {
                 row("Munition", entry.ammunition?.name)
                 if let lot = entry.lot { row("Los", lot.number) }
                 if let position = entry.position {
-                    // Grey like the other values; the pictogram too, not in the tint.
-                    LabeledContent("Stellung".loc) { Label(position.title, image: position.iconName).foregroundStyle(.secondary) }
+                    // Grey like the other values; the pictogram too, not in the tint. Image and text side by side,
+                    // not a Label: with a Label the row came out several rows high (tester 2026-11-26).
+                    LabeledContent("Stellung".loc) {
+                        HStack(spacing: 6) {
+                            Image(decorative: position.iconName).resizable().frame(width: positionIconSize, height: positionIconSize)
+                            Text(position.title)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
                 }
             }
 
