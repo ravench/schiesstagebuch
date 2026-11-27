@@ -4,6 +4,18 @@ import SwiftUI
 @testable import Schiesstagebuch
 
 final class CaliberCatalogTests: ModelTestCase {
+    /// «mm» is dropped as the unit after a number only, not inside a word once the spaces are gone.
+    func testMillimetresAreAUnitOnlyAfterANumber() {
+        XCTAssertEqual(CaliberCatalog.normalizedAlias("9 mm Luger"), "9luger")
+        XCTAssertEqual(CaliberCatalog.normalizedAlias("9mm Luger"), "9luger")
+        XCTAssertEqual(CaliberCatalog.normalizedAlias("7.5x55 mm Swiss"), "7.5x55swiss")
+        XCTAssertEqual(CaliberCatalog.normalizedAlias("mm"), "", "the unit alone is nothing to search for")
+        XCTAssertEqual(CaliberCatalog.normalizedAlias("9mmLuger"), "9luger")
+        XCTAssertEqual(CaliberCatalog.normalizedAlias("5.56 Commercial"), "5.56commercial")
+        XCTAssertTrue(CaliberCatalog.normalizedAlias("5.56 Commercial").hasPrefix(CaliberCatalog.normalizedAlias("5.56 Com")))
+        XCTAssertTrue(CaliberCatalog.normalizedAlias(".416 Rimmed").hasPrefix(CaliberCatalog.normalizedAlias(".416 Rim")))
+    }
+
     /// Its own defaults: the test host's start-up clean-up reads the standard ones.
     private let defaults = UserDefaults(suiteName: "CaliberCatalogTests-\(UUID().uuidString)")!
 

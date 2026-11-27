@@ -123,7 +123,10 @@ struct Score {
 
 extension Entry {
     var score: Score {
-        Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount,
+        // An Anlass switched to IPSC hides the points of its Stiche; they must not go on counting in the
+        // averages and trends either (review 2026-11-27).
+        guard scoringSystem != .ipsc else { return Score(result: "", maxPoints: nil, shotValuesText: "", scoredShots: 0) }
+        return Score(result: result, maxPoints: maxPoints, shotValuesText: shotValuesText, scoredShots: scoredCount ?? shotCount,
               scoredShotsKnown: !isLegacyImport || sighterCount != nil, maxFromSlash: !isLegacyImport,
               percentFromResult: !isLegacyImport, maxPerShot: sighterCount == nil ? nil : target?.scoring.highest)
     }
@@ -137,6 +140,13 @@ extension Entry {
     /// get a percentage only once a maximum is entered, and a per-shot average only once the
     /// sighters are split off.
     var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
+
+    /// Oldest first. The Stiche of one Anlass share its date: among them the time of day decides, then the
+    /// order they were entered in, so a trend line runs through a day's Stiche as they were shot.
+    static func shotBefore(_ a: Entry, _ b: Entry) -> Bool {
+        let x = WeatherRecord.combine(day: a.date, time: a.time), y = WeatherRecord.combine(day: b.date, time: b.time)
+        return x != y ? x < y : a.createdAt < b.createdAt
+    }
 
     /// The position statistics count this Stich in: the one entered, else the weapon type's usual one,
     /// so Stiche saved before positions were recorded stay with the later ones.
@@ -233,7 +243,7 @@ extension Sequence where Element == Entry {
         func order(_ c: WeaponCategory?) -> Int { c.flatMap { WeaponCategory.allCases.firstIndex(of: $0) } ?? WeaponCategory.allCases.count }
         return Dictionary(grouping: filter { $0.score.percentage != nil }, by: { $0.weapon?.category })
             .filter { $0.value.count >= 2 }
-            .map { ResultTrend(category: $0.key, entries: $0.value.sorted { $0.date < $1.date }) }
+            .map { ResultTrend(category: $0.key, entries: $0.value.sorted(by: Entry.shotBefore)) }
             .sorted { order($0.category) < order($1.category) }
     }
 

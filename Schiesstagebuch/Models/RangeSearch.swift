@@ -31,7 +31,13 @@ enum RangeSearch {
     }
 
     private static func matches(_ range: some RangePlace, word: String) -> Bool {
-        if let d = distance(in: word), range.distances.contains(d) { return true }
+        if let d = distance(in: word) {
+            if range.distances.contains(d) { return true }
+            // A number of up to three digits is a distance, or stands as one in the name («… 50m»): «10» listed
+            // 207 ranges by their house numbers and postcodes, 3 of them with 10 m (review 2026-11-27).
+            // Four digits and more are a postcode and go on to the address.
+            if d < 1000 { return range.name.split { !$0.isLetter && !$0.isNumber }.contains { distance(in: String($0)) == d } }
+        }
         return range.name.localizedStandardContains(word)
             || range.place.localizedStandardContains(word)
             || range.address.localizedStandardContains(word)
