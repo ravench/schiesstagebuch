@@ -543,10 +543,11 @@ T = {
     "Aufgelegt": ("Rested", "Appuyé", "Appoggiato"),
     "Weiter": ("Next", "Suivant", "Avanti"),
     "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
-    "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": (
-        "Date, range, event and weather apply to all %lld matches.",
-        "La date, le stand, l'événement et la météo valent pour les %lld cibles.",
-        "Data, poligono, evento e meteo valgono per tutti i %lld bersagli."),
+    "Datum, Schiessanlage und Anlass gelten für alle %lld Stiche.": (
+        "Date, range and event apply to all %lld matches.",
+        "La date, le stand et l'événement valent pour les %lld cibles.",
+        "Data, poligono ed evento valgono per tutti i %lld bersagli."),
+    "Fotos werden geladen …": ("Loading photos …", "Chargement des photos …", "Caricamento delle foto …"),
     "Gilt für alle %lld Stiche dieses Anlasses.": (
         "Applies to all %lld matches of this event.",
         "Vaut pour les %lld cibles de cet événement.",

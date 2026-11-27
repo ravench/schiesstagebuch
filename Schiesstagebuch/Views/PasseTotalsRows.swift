@@ -36,7 +36,7 @@ struct PasseTotalsRows: View {
                 .frame(maxWidth: 56)
                 .accessibilityLabel(Text("Schüsse"))
             Text("Schuss").foregroundStyle(.secondary)
-            TextField("Punkte", value: passe.points, format: .number)
+            TextField("Punkte", value: passe.points, format: .decimalInput)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 72)

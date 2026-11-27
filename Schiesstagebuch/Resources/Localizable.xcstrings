@@ -2416,25 +2416,25 @@
         }
       }
     },
-    "Datum, Schiessanlage, Anlass und Wetter gelten für alle %lld Stiche.": {
+    "Datum, Schiessanlage und Anlass gelten für alle %lld Stiche.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Date, range, event and weather apply to all %lld matches."
+            "value": "Date, range and event apply to all %lld matches."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La date, le stand, l'événement et la météo valent pour les %lld cibles."
+            "value": "La date, le stand et l'événement valent pour les %lld cibles."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Data, poligono, evento e meteo valgono per tutti i %lld bersagli."
+            "value": "Data, poligono ed evento valgono per tutti i %lld bersagli."
           }
         }
       }
@@ -4189,6 +4189,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Foto non trovate"
+          }
+        }
+      }
+    },
+    "Fotos werden geladen …": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading photos …"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chargement des photos …"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caricamento delle foto …"
           }
         }
       }

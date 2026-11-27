@@ -100,6 +100,8 @@ struct EntryEditorView: View {
     @State private var photos: [Data] = []
     @State private var pickerItems: [PhotosPickerItem] = []
     @State private var photoLoadFailed = false
+    /// Picked photos are still being read: «Sichern» waits, or the Stich was saved without them.
+    @State private var loadingPhotos = false
     @State private var quickAdd: QuickAdd?
     @State private var didLoad = false
 
@@ -144,7 +146,7 @@ struct EntryEditorView: View {
                         TextField("Anlass", text: $event)
                     } footer: {
                         if stichCount > 1 {
-                            Text("Datum, Schiessanlage, Anlass und Wetter gelten für alle \(stichCount) Stiche.")
+                            Text("Datum, Schiessanlage und Anlass gelten für alle \(stichCount) Stiche.")
                         }
                     }
                 }
@@ -235,7 +237,9 @@ struct EntryEditorView: View {
 
                 Section {
                     PhotoGrid(photos: $photos)
-                    if photos.count < Limits.maxPhotos {
+                    if loadingPhotos {
+                        HStack(spacing: 8) { ProgressView(); Text("Fotos werden geladen …").foregroundStyle(.secondary) }
+                    } else if photos.count < Limits.maxPhotos {
                         PhotosPicker(selection: $pickerItems,
                                      maxSelectionCount: Limits.maxPhotos - photos.count,
                                      matching: .images) {
@@ -255,7 +259,7 @@ struct EntryEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(scoring == .rings && currentScore.exceedsMax) }
+                ToolbarItem(placement: .confirmationAction) { Button("Sichern") { save() }.bold().disabled(loadingPhotos || (scoring == .rings && currentScore.exceedsMax)) }
                 // The number pads have no return key to put the keyboard away.
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -299,12 +303,12 @@ struct EntryEditorView: View {
                 guard didLoad else { return }
                 // Carry the count over so switching modes never loses what was typed. Einzelschüsse or
                 // Passen with none typed carry nothing: the counts from before stay.
-                let total = shotTotal(in: old)
-                if (old != .shots && old != .passeTotals) || total > 0 {
-                    if old == .shots { sighters = sighterShotCount }
+                let typed = old.typedScored(split: scored, passen: enteredPasseTotals.shotCount, singles: passShotCount)
+                if old == .shots, sighterShotCount > 0 { sighters = sighterShotCount }
+                if old == .split || typed > 0 {
                     // The sum of the Passen or Einzelschüsse stays as the result in the other modes.
                     if let sum = summedResult(in: old) { result = sum }
-                    if new == .split { scored = max(0, total - sighters) }
+                    if new == .split { scored = typed }
                 }
                 if new == .passeTotals, passeTotals.isEmpty { passeTotals = [PasseTotalDraft()] }
             }
@@ -366,7 +370,7 @@ struct EntryEditorView: View {
                 }
                 CaptionedValue(title: "Max. Punkte") {
                     // Left empty, the maximum the target gives for the scored shots stands in.
-                    TextField(currentScore.effectiveMax.map(ScoreFormat.points) ?? "optional".loc, value: $maxPoints, format: .number)
+                    TextField(currentScore.effectiveMax.map(ScoreFormat.points) ?? "optional".loc, value: $maxPoints, format: .decimalInput)
                         .keyboardType(.decimalPad)
                 }
             }
@@ -447,9 +451,13 @@ struct EntryEditorView: View {
     private var enteredPasseTotals: [PasseTotal] { passeTotals.map(\.total).normalized }
 
     private var currentScore: Score {
-        Score(result: summedResult(in: mode) ?? result, maxPoints: maxPoints,
-              shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
-              scoredShots: scoredShotsForScore, maxPerShot: target?.scoring.highest)
+        // Read like the saved entry (`Entry.score`): a result imported from Schusszähler such as «371 / 82 / 45» names
+        // several Stiche, not 371 of 82, and must not block «Sichern» as above the maximum.
+        let imported = entry?.isLegacyImport ?? false
+        return Score(result: summedResult(in: mode) ?? result, maxPoints: maxPoints,
+                     shotValuesText: mode == .shots ? Score.joinPasses(passes.map(\.text)) : "",
+                     scoredShots: scoredShotsForScore, maxFromSlash: !imported, percentFromResult: !imported,
+                     maxPerShot: target?.scoring.highest)
     }
 
     /// The result added up from the Passen or Einzelschüsse; nil when there are none, so the user types it.
@@ -571,6 +579,8 @@ struct EntryEditorView: View {
 
     private func loadPhotos(_ items: [PhotosPickerItem]) async {
         guard !items.isEmpty else { return } // the reset below fires onChange again; it must not clear the alert
+        loadingPhotos = true
+        defer { loadingPhotos = false }
         var loaded: [Data?] = []
         for item in items { loaded.append(try? await item.loadTransferable(type: Data.self)) }
         (photos, photoLoadFailed) = ImageCompressor.adding(loaded, to: photos)

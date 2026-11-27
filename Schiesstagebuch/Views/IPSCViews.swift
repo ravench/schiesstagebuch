@@ -71,7 +71,7 @@ struct IPSCStageSection: View {
             HStack {
                 Text("Zeit")
                 Spacer()
-                TextField("Sekunden", value: $stage.time, format: .number.precision(.fractionLength(0...2)))
+                TextField("Sekunden", value: $stage.time, format: .decimalInput)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: 100)

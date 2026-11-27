@@ -309,6 +309,7 @@ struct TargetEditorView: View {
                     }
                 }
             }
+            .interactiveDismissDisabled() // only Abbrechen or Sichern closes it, like the other editors
             .navigationTitle(target == nil ? "Neue Scheibe".loc : "Scheibe bearbeiten".loc)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
