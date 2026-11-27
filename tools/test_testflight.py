@@ -82,9 +82,10 @@ class EntitlementTests(unittest.TestCase):
                 plistlib.dump(self.EXPECTED, f)
             ok = subprocess.run([sys.executable, SCRIPT, "check-entitlements", signed, expected], capture_output=True, text=True)
             self.assertEqual(ok.returncode, 0, ok.stderr)
-            # Apps without an entitlements file (no capabilities) pass.
-            ok = subprocess.run([sys.executable, SCRIPT, "check-entitlements", signed, os.path.join(tmp, "none")], capture_output=True, text=True)
-            self.assertEqual(ok.returncode, 0, ok.stderr)
+            # Without the project's entitlements file there is nothing to compare with: that fails.
+            none = subprocess.run([sys.executable, SCRIPT, "check-entitlements", signed, os.path.join(tmp, "none")], capture_output=True, text=True)
+            self.assertNotEqual(none.returncode, 0)
+            self.assertIn("No entitlements file", none.stderr)
 
 
 class ExportDestinationTests(unittest.TestCase):

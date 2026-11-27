@@ -76,10 +76,14 @@ def main(argv):
     elif len(argv) == 4 and argv[1] == "check-entitlements":
         with open(argv[2], "rb") as f:
             signed = plistlib.load(f)
-        expected = {}
-        if os.path.exists(argv[3]):
-            with open(argv[3], "rb") as f:
-                expected = plistlib.load(f)
+        # The app syncs and reminds through its entitlements: a missing or empty file must not pass
+        # as "nothing to check" (review 2026-11-27).
+        if not os.path.exists(argv[3]):
+            sys.exit(f"No entitlements file at {argv[3]}")
+        with open(argv[3], "rb") as f:
+            expected = plistlib.load(f)
+        if not expected:
+            sys.exit(f"The entitlements file {argv[3]} is empty")
         missing = missing_entitlements(signed, expected)
         if missing:
             sys.exit("Signed app lacks entitlements: " + ", ".join(missing))
