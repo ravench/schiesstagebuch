@@ -595,7 +595,7 @@ struct RangeEditorView: View {
         NavigationStack {
             Form {
                 TextField("Name, z. B. Albisgüetli", text: $name)
-                PlaceField(place: $place, location: $location)
+                PlaceField(place: $place, location: $location, keepsPosition: range?.catalogID.isEmpty == false)
                 Section {
                     RangeBearingRow(bearing: $bearing)
                     LabeledContent("Höhe") {

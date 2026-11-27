@@ -77,6 +77,10 @@ T = {
         "Cette sauvegarde provient d'une version plus récente de l'app.",
         "Questo backup proviene da una versione più recente dell'app."),
     "Backup wiederherstellen": ("Restore backup", "Restaurer une sauvegarde", "Ripristina backup"),
+    "Der Standort ist zu ungenau für eine Schiessanlage. Schalte «Genauer Standort» ein oder suche die Adresse.": (
+        "The location is too vague for a range. Turn on precise location or search for the address.",
+        "La position est trop imprécise pour un stand. Active « Position exacte » ou cherche l'adresse.",
+        "La posizione è troppo imprecisa per un poligono. Attiva «Posizione esatta» o cerca l'indirizzo."),
     "Bearbeiten": ("Edit", "Modifier", "Modifica"),
     "Beim Erfassen werden nur diese Kaliber angeboten. Das Standardkaliber ist vorausgewählt.": (
         "Only these calibres are offered when logging. The default calibre is preselected.",
