@@ -392,23 +392,7 @@ enum LegacyImport {
             summary.entries += 1
         }
 
-        // A firearm has at least one barrel. One whose ammunition got no calibre gets a barrel without one:
-        // its editor then offers «Kaliber: Wählen», instead of a firearm the Stich editor has no calibre row for.
-        for w in newWeapons where usage[norm(w.name)] == nil {
-            let barrel = Barrel()
-            context.insert(barrel)
-            barrel.isDefault = true
-            barrel.weapon = w
-        }
-
-        // Each calibre used with a weapon gets a barrel; the most-shot one is the default for new weapons.
-        for (key, counts) in usage {
-            guard let w = weapons[key] else { continue }
-            let hadBarrels = !(w.barrels ?? []).isEmpty
-            let ordered = counts.sorted { ($0.value, $1.key.name) > ($1.value, $0.key.name) }.map(\.key)
-            let created = ordered.map { w.ensureBarrel(for: $0, in: context) }
-            if !hadBarrels, let first = created.first { w.makeDefault(first) }
-        }
+        addBarrels(usage: usage, weapons: weapons, newWeapons: newWeapons, context: context)
 
         do {
             try context.save()
@@ -417,6 +401,26 @@ enum LegacyImport {
             throw error
         }
         return summary
+    }
+
+    /// Each calibre used with a weapon gets a barrel; the most-shot one is the default for new weapons.
+    @MainActor
+    private static func addBarrels(usage: [String: [Caliber: Int]], weapons: [String: Weapon], newWeapons: [Weapon], context: ModelContext) {
+        // A firearm has at least one barrel. One whose ammunition got no calibre gets a barrel without one:
+        // its editor then offers «Kaliber: Wählen», instead of a firearm the Stich editor has no calibre row for.
+        for w in newWeapons where usage[norm(w.name)] == nil {
+            let barrel = Barrel()
+            context.insert(barrel)
+            barrel.isDefault = true
+            barrel.weapon = w
+        }
+        for (key, counts) in usage {
+            guard let w = weapons[key] else { continue }
+            let hadBarrels = !(w.barrels ?? []).isEmpty
+            let ordered = counts.sorted { ($0.value, $1.key.name) > ($1.value, $0.key.name) }.map(\.key)
+            let created = ordered.map { w.ensureBarrel(for: $0, in: context) }
+            if !hadBarrels, let first = created.first { w.makeDefault(first) }
+        }
     }
 
     /// The range of a row: the one a switched-on match points to (a catalogue range is added on
