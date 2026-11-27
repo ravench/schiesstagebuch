@@ -207,17 +207,27 @@ enum CaliberCatalog {
         return moved
     }
 
-    /// A catalogue record that holds nothing of the user's (the catalogue's name and category, not
-    /// archived, no barrel, ammunition or entry) goes; the catalogue entry stands in for it. A
-    /// cancelled picker leaves such records, a backup can bring them back. Runs at every start.
-    /// Judged by the relationships, never by a flag, so a record in use anywhere survives.
+    /// Ids of the records `CaliberChoice.record(in:)` made on this device since the last start.
+    static let pickedKey = "calibersPickedHere"
+
+    static func notePicked(_ caliber: Caliber, defaults: UserDefaults = .standard) {
+        defaults.set((defaults.stringArray(forKey: pickedKey) ?? []) + [caliber.id.uuidString], forKey: pickedKey)
+    }
+
+    /// A catalogue record picked on this device that holds nothing of the user's (the catalogue's name
+    /// and category, not archived, no barrel, ammunition or entry) goes: a cancelled editor leaves such
+    /// records. Runs at every start. Only records made here since the last start are looked at: one that
+    /// came by iCloud looks unused while its barrels and entries have not arrived yet, and deleting it
+    /// would take the calibre off them on every device (review 2026-11-27).
     /// Returns the number of records removed.
     @MainActor
     @discardableResult
-    static func removeUnused(_ context: ModelContext) -> Int {
-        guard let all = try? context.fetch(FetchDescriptor<Caliber>()) else { return 0 }
+    static func removeUnused(_ context: ModelContext, defaults: UserDefaults = .standard) -> Int {
+        let picked = Set(defaults.stringArray(forKey: pickedKey) ?? [])
+        defaults.removeObject(forKey: pickedKey)
+        guard !picked.isEmpty, let all = try? context.fetch(FetchDescriptor<Caliber>()) else { return 0 }
         var removed = 0
-        for c in all {
+        for c in all where picked.contains(c.id.uuidString) {
             guard let item = item(id: c.catalogID), !c.isArchived, c.category == item.category, c.name == item.name,
                   (c.barrels ?? []).isEmpty, (c.ammunitions ?? []).isEmpty, (c.entries ?? []).isEmpty else { continue }
             context.delete(c)
@@ -300,11 +310,12 @@ struct CaliberChoice: CaliberLike, Identifiable {
 
     /// The record, made and inserted now for a catalogue entry: the user picked it.
     @MainActor
-    func record(in context: ModelContext) -> Caliber {
+    func record(in context: ModelContext, defaults: UserDefaults = .standard) -> Caliber {
         if let record { return record }
         let c = Caliber(name: name, category: category)
         c.catalogID = catalogID
         context.insert(c)
+        CaliberCatalog.notePicked(c, defaults: defaults)
         return c
     }
 }

@@ -4,13 +4,18 @@ import SwiftUI
 @testable import Schiesstagebuch
 
 final class CaliberCatalogTests: ModelTestCase {
-    private func catalogCaliber(_ id: String, createdAt: Date, archived: Bool = false) -> Caliber {
+    /// Its own defaults: the test host's start-up clean-up reads the standard ones.
+    private let defaults = UserDefaults(suiteName: "CaliberCatalogTests-\(UUID().uuidString)")!
+
+    /// `picked`: made by a picker on this device since the last start, as `CaliberChoice.record(in:)` notes it.
+    private func catalogCaliber(_ id: String, createdAt: Date, archived: Bool = false, picked: Bool = true) -> Caliber {
         let item = CaliberCatalog.item(id: id)!
         let c = Caliber(name: item.name, category: item.category)
         c.catalogID = id
         c.createdAt = createdAt
         c.isArchived = archived
         context.insert(c)
+        if picked { CaliberCatalog.notePicked(c, defaults: defaults) }
         return c
     }
 
@@ -18,12 +23,21 @@ final class CaliberCatalogTests: ModelTestCase {
 
     // MARK: The catalogue is a reference: unused records go
 
-    func testUnusedSeededRecordIsRemoved() throws {
+    func testUnusedRecordPickedHereIsRemoved() throws {
         _ = catalogCaliber(nineMM, createdAt: day(1))
         try context.save()
-        XCTAssertEqual(CaliberCatalog.removeUnused(context), 1)
+        XCTAssertEqual(CaliberCatalog.removeUnused(context, defaults: defaults), 1)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 0)
-        XCTAssertEqual(CaliberCatalog.removeUnused(context), 0, "idempotent")
+        XCTAssertEqual(CaliberCatalog.removeUnused(context, defaults: defaults), 0, "idempotent")
+    }
+
+    /// A record that came by iCloud looks unused until its barrels and entries arrive: it must stay.
+    func testUnusedRecordFromAnotherDeviceStays() throws {
+        _ = catalogCaliber(nineMM, createdAt: day(1), picked: false)
+        _ = catalogCaliber(".22 LR", createdAt: day(1))
+        try context.save()
+        XCTAssertEqual(CaliberCatalog.removeUnused(context, defaults: defaults), 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<Caliber>()).map(\.catalogID), [nineMM])
     }
 
     // MARK: Renamed catalogue entries
@@ -68,7 +82,7 @@ final class CaliberCatalogTests: ModelTestCase {
         context.insert(Ammunition(name: "GP 11", caliber: forAmmo))
         context.insert(Entry(date: day(3), weapon: weapon, caliber: forEntry, shotCount: 10))
         try context.save()
-        XCTAssertEqual(CaliberCatalog.removeUnused(context), 0)
+        XCTAssertEqual(CaliberCatalog.removeUnused(context, defaults: defaults), 0)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 3)
     }
 
@@ -79,7 +93,7 @@ final class CaliberCatalogTests: ModelTestCase {
         context.insert(Caliber(name: "Eigenes"))
         let unknown = Caliber(name: "Alt"); unknown.catalogID = "Nicht im Katalog"; context.insert(unknown)
         try context.save()
-        XCTAssertEqual(CaliberCatalog.removeUnused(context), 0)
+        XCTAssertEqual(CaliberCatalog.removeUnused(context, defaults: defaults), 0)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 5)
     }
 
@@ -107,7 +121,7 @@ final class CaliberCatalogTests: ModelTestCase {
 
     func testPickingACatalogueEntryMakesItsRecordOnce() throws {
         let choice = try XCTUnwrap(CaliberChoice.all([]).first { $0.catalogID == nineMM })
-        let record = choice.record(in: context)
+        let record = choice.record(in: context, defaults: defaults)
         XCTAssertEqual(record.catalogID, nineMM)
         XCTAssertEqual(record.name, "9x19 mm")
         XCTAssertEqual(record.category, CaliberCatalog.Category.handgun.rawValue)
@@ -116,7 +130,7 @@ final class CaliberCatalogTests: ModelTestCase {
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<Caliber>()), 1)
         // Picked but never used (the editor was cancelled): the record goes at the next start.
         try context.save()
-        XCTAssertEqual(CaliberCatalog.removeUnused(context), 1)
+        XCTAssertEqual(CaliberCatalog.removeUnused(context, defaults: defaults), 1)
     }
 
     func testRareCatalogueEntriesHideUntilTheUserHasThem() throws {

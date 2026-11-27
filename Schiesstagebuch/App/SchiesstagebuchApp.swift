@@ -48,13 +48,13 @@ struct SchiesstagebuchApp: App {
             RootView()
                 .environment(\.term, Terms(sportsEquipment: sportsEquipment))
                 .task {
+                    // Nothing here may delete or empty a record for what it lacks: during a first iCloud
+                    // import records arrive before their links (review 2026-11-27).
                     CaliberCatalog.followRenames(container.mainContext)
                     CaliberCatalog.removeUnused(container.mainContext)
                     CaliberCatalog.deduplicate(container.mainContext)
-                    RangeCatalog.removeUnused(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
                     TargetCatalog.deduplicate(container.mainContext)
-                    if WeatherRecord.moveToStiche(in: container.mainContext) { try? container.mainContext.save() }
                     if ScreenshotData.isActive { ScreenshotData.seed(container.mainContext) }
                 }
                 // Core Data posts this from a background queue; mainContext must only be used on the main thread.
@@ -63,7 +63,6 @@ struct SchiesstagebuchApp: App {
                     CaliberCatalog.deduplicate(container.mainContext)
                     RangeCatalog.deduplicate(container.mainContext)
                     TargetCatalog.deduplicate(container.mainContext)
-                    if WeatherRecord.moveToStiche(in: container.mainContext) { try? container.mainContext.save() }
                     // A cleaning recorded on another device cancels the reminder pending here.
                     MaintenanceNotifier.refreshAll(in: container.mainContext)
                 }
