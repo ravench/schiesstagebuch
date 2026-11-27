@@ -202,7 +202,8 @@ enum WeaponCategory: String, CaseIterable, Identifiable, Codable {
             (.huntingRifle, ["drilling", "vierling", "büchsflinte", "buechsflinte", "kipplaufbüchse"]),
             // Shotguns before pistols, so "Beretta Bockflinte" is not taken for a Beretta pistol.
             (.shotgun, ["flinte", "shotgun", "bock"]),
-            (.pistol, ["p75", "p210", "p220", "p226", "p320", "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
+            (.pistol, ["p75", "p210", "p220", "p225", "p226", "p228", "p229", "p239", "p320", "p365", "sp2022",
+                      "1911", "glock", "pistol", "cz75", "cz 75", "p 75", "sp01", "beretta"]),
             (.airgun, ["luftgewehr", "luft", "air", "lg "]),
             // After air guns: Anschütz also makes air rifles.
             (.sportRifle, ["matchgewehr", "sportgewehr", "kleinkaliber", "anschütz", "anschuetz", "grünig", "bleiker"]),

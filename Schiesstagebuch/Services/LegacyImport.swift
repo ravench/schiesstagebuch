@@ -48,18 +48,23 @@ enum LegacyImport {
         }
     }
 
-    static func read(_ url: URL) throws -> [Row] {
+    static func read(_ url: URL) throws -> [Row] { try readCounting(url).rows }
+
+    /// The rows of the file, and how many of its lines were left out because they have no readable date:
+    /// the preview says so instead of just showing fewer entries (import check 2026-11-27).
+    static func readCounting(_ url: URL) throws -> (rows: [Row], skipped: Int) {
         let data = try Data(contentsOf: url)
-        let rows: [Row]
+        let rows: [Row], total: Int
         if data.starts(with: Array("SQLite format 3".utf8)) {
-            rows = try readSQLite(url)
+            (rows, total) = try readSQLite(url)
         } else if let text = String(data: data, encoding: .utf8) ?? String(data: data, encoding: .isoLatin1) {
             rows = parseTSV(text)
+            total = max(0, lines(text).count - 1)
         } else {
             throw ImportError.unreadable
         }
         guard !rows.isEmpty else { throw ImportError.noRows }
-        return rows
+        return (rows, max(0, total - rows.count))
     }
 
     // MARK: Parsing
@@ -104,8 +109,12 @@ enum LegacyImport {
                    pictures: ["picture1", "picture2", "picture3", "picture4"].map { v($0) }.filter { !$0.isEmpty })
     }
 
+    private static func lines(_ text: String) -> [Substring] {
+        text.replacingOccurrences(of: "\r\n", with: "\n").split(separator: "\n", omittingEmptySubsequences: true)
+    }
+
     static func parseTSV(_ text: String) -> [Row] {
-        let lines = text.replacingOccurrences(of: "\r\n", with: "\n").split(separator: "\n", omittingEmptySubsequences: true)
+        let lines = lines(text)
         guard let header = lines.first else { return [] }
         let keys = header.split(separator: "\t", omittingEmptySubsequences: false)
             .map { $0.trimmingCharacters(in: .whitespaces).lowercased().replacingOccurrences(of: "\u{FEFF}", with: "") }
@@ -117,7 +126,8 @@ enum LegacyImport {
         }
     }
 
-    static func readSQLite(_ url: URL) throws -> [Row] {
+    /// The rows with a readable date, and the number of rows in the table.
+    static func readSQLite(_ url: URL) throws -> (rows: [Row], total: Int) {
         var db: OpaquePointer?
         guard sqlite3_open_v2(url.path, &db, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else { throw ImportError.unreadable }
         defer { sqlite3_close(db) }
@@ -125,7 +135,9 @@ enum LegacyImport {
         guard sqlite3_prepare_v2(db, "SELECT * FROM wepon ORDER BY id", -1, &stmt, nil) == SQLITE_OK else { throw ImportError.unreadable }
         defer { sqlite3_finalize(stmt) }
         var rows: [Row] = []
+        var total = 0
         while sqlite3_step(stmt) == SQLITE_ROW {
+            total += 1
             var f: [String: String] = [:]
             for i in 0..<sqlite3_column_count(stmt) {
                 guard let cName = sqlite3_column_name(stmt, i) else { continue }
@@ -134,7 +146,7 @@ enum LegacyImport {
             }
             if let row = makeRow(f) { rows.append(row) }
         }
-        return rows
+        return (rows, total)
     }
 
     // MARK: Plan
@@ -142,6 +154,8 @@ enum LegacyImport {
     /// What the import will create, shown to the user before anything is written.
     struct Plan {
         var rows: [Row]
+        /// Lines of the file left out because they have no readable date.
+        var skipped = 0
         var newRows: [Row]
         /// Old ammo text → calibre (catalogue id or existing calibre name). Editable in the preview.
         var ammoCaliber: [String: String]
@@ -206,11 +220,16 @@ enum LegacyImport {
         let newRows = rows.filter { !existing.contains($0.key) }
         let ammos = Set(rows.map(\.ammo).filter { !$0.isEmpty })
         let calibers = (try? context.fetch(FetchDescriptor<Caliber>())) ?? []
+        // Ammunition already in the app keeps its calibre: a later import of the same file must not offer
+        // «Kein Kaliber» for what the user assigned the first time (import check 2026-11-27).
+        let known = Dictionary(((try? context.fetch(FetchDescriptor<Ammunition>())) ?? []).map { (norm($0.name), $0) }, uniquingKeysWith: { a, _ in a })
         var mapping: [String: String] = [:]
         for a in ammos {
+            if let name = known[norm(a)]?.caliber?.name {
+                mapping[a] = name
             // The user's calibre for this catalogue entry may have been renamed; its name is what
             // the picker offers, so map to that and not to the catalogue's own name.
-            if let item = CaliberCatalog.match(a) {
+            } else if let item = CaliberCatalog.match(a) {
                 mapping[a] = calibers.first { $0.catalogID == item.id && !$0.isArchived }?.name ?? item.name
             }
         }
@@ -373,7 +392,12 @@ enum LegacyImport {
             if !hadBarrels, let first = created.first { w.makeDefault(first) }
         }
 
-        try context.save()
+        do {
+            try context.save()
+        } catch {
+            context.rollback() // nothing half imported stays behind for the autosave
+            throw error
+        }
         return summary
     }
 
@@ -428,7 +452,7 @@ enum LegacyImport {
 
     // MARK: Photos
 
-    private static func requestPhotoAccess() async -> Bool {
+    static func requestPhotoAccess() async -> Bool {
         let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
         return status == .authorized || status == .limited
     }

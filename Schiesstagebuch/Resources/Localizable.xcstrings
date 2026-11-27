@@ -2554,25 +2554,25 @@
         }
       }
     },
-    "Der Export enthält nur Verweise auf %lld Fotos in deiner Mediathek. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": {
+    "Der Export enthält nur Verweise auf Fotos in deiner Mediathek (%lld). Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The export only holds references to %lld photos in your library. They are found if the photos are still on this device or in iCloud Photos."
+            "value": "The export only holds references to photos in your library (%lld). They are found if the photos are still on this device or in iCloud Photos."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'export ne contient que des références vers %lld photos de votre photothèque. Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
+            "value": "L'export ne contient que des références vers des photos de votre photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'esportazione contiene solo riferimenti a %lld foto della tua libreria. Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."
+            "value": "L'esportazione contiene solo riferimenti a foto della tua libreria (%lld). Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."
           }
         }
       }
@@ -8500,6 +8500,29 @@
         }
       }
     },
+    "Ohne Zugriff auf die Fotomediathek können die Fotos nicht übernommen werden. Erlaube den Zugriff in den Einstellungen des iPhones, oder schalte «Fotos aus der Fotomediathek übernehmen» aus.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Without access to the photo library the photos cannot be brought over. Allow the access in the settings of the iPhone, or switch off bringing over the photos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans accès à la photothèque, les photos ne peuvent pas être reprises. Autorise l'accès dans les réglages de l'iPhone ou désactive « Reprendre les photos de la photothèque »."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senza accesso alla libreria foto le foto non possono essere riprese. Consenti l'accesso nelle impostazioni dell'iPhone oppure disattiva «Riprendi le foto dalla libreria»."
+          }
+        }
+      }
+    },
     "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": {
       "extractionState": "manual",
       "localizations": {
@@ -12797,6 +12820,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna."
+          }
+        }
+      }
+    },
+    "Zeilen ohne lesbares Datum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lines without a readable date"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lignes sans date lisible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Righe senza data leggibile"
           }
         }
       }

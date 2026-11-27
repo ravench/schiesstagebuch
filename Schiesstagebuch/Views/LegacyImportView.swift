@@ -59,6 +59,9 @@ struct LegacyImportView: View {
                         if plan.newRows.count < plan.rows.count {
                             LabeledContent("Davon schon importiert", value: "\(plan.rows.count - plan.newRows.count)")
                         }
+                        if plan.skipped > 0 {
+                            LabeledContent("Zeilen ohne lesbares Datum", value: "\(plan.skipped)")
+                        }
                         LabeledContent("Schüsse", value: plan.newRows.reduce(0) { $0 + $1.shots }.formatted())
                         LabeledContent(term("Waffen").loc, value: plan.weapons.joined(separator: ", "))
                         LabeledContent("Schiessanlagen", value: "\(plan.ranges.count)")
@@ -102,7 +105,7 @@ struct LegacyImportView: View {
                         Section {
                             Toggle("Fotos aus der Fotomediathek übernehmen", isOn: $loadPhotos)
                         } footer: {
-                            Text("Der Export enthält nur Verweise auf \(plan.photoCount) Fotos in deiner Mediathek. Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.")
+                            Text("Der Export enthält nur Verweise auf Fotos in deiner Mediathek (\(plan.photoCount)). Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.")
                         }
                     }
                     Section {
@@ -130,7 +133,7 @@ struct LegacyImportView: View {
                     }
                 }
             }
-            .navigationTitle(String(localized: "Import aus «\(LegacyImport.sourceAppName)»"))
+            .navigationTitle("Import") // the app's name is in the text below; with it the title was cut off
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -208,7 +211,9 @@ struct LegacyImportView: View {
         let scoped = url.startAccessingSecurityScopedResource()
         defer { if scoped { url.stopAccessingSecurityScopedResource() } }
         do {
-            plan = LegacyImport.plan(try LegacyImport.read(url), context: context)
+            let file = try LegacyImport.readCounting(url)
+            plan = LegacyImport.plan(file.rows, context: context)
+            plan?.skipped = file.skipped
         } catch {
             self.error = error.localizedDescription
         }
@@ -217,6 +222,13 @@ struct LegacyImportView: View {
     private func run(_ plan: LegacyImport.Plan) {
         running = true
         Task {
+            // Asked before anything is written: imported without access, the entries are there and a second
+            // import skips them, so their photos could never follow.
+            if loadPhotos, plan.photoCount > 0, !(await LegacyImport.requestPhotoAccess()) {
+                error = "Ohne Zugriff auf die Fotomediathek können die Fotos nicht übernommen werden. Erlaube den Zugriff in den Einstellungen des iPhones, oder schalte «Fotos aus der Fotomediathek übernehmen» aus.".loc
+                running = false
+                return
+            }
             do {
                 summary = try await LegacyImport.apply(plan, context: context, loadPhotos: loadPhotos)
             } catch {

@@ -149,7 +149,11 @@ enum CaliberCatalog {
     static func match(_ text: String) -> Item? {
         let key = normalizedAlias(text)
         guard !key.isEmpty else { return nil }
-        return exactMatch(text) ?? items.first { normalizedAlias($0.name).hasPrefix(key) }
+        if let exact = exactMatch(text) { return exact }
+        // A prefix only when it names one entry: the first of several in file order made «7.62» a Tokarev
+        // and «8» a blank (review 2026-11-27).
+        let starting = items.filter { normalizedAlias($0.name).hasPrefix(key) }
+        return starting.count == 1 ? starting[0] : nil
     }
 
     /// The catalogue entry whose name or one of its other names is `text`, spelled any way.
