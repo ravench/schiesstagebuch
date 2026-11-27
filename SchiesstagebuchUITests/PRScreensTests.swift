@@ -776,6 +776,18 @@ final class PRScreensTests: XCTestCase {
         snap("11c-Kaliber-32-SW")
     }
 
+    /// The journal row of an Anlass with two Stiche: their number beside the list symbol, then range and firearm.
+    func testJournalRowWithSeveralStiche() {
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
+        app.buttons["Sichern"].firstMatch.tap()
+        guard app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5) else {
+            return XCTFail("The second Stich was not saved")
+        }
+        back()
+        snap("01c-Tagebuch-mehrere-Stiche")
+    }
+
     /// The Swiss cadet round, found by the name on its box.
     func testKadettenpatrone() {
         tab("Einstellungen")

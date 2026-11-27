@@ -257,7 +257,9 @@ struct EventRow: View {
                     .font(.headline)
                     .lineLimit(1)
                 HStack(spacing: 6) {
-                    Label(String(localized: "\(entries.count) Stiche"), systemImage: "list.number")
+                    // The number alone: with the word, range and firearm were all cut off (tester 2026-11-26).
+                    Label(entries.count.formatted(), systemImage: "list.number")
+                        .accessibilityLabel(String(localized: "\(entries.count) Stiche"))
                     if let range = event.range {
                         Label(range.name, systemImage: "mappin.and.ellipse")
                     }
