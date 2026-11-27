@@ -18,6 +18,7 @@ struct NumberStepperRow: View {
                 .keyboardType(.numberPad)
                 .multilineTextAlignment(.trailing)
                 .frame(maxWidth: 90)
+                .accessibilityLabel(Text(title.loc)) // else the field's only name is its placeholder «0»
             Stepper(title.loc) {
                 value = Self.snap(value, step: step, up: true, in: range)
             } onDecrement: {

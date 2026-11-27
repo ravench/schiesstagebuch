@@ -439,7 +439,9 @@ struct WeaponEditorView: View {
         } footer: {
             // One view: of two, the form shows only the first.
             VStack(alignment: .leading, spacing: 6) {
-                Text("Erinnert, sobald eine der beiden Grenzen seit der letzten \(kind.title) erreicht ist.")
+                // A sentence per kind: with the kind put in, German read «seit der letzten Service».
+                Text(kind == .cleaning ? "Erinnert, sobald eine der beiden Grenzen seit der letzten Reinigung erreicht ist.".loc
+                     : "Erinnert, sobald eine der beiden Grenzen seit dem letzten Service erreicht ist.".loc)
                 if kind == .service {
                     Text("Eine Reinigung setzt Schüsse und Tage der Reinigung zurück, ein Service zusätzlich die des Service.")
                 }
@@ -514,6 +516,7 @@ struct SerialNumbersSection: View {
                         Menu {
                             ForEach(PartSerial.suggestedLabels, id: \.self) { l in Button(l.loc) { row.label = l.loc } }
                         } label: { Image(systemName: "list.bullet") }
+                        .accessibilityLabel(Text("Vorschläge"))
                     }
                     SerialField(title: "Nummer", text: $row.number)
                     if row.isIncomplete {

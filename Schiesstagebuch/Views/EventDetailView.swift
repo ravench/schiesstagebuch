@@ -31,7 +31,7 @@ struct EventDetailView: View {
 
             Section {
                 HStack(spacing: 0) {
-                    metric(event.scoringSystem == .ipsc ? "Stages" : "Stiche", event.stichCount.formatted())
+                    metric(Self.stichCaption(count: event.stichCount, ipsc: event.scoringSystem == .ipsc), event.stichCount.formatted())
                     Divider()
                     metric("Schüsse", event.totalShots.formatted())
                     if let points = event.ipscPoints {
@@ -39,7 +39,7 @@ struct EventDetailView: View {
                         metric("Punkte", points.formatted())
                     }
                 }
-                .frame(height: 64)
+                .frame(minHeight: 64) // at least; the figures grow with Larger Text
             }
 
             Section(event.scoringSystem == .ipsc ? "Stages".loc : "Stiche".loc) {
@@ -90,6 +90,11 @@ struct EventDetailView: View {
     private func deleteStiche(_ offsets: IndexSet) {
         let entries = event.sortedEntries
         try? Deletion.delete(offsets.map { entries[$0] }, in: context)
+    }
+
+    /// The word under the number of Stiche: «1 Stich», not «1 Stiche».
+    static func stichCaption(count: Int, ipsc: Bool) -> String {
+        ipsc ? (count == 1 ? "Stage" : "Stages") : (count == 1 ? "Stich" : "Stiche")
     }
 
     private func metric(_ title: String, _ value: String) -> some View {
@@ -228,6 +233,7 @@ struct EventEditorView: View {
                             Menu {
                                 ForEach(recentEvents, id: \.self) { e in Button(e) { name = e } }
                             } label: { Image(systemName: "clock.arrow.circlepath") }
+                            .accessibilityLabel(Text("Frühere Anlässe"))
                         }
                     }
                     ForEach(nameSuggestions, id: \.self) { s in
@@ -239,7 +245,8 @@ struct EventEditorView: View {
                     }
                 } footer: {
                     if let event {
-                        Text("Gilt für alle \(event.stichCount) Stiche dieses Anlasses.")
+                        // Only with several: «Gilt für alle 1 Stiche» is no sentence.
+                        if event.stichCount > 1 { Text("Gilt für alle \(event.stichCount) Stiche dieses Anlasses.") }
                     } else {
                         Text("Die Stiche erfasst du anschliessend im Anlass.")
                     }

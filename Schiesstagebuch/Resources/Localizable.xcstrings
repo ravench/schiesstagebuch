@@ -3612,25 +3612,48 @@
         }
       }
     },
-    "Erinnert, sobald eine der beiden Grenzen seit der letzten %@ erreicht ist.": {
+    "Erinnert, sobald eine der beiden Grenzen seit dem letzten Service erreicht ist.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reminds you as soon as either limit is reached since the last %@."
+            "value": "Reminds you as soon as either limit is reached since the last service."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière %@."
+            "value": "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière révision."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima %@."
+            "value": "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima revisione."
+          }
+        }
+      }
+    },
+    "Erinnert, sobald eine der beiden Grenzen seit der letzten Reinigung erreicht ist.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminds you as soon as either limit is reached since the last cleaning."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima pulizia."
           }
         }
       }
@@ -4078,6 +4101,52 @@
         }
       }
     },
+    "Foto %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foto %lld"
+          }
+        }
+      }
+    },
+    "Foto löschen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete photo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la photo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina foto"
+          }
+        }
+      }
+    },
     "Fotos": {
       "extractionState": "manual",
       "localizations": {
@@ -4235,6 +4304,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Francia"
+          }
+        }
+      }
+    },
+    "Frühere Anlässe": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier events"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Événements précédents"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eventi precedenti"
+          }
+        }
+      }
+    },
+    "Frühere Stiche": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Earlier matches"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cibles précédentes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bersagli precedenti"
           }
         }
       }
@@ -12038,6 +12153,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anteprima"
+          }
+        }
+      }
+    },
+    "Vorschläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggestions"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggestions"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggerimenti"
           }
         }
       }
