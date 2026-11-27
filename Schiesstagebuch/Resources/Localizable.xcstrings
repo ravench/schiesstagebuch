@@ -1680,6 +1680,52 @@
         }
       }
     },
+    "Backup wiederherstellen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore a backup?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurer une sauvegarde ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristinare un backup?"
+          }
+        }
+      }
+    },
+    "Backup wählen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose backup"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir la sauvegarde"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli il backup"
+          }
+        }
+      }
+    },
     "Barcode kann nicht dargestellt werden": {
       "extractionState": "manual",
       "localizations": {
@@ -7300,6 +7346,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Con una durata prevista, l'app mostra quanto è usurata la canna."
+          }
+        }
+      }
+    },
+    "Mit iCloud kommen deine Daten von selbst auf dieses Gerät, das kann einige Minuten dauern. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen: was iCloud danach noch liefert, ist sonst doppelt.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With iCloud your data comes to this device by itself, which can take a few minutes. Restore a backup only if you do not use iCloud or the data is missing there: otherwise whatever iCloud still delivers afterwards will be there twice."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec iCloud, tes données arrivent d'elles-mêmes sur cet appareil, ce qui peut prendre quelques minutes. Ne restaure une sauvegarde que si tu n'utilises pas iCloud ou si les données y manquent : sinon, tout ce qu'iCloud livre encore ensuite sera en double."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con iCloud i tuoi dati arrivano da soli su questo dispositivo, possono volerci alcuni minuti. Ripristina un backup solo se non usi iCloud o se lì i dati mancano: altrimenti ciò che iCloud consegna ancora dopo sarà doppio."
           }
         }
       }

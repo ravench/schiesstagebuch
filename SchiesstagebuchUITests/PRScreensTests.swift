@@ -399,6 +399,17 @@ final class PRScreensTests: XCTestCase {
         }
     }
 
+    /// Restoring a backup asks first: with iCloud still delivering, a restore doubles every record.
+    func testRestoreAsks() {
+        tab("Einstellungen")
+        let restore = app.buttons["Backup wiederherstellen"].firstMatch
+        reveal(restore)
+        guard open(restore), app.buttons["Backup wählen"].firstMatch.waitForExistence(timeout: 5) else {
+            return XCTFail("Restoring a backup does not ask first")
+        }
+        snap("08r-Backup-wiederherstellen-Frage")
+    }
+
     /// A target with Stiche (the Obligatorisch's A5) asks before it is deleted. A test of its own: on a base
     /// branch that deletes at once, the stops of `testTargets` keep their A5.
     func testTargetDeleteAsks() {

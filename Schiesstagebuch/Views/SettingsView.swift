@@ -10,6 +10,8 @@ struct SettingsView: View {
     @State private var exportType: UTType = .json
     @State private var exportName = ""
     @State private var importing = false
+    /// Asked first: with iCloud a restore can double everything (see the alert).
+    @State private var confirmingRestore = false
     @State private var importingLegacy = false
     @State private var message: String?
     @AppStorage(ShotEntryMode.defaultsKey) private var defaultMode: ShotEntryMode = .split
@@ -138,7 +140,7 @@ struct SettingsView: View {
 
             Section {
                 Button { export() } label: { Label("Backup exportieren", systemImage: "square.and.arrow.up") }
-                Button { importing = true } label: { Label("Backup wiederherstellen", systemImage: "square.and.arrow.down") }
+                Button { confirmingRestore = true } label: { Label("Backup wiederherstellen", systemImage: "square.and.arrow.down") }
                 Button { exportCSV() } label: { Label("Tagebuch als CSV", systemImage: "tablecells") }
                 Button { importingLegacy = true } label: {
                     Label {
@@ -178,6 +180,14 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $importingLegacy) { LegacyImportView() }
+        // A restore only knows what is on this device. On a new phone iCloud may still be delivering the
+        // same records: restored before they arrive, every one of them is there twice for good.
+        .alert("Backup wiederherstellen?", isPresented: $confirmingRestore) {
+            Button("Backup wählen") { importing = true }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Mit iCloud kommen deine Daten von selbst auf dieses Gerät, das kann einige Minuten dauern. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen: was iCloud danach noch liefert, ist sonst doppelt.")
+        }
         .alert("Datensicherung", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
             Button("OK") {}
         } message: { Text(message ?? "") }

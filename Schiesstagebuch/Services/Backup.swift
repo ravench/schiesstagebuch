@@ -44,6 +44,8 @@ enum Backup {
         var events: [EventDTO]?
         /// Optional so backups from before targets still load.
         var targets: [TargetDTO]?
+        /// The filters the user owns and made (kept in UserDefaults, not in the store); optional so earlier backups load.
+        var filters: FilterCatalog?
     }
 
     // `createdAt` fields are optional so backups from before they were exported still load.
@@ -135,6 +137,12 @@ enum Backup {
         try context.fetch(FetchDescriptor<T>())
     }
 
+    /// Records by their id. Two can share one: a backup restored on two devices before they synced
+    /// leaves every record twice, and `uniqueKeysWithValues` would crash on them (review 2026-11-27).
+    private static func byID<T: PersistentModel & Identifiable>(_ records: [T]) -> [T.ID: T] {
+        Dictionary(records.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+    }
+
     /// Dates with milliseconds: Stiche added within one second keep their order (`createdAt`).
     /// `.iso8601` wrote whole seconds, which `isoSeconds` still reads.
     private static let isoMilliseconds: ISO8601DateFormatter = {
@@ -144,7 +152,7 @@ enum Backup {
     }()
     private static let isoSeconds = ISO8601DateFormatter()
 
-    static func export(_ context: ModelContext) throws -> Data {
+    static func export(_ context: ModelContext, defaults: UserDefaults = .standard) throws -> Data {
         let file = File(
             version: currentVersion,
             exportedAt: .now,
@@ -203,7 +211,8 @@ enum Backup {
                 .init(id: $0.id, date: $0.date, name: $0.name, rangeID: $0.range?.id, weather: $0.weather, createdAt: $0.createdAt,
                       scoringSystem: $0.scoringSystemRaw, ipscDivision: $0.ipscDivision, ipscPowerFactor: $0.ipscPowerFactorRaw)
             },
-            targets: try all(ShootingTarget.self, context).map(TargetDTO.init))
+            targets: try all(ShootingTarget.self, context).map(TargetDTO.init),
+            filters: defaults.data(forKey: FilterCatalog.key).map(FilterCatalog.init(data:)))
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .custom { date, encoder in
             var c = encoder.singleValueContainer()
@@ -214,7 +223,7 @@ enum Backup {
     }
 
     private static func restoreTargets(_ dtos: [TargetDTO], into context: ModelContext) throws -> [UUID: ShootingTarget] {
-        var targets = Dictionary(uniqueKeysWithValues: try all(ShootingTarget.self, context).map { ($0.id, $0) })
+        var targets = byID(try all(ShootingTarget.self, context))
         for d in dtos where targets[d.id] == nil {
             let t = ShootingTarget(name: d.name, scoring: .range(min: d.minValue, max: d.maxValue), templateID: d.templateID)
             t.id = d.id; t.modeRaw = d.mode; t.valuesText = d.valuesText; t.createdAt = d.createdAt
@@ -234,7 +243,7 @@ enum Backup {
 
     /// Calibres also match by name so the seeded catalogue isn't duplicated. Returns backup id → record.
     private static func restoreCalibers(_ dtos: [CaliberDTO], into context: ModelContext) throws -> [UUID: Caliber] {
-        var calibers = Dictionary(uniqueKeysWithValues: try all(Caliber.self, context).map { ($0.id, $0) })
+        var calibers = byID(try all(Caliber.self, context))
         var calibersByName = Dictionary(calibers.values.map { (Caliber.normalized($0.name), $0) }, uniquingKeysWith: { a, _ in a })
         // A seeded calibre renamed on this device still is the backup's by its catalogue id.
         let calibersByCatalog = Dictionary(calibers.values.filter { !$0.catalogID.isEmpty }.map { ($0.catalogID, $0) }, uniquingKeysWith: { a, _ in a })
@@ -259,7 +268,7 @@ enum Backup {
 
     private static func restoreBarrels(_ dtos: [BarrelDTO], weapons: [UUID: Weapon], calibers: [UUID: Caliber],
                                        into context: ModelContext) throws -> [UUID: Barrel] {
-        var barrels = Dictionary(uniqueKeysWithValues: try all(Barrel.self, context).map { ($0.id, $0) })
+        var barrels = byID(try all(Barrel.self, context))
         for d in dtos where barrels[d.id] == nil {
             let b = Barrel(name: d.name); b.id = d.id
             b.serialNumber = d.serialNumber
@@ -302,7 +311,7 @@ enum Backup {
 
     private static func restoreEvents(_ dtos: [EventDTO], ranges: [UUID: ShootingRange],
                                       into context: ModelContext) throws -> [UUID: ShootingEvent] {
-        var events = Dictionary(uniqueKeysWithValues: try all(ShootingEvent.self, context).map { ($0.id, $0) })
+        var events = byID(try all(ShootingEvent.self, context))
         for d in dtos where events[d.id] == nil {
             let event = ShootingEvent(date: d.date, name: d.name); event.id = d.id
             event.weather = d.weather; event.createdAt = d.createdAt
@@ -362,9 +371,13 @@ enum Backup {
 
     /// Restores a backup, or leaves the store as it was: a failure half-way (a fetch, the save) would
     /// otherwise persist what was inserted so far, and a retry would skip those ids (review 2026-11-10).
-    static func restore(from data: Data, into context: ModelContext) throws -> String {
+    static func restore(from data: Data, into context: ModelContext, defaults: UserDefaults = .standard) throws -> String {
         do {
-            let summary = try restoreOrThrow(from: data, into: context)
+            let file = try decode(data)
+            let summary = try restoreOrThrow(file, into: context)
+            if let filters = file.filters {
+                defaults.set(FilterCatalog(data: defaults.data(forKey: FilterCatalog.key) ?? Data()).adding(filters).data, forKey: FilterCatalog.key)
+            }
             TargetCatalog.deduplicate(context) // a template the backup and this device both added
             return summary
         } catch {
@@ -373,7 +386,7 @@ enum Backup {
         }
     }
 
-    private static func restoreOrThrow(from data: Data, into context: ModelContext) throws -> String {
+    private static func decode(_ data: Data) throws -> File {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom { decoder in
             let c = try decoder.singleValueContainer()
@@ -387,10 +400,13 @@ enum Backup {
         guard file.version <= currentVersion else {
             throw CocoaError(.fileReadUnsupportedScheme, userInfo: [NSLocalizedDescriptionKey: "Backup stammt aus einer neueren App-Version.".loc])
         }
+        return file
+    }
 
+    private static func restoreOrThrow(_ file: File, into context: ModelContext) throws -> String {
         let caliberMap = try restoreCalibers(file.calibers, into: context)
 
-        var weapons = Dictionary(uniqueKeysWithValues: try all(Weapon.self, context).map { ($0.id, $0) })
+        var weapons = byID(try all(Weapon.self, context))
         for d in file.weapons where weapons[d.id] == nil {
             let w = Weapon(name: d.name); w.id = d.id; w.isArchived = d.isArchived
             w.categoryRaw = d.category ?? WeaponCategory.other.rawValue
@@ -405,14 +421,14 @@ enum Backup {
             context.insert(w); weapons[d.id] = w
         }
 
-        var ammo = Dictionary(uniqueKeysWithValues: try all(Ammunition.self, context).map { ($0.id, $0) })
+        var ammo = byID(try all(Ammunition.self, context))
         for d in file.ammunition where ammo[d.id] == nil {
             let a = Ammunition(name: d.name, caliber: d.caliberID.flatMap { caliberMap[$0] }); a.id = d.id; a.isArchived = d.isArchived
             if let created = d.createdAt { a.createdAt = created }
             context.insert(a); ammo[d.id] = a
         }
 
-        var lots = Dictionary(uniqueKeysWithValues: try all(AmmoLot.self, context).map { ($0.id, $0) })
+        var lots = byID(try all(AmmoLot.self, context))
         for d in file.lots ?? [] where lots[d.id] == nil {
             let l = AmmoLot(number: d.number, notes: d.notes); l.id = d.id
             l.isArchived = d.isArchived; l.createdAt = d.createdAt

@@ -360,6 +360,14 @@ struct FilterCatalog: Codable, Equatable {
         return true
     }
 
+    /// This list with what a restored backup holds: its ticks, and its own filters whose name is free here.
+    func adding(_ other: FilterCatalog) -> FilterCatalog {
+        var merged = self
+        merged.owned.formUnion(other.owned)
+        for filter in other.custom { merged.save(filter) }
+        return merged
+    }
+
     /// Deletes one of the user's own filters. Built-in filters can't be deleted.
     mutating func remove(_ name: String) { custom.removeAll { $0.name == name } }
 }
