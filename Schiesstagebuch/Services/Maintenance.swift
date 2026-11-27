@@ -32,9 +32,12 @@ struct MaintenanceStatus {
 
     var hasReminder: Bool { intervalShots > 0 || intervalDays > 0 }
 
+    /// The start of the due day. The reminder fires at 9:00 that day; with the time of day of the last
+    /// cleaning kept, the firearm showed nothing due until the afternoon and reminded a second time
+    /// (review 2026-11-27).
     var dueDate: Date? {
         guard intervalDays > 0, let countingStart else { return nil }
-        return Calendar.current.date(byAdding: .day, value: intervalDays, to: countingStart)
+        return Calendar.current.date(byAdding: .day, value: intervalDays, to: Calendar.current.startOfDay(for: countingStart))
     }
 
     var shotsRemaining: Int? { intervalShots > 0 ? intervalShots - shotsSince : nil }
@@ -124,6 +127,21 @@ enum MaintenanceNotifier {
         status == .denied && intervals > 0
     }
 
+    /// A device that got its firearms by iCloud never saved one, so it was never asked and stayed silent
+    /// (review 2026-11-27): it asks once it holds a firearm with a reminder. Not in screenshot runs,
+    /// where the system's question would cover the screens.
+    static func asksPermission(_ status: UNAuthorizationStatus, weapons: [Weapon], screenshots: Bool = ScreenshotData.isActive) -> Bool {
+        status == .notDetermined && !screenshots && weapons.contains { weapon in
+            !weapon.isArchived && MaintenanceKind.allCases.contains { weapon.status($0).hasReminder }
+        }
+    }
+
+    /// The pending reminders (`ids`) of firearms that no longer exist.
+    static func orphaned(_ ids: [String], weapons: [UUID]) -> [String] {
+        let known = Set(weapons.flatMap { id in MaintenanceKind.allCases.map { "maintenance-\(id.uuidString)-\($0.rawValue)" } })
+        return ids.filter { $0.hasPrefix("maintenance-") && !known.contains($0) }
+    }
+
     /// Identifier of the pending notification for one reminder of a weapon.
     static func identifier(_ weapon: Weapon, _ kind: MaintenanceKind) -> String {
         "maintenance-\(weapon.id.uuidString)-\(kind.rawValue)"
@@ -192,6 +210,16 @@ enum MaintenanceNotifier {
     /// Without `previouslyDue` nothing fires at once; only the pending reminders are put right.
     static func refreshAll(in context: ModelContext) {
         let weapons = (try? context.fetch(FetchDescriptor<Weapon>())) ?? []
+        let center = UNUserNotificationCenter.current()
+        // A firearm deleted on another device leaves its reminder pending here.
+        center.getPendingNotificationRequests { requests in
+            center.removePendingNotificationRequests(withIdentifiers: orphaned(requests.map(\.identifier), weapons: weapons.map(\.id)))
+        }
+        Task { @MainActor in
+            guard asksPermission(await authorizationStatus(), weapons: weapons) else { return }
+            await requestAuthorization()
+            refreshAll(in: context) // now allowed or denied: schedules, and does not ask again
+        }
         let due = dueCount(weapons)
         // shortcut: a reminder ahead counts what is due now plus itself, not the others that fire
         // before it; the next start of the app puts the number right. Upgrade if that is noticed.

@@ -34,7 +34,7 @@ final class MaintenanceTests: ModelTestCase {
         let s = weapon.status(.cleaning)
         XCTAssertEqual(s.shotsSince, 30)
         XCTAssertEqual(s.countingStart, day(2))
-        XCTAssertEqual(s.dueDate, Calendar.current.date(byAdding: .day, value: 30, to: day(2)))
+        XCTAssertEqual(s.dueDate, Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 30, to: day(2))!))
     }
 
     func testEntriesOnTheCleaningDayCountAsBefore() throws {
@@ -77,6 +77,32 @@ final class MaintenanceTests: ModelTestCase {
         XCTAssertFalse(MaintenanceNotifier.silenced(.denied, intervals: 0), "no reminder, nothing to miss")
         XCTAssertFalse(MaintenanceNotifier.silenced(.notDetermined, intervals: 100), "the question comes with the save")
         XCTAssertFalse(MaintenanceNotifier.silenced(.authorized, intervals: 100))
+    }
+
+    /// A second device gets its firearms by iCloud and never saves one: it has to ask by itself.
+    func testAsksForPermissionOnceAFirearmHasAReminder() {
+        XCTAssertTrue(MaintenanceNotifier.asksPermission(.notDetermined, weapons: [weapon], screenshots: false))
+        XCTAssertFalse(MaintenanceNotifier.asksPermission(.denied, weapons: [weapon], screenshots: false))
+        XCTAssertFalse(MaintenanceNotifier.asksPermission(.authorized, weapons: [weapon], screenshots: false))
+        XCTAssertFalse(MaintenanceNotifier.asksPermission(.notDetermined, weapons: [weapon], screenshots: true))
+        XCTAssertFalse(MaintenanceNotifier.asksPermission(.notDetermined, weapons: [Weapon(name: "Ohne Erinnerung")], screenshots: false))
+        weapon.isArchived = true
+        XCTAssertFalse(MaintenanceNotifier.asksPermission(.notDetermined, weapons: [weapon], screenshots: false))
+    }
+
+    func testRemindersOfFirearmsThatAreGoneAreOrphaned() {
+        let gone = "maintenance-\(UUID().uuidString)-cleaning"
+        let pending = MaintenanceNotifier.identifiers(weapon) + [gone, "something-else"]
+        XCTAssertEqual(MaintenanceNotifier.orphaned(pending, weapons: [weapon.id]), [gone])
+    }
+
+    /// The reminder fires at 9:00 on the due day; the firearm must count as due by then, whatever
+    /// the time of day of the cleaning.
+    func testDayIntervalIsDueFromTheStartOfTheDueDay() throws {
+        let cleaned = try XCTUnwrap(Calendar.current.date(bySettingHour: 16, minute: 30, second: 0, of: day(1)))
+        log(.cleaning, on: cleaned)
+        let due = try XCTUnwrap(weapon.status(.cleaning).dueDate)
+        XCTAssertEqual(due, Calendar.current.startOfDay(for: day(31)))
     }
 
     func testDueCountLeavesOutArchivedFirearms() throws {
@@ -125,7 +151,7 @@ final class MaintenanceTests: ModelTestCase {
         try context.save()
         s = weapon.status(.cleaning)
         XCTAssertEqual(s.countingStart, day(10))
-        XCTAssertEqual(s.dueDate, Calendar.current.date(byAdding: .day, value: 30, to: day(10)))
+        XCTAssertEqual(s.dueDate, Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 30, to: day(10))!))
     }
 
     func testWaitingTextAloneWithoutShotInterval() throws {
