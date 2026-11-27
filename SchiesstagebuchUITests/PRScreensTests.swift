@@ -357,6 +357,20 @@ final class PRScreensTests: XCTestCase {
         snap("00-Willkommen")
     }
 
+    /// The editor of a Stich in an Anlass with two: the footer says what applies to both (date, range and
+    /// Anlass; the weather is each Stich's own).
+    func testEditorFooterWithSeveralStiche() {
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
+        app.buttons["Sichern"].firstMatch.tap()
+        guard app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5),
+              open(app.staticTexts["Stgw 90"].firstMatch), open(app.buttons["Bearbeiten"].firstMatch),
+              app.buttons["Sichern"].firstMatch.waitForExistence(timeout: 5) else {
+            return XCTFail("The editor of a Stich with a second one beside it did not open")
+        }
+        snap("02c-Stich-bearbeiten-mehrere-Stiche")
+    }
+
     /// The release notes a TestFlight build shows the first time it is opened (CI writes them into the
     /// bundle; here from a fixture, as if they were not shown yet).
     func testWhatsNew() {
