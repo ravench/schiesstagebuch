@@ -576,6 +576,16 @@ final class PRScreensTests: XCTestCase {
         snap("07t-Waffe-Kaufdatum")
     }
 
+    /// The page of an Anlass with one Stich: the figure is headed «Stich», not «Stiche».
+    func testEventWithOneStich() {
+        tab("Tagebuch")
+        guard open(app.staticTexts["Feldschiessen"].firstMatch),
+              app.buttons["Stich hinzufügen"].firstMatch.waitForExistence(timeout: 5) else {
+            return XCTFail("The Anlass did not open")
+        }
+        snap("01d-Anlass-mit-einem-Stich")
+    }
+
     /// A range's editor: the compass dial the shooting direction is set on.
     func testRangeDirection() {
         tab("Anlagen")
