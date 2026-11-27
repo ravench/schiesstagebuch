@@ -122,9 +122,12 @@ extension Weapon {
 
     /// The barrel an entry with this calibre on this day was shot with: of the fitting, fitted
     /// barrels the one installed last (a replacement wins on its install day). Nil when none fits.
+    /// Installed the same day, or both without a date, the barrel that was there first wins: a second
+    /// barrel added without «Montiert ab» took the whole history off the first (review 2026-11-27).
     func barrel(for caliber: Caliber?, on date: Date) -> Barrel? {
         barrelChoices(for: caliber, on: date).max {
-            ($0.installedOn ?? .distantPast, $0.createdAt) < ($1.installedOn ?? .distantPast, $1.createdAt)
+            let a = $0.installedOn ?? .distantPast, b = $1.installedOn ?? .distantPast
+            return a != b ? a < b : $0.createdAt > $1.createdAt
         }
     }
 

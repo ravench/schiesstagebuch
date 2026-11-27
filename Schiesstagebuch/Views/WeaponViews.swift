@@ -243,6 +243,8 @@ struct WeaponEditorView: View {
     @State private var calibers: Set<Caliber> = []
     @State private var barrelSerial = ""
     @State private var isArchived = false
+    /// The sale date switched on in this editor archived the firearm; switching it off again undoes that.
+    @State private var archivedBySale = false
     @State private var cleaningShots = 0
     @State private var cleaningDays = 0
     @State private var serviceShots = 0
@@ -418,7 +420,7 @@ struct WeaponEditorView: View {
                             range: Date.distantPast...(saleDate ?? .distantFuture))
             // Entering a sale date archives the weapon; the user can still switch archiving off.
             OptionalDateRow(title: "Verkaufsdatum", date: Binding(get: { saleDate }, set: { new in
-                isArchived = Weapon.archivedAfterSaleChange(isArchived: isArchived, from: saleDate, to: new)
+                (isArchived, archivedBySale) = Weapon.archivedAfterSaleChange(isArchived: isArchived, bySale: archivedBySale, from: saleDate, to: new)
                 saleDate = new
             }), range: (purchaseDate ?? .distantPast)...Date.distantFuture)
         } header: {
