@@ -3,6 +3,9 @@ import SwiftData
 @testable import Schiesstagebuch
 
 final class BackupTests: ModelTestCase {
+    /// Its own defaults, so the tests never touch the test host's filter list.
+    private let defaults = UserDefaults(suiteName: "BackupTests-\(UUID().uuidString)")!
+
     private func freshContext() throws -> (ModelContainer, ModelContext) {
         let c = try ModelContainer(for: SchiesstagebuchApp.schema,
                                    configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none))
@@ -141,6 +144,40 @@ final class BackupTests: ModelTestCase {
         XCTAssertEqual(try target.fetchCount(FetchDescriptor<Entry>()), 2)
         XCTAssertEqual(try target.fetchCount(FetchDescriptor<ShootingEvent>()), 1)
         XCTAssertEqual(try target.fetchCount(FetchDescriptor<AmmoLot>()), 1)
+    }
+
+    /// A backup restored on two devices before they synced leaves every record twice, with one id.
+    func testRestoreSurvivesRecordsThatShareAnID() throws {
+        let weapon = Weapon(name: "Stgw 90"); context.insert(weapon)
+        _ = addEntry(weapon, on: day(1), shots: 10)
+        try context.save()
+        let data = try Backup.export(context)
+        let twin = Weapon(name: "Stgw 90"); twin.id = weapon.id; context.insert(twin)
+        let event = ShootingEvent(date: day(1)); event.id = try XCTUnwrap(weapon.entries?.first?.shootingEvent).id; context.insert(event)
+        try context.save()
+        XCTAssertNoThrow(try Backup.restore(from: data, into: context, defaults: defaults))
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<Entry>()), 1)
+    }
+
+    func testOwnFiltersAndTicksComeBackWithARestore() throws {
+        var mine = FilterCatalog()
+        mine.setOwned("Wyss gelb", true)
+        XCTAssertEqual(mine.owned, ["Wyss gelb"])
+        XCTAssertTrue(mine.save(FilterColor.Filter(name: "Mein Grau", rgb: 0x808080, polarised: false)))
+        defaults.set(mine.data, forKey: FilterCatalog.key)
+        let data = try Backup.export(context, defaults: defaults)
+
+        // The new phone has a filter of its own already; it stays.
+        let other = UserDefaults(suiteName: "BackupTests-\(UUID().uuidString)")!
+        var there = FilterCatalog()
+        XCTAssertTrue(there.save(FilterColor.Filter(name: "Neu", rgb: 0x112233, polarised: false)))
+        other.set(there.data, forKey: FilterCatalog.key)
+        let (keep, target) = try freshContext()
+        _ = keep
+        try Backup.restore(from: data, into: target, defaults: other)
+        let restored = FilterCatalog(data: try XCTUnwrap(other.data(forKey: FilterCatalog.key)))
+        XCTAssertEqual(restored.owned, mine.owned)
+        XCTAssertEqual(restored.custom.map(\.name), ["Neu", "Mein Grau"])
     }
 
     func testRestoreReusesRangesAlreadyInTheApp() throws {

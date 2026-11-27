@@ -77,6 +77,12 @@ T = {
         "Cette sauvegarde provient d'une version plus récente de l'app.",
         "Questo backup proviene da una versione più recente dell'app."),
     "Backup wiederherstellen": ("Restore backup", "Restaurer une sauvegarde", "Ripristina backup"),
+    "Backup wiederherstellen?": ("Restore a backup?", "Restaurer une sauvegarde ?", "Ripristinare un backup?"),
+    "Backup wählen": ("Choose backup", "Choisir la sauvegarde", "Scegli il backup"),
+    "Mit iCloud kommen deine Daten von selbst auf dieses Gerät, das kann einige Minuten dauern. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen: was iCloud danach noch liefert, ist sonst doppelt.": (
+        "With iCloud your data comes to this device by itself, which can take a few minutes. Restore a backup only if you do not use iCloud or the data is missing there: otherwise whatever iCloud still delivers afterwards will be there twice.",
+        "Avec iCloud, tes données arrivent d'elles-mêmes sur cet appareil, ce qui peut prendre quelques minutes. Ne restaure une sauvegarde que si tu n'utilises pas iCloud ou si les données y manquent : sinon, tout ce qu'iCloud livre encore ensuite sera en double.",
+        "Con iCloud i tuoi dati arrivano da soli su questo dispositivo, possono volerci alcuni minuti. Ripristina un backup solo se non usi iCloud o se lì i dati mancano: altrimenti ciò che iCloud consegna ancora dopo sarà doppio."),
     "Bearbeiten": ("Edit", "Modifier", "Modifica"),
     "Beim Erfassen werden nur diese Kaliber angeboten. Das Standardkaliber ist vorausgewählt.": (
         "Only these calibres are offered when logging. The default calibre is preselected.",
