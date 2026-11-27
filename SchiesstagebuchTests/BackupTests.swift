@@ -315,4 +315,22 @@ final class BackupTests: ModelTestCase {
         let csv = try XCTUnwrap(String(bytes: Backup.csv(context), encoding: .utf8))
         XCTAssertTrue(csv.components(separatedBy: "\r\n")[1].hasPrefix("13.08.2026;"))
     }
+
+    /// The same Schusszähler file imported on two devices that do not sync: the backup of one restored on
+    /// the other brings no second copy of those entries.
+    func testRestoreSkipsEntriesImportedHereUnderAnotherID() throws {
+        let there = addEntry(nil, on: day(1), shots: 20)
+        there.importKey = "legacy|2026-3-1|P210|Training|Albisgüetli|20|"
+        _ = addEntry(nil, on: day(2), shots: 30)
+        try context.save()
+        let data = try Backup.export(context)
+        let (keep, target) = try freshContext()
+        _ = keep
+        let event = ShootingEvent(date: day(1)); target.insert(event)
+        let here = Entry(shotCount: 20); target.insert(here); event.add(here)
+        here.importKey = there.importKey
+        try target.save()
+        try Backup.restore(from: data, into: target, defaults: defaults)
+        XCTAssertEqual(try target.fetchCount(FetchDescriptor<Entry>()), 2, "the imported one once, the other one new")
+    }
 }

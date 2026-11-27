@@ -363,6 +363,35 @@ final class LegacyImportTests: ModelTestCase {
         ssm.sighterCount = 0
         XCTAssertEqual(ssm.score.meanPerShot!, 8.8, accuracy: 1e-9, "88 points over 10 scored shots")
     }
+
+    /// A bare town name with a 300 m rifle: the one catalogue range of that name has no known distance.
+    /// It is offered, but not switched on by itself.
+    func testARangeWithoutTheFirearmsDistanceIsOfferedNotPreset() throws {
+        let indoor = RangeCatalog.Item(id: "manual:luzern-indoor", name: "Luzern Indoor", place: "Luzern", lat: 47.05, lon: 8.3,
+                                       bearing: nil, alt: nil, distances: [])
+        let rifle = RangeCatalog.Item(id: "tlm:thun300", name: "Thun Guntelsey 300m", place: "Thun", lat: 46.75, lon: 7.6,
+                                      bearing: nil, alt: nil, distances: [300])
+        let rows = LegacyImport.parseTSV("Datum\tSchiessanlage\tAnlass\tWaffe\tSchusszahl\tMunition\tResultat\tBemerkungen\n"
+            + "15.06.2024\tLuzern\tSchützenfest\tStgw 90\t20\tGP90\t80\t\n16.06.2024\tThun Guntelsey\tTraining\tStgw 90\t20\tGP90\t\t\n")
+        let plan = LegacyImport.plan(rows, context: context, catalogue: [indoor, rifle])
+        let offered = Dictionary(uniqueKeysWithValues: LegacyImport.rangeMatchRows(plan).map { ($0.name, $0) })
+        XCTAssertEqual(offered["Luzern"]?.options.map(\.name), ["Luzern Indoor"])
+        XCTAssertNil(plan.rangeChoice[try XCTUnwrap(offered["Luzern"]?.keys.first)], "offered, switched off")
+        XCTAssertNotNil(plan.rangeChoice[try XCTUnwrap(offered["Thun Guntelsey"]?.keys.first)], "a 300 m range for a 300 m rifle is preset")
+    }
+
+    /// A firearm whose ammunition got no calibre still gets its one barrel, without a calibre.
+    func testAFirearmWithoutACalibreStillGetsABarrel() async throws {
+        let rows = LegacyImport.parseTSV("Datum\tSchiessanlage\tAnlass\tWaffe\tSchusszahl\tMunition\tResultat\tBemerkungen\n"
+            + "31.12.2022\t\tTraining\tFWB 800\t60\tDiabolo\t\t\n")
+        let plan = LegacyImport.plan(rows, context: context, catalogue: [])
+        XCTAssertNil(plan.ammoCaliber["Diabolo"])
+        _ = try await LegacyImport.apply(plan, context: context, loadPhotos: false, catalogue: [])
+        let weapon = try XCTUnwrap(try context.fetch(FetchDescriptor<Weapon>()).first)
+        XCTAssertEqual(weapon.barrels?.count, 1)
+        XCTAssertEqual(weapon.sortedBarrels.first?.isDefault, true)
+        XCTAssertEqual(weapon.sortedBarrels.first?.calibers ?? [], [])
+    }
 }
 
 final class LegacyImportCandidatesTests: XCTestCase {

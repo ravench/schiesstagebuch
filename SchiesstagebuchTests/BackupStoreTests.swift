@@ -72,4 +72,15 @@ final class BackupStoreTests: XCTestCase {
         XCTAssertEqual(info["UIFileSharingEnabled"] as? Bool, true)
         XCTAssertEqual(info["LSSupportsOpeningDocumentsInPlace"] as? Bool, true)
     }
+
+    /// The file is named after the day the phone shows, not Greenwich's: just after midnight in Zürich it is
+    /// still yesterday there.
+    func testFileNameUsesTheLocalDay() throws {
+        let zurich = try XCTUnwrap(TimeZone(identifier: "Europe/Zurich"))
+        var calendar = Calendar(identifier: .gregorian); calendar.timeZone = zurich
+        let justAfterMidnight = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 11, day: 28, hour: 0, minute: 30)))
+        let name = BackupStore.name(on: justAfterMidnight, timeZone: zurich)
+        XCTAssertEqual(name, "Schiesstagebuch-2026-11-28")
+        XCTAssertTrue(BackupStore.isAppBackup(URL(fileURLWithPath: "/tmp/\(name).json")), "still pruned as one of the app's own")
+    }
 }

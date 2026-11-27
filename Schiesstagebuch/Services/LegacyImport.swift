@@ -267,13 +267,20 @@ enum LegacyImport {
             let pool = candidates ?? (existing.map { RangeMatcher.Candidate(RangeMatcher.Place($0)) }
                 + catalogue.filter { !known.contains($0.id) }.map { RangeMatcher.Candidate(RangeMatcher.Place($0)) })
             candidates = pool
-            let options = RangeMatcher.matches(for: key.name, preferring: key.distances, among: pool).map { i in
+            let found = RangeMatcher.matches(for: key.name, preferring: key.distances, among: pool)
+            let options = found.map { i in
                 RangeMatch(target: i < existing.count ? .existing(existing[i].id) : .catalogue(pool[i].place.catalogID),
                            name: pool[i].place.name)
             }
             guard !options.isEmpty else { continue }
             plan.rangeOptions[key] = options
-            if options.count == 1 { plan.rangeChoice[key] = options[0].target }
+            // One option is switched on by itself only when it is a range of the user's or one known to have
+            // the firearm's distance: «Luzern» with a 300 m rifle was preset to «Luzern Indoor», the one
+            // catalogue range of that name (import check 2026-11-27). Otherwise it is offered, switched off.
+            let fitting = found.first.map { i in
+                i < existing.count || key.distances.isEmpty || !pool[i].distances.isDisjoint(with: key.distances)
+            } ?? false
+            if options.count == 1, fitting { plan.rangeChoice[key] = options[0].target }
         }
     }
 
@@ -328,6 +335,7 @@ enum LegacyImport {
 
         // Calibre usage per weapon decides its barrels (one per calibre) and the default one.
         var usage: [String: [Caliber: Int]] = [:]
+        var newWeapons: [Weapon] = []
 
         let canReadPhotos = loadPhotos ? await requestPhotoAccess() : false
         var events: [String: ShootingEvent] = [:]
@@ -349,6 +357,7 @@ enum LegacyImport {
                     let w = Weapon(name: row.weapon.trimmingCharacters(in: .whitespaces))
                     w.category = WeaponCategory.guess(from: row.weapon)
                     context.insert(w); weapons[norm(row.weapon)] = w; summary.weapons += 1
+                    newWeapons.append(w)
                     return w
                 }()
                 if let cal { usage[norm(row.weapon), default: [:]][cal, default: 0] += row.shots }
@@ -381,6 +390,15 @@ enum LegacyImport {
                 summary.missingPhotos += row.pictures.count
             }
             summary.entries += 1
+        }
+
+        // A firearm has at least one barrel. One whose ammunition got no calibre gets a barrel without one:
+        // its editor then offers «Kaliber: Wählen», instead of a firearm the Stich editor has no calibre row for.
+        for w in newWeapons where usage[norm(w.name)] == nil {
+            let barrel = Barrel()
+            context.insert(barrel)
+            barrel.isDefault = true
+            barrel.weapon = w
         }
 
         // Each calibre used with a weapon gets a barrel; the most-shot one is the default for new weapons.

@@ -196,7 +196,7 @@ struct SettingsView: View {
     private func export() {
         do {
             exportType = .json
-            exportName = "Schiesstagebuch-\(Date.now.formatted(.iso8601.year().month().day()))"
+            exportName = BackupStore.name()
             let data = try Backup.export(context)
             exportDoc = BackupDocument(data: data)
             // A copy stays in the app's folder in the Files app.
