@@ -570,7 +570,7 @@ struct RangeListView: View {
                     .swipeActions { ArchiveButton(item: r) }
                 }
             } footer: {
-                if hasCatalogueRanges { Text(RangeCatalog.attribution) }
+                if hasCatalogueRanges { Text(RangeCatalog.attribution.loc) }
             }
         }
         .overlay {
