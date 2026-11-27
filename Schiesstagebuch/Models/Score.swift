@@ -122,6 +122,13 @@ struct Score {
 }
 
 extension Entry {
+    /// Oldest first. The Stiche of one Anlass share its date: among them the time of day decides, then the
+    /// order they were entered in, so a trend line runs through a day's Stiche as they were shot.
+    static func shotBefore(_ a: Entry, _ b: Entry) -> Bool {
+        let x = WeatherRecord.combine(day: a.date, time: a.time), y = WeatherRecord.combine(day: b.date, time: b.time)
+        return x != y ? x < y : a.createdAt < b.createdAt
+    }
+
     var score: Score {
         // An Anlass switched to IPSC hides the points of its Stiche; they must not go on counting in the
         // averages and trends either (review 2026-11-27).
@@ -140,13 +147,6 @@ extension Entry {
     /// get a percentage only once a maximum is entered, and a per-shot average only once the
     /// sighters are split off.
     var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
-
-    /// Oldest first. The Stiche of one Anlass share its date: among them the time of day decides, then the
-    /// order they were entered in, so a trend line runs through a day's Stiche as they were shot.
-    static func shotBefore(_ a: Entry, _ b: Entry) -> Bool {
-        let x = WeatherRecord.combine(day: a.date, time: a.time), y = WeatherRecord.combine(day: b.date, time: b.time)
-        return x != y ? x < y : a.createdAt < b.createdAt
-    }
 
     /// The position statistics count this Stich in: the one entered, else the weapon type's usual one,
     /// so Stiche saved before positions were recorded stay with the later ones.
