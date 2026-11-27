@@ -179,41 +179,6 @@ final class RangeCatalogTests: ModelTestCase {
         XCTAssertEqual(RangeChoice.all(try ranges(), catalogue: [albis, thun]), [.record(picked), .item(thun)])
     }
 
-    // MARK: Catalogue ranges copied earlier
-
-    func testUnusedCatalogueRangesGo() throws {
-        let old = day(1), now = day(30)
-        func catalogueRange(_ item: RangeCatalog.Item) -> ShootingRange {
-            let range = RangeCatalog.makeRange(item); range.createdAt = old; context.insert(range)
-            return range
-        }
-        let unused = catalogueRange(albis)
-        let used = catalogueRange(thun)
-        let event = ShootingEvent(date: day(3), range: used); context.insert(event)
-        let mine = ShootingRange(name: "Mein Stand"); mine.createdAt = old; context.insert(mine)
-        try context.save()
-
-        XCTAssertEqual(RangeCatalog.removeUnused(context, items: [albis, thun], now: now), 1)
-        XCTAssertEqual(try ranges().map(\.name), ["Mein Stand", "Schiessanlage Guntelsey"])
-        XCTAssertTrue(unused.isDeleted || unused.modelContext == nil)
-        XCTAssertEqual(event.range, used)
-        XCTAssertEqual(RangeCatalog.removeUnused(context, items: [albis, thun], now: now), 0, "idempotent")
-    }
-
-    func testCatalogueRangesTheUserTouchedStay() throws {
-        let old = day(1), now = day(30)
-        let renamed = RangeCatalog.makeRange(albis); renamed.name = "Albisgüetli"; renamed.createdAt = old
-        let archived = RangeCatalog.makeRange(thun); archived.isArchived = true; archived.createdAt = old
-        let other = RangeCatalog.Item(id: "tlm:C", name: "Schiessanlage Riedbach", place: "Bern", lat: 46.95, lon: 7.44,
-                                      bearing: nil, alt: nil, distances: [300])
-        // Just picked on another device: its Anlass may not have synced yet.
-        let fresh = RangeCatalog.makeRange(other); fresh.createdAt = now.addingTimeInterval(-600)
-        for range in [renamed, archived, fresh] { context.insert(range) }
-        try context.save()
-        XCTAssertEqual(RangeCatalog.removeUnused(context, items: [albis, thun, other], now: now), 0)
-        XCTAssertEqual(try ranges().count, 3)
-    }
-
     func testDistance() {
         XCTAssertEqual(RangeCatalog.distance(47.0, 8.0, 47.0, 8.0), 0, accuracy: 0.001)
         // One minute of latitude is about 1852 m.

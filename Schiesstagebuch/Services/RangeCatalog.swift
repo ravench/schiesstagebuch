@@ -107,30 +107,6 @@ enum RangeCatalog {
         return abs(lat - item.lat) < 0.01 && distance(lat, lon, item.lat, item.lon) <= sameRangeMetres
     }
 
-    /// Until 2026-11 the whole catalogue could be copied into the user's ranges, and iCloud synced all of
-    /// it. A catalogue range no Anlass was shot at, still named as the catalogue names it and not
-    /// archived, goes: its catalogue entry stands in for it. A backup can bring such ranges back, so
-    /// this runs at every start. Returns the number of ranges removed.
-    @MainActor
-    @discardableResult
-    static func removeUnused(_ context: ModelContext, items: [Item] = items, now: Date = .now) -> Int {
-        let none = noCatalogID
-        let descriptor = FetchDescriptor<ShootingRange>(predicate: #Predicate { $0.catalogID != none })
-        guard let all = try? context.fetch(descriptor) else { return 0 }
-        let byID = Dictionary(items.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
-        // A range made in the last day may be one another device just picked, its Anlass not synced yet.
-        let settled = now.addingTimeInterval(-86_400)
-        var removed = 0
-        for range in all {
-            guard let item = byID[range.catalogID], !range.isArchived, (range.events ?? []).isEmpty,
-                  range.name == item.name, range.place == item.place, range.createdAt < settled else { continue }
-            context.delete(range)
-            removed += 1
-        }
-        if removed > 0 { try? context.save() }
-        return removed
-    }
-
     /// Great-circle distance in metres.
     static func distance(_ lat1: Double, _ lon1: Double, _ lat2: Double, _ lon2: Double) -> Double {
         let r = 6_371_000.0
