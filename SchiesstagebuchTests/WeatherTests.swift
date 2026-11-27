@@ -277,4 +277,19 @@ final class WeatherTests: ModelTestCase {
         XCTAssertTrue(lines[1].contains("\("Windstärke am Stand".loc): \("stark".loc)"))
         XCTAssertEqual(header.count, lines[1].components(separatedBy: ";").count)
     }
+
+    /// A further Stich starts with the observations of the one before, not with its measured values:
+    /// temperature, humidity and pressure belong to that Stich's hour.
+    func testAFurtherStichDoesNotInheritMeasuredValues() {
+        var record = WeatherRecord()
+        record.conditions.set("air_temp_c", .number(7))
+        record.conditions.set("humidity_pct", .number(80))
+        record.conditions.set("pressure_hpa", .number(1012))
+        let observed = WeatherField.inputs[0]
+        record.conditions.values[observed.key] = .text("x")
+        let next = record.forNextStich
+        for field in WeatherField.measured { XCTAssertNil(next.conditions[field.key], field.key) }
+        XCTAssertNotNil(next.conditions[observed.key], "what the shooter observed carries over")
+        XCTAssertEqual(record.conditions["air_temp_c"], .number(7), "the Stich before keeps its own")
+    }
 }

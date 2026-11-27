@@ -138,6 +138,14 @@ extension Entry {
     /// sighters are split off.
     var isLegacyImport: Bool { importKey.hasPrefix("legacy|") }
 
+    /// The Probeschüsse to store from «Probe/Wertung». An entry imported from Schusszähler has none (its
+    /// total may hold some); saved again with 0 and the same number of shots it keeps none, or an edit
+    /// that only added a note switched on a per-shot average over that total (review 2026-11-27).
+    func sighterCountToStore(sighters: Int, scored: Int) -> Int? {
+        if isLegacyImport, sighterCount == nil, sighters <= 0, scored == shotCount { return nil }
+        return max(0, sighters)
+    }
+
     /// The position statistics count this Stich in: the one entered, else the weapon type's usual one,
     /// so Stiche saved before positions were recorded stay with the later ones.
     var statsPosition: ShootingPosition? { position ?? weapon?.category.defaultPosition }

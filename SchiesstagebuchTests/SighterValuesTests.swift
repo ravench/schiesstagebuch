@@ -82,4 +82,18 @@ final class SighterValuesTests: ModelTestCase {
         XCTAssertEqual(row[column], "7 8")
         XCTAssertEqual(header.count, row.count)
     }
+
+    /// An entry imported from Schusszähler has no Probeschüsse; saved again unchanged it keeps none,
+    /// so no per-shot average appears over a total that may hold some.
+    func testAnImportedEntrySavedUnchangedKeepsNoSighterCount() {
+        let imported = addEntry(nil, on: day(1), shots: 60)
+        imported.importKey = "legacy|2026-3-1|Stgw 90|GM|Albisgüetli|60|82 / 371 / 45"
+        XCTAssertNil(imported.sighterCountToStore(sighters: 0, scored: 60))
+        XCTAssertEqual(imported.sighterCountToStore(sighters: 5, scored: 55), 5, "the user split it")
+        XCTAssertEqual(imported.sighterCountToStore(sighters: 0, scored: 50), 0, "the user changed the count")
+        imported.sighterCount = 0
+        XCTAssertEqual(imported.sighterCountToStore(sighters: 0, scored: 60), 0, "split before: stays split")
+        let own = addEntry(nil, on: day(1), shots: 20)
+        XCTAssertEqual(own.sighterCountToStore(sighters: 0, scored: 20), 0, "the app's own entries always store the count")
+    }
 }
