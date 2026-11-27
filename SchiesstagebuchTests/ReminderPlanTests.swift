@@ -45,9 +45,10 @@ final class ReminderPlanTests: XCTestCase {
     }
 
     func testDayIntervalSchedulesAhead() {
-        // Cleaned on day 1 at 16:00 with a 7-day interval → due day 8 16:00, notify day 8 at 9:00.
+        // Cleaned on day 1 at 16:00 with a 7-day interval → due from the start of day 8, notify day 8 at 9:00.
         let s = status(days: 7, start: date(1, 16))
-        XCTAssertEqual(s.dueDate, cal.date(byAdding: .day, value: 7, to: date(1, 16)))
+        // In the device's own calendar, as the firearm's page reads it.
+        XCTAssertEqual(s.dueDate, Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 7, to: date(1, 16))!))
         XCTAssertEqual(MaintenanceNotifier.plan(s, archived: false, previouslyDue: false, now: date(2, 12), calendar: cal),
                        .at(date(8, 9)))
     }
