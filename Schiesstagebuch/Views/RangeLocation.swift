@@ -156,7 +156,7 @@ struct PlaceField: View {
                 }
         }
         if vague {
-            Text("Der Standort ist zu ungenau für eine Schiessanlage. Schalte «Genauer Standort» ein oder suche die Adresse.")
+            Text("Der Standort ist zu ungenau. Schalte «Genauer Standort» ein oder suche die Adresse.")
                 .font(.footnote).foregroundStyle(.secondary)
         }
         if let location {
@@ -255,7 +255,7 @@ struct RangeMeasuredSection: View {
             } header: {
                 Text("Gemessene Distanzen")
             } footer: {
-                Text("Von der Schützenlinie bis zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; wer im oberen Stock schiesst, zielt weniger hoch.")
+                Text("Von der Schützenlinie zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; im oberen Stock zielst du weniger hoch.")
             }
         }
     }

@@ -829,6 +829,29 @@
         }
       }
     },
+    "Alles optional. Kennt die App den Ort der Anlage, füllt sie leere Felder mit Apple Weather (abschaltbar in den Einstellungen); mit der Schussrichtung auch Wind und Sonne.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything is optional. If the app knows where the range is, it fills empty fields from Apple Weather (you can turn this off in Settings); with the shooting direction also wind and sun."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout est facultatif. Si l'app connaît le lieu du stand, elle remplit les champs vides avec la météo d'Apple (désactivable dans les Réglages) ; avec la direction de tir aussi le vent et le soleil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto è facoltativo. Se l'app conosce il luogo del poligono, compila i campi vuoti con il meteo di Apple (disattivabile nelle Impostazioni); con la direzione di tiro anche vento e sole."
+          }
+        }
+      }
+    },
     "Alles optional. Mit Ort und Schussrichtung der Schiessanlage füllt die App die Sonne aus.": {
       "extractionState": "manual",
       "localizations": {
@@ -848,29 +871,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tutto è facoltativo. Con il luogo e la direzione di tiro del poligono, l'app compila il sole."
-          }
-        }
-      }
-    },
-    "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit Wetterdaten von Apple Weather (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Everything is optional. With the range's location, the app fills empty fields with the weather from Apple Weather (you can turn this off in Settings); with its shooting direction also the wind direction and the sun."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tout est facultatif. Avec le lieu du stand, l'app remplit les champs vides avec la météo d'Apple (désactivable dans les Réglages) ; avec la direction de tir aussi la direction du vent et le soleil."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutto è facoltativo. Con il luogo del poligono, l'app compila i campi vuoti con il meteo di Apple (disattivabile nelle Impostazioni); con la direzione di tiro anche la direzione del vento e il sole."
           }
         }
       }
@@ -1404,25 +1404,25 @@
         }
       }
     },
-    "Aufgebrauchte Lose erscheinen nicht mehr bei neuen Einträgen, bleiben aber in bisherigen Einträgen und in der Statistik.": {
+    "Aufgebrauchte Lose fehlen bei neuen Einträgen, bleiben aber in den bisherigen und in der Statistik.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Used-up lots no longer appear for new entries, but stay in earlier entries and in the statistics."
+            "value": "Used-up lots are not offered for new entries, but stay in earlier ones and in the statistics."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les lots épuisés n’apparaissent plus pour les nouvelles entrées, mais restent dans les entrées précédentes et dans les statistiques."
+            "value": "Les lots épuisés ne sont plus proposés pour les nouvelles entrées, mais restent dans les précédentes et dans les statistiques."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "I lotti esauriti non compaiono più nelle nuove voci, ma restano nelle voci precedenti e nelle statistiche."
+            "value": "I lotti esauriti non vengono più proposti nelle nuove voci, ma restano in quelle precedenti e nelle statistiche."
           }
         }
       }
@@ -1496,25 +1496,25 @@
         }
       }
     },
-    "Aus, wenn drinnen geschossen wird; dann erscheint auch im Eintrag kein Wetter.": {
+    "Aus für drinnen: Der Eintrag zeigt dann kein Wetter.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off when shooting indoors; the entry then shows no weather."
+            "value": "Off for indoors: the entry then shows no weather."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Désactivé pour le tir en salle ; l'entrée n'affiche alors pas de météo."
+            "value": "Désactivé pour le tir en salle : l'entrée n'affiche alors pas de météo."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Disattivato quando si tira al coperto; la voce non mostra allora alcun meteo."
+            "value": "Disattivato al coperto: la voce non mostra allora alcun meteo."
           }
         }
       }
@@ -1772,25 +1772,25 @@
         }
       }
     },
-    "Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.": {
+    "Beide Barcodes entstehen aus der Lizenznummer. Kreditkartendaten speichert die App nicht.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Both barcodes are calculated from the licence number. The card's credit card details are not stored."
+            "value": "Both barcodes are worked out from the licence number. The app stores no credit card details."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les deux codes-barres sont calculés à partir du numéro de licence. Les données de carte de crédit ne sont pas enregistrées."
+            "value": "Les deux codes-barres sont calculés à partir du numéro de licence. L'app n'enregistre aucune donnée de carte de crédit."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entrambi i codici a barre vengono calcolati dal numero di licenza. I dati della carta di credito non vengono salvati."
+            "value": "Entrambi i codici a barre derivano dal numero di licenza. L'app non salva alcun dato della carta di credito."
           }
         }
       }
@@ -2094,25 +2094,25 @@
         }
       }
     },
-    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1.5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": {
+    "Box: mittlere Hälfte der Resultate. Strich: Median. Linie: bis 1.5 × Quartilsabstand. Punkte: einzelne Resultate, rot: Ausreisser. Es zählen Einträge mit Prozentwert.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Box: middle half of the results (1st to 3rd quartile), bar: median, line: up to 1.5 × interquartile range, dots: single results, red: outliers. Counts entries with a percentage (points with a maximum, or a result in %)."
+            "value": "Box: middle half of the results. Bar: median. Line: up to 1.5 × interquartile range. Dots: single results, red: outliers. Entries with a percentage count."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Boîte : moitié centrale des résultats (1er au 3e quartile), trait : médiane, ligne : jusqu'à 1,5 × l'écart interquartile, points : résultats individuels, rouge : valeurs aberrantes. Compte les entrées avec pourcentage (points avec maximum ou résultat en %)."
+            "value": "Boîte : moitié centrale des résultats. Trait : médiane. Ligne : jusqu'à 1,5 × l'écart interquartile. Points : résultats individuels, rouge : valeurs aberrantes. Comptent les entrées avec pourcentage."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Box: metà centrale dei risultati (dal 1° al 3° quartile), tratto: mediana, linea: fino a 1,5 × lo scarto interquartile, punti: singoli risultati, rosso: valori anomali. Conta le voci con percentuale (punti con massimo o risultato in %)."
+            "value": "Box: metà centrale dei risultati. Tratto: mediana. Linea: fino a 1,5 × lo scarto interquartile. Punti: singoli risultati, rosso: valori anomali. Contano le voci con percentuale."
           }
         }
       }
@@ -2209,25 +2209,25 @@
         }
       }
     },
-    "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.": {
+    "Das Backup enthält Einträge, Fotos und Stammdaten. Die letzten 10 liegen auch in der Dateien-App: Auf meinem iPhone › Schiesstagebuch › Backups.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The backup contains all entries, photos and master data. Restoring never duplicates existing entries. The last 10 backups are also kept in the Files app under On My iPhone › Schiesstagebuch › Backups."
+            "value": "The backup contains entries, photos and master data. The last 10 are also kept in the Files app: On My iPhone › Schiesstagebuch › Backups."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique pas les entrées existantes. Les 10 dernières sauvegardes sont aussi conservées dans l'app Fichiers sous Sur mon iPhone › Schiesstagebuch › Backups."
+            "value": "La sauvegarde contient les entrées, les photos et les données de base. Les 10 dernières sont aussi dans l'app Fichiers : Sur mon iPhone › Schiesstagebuch › Backups."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica le voci esistenti. Gli ultimi 10 backup restano anche nell'app File in Sul mio iPhone › Schiesstagebuch › Backups."
+            "value": "Il backup contiene voci, foto e dati di base. Gli ultimi 10 sono anche nell'app File: Sul mio iPhone › Schiesstagebuch › Backups."
           }
         }
       }
@@ -2623,25 +2623,25 @@
         }
       }
     },
-    "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": {
+    "Der Export kennt nur die Schusszahl. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; der Rest gilt als Probeschüsse. Schalte aus, wo das nicht stimmt.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The export only holds the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong."
+            "value": "The export only knows the number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; the rest counts as sighters. Switch off where this is wrong."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'export ne contient que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste."
+            "value": "L'export ne connaît que le nombre de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le reste compte comme coups d'essai. Désactive là où ce n'est pas juste."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'esportazione contiene solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."
+            "value": "L'esportazione conosce solo il numero di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; il resto vale come colpi di prova. Disattiva dove non è corretto."
           }
         }
       }
@@ -2669,25 +2669,25 @@
         }
       }
     },
-    "Der Standort ist zu ungenau für eine Schiessanlage. Schalte «Genauer Standort» ein oder suche die Adresse.": {
+    "Der Standort ist zu ungenau. Schalte «Genauer Standort» ein oder suche die Adresse.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The location is too vague for a range. Turn on precise location or search for the address."
+            "value": "The location is too vague. Turn on precise location or search for the address."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La position est trop imprécise pour un stand. Active « Position exacte » ou cherche l'adresse."
+            "value": "La position est trop imprécise. Active « Position exacte » ou cherche l'adresse."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "La posizione è troppo imprecisa per un poligono. Attiva «Posizione esatta» o cerca l'indirizzo."
+            "value": "La posizione è troppo imprecisa. Attiva «Posizione esatta» o cerca l'indirizzo."
           }
         }
       }
@@ -2761,7 +2761,7 @@
         }
       }
     },
-    "Die Kaliber gehören zum Lauf. Beim Erfassen werden nur die Kaliber der montierten Läufe angeboten.": {
+    "Die Kaliber gehören zum Lauf. Einträge bieten nur die Kaliber der montierten Läufe an.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -2830,71 +2830,71 @@
         }
       }
     },
-    "Die Stiche mit dieser Scheibe bleiben erhalten, haben dann aber keine Scheibe und kein daraus berechnetes Maximum mehr.": {
+    "Die Stiche mit dieser Scheibe bleiben, verlieren aber die Scheibe und das daraus berechnete Maximum.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The matches shot on this target are kept, but no longer have a target or the maximum worked out from it."
+            "value": "The matches shot on this target stay, but lose the target and the maximum worked out from it."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les passes tirées sur cette cible sont conservées, mais n'ont plus de cible ni le maximum calculé à partir d'elle."
+            "value": "Les cibles tirées avec ce type restent, mais le perdent, ainsi que le maximum calculé à partir de lui."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le serie tirate su questo bersaglio restano, ma non hanno più un bersaglio né il massimo calcolato da esso."
+            "value": "I bersagli tirati con questo tipo restano, ma lo perdono insieme al massimo calcolato da esso."
           }
         }
       }
     },
-    "Die möglichen Werte eines Schusses, durch Leerzeichen getrennt, der beste zuerst, z. B. «5 4 3 2 1 0». Bei den Einzelschüssen erscheinen sie als Tasten, und nach jedem Tipp geht es zum nächsten Schuss.": {
+    "Die Werte eines Schusses, mit Leerzeichen getrennt, der beste zuerst: «5 4 3 2 1 0». Bei den Einzelschüssen sind es Tasten.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The values a shot can have, separated by spaces, best first, e.g. “5 4 3 2 1 0”. For individual shots they appear as buttons, and each tap moves on to the next shot."
+            "value": "The values of a shot, separated by spaces, best first: “5 4 3 2 1 0”. For individual shots they are buttons."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les valeurs possibles d'un coup, séparées par des espaces, la meilleure d'abord, p. ex. « 5 4 3 2 1 0 ». Pour les coups individuels, elles apparaissent comme boutons et chaque toucher passe au coup suivant."
+            "value": "Les valeurs d'un coup, séparées par des espaces, la meilleure d'abord : « 5 4 3 2 1 0 ». Pour les coups individuels, ce sont des boutons."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "I valori possibili di un colpo, separati da spazi, il migliore per primo, p. es. «5 4 3 2 1 0». Per i colpi singoli appaiono come pulsanti e ogni tocco passa al colpo successivo."
+            "value": "I valori di un colpo, separati da spazi, il migliore per primo: «5 4 3 2 1 0». Per i colpi singoli sono pulsanti."
           }
         }
       }
     },
-    "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.": {
+    "Diese Anlagen kennt die App schon. Schalte aus, was nicht stimmt; passen mehrere, wähle die richtige. Ohne Zuordnung entsteht eine neue Anlage.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "These ranges are already in the app or in the directory of Swiss shooting ranges, recognised by name, town, postcode and distance. Switch off matches that are wrong. Where several ranges fit, pick the right one. Without a match, a new range is created."
+            "value": "The app already knows these ranges. Switch off what is wrong; where several fit, pick the right one. Without a match, a new range is created."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ces stands sont déjà dans l'app ou dans le répertoire des stands de tir suisses, reconnus par nom, localité, NPA et distance. Désactive les correspondances erronées. Si plusieurs stands conviennent, choisis le bon. Sans correspondance, un nouveau stand est créé."
+            "value": "L'app connaît déjà ces stands. Désactive ce qui est faux ; si plusieurs conviennent, choisis le bon. Sans correspondance, un nouveau stand est créé."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Questi poligoni sono già nell'app o nell'elenco dei poligoni svizzeri, riconosciuti da nome, località, NPA e distanza. Disattiva gli abbinamenti errati. Se più poligoni corrispondono, scegli quello giusto. Senza abbinamento viene creato un nuovo poligono."
+            "value": "L'app conosce già questi poligoni. Disattiva ciò che non è giusto; se più di uno corrisponde, scegli quello giusto. Senza abbinamento viene creato un nuovo poligono."
           }
         }
       }
@@ -3141,13 +3141,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cible personnalisée"
+            "value": "Type de cible personnalisé"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bersaglio personalizzato"
+            "value": "Tipo di bersaglio personalizzato"
           }
         }
       }
@@ -3198,48 +3198,48 @@
         }
       }
     },
-    "Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst. Seltene Kaliber zeigt erst die Suche.": {
+    "Ein Kaliber aus dem Katalog gehört zu deinen, sobald du es wählst. Seltene zeigt erst die Suche.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A calibre from the catalogue joins your calibres as soon as you choose it for a barrel, an ammunition or an entry. Rare calibres appear only in the search."
+            "value": "A calibre from the catalogue becomes yours as soon as you choose it. Rare ones appear only in the search."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un calibre du catalogue rejoint tes calibres dès que tu le choisis pour un canon, une munition ou une entrée. Les calibres rares n'apparaissent que dans la recherche."
+            "value": "Un calibre du catalogue rejoint les tiens dès que tu le choisis. Les rares n'apparaissent que dans la recherche."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un calibro del catalogo si aggiunge ai tuoi calibri non appena lo scegli per una canna, una munizione o una voce. I calibri rari compaiono solo nella ricerca."
+            "value": "Un calibro del catalogo diventa tuo non appena lo scegli. Quelli rari compaiono solo nella ricerca."
           }
         }
       }
     },
-    "Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.": {
+    "Ein paar Fragen, damit die App nur zeigt, was du brauchst. Alles lässt sich später in den Einstellungen ändern.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A few questions about your preferences, so the app only shows what you need. You can change everything later in Settings."
+            "value": "A few questions, so the app only shows what you need. You can change everything later in Settings."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quelques questions sur tes préférences, pour que l'app n'affiche que ce dont tu as besoin. Tu peux tout modifier plus tard dans Réglages."
+            "value": "Quelques questions, pour que l'app n'affiche que ce dont tu as besoin. Tout se modifie plus tard dans les Réglages."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Qualche domanda sulle tue preferenze, così l'app mostra solo ciò che ti serve. Puoi cambiare tutto più tardi in Impostazioni."
+            "value": "Qualche domanda, così l'app mostra solo ciò che ti serve. Tutto si può cambiare più tardi nelle Impostazioni."
           }
         }
       }
@@ -3290,25 +3290,25 @@
         }
       }
     },
-    "Einstellungen für Sportschützen": {
+    "Einstellungen fürs Sportschiessen": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sport shooter settings"
+            "value": "Sport shooting settings"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Réglages pour tireurs sportifs"
+            "value": "Réglages pour le tir sportif"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Impostazioni per tiratori sportivi"
+            "value": "Impostazioni per il tiro sportivo"
           }
         }
       }
@@ -3520,25 +3520,25 @@
         }
       }
     },
-    "Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.": {
+    "Einzelschüsse tippst du als Zahl; Werte ausserhalb werden rot. Etwa 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You type individual shots on the number pad; values outside the range are marked red. For example 0 to 10.9 for decimal scoring or 0 to 100 for A100."
+            "value": "You type individual shots as numbers; values outside turn red. For example 0 to 10.9 for decimal scoring or 0 to 100 for A100."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu saisis les coups individuels avec le pavé numérique ; les valeurs hors de la plage sont marquées en rouge. Par exemple 0 à 10,9 pour l'évaluation au dixième ou 0 à 100 pour A100."
+            "value": "Tu saisis les coups individuels en chiffres ; les valeurs hors plage deviennent rouges. Par exemple 0 à 10,9 pour l'évaluation au dixième ou 0 à 100 pour A100."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "I colpi singoli si digitano con il tastierino numerico; i valori fuori intervallo sono segnati in rosso. Per esempio da 0 a 10,9 per il punteggio decimale o da 0 a 100 per A100."
+            "value": "I colpi singoli si digitano come numeri; i valori fuori intervallo diventano rossi. Per esempio da 0 a 10,9 per il punteggio decimale o da 0 a 100 per A100."
           }
         }
       }
@@ -3612,25 +3612,25 @@
         }
       }
     },
-    "Erfasse die Scheiben, auf die du schiesst. Beim Stich wählst du dann die Scheibe, und bei den Einzelschüssen bietet die App nur ihre Werte an.": {
+    "Erfasse die Scheiben, auf die du schiesst. Im Stich wählst du eine, und die Einzelschüsse bieten nur ihre Werte an.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add the targets you shoot at. You then pick the target for each match, and for individual shots the app offers only its values."
+            "value": "Add the targets you shoot at. In a match you pick one, and the individual shots offer only its values."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enregistre les cibles sur lesquelles tu tires. Tu choisis ensuite la cible pour chaque passe, et pour les coups individuels l'app ne propose que ses valeurs."
+            "value": "Enregistre les types de cibles sur lesquels tu tires. Tu en choisis un par cible, et les coups individuels ne proposent que ses valeurs."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Registra i bersagli su cui spari. Poi scegli il bersaglio per ogni serie e, per i colpi singoli, l'app offre solo i suoi valori."
+            "value": "Registra i tipi di bersaglio su cui spari. Ne scegli uno per ogni bersaglio, e i colpi singoli offrono solo i suoi valori."
           }
         }
       }
@@ -4469,25 +4469,25 @@
         }
       }
     },
-    "Für Sportschützen": {
+    "Für Apple Weather schickt die App Ort und Zeit der Schiessanlage an Apple, nicht deinen Standort. Meist ist das aber derselbe Ort.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For sport shooters"
+            "value": "For Apple Weather the app sends the range's position and the time to Apple, not your location. Usually that is the same place though."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pour tireurs sportifs"
+            "value": "Pour la météo d'Apple, l'app envoie à Apple la position du stand et l'heure, pas ta position. C'est pourtant souvent le même endroit."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per tiratori sportivi"
+            "value": "Per il meteo di Apple, l'app invia ad Apple la posizione del poligono e l'ora, non la tua posizione. Di solito però è lo stesso posto."
           }
         }
       }
@@ -4515,25 +4515,48 @@
         }
       }
     },
-    "Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.": {
+    "Für Teile mit eigener Nummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For the weather from Apple Weather, the app sends the range's coordinates and the time to Apple, not your location. As you usually shoot there, it is nearly the same place though."
+            "value": "For parts with a number of their own. A barrel's serial number is entered with the barrel."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pour la météo d'Apple, l'app envoie à Apple les coordonnées du stand et l'heure, pas ta position. Comme tu y tires le plus souvent, c'est tout de même presque le même endroit."
+            "value": "Pour les pièces qui ont leur propre numéro. Le numéro de série d'un canon se saisit avec le canon."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e l'ora, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso posto."
+            "value": "Per le parti con un numero proprio. Il numero di serie di una canna si inserisce con la canna."
+          }
+        }
+      }
+    },
+    "Fürs Sportschiessen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For sport shooting"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour le tir sportif"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per il tiro sportivo"
           }
         }
       }
@@ -4768,7 +4791,7 @@
         }
       }
     },
-    "Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.": {
+    "Gilt für neue Einträge. Im Eintrag wechselst du die Art jederzeit.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -5936,13 +5959,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucune cible"
+            "value": "Aucun type de cible"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nessun bersaglio"
+            "value": "Nessun tipo di bersaglio"
           }
         }
       }
@@ -7350,25 +7373,25 @@
         }
       }
     },
-    "Mit iCloud kommen deine Daten von selbst auf dieses Gerät, das kann einige Minuten dauern. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen: was iCloud danach noch liefert, ist sonst doppelt.": {
+    "Mit iCloud kommen deine Daten von selbst; das dauert einige Minuten. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen. Sonst ist danach alles doppelt.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "With iCloud your data comes to this device by itself, which can take a few minutes. Restore a backup only if you do not use iCloud or the data is missing there: otherwise whatever iCloud still delivers afterwards will be there twice."
+            "value": "With iCloud your data arrives by itself; that takes a few minutes. Restore a backup only if you do not use iCloud or the data is missing there. Otherwise everything is there twice afterwards."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avec iCloud, tes données arrivent d'elles-mêmes sur cet appareil, ce qui peut prendre quelques minutes. Ne restaure une sauvegarde que si tu n'utilises pas iCloud ou si les données y manquent : sinon, tout ce qu'iCloud livre encore ensuite sera en double."
+            "value": "Avec iCloud, tes données arrivent d'elles-mêmes ; cela prend quelques minutes. Ne restaure une sauvegarde que si tu n'utilises pas iCloud ou si les données y manquent. Sinon, tout sera en double."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Con iCloud i tuoi dati arrivano da soli su questo dispositivo, possono volerci alcuni minuti. Ripristina un backup solo se non usi iCloud o se lì i dati mancano: altrimenti ciò che iCloud consegna ancora dopo sarà doppio."
+            "value": "Con iCloud i tuoi dati arrivano da soli; ci vogliono alcuni minuti. Ripristina un backup solo se non usi iCloud o se lì i dati mancano. Altrimenti dopo tutto è doppio."
           }
         }
       }
@@ -7902,25 +7925,25 @@
         }
       }
     },
-    "Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.": {
+    "Neue Einträge von heute wählen die Anlage, bei der du bist, und zeigen nahe Anlagen zuerst. Dein Standort wird weder gespeichert noch gesendet.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "New entries for today pick the range you are at and list nearby ranges first. Your location is only read for this and is never stored or sent."
+            "value": "New entries for today pick the range you are at and show nearby ranges first. Your location is neither stored nor sent."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les nouvelles entrées du jour choisissent le stand où tu te trouves et listent d'abord les stands proches. La position n'est lue que pour cela, sans être enregistrée ni envoyée."
+            "value": "Les nouvelles entrées du jour choisissent le stand où tu te trouves et affichent d'abord les stands proches. Ta position n'est ni enregistrée ni envoyée."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le nuove voci di oggi scelgono il poligono in cui ti trovi ed elencano prima quelli vicini. La posizione viene letta solo a questo scopo e non viene né salvata né inviata."
+            "value": "Le nuove voci di oggi scelgono il poligono in cui ti trovi e mostrano prima quelli vicini. La tua posizione non viene né salvata né inviata."
           }
         }
       }
@@ -7960,13 +7983,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nouvelle cible"
+            "value": "Nouveau type de cible"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nuovo bersaglio"
+            "value": "Nuovo tipo di bersaglio"
           }
         }
       }
@@ -8730,25 +8753,25 @@
         }
       }
     },
-    "Ohne Zugriff auf die Fotomediathek können die Fotos nicht übernommen werden. Erlaube den Zugriff in den Einstellungen des iPhones, oder schalte «Fotos aus der Fotomediathek übernehmen» aus.": {
+    "Ohne Zugriff auf die Fotomediathek kommen keine Fotos mit. Erlaube ihn in den iPhone-Einstellungen oder schalte «Fotos aus der Fotomediathek übernehmen» aus.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Without access to the photo library the photos cannot be brought over. Allow the access in the settings of the iPhone, or switch off bringing over the photos."
+            "value": "Without access to the photo library no photos come along. Allow it in the settings of the iPhone, or switch off bringing over the photos."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sans accès à la photothèque, les photos ne peuvent pas être reprises. Autorise l'accès dans les réglages de l'iPhone ou désactive « Reprendre les photos de la photothèque »."
+            "value": "Sans accès à la photothèque, aucune photo n'est reprise. Autorise-le dans les réglages de l'iPhone ou désactive « Reprendre les photos de la photothèque »."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Senza accesso alla libreria foto le foto non possono essere riprese. Consenti l'accesso nelle impostazioni dell'iPhone oppure disattiva «Riprendi le foto dalla libreria»."
+            "value": "Senza accesso alla libreria foto non viene ripresa alcuna foto. Consentilo nelle impostazioni dell'iPhone oppure disattiva «Riprendi le foto dalla libreria»."
           }
         }
       }
@@ -8776,25 +8799,25 @@
         }
       }
     },
-    "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen. Hast du ein Los ganz verschossen, markiere es mit ✓ als aufgebraucht.": {
+    "Optional. Im Eintrag wählst du das Los. Ist eines verschossen, markiere es mit ✓ als aufgebraucht.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Optional. You can pick the lot when logging an entry. Once you have shot a whole lot, mark it as used up with ✓."
+            "value": "Optional. You pick the lot in the entry. Once one is shot, mark it as used up with ✓."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facultatif. Tu peux choisir le lot en saisissant une entrée. Quand tu as tiré tout un lot, marque-le comme épuisé avec ✓."
+            "value": "Facultatif. Tu choisis le lot dans l'entrée. Quand un lot est tiré, marque-le comme épuisé avec ✓."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativo. Puoi scegliere il lotto quando registri una voce. Quando hai sparato tutto un lotto, segnalo come esaurito con ✓."
+            "value": "Facoltativo. Scegli il lotto nella voce. Quando un lotto è finito, segnalo come esaurito con ✓."
           }
         }
       }
@@ -10248,6 +10271,35 @@
         }
       }
     },
+    "Scheibe (Art)": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheibe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type de cible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tipo di bersaglio"
+          }
+        }
+      }
+    },
     "Scheibe bearbeiten": {
       "extractionState": "manual",
       "localizations": {
@@ -10260,13 +10312,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Modifier la cible"
+            "value": "Modifier le type de cible"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Modifica bersaglio"
+            "value": "Modifica tipo di bersaglio"
           }
         }
       }
@@ -10283,13 +10335,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Supprimer la cible ?"
+            "value": "Supprimer le type de cible ?"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eliminare il bersaglio?"
+            "value": "Eliminare il tipo di bersaglio?"
           }
         }
       }
@@ -10306,13 +10358,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cible, pays ou distance"
+            "value": "Type de cible, pays ou distance"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bersaglio, paese o distanza"
+            "value": "Tipo di bersaglio, paese o distanza"
           }
         }
       }
@@ -10329,13 +10381,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cibles"
+            "value": "Types de cibles"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bersagli"
+            "value": "Tipi di bersaglio"
           }
         }
       }
@@ -11191,25 +11243,25 @@
         }
       }
     },
-    "Sonne zum Schützen": {
+    "Sonne": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sun relative to shooter"
+            "value": "Sun"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Soleil par rapport au tireur"
+            "value": "Soleil"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sole rispetto al tiratore"
+            "value": "Sole"
           }
         }
       }
@@ -11910,7 +11962,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Matches"
+            "value": "Results"
           }
         },
         "fr": {
@@ -12180,25 +12232,25 @@
         }
       }
     },
-    "Von der Schützenlinie bis zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; wer im oberen Stock schiesst, zielt weniger hoch.": {
+    "Von der Schützenlinie zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; im oberen Stock zielst du weniger hoch.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "From the firing line to the targets, measured in swissTLM3D (© swisstopo), accurate to about ±2 m. The height is from the ground; shooting from an upper floor, you aim less high."
+            "value": "From the firing line to the targets, measured in swissTLM3D (© swisstopo), accurate to about ±2 m. The height is from the ground; from an upper floor you aim less high."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "De la ligne de tir aux cibles, mesuré dans swissTLM3D (© swisstopo), à environ ±2 m près. La hauteur part du sol ; en tirant depuis un étage, on vise moins haut."
+            "value": "De la ligne de tir aux cibles, mesuré dans swissTLM3D (© swisstopo), à environ ±2 m près. La hauteur part du sol ; depuis un étage, tu vises moins haut."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dalla linea di tiro ai bersagli, misurato in swissTLM3D (© swisstopo), con una precisione di circa ±2 m. L'altezza è dal suolo; sparando da un piano superiore si mira meno in alto."
+            "value": "Dalla linea di tiro ai bersagli, misurato in swissTLM3D (© swisstopo), con una precisione di circa ±2 m. L'altezza è dal suolo; da un piano superiore miri meno in alto."
           }
         }
       }
@@ -12962,25 +13014,25 @@
         }
       }
     },
-    "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Andere Filter kannst du von Hand anlegen.": {
+    "Wähle die Filter, die du besitzt: Nur sie erscheinen in der Auswahl. Erfasste Einträge behalten ihren Filter. Andere legst du selbst an.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Select the filters you own. Only these appear in the picker. Existing entries keep their filter. Other filters you can add by hand."
+            "value": "Select the filters you own: only these appear in the picker. Existing entries keep their filter. Others you add yourself."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre. Tu peux ajouter d'autres filtres à la main."
+            "value": "Sélectionne les filtres que tu possèdes : seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre. Tu ajoutes les autres toi-même."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro. Altri filtri puoi aggiungerli a mano."
+            "value": "Seleziona i filtri che possiedi: solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro. Gli altri li aggiungi tu."
           }
         }
       }
@@ -13050,29 +13102,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegli"
-          }
-        }
-      }
-    },
-    "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "E.g. for parts numbered differently from the main number. A barrel's serial number is entered with the barrel."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro de série d'un canon se saisit avec le canon."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna."
           }
         }
       }

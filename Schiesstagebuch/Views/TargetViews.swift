@@ -16,7 +16,7 @@ struct TargetListView: View {
                 ContentUnavailableView {
                     Label("Keine Scheiben", systemImage: "target")
                 } description: {
-                    Text("Erfasse die Scheiben, auf die du schiesst. Beim Stich wählst du dann die Scheibe, und bei den Einzelschüssen bietet die App nur ihre Werte an.")
+                    Text("Erfasse die Scheiben, auf die du schiesst. Im Stich wählst du eine, und die Einzelschüsse bieten nur ihre Werte an.")
                 } actions: {
                     Button("Aus Vorlage hinzufügen") { choosingTemplate = true }.buttonStyle(.borderedProminent)
                     Button("Eigene Scheibe") { adding = true }
@@ -40,7 +40,7 @@ struct TargetListView: View {
                             titleVisibility: .visible, presenting: deleting) { target in
             Button("Löschen", role: .destructive) { context.delete(target) }
         } message: { _ in
-            Text("Die Stiche mit dieser Scheibe bleiben erhalten, haben dann aber keine Scheibe und kein daraus berechnetes Maximum mehr.")
+            Text("Die Stiche mit dieser Scheibe bleiben, verlieren aber die Scheibe und das daraus berechnete Maximum.")
         }
         .navigationTitle("Scheiben")
         .toolbar {
@@ -174,7 +174,7 @@ struct TargetPickerRow: View {
         NavigationLink {
             TargetPickerList(selection: $selection, targets: targets)
         } label: {
-            LabeledContent("Scheibe") {
+            LabeledContent("Scheibe (Art)") {
                 Text(selection?.name ?? "–").lineLimit(2).multilineTextAlignment(.trailing)
             }
         }
@@ -224,7 +224,7 @@ struct TargetPickerList: View {
         }
         .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Scheibe, Land oder Distanz")
         .autocorrectionDisabled()
-        .navigationTitle("Scheibe")
+        .navigationTitle("Scheibe (Art)")
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -303,9 +303,9 @@ struct TargetEditorView: View {
                 } footer: {
                     switch mode {
                     case .range:
-                        Text("Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.")
+                        Text("Einzelschüsse tippst du als Zahl; Werte ausserhalb werden rot. Etwa 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.")
                     case .values:
-                        Text("Die möglichen Werte eines Schusses, durch Leerzeichen getrennt, der beste zuerst, z. B. «5 4 3 2 1 0». Bei den Einzelschüssen erscheinen sie als Tasten, und nach jedem Tipp geht es zum nächsten Schuss.")
+                        Text("Die Werte eines Schusses, mit Leerzeichen getrennt, der beste zuerst: «5 4 3 2 1 0». Bei den Einzelschüssen sind es Tasten.")
                     }
                 }
             }

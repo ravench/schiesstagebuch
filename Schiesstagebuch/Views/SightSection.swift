@@ -29,7 +29,7 @@ struct SightSection: View {
                          scale: SightSettings.bipodRulerScale, clamp: SightSettings.clampBipod)
             }
         } header: {
-            Text("Einstellungen für Sportschützen")
+            Text("Einstellungen fürs Sportschiessen")
         } footer: {
             if fields.contains(.filter), FilterCatalog(data: catalogData).visible.isEmpty {
                 Text(term("Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.").loc)

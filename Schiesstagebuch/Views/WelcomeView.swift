@@ -39,7 +39,7 @@ struct WelcomeView: View {
                         SportFeatureToggle(feature: feature, features: $features)
                     }
                 } header: {
-                    Text("Für Sportschützen")
+                    Text("Fürs Sportschiessen")
                 } footer: {
                     Text("Wähle, welche Felder deine Einträge zusätzlich zeigen.")
                 }
@@ -91,7 +91,7 @@ struct WelcomeIntro: View {
             Text("App einrichten")
                 .font(.title2.bold())
                 .multilineTextAlignment(.center)
-            Text("Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.")
+            Text("Ein paar Fragen, damit die App nur zeigt, was du brauchst. Alles lässt sich später in den Einstellungen ändern.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

@@ -75,7 +75,7 @@ extension WeatherField {
             o("artificial", "Kunstlicht", "light.overhead.right"), // a floodlight: the range is outdoors (tester 2026-11-24)
             o("dark_lit_target", "dunkel, Scheibe beleuchtet", "moon.stars"),
         ])),
-        .init(key: "sun_direction", label: "Sonne zum Schützen", icon: "sun.max", kind: .select([
+        .init(key: "sun_direction", label: "Sonne", icon: "sun.max", kind: .select([
             o("none", "keine", "circle.slash"),
             o("behind", "von hinten", "arrow.down.circle"),
             o("left", "von links", "arrow.left.circle"),

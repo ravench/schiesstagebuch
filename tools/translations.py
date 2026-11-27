@@ -10,10 +10,10 @@ T = {
     "%@ fällig: %@": ("%1$@ due: %2$@", "%1$@ à faire : %2$@", "%1$@ da fare: %2$@"),
     "Nach Standort gewählt · %@": ("Picked by location · %@", "Choisi selon la position · %@", "Scelto in base alla posizione · %@"),
     "Schiessanlage nach Standort wählen": ("Pick range by location", "Choisir le stand selon la position", "Scegliere il poligono in base alla posizione"),
-    "Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.": (
-        "New entries for today pick the range you are at and list nearby ranges first. Your location is only read for this and is never stored or sent.",
-        "Les nouvelles entrées du jour choisissent le stand où tu te trouves et listent d'abord les stands proches. La position n'est lue que pour cela, sans être enregistrée ni envoyée.",
-        "Le nuove voci di oggi scelgono il poligono in cui ti trovi ed elencano prima quelli vicini. La posizione viene letta solo a questo scopo e non viene né salvata né inviata."),
+    "Neue Einträge von heute wählen die Anlage, bei der du bist, und zeigen nahe Anlagen zuerst. Dein Standort wird weder gespeichert noch gesendet.": (
+        "New entries for today pick the range you are at and show nearby ranges first. Your location is neither stored nor sent.",
+        "Les nouvelles entrées du jour choisissent le stand où tu te trouves et affichent d'abord les stands proches. Ta position n'est ni enregistrée ni envoyée.",
+        "Le nuove voci di oggi scelgono il poligono in cui ti trovi e mostrano prima quelli vicini. La tua posizione non viene né salvata né inviata."),
     "Mitteilungen sind für diese App ausgeschaltet: Erinnerungen erscheinen nur in der App.": (
         "Notifications are off for this app: reminders only show inside the app.",
         "Les notifications sont désactivées pour cette app : les rappels n'apparaissent que dans l'app.",
@@ -28,10 +28,10 @@ T = {
         "%1$lld voci ripristinate, %2$lld erano già presenti."),
     "%lld Einträge wiederhergestellt.": ("%lld entries restored.", "%lld entrées restaurées.", "%lld voci ripristinate."),
     "Barcode kann nicht dargestellt werden": ("Barcode can't be displayed", "Impossible d'afficher le code-barres", "Impossibile visualizzare il codice a barre"),
-    "Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.": (
-        "Both barcodes are calculated from the licence number. The card's credit card details are not stored.",
-        "Les deux codes-barres sont calculés à partir du numéro de licence. Les données de carte de crédit ne sont pas enregistrées.",
-        "Entrambi i codici a barre vengono calcolati dal numero di licenza. I dati della carta di credito non vengono salvati."),
+    "Beide Barcodes entstehen aus der Lizenznummer. Kreditkartendaten speichert die App nicht.": (
+        "Both barcodes are worked out from the licence number. The app stores no credit card details.",
+        "Les deux codes-barres sont calculés à partir du numéro de licence. L'app n'enregistre aucune donnée de carte de crédit.",
+        "Entrambi i codici a barre derivano dal numero di licenza. L'app non salva alcun dato della carta di credito."),
     "Die Lizenznummer hat höchstens 6 Ziffern.": ("The licence number has at most 6 digits.", "Le numéro de licence comporte au plus 6 chiffres.", "Il numero di licenza ha al massimo 6 cifre."),
     "Erfasse deine SSV-Lizenz, um sie am Stand vorzuzeigen.": (
         "Add your SSV licence to show it at the range.",
@@ -79,10 +79,10 @@ T = {
     "Backup wiederherstellen": ("Restore backup", "Restaurer une sauvegarde", "Ripristina backup"),
     "Backup wiederherstellen?": ("Restore a backup?", "Restaurer une sauvegarde ?", "Ripristinare un backup?"),
     "Backup wählen": ("Choose backup", "Choisir la sauvegarde", "Scegli il backup"),
-    "Mit iCloud kommen deine Daten von selbst auf dieses Gerät, das kann einige Minuten dauern. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen: was iCloud danach noch liefert, ist sonst doppelt.": (
-        "With iCloud your data comes to this device by itself, which can take a few minutes. Restore a backup only if you do not use iCloud or the data is missing there: otherwise whatever iCloud still delivers afterwards will be there twice.",
-        "Avec iCloud, tes données arrivent d'elles-mêmes sur cet appareil, ce qui peut prendre quelques minutes. Ne restaure une sauvegarde que si tu n'utilises pas iCloud ou si les données y manquent : sinon, tout ce qu'iCloud livre encore ensuite sera en double.",
-        "Con iCloud i tuoi dati arrivano da soli su questo dispositivo, possono volerci alcuni minuti. Ripristina un backup solo se non usi iCloud o se lì i dati mancano: altrimenti ciò che iCloud consegna ancora dopo sarà doppio."),
+    "Mit iCloud kommen deine Daten von selbst; das dauert einige Minuten. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen. Sonst ist danach alles doppelt.": (
+        "With iCloud your data arrives by itself; that takes a few minutes. Restore a backup only if you do not use iCloud or the data is missing there. Otherwise everything is there twice afterwards.",
+        "Avec iCloud, tes données arrivent d'elles-mêmes ; cela prend quelques minutes. Ne restaure une sauvegarde que si tu n'utilises pas iCloud ou si les données y manquent. Sinon, tout sera en double.",
+        "Con iCloud i tuoi dati arrivano da soli; ci vogliono alcuni minuti. Ripristina un backup solo se non usi iCloud o se lì i dati mancano. Altrimenti dopo tutto è doppio."),
     "Bearbeiten": ("Edit", "Modifier", "Modifica"),
     "Beim Erfassen werden nur diese Kaliber angeboten. Das Standardkaliber ist vorausgewählt.": (
         "Only these calibres are offered when logging. The default calibre is preselected.",
@@ -108,10 +108,10 @@ T = {
         "L'export ne contient que des références vers des photos de votre photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud.",
         "L'esportazione contiene solo riferimenti a foto della tua libreria (%lld). Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."),
     "Zeilen ohne lesbares Datum": ("Lines without a readable date", "Lignes sans date lisible", "Righe senza data leggibile"),
-    "Ohne Zugriff auf die Fotomediathek können die Fotos nicht übernommen werden. Erlaube den Zugriff in den Einstellungen des iPhones, oder schalte «Fotos aus der Fotomediathek übernehmen» aus.": (
-        "Without access to the photo library the photos cannot be brought over. Allow the access in the settings of the iPhone, or switch off bringing over the photos.",
-        "Sans accès à la photothèque, les photos ne peuvent pas être reprises. Autorise l'accès dans les réglages de l'iPhone ou désactive « Reprendre les photos de la photothèque ».",
-        "Senza accesso alla libreria foto le foto non possono essere riprese. Consenti l'accesso nelle impostazioni dell'iPhone oppure disattiva «Riprendi le foto dalla libreria»."),
+    "Ohne Zugriff auf die Fotomediathek kommen keine Fotos mit. Erlaube ihn in den iPhone-Einstellungen oder schalte «Fotos aus der Fotomediathek übernehmen» aus.": (
+        "Without access to the photo library no photos come along. Allow it in the settings of the iPhone, or switch off bringing over the photos.",
+        "Sans accès à la photothèque, aucune photo n'est reprise. Autorise-le dans les réglages de l'iPhone ou désactive « Reprendre les photos de la photothèque ».",
+        "Senza accesso alla libreria foto non viene ripresa alcuna foto. Consentilo nelle impostazioni dell'iPhone oppure disattiva «Riprendi le foto dalla libreria»."),
     "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.": (
         "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms.",
         "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes.",
@@ -187,10 +187,10 @@ T = {
     "Kaliber suchen": ("Search calibres", "Rechercher un calibre", "Cerca calibro"),
     "Kaliber wählen": ("Choose calibres", "Choisir les calibres", "Scegli i calibri"),
     "Katalog": ("Catalogue", "Catalogue", "Catalogo"),
-    "Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst. Seltene Kaliber zeigt erst die Suche.": (
-        "A calibre from the catalogue joins your calibres as soon as you choose it for a barrel, an ammunition or an entry. Rare calibres appear only in the search.",
-        "Un calibre du catalogue rejoint tes calibres dès que tu le choisis pour un canon, une munition ou une entrée. Les calibres rares n'apparaissent que dans la recherche.",
-        "Un calibro del catalogo si aggiunge ai tuoi calibri non appena lo scegli per una canna, una munizione o una voce. I calibri rari compaiono solo nella ricerca."),
+    "Ein Kaliber aus dem Katalog gehört zu deinen, sobald du es wählst. Seltene zeigt erst die Suche.": (
+        "A calibre from the catalogue becomes yours as soon as you choose it. Rare ones appear only in the search.",
+        "Un calibre du catalogue rejoint les tiens dès que tu le choisis. Les rares n'apparaissent que dans la recherche.",
+        "Un calibro del catalogo diventa tuo non appena lo scegli. Quelli rari compaiono solo nella ricerca."),
     "Historisches Ordonnanzgewehr": ("Historic service rifle", "Fusil d'ordonnance historique", "Fucile d'ordinanza storico"),
     "Kategorie": ("Category", "Catégorie", "Categoria"),
     "Kein Kaliber": ("No calibre", "Aucun calibre", "Nessun calibro"),
@@ -198,20 +198,23 @@ T = {
     "Keine Einträge": ("No entries", "Aucune entrée", "Nessuna voce"),
     "Keine Munition": ("No ammunition", "Aucune munition", "Nessuna munizione"),
     # Targets (Scheiben), 2026-11-16
-    "Scheiben": ("Targets", "Cibles", "Bersagli"),
+    # The kinds of target the user registers (Settings › Scheiben, the Stich's «Scheibe» row). French and Italian
+    # call a Stich «cible» / «bersaglio», as Swiss shooters do, so the kind of target needs a word of its own there.
+    "Scheiben": ("Targets", "Types de cibles", "Tipi di bersaglio"),
+    "Scheibe (Art)": ("Target", "Type de cible", "Tipo di bersaglio", "Scheibe"),
     "Scheiben-Nr.": ("Target no.", "N° de cible", "N. bersaglio"),
-    "Keine Scheiben": ("No targets", "Aucune cible", "Nessun bersaglio"),
-    "Neue Scheibe": ("New target", "Nouvelle cible", "Nuovo bersaglio"),
-    "Scheibe bearbeiten": ("Edit target", "Modifier la cible", "Modifica bersaglio"),
-    "Scheibe löschen?": ("Delete target?", "Supprimer la cible ?", "Eliminare il bersaglio?"),
-    "Die Stiche mit dieser Scheibe bleiben erhalten, haben dann aber keine Scheibe und kein daraus berechnetes Maximum mehr.": (
-        "The matches shot on this target are kept, but no longer have a target or the maximum worked out from it.",
-        "Les passes tirées sur cette cible sont conservées, mais n'ont plus de cible ni le maximum calculé à partir d'elle.",
-        "Le serie tirate su questo bersaglio restano, ma non hanno più un bersaglio né il massimo calcolato da esso."),
-    "Eigene Scheibe": ("Own target", "Cible personnalisée", "Bersaglio personalizzato"),
+    "Keine Scheiben": ("No targets", "Aucun type de cible", "Nessun tipo di bersaglio"),
+    "Neue Scheibe": ("New target", "Nouveau type de cible", "Nuovo tipo di bersaglio"),
+    "Scheibe bearbeiten": ("Edit target", "Modifier le type de cible", "Modifica tipo di bersaglio"),
+    "Scheibe löschen?": ("Delete target?", "Supprimer le type de cible ?", "Eliminare il tipo di bersaglio?"),
+    "Die Stiche mit dieser Scheibe bleiben, verlieren aber die Scheibe und das daraus berechnete Maximum.": (
+        "The matches shot on this target stay, but lose the target and the maximum worked out from it.",
+        "Les cibles tirées avec ce type restent, mais le perdent, ainsi que le maximum calculé à partir de lui.",
+        "I bersagli tirati con questo tipo restano, ma lo perdono insieme al massimo calcolato da esso."),
+    "Eigene Scheibe": ("Own target", "Type de cible personnalisé", "Tipo di bersaglio personalizzato"),
     "Aus Vorlage hinzufügen": ("Add from template", "Ajouter depuis un modèle", "Aggiungi da modello"),
     "Vorlagen": ("Templates", "Modèles", "Modelli"),
-    "Scheibe, Land oder Distanz": ("Target, country or distance", "Cible, pays ou distance", "Bersaglio, paese o distanza"),
+    "Scheibe, Land oder Distanz": ("Target, country or distance", "Type de cible, pays ou distance", "Tipo di bersaglio, paese o distanza"),
     "Schweiz": ("Switzerland", "Suisse", "Svizzera"),
     "ISSF": ("ISSF", "ISSF", "ISSF"),
     # Target groups of other countries (Targets.json from SIUSData).
@@ -233,18 +236,18 @@ T = {
     "Feste Werte": ("Fixed values", "Valeurs fixes", "Valori fissi"),
     "Minimum": ("Minimum", "Minimum", "Minimo"),
     "Maximum": ("Maximum", "Maximum", "Massimo"),
-    "Erfasse die Scheiben, auf die du schiesst. Beim Stich wählst du dann die Scheibe, und bei den Einzelschüssen bietet die App nur ihre Werte an.": (
-        "Add the targets you shoot at. You then pick the target for each match, and for individual shots the app offers only its values.",
-        "Enregistre les cibles sur lesquelles tu tires. Tu choisis ensuite la cible pour chaque passe, et pour les coups individuels l'app ne propose que ses valeurs.",
-        "Registra i bersagli su cui spari. Poi scegli il bersaglio per ogni serie e, per i colpi singoli, l'app offre solo i suoi valori."),
-    "Einzelschüsse tippst du mit der Zahlentastatur, Werte ausserhalb des Bereichs werden rot markiert. Zum Beispiel 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.": (
-        "You type individual shots on the number pad; values outside the range are marked red. For example 0 to 10.9 for decimal scoring or 0 to 100 for A100.",
-        "Tu saisis les coups individuels avec le pavé numérique ; les valeurs hors de la plage sont marquées en rouge. Par exemple 0 à 10,9 pour l'évaluation au dixième ou 0 à 100 pour A100.",
-        "I colpi singoli si digitano con il tastierino numerico; i valori fuori intervallo sono segnati in rosso. Per esempio da 0 a 10,9 per il punteggio decimale o da 0 a 100 per A100."),
-    "Die möglichen Werte eines Schusses, durch Leerzeichen getrennt, der beste zuerst, z. B. «5 4 3 2 1 0». Bei den Einzelschüssen erscheinen sie als Tasten, und nach jedem Tipp geht es zum nächsten Schuss.": (
-        "The values a shot can have, separated by spaces, best first, e.g. “5 4 3 2 1 0”. For individual shots they appear as buttons, and each tap moves on to the next shot.",
-        "Les valeurs possibles d'un coup, séparées par des espaces, la meilleure d'abord, p. ex. « 5 4 3 2 1 0 ». Pour les coups individuels, elles apparaissent comme boutons et chaque toucher passe au coup suivant.",
-        "I valori possibili di un colpo, separati da spazi, il migliore per primo, p. es. «5 4 3 2 1 0». Per i colpi singoli appaiono come pulsanti e ogni tocco passa al colpo successivo."),
+    "Erfasse die Scheiben, auf die du schiesst. Im Stich wählst du eine, und die Einzelschüsse bieten nur ihre Werte an.": (
+        "Add the targets you shoot at. In a match you pick one, and the individual shots offer only its values.",
+        "Enregistre les types de cibles sur lesquels tu tires. Tu en choisis un par cible, et les coups individuels ne proposent que ses valeurs.",
+        "Registra i tipi di bersaglio su cui spari. Ne scegli uno per ogni bersaglio, e i colpi singoli offrono solo i suoi valori."),
+    "Einzelschüsse tippst du als Zahl; Werte ausserhalb werden rot. Etwa 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.": (
+        "You type individual shots as numbers; values outside turn red. For example 0 to 10.9 for decimal scoring or 0 to 100 for A100.",
+        "Tu saisis les coups individuels en chiffres ; les valeurs hors plage deviennent rouges. Par exemple 0 à 10,9 pour l'évaluation au dixième ou 0 à 100 pour A100.",
+        "I colpi singoli si digitano come numeri; i valori fuori intervallo diventano rossi. Per esempio da 0 a 10,9 per il punteggio decimale o da 0 a 100 per A100."),
+    "Die Werte eines Schusses, mit Leerzeichen getrennt, der beste zuerst: «5 4 3 2 1 0». Bei den Einzelschüssen sind es Tasten.": (
+        "The values of a shot, separated by spaces, best first: “5 4 3 2 1 0”. For individual shots they are buttons.",
+        "Les valeurs d'un coup, séparées par des espaces, la meilleure d'abord : « 5 4 3 2 1 0 ». Pour les coups individuels, ce sont des boutons.",
+        "I valori di un colpo, separati da spazi, il migliore per primo: «5 4 3 2 1 0». Per i colpi singoli sono pulsanti."),
     "Keine Schiessanlagen": ("No ranges", "Aucun stand de tir", "Nessun poligono"),
     "Keine Waffen": ("No firearms", "Aucune arme", "Nessuna arma"),
     "Kumuliert": ("Cumulative", "Cumulé", "Cumulato"),
@@ -339,7 +342,7 @@ T = {
     "Ordonnanzgewehr": ("Service rifle", "Fusil d'ordonnance", "Fucile d'ordinanza"),
     "Tagebuch": ("Log", "Journal", "Diario"),
     "Tagebuch als CSV": ("Log as CSV", "Journal en CSV", "Diario in CSV"),
-    "Treffer": ("Matches", "Résultats", "Risultati"),
+    "Treffer": ("Results", "Résultats", "Risultati"),
     "Unterhebelrepetierer": ("Lever-action rifle", "Carabine à levier", "Carabina a leva"),
     "Verlauf anzeigen": ("Show history", "Afficher l'historique", "Mostra storico"),
     "Version": ("Version", "Version", "Versione"),
@@ -367,10 +370,10 @@ T = {
     "Auf der Karte gewählt": ("Picked on the map", "Choisi sur la carte", "Scelto sulla mappa"),
     "In Karten öffnen": ("Open in Maps", "Ouvrir dans Plans", "Apri in Mappe"),
     "Aktuellen Standort verwenden": ("Use current location", "Utiliser la position actuelle", "Usa la posizione attuale"),
-    "Der Standort ist zu ungenau für eine Schiessanlage. Schalte «Genauer Standort» ein oder suche die Adresse.": (
-        "The location is too vague for a range. Turn on precise location or search for the address.",
-        "La position est trop imprécise pour un stand. Active « Position exacte » ou cherche l'adresse.",
-        "La posizione è troppo imprecisa per un poligono. Attiva «Posizione esatta» o cerca l'indirizzo."),
+    "Der Standort ist zu ungenau. Schalte «Genauer Standort» ein oder suche die Adresse.": (
+        "The location is too vague. Turn on precise location or search for the address.",
+        "La position est trop imprécise. Active « Position exacte » ou cherche l'adresse.",
+        "La posizione è troppo imprecisa. Attiva «Posizione esatta» o cerca l'indirizzo."),
     "Kartenposition entfernen": ("Remove map location", "Retirer la position", "Rimuovi posizione"),
     "Los": ("Lot", "Lot", "Lotto"),
     "Losnummer": ("Lot number", "Numéro de lot", "Numero di lotto"),
@@ -379,10 +382,10 @@ T = {
     "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen.": ("Optional. You can pick the lot when logging an entry.", "Facultatif. Tu peux choisir le lot en saisissant une entrée.", "Facoltativo. Puoi scegliere il lotto quando registri una voce."),
     "Pro Los": ("By lot", "Par lot", "Per lotto"),
     "Resultat pro Los": ("Result by lot", "Résultat par lot", "Risultato per lotto"),
-    "Box: mittlere Hälfte der Resultate (1. bis 3. Quartil), Strich: Median, Linie: bis 1.5 × Quartilsabstand, Punkte: einzelne Resultate, rot: Ausreisser. Zählt Einträge mit Prozent (Punkte mit Maximum oder Resultat in %).": (
-        "Box: middle half of the results (1st to 3rd quartile), bar: median, line: up to 1.5 × interquartile range, dots: single results, red: outliers. Counts entries with a percentage (points with a maximum, or a result in %).",
-        "Boîte : moitié centrale des résultats (1er au 3e quartile), trait : médiane, ligne : jusqu'à 1,5 × l'écart interquartile, points : résultats individuels, rouge : valeurs aberrantes. Compte les entrées avec pourcentage (points avec maximum ou résultat en %).",
-        "Box: metà centrale dei risultati (dal 1° al 3° quartile), tratto: mediana, linea: fino a 1,5 × lo scarto interquartile, punti: singoli risultati, rosso: valori anomali. Conta le voci con percentuale (punti con massimo o risultato in %)."),
+    "Box: mittlere Hälfte der Resultate. Strich: Median. Linie: bis 1.5 × Quartilsabstand. Punkte: einzelne Resultate, rot: Ausreisser. Es zählen Einträge mit Prozentwert.": (
+        "Box: middle half of the results. Bar: median. Line: up to 1.5 × interquartile range. Dots: single results, red: outliers. Entries with a percentage count.",
+        "Boîte : moitié centrale des résultats. Trait : médiane. Ligne : jusqu'à 1,5 × l'écart interquartile. Points : résultats individuels, rouge : valeurs aberrantes. Comptent les entrées avec pourcentage.",
+        "Box: metà centrale dei risultati. Tratto: mediana. Linea: fino a 1,5 × lo scarto interquartile. Punti: singoli risultati, rosso: valori anomali. Contano le voci con percentuale."),
     "Getrennt pro Waffe.": ("Split by firearm.", "Séparé par arme.", "Separato per arma."),
     "Ohne Waffe": ("No firearm", "Sans arme", "Senza arma"),
     "Ohne Stellung": ("No position", "Sans position", "Senza posizione"),
@@ -421,7 +424,10 @@ T = {
     "Ø pro Schuss": ("Avg. per shot", "Moy. par coup", "Media per colpo"),
     "Schuss %lld": ("Shot %lld", "Coup %lld", "Colpo %lld"),
     "Erfassung": ("Recording", "Saisie", "Registrazione"),
-    "Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.": ("Applies to new entries. You can switch the mode in any entry.", "S'applique aux nouvelles entrées. Tu peux changer le mode dans chaque entrée.", "Vale per le nuove voci. Puoi cambiare modalità in ogni voce."),
+    "Gilt für neue Einträge. Im Eintrag wechselst du die Art jederzeit.": (
+        "Applies to new entries. You can switch the mode in any entry.",
+        "S'applique aux nouvelles entrées. Tu peux changer le mode dans chaque entrée.",
+        "Vale per le nuove voci. Puoi cambiare modalità in ogni voce."),
     "Probe/Wertung": ("Sighters/Scored", "Essai/Comptés", "Prova/Gara"),
     "Schüsse erfassen als": ("Record shots as", "Saisir les coups", "Registra i colpi come"),
     "Das Resultat ist die Summe der Einzelschüsse; mit Max. Punkten berechnet die App den Prozentwert.": ("The result is the sum of the shots; with max. points the app calculates the percentage.", "Le résultat est la somme des coups ; avec les points max., l'app calcule le pourcentage.", "Il risultato è la somma dei colpi; con i punti max. l'app calcola la percentuale."),
@@ -444,15 +450,18 @@ T = {
     "Scheibe": ("Target", "Cible", "Bersaglio"),
     "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighters", "%1$lld coups comptés + %2$lld coups d'essai", "%1$lld colpi di gara + %2$lld colpi di prova"),
     "Probeschüsse abziehen": ("Split off sighters", "Déduire les coups d'essai", "Scorporare i colpi di prova"),
-    "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
-        "The export only holds the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",
-        "L'export ne contient que le nombre total de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le surplus est enregistré comme coups d'essai. Désactive les entrées pour lesquelles ce n'est pas juste.",
-        "L'esportazione contiene solo il numero totale di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; quelli in più vengono registrati come colpi di prova. Disattiva le voci per cui non è corretto."),
+    "Der Export kennt nur die Schusszahl. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; der Rest gilt als Probeschüsse. Schalte aus, wo das nicht stimmt.": (
+        "The export only knows the number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; the rest counts as sighters. Switch off where this is wrong.",
+        "L'export ne connaît que le nombre de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le reste compte comme coups d'essai. Désactive là où ce n'est pas juste.",
+        "L'esportazione conosce solo il numero di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; il resto vale come colpi di prova. Disattiva dove non è corretto."),
     "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": (
         "The result is above the maximum. Correct the result or the max. points.",
         "Le résultat dépasse le maximum. Corrige le résultat ou les points max.",
         "Il risultato supera il massimo. Correggi il risultato o i punti max."),
-    "Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.": ("The backup contains all entries, photos and master data. Restoring never duplicates existing entries. The last 10 backups are also kept in the Files app under On My iPhone › Schiesstagebuch › Backups.", "La sauvegarde contient toutes les entrées, photos et données de base. La restauration ne duplique pas les entrées existantes. Les 10 dernières sauvegardes sont aussi conservées dans l'app Fichiers sous Sur mon iPhone › Schiesstagebuch › Backups.", "Il backup contiene tutte le voci, le foto e i dati di base. Il ripristino non duplica le voci esistenti. Gli ultimi 10 backup restano anche nell'app File in Sul mio iPhone › Schiesstagebuch › Backups."),
+    "Das Backup enthält Einträge, Fotos und Stammdaten. Die letzten 10 liegen auch in der Dateien-App: Auf meinem iPhone › Schiesstagebuch › Backups.": (
+        "The backup contains entries, photos and master data. The last 10 are also kept in the Files app: On My iPhone › Schiesstagebuch › Backups.",
+        "La sauvegarde contient les entrées, les photos et les données de base. Les 10 dernières sont aussi dans l'app Fichiers : Sur mon iPhone › Schiesstagebuch › Backups.",
+        "Il backup contiene voci, foto e dati di base. Gli ultimi 10 sono anche nell'app File: Sul mio iPhone › Schiesstagebuch › Backups."),
     "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
     "App von %@": ("App by %@", "App de %@", "App di %@"),
     "In «%@» von %@ unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": ("In “%@” by %@, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here.", "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici.", "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."),
@@ -480,7 +489,7 @@ T = {
     "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe.": ("Optional. New entries take the iris, ring and bipod of the last entry with this firearm.", "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cette arme.", "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con quest'arma."),
     "Ringgrösse": ("Ring size", "Taille de l'anneau", "Dimensione dell'anello"),
     "Ringkorn": ("Ring", "Anneau", "Anello"),
-    "Einstellungen für Sportschützen": ("Sport shooter settings", "Réglages pour tireurs sportifs", "Impostazioni per tiratori sportivi"),
+    "Einstellungen fürs Sportschiessen": ("Sport shooting settings", "Réglages pour le tir sportif", "Impostazioni per il tiro sportivo"),
     "Zweibeinstütze": ("Bipod", "Bipied", "Bipiede"),
     "Brillenfilter": ("Glasses filters", "Filtres de lunettes", "Filtri per occhiali"),
     "Filterräder im Diopter (Stgw 90)": ("Filter wheels in the diopter (Stgw 90)", "Roues à filtres dans la dioptre (Fass 90)", "Ruote filtri nella diottra (Fass 90)"),
@@ -492,7 +501,7 @@ T = {
         "Avec les deux roues Grünig + Elmiger, tu as la cassette à 12 couleurs.",
         "Con entrambe le ruote Grünig + Elmiger hai la cassetta a 12 colori."),
     "Zusätzliche Felder": ("Extra fields", "Champs supplémentaires", "Campi aggiuntivi"),
-    "Für Sportschützen": ("For sport shooters", "Pour tireurs sportifs", "Per tiratori sportivi"),
+    "Fürs Sportschiessen": ("For sport shooting", "Pour le tir sportif", "Per il tiro sportivo"),
     "Länge in cm, nur bei Gewehren": ("Length in cm, rifles only", "Longueur en cm, fusils uniquement", "Lunghezza in cm, solo fucili"),
     "Licht, Wind und Temperatur pro Stich": (
         "Light, wind and temperature per match",
@@ -503,10 +512,10 @@ T = {
         "Chaque champ s'active séparément. Les valeurs masquées restent enregistrées.",
         "Ogni campo si attiva separatamente. I valori nascosti restano salvati."),
     "App einrichten": ("Set up the app", "Configurer l'app", "Configura l'app"),
-    "Ein paar Fragen zu deinen Vorlieben, damit die App nur zeigt, was du brauchst. Du kannst alles später unter Einstellungen ändern.": (
-        "A few questions about your preferences, so the app only shows what you need. You can change everything later in Settings.",
-        "Quelques questions sur tes préférences, pour que l'app n'affiche que ce dont tu as besoin. Tu peux tout modifier plus tard dans Réglages.",
-        "Qualche domanda sulle tue preferenze, così l'app mostra solo ciò che ti serve. Puoi cambiare tutto più tardi in Impostazioni."),
+    "Ein paar Fragen, damit die App nur zeigt, was du brauchst. Alles lässt sich später in den Einstellungen ändern.": (
+        "A few questions, so the app only shows what you need. You can change everything later in Settings.",
+        "Quelques questions, pour que l'app n'affiche que ce dont tu as besoin. Tout se modifie plus tard dans les Réglages.",
+        "Qualche domanda, così l'app mostra solo ciò che ti serve. Tutto si può cambiare più tardi nelle Impostazioni."),
     "Willkommen": ("Welcome", "Bienvenue", "Benvenuto"),
     "Starten": ("Start", "Commencer", "Inizia"),
     "Wähle, welche Felder deine Einträge zusätzlich zeigen.": (
@@ -517,10 +526,10 @@ T = {
     "Filter hinzufügen": ("Add filter", "Ajouter un filtre", "Aggiungi filtro"),
     "Filter erfassen": ("Record filters", "Saisir les filtres", "Registra i filtri"),
     "Bis zu zwei pro Eintrag.": ("Up to two per entry.", "Jusqu'à deux par entrée.", "Fino a due per voce."),
-    "Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Andere Filter kannst du von Hand anlegen.": (
-        "Select the filters you own. Only these appear in the picker. Existing entries keep their filter. Other filters you can add by hand.",
-        "Sélectionne les filtres que tu possèdes. Seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre. Tu peux ajouter d'autres filtres à la main.",
-        "Seleziona i filtri che possiedi. Solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro. Altri filtri puoi aggiungerli a mano."),
+    "Wähle die Filter, die du besitzt: Nur sie erscheinen in der Auswahl. Erfasste Einträge behalten ihren Filter. Andere legst du selbst an.": (
+        "Select the filters you own: only these appear in the picker. Existing entries keep their filter. Others you add yourself.",
+        "Sélectionne les filtres que tu possèdes : seuls ceux-ci apparaissent dans la sélection. Les entrées existantes gardent leur filtre. Tu ajoutes les autres toi-même.",
+        "Seleziona i filtri che possiedi: solo questi compaiono nella selezione. Le voci esistenti mantengono il loro filtro. Gli altri li aggiungi tu."),
     "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter.": ("Optional. New entries take the iris, ring and bipod of the last entry with this firearm. Choose your filters under Settings › Filters.", "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cette arme. Choisis tes filtres sous Réglages › Filtres.", "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con quest'arma. Scegli i tuoi filtri in Impostazioni › Filtri."),
     "Name": ("Name", "Nom", "Nome"),
     "Farbe": ("Colour", "Couleur", "Colore"),
@@ -537,10 +546,10 @@ T = {
     "Scheiben ~%lld m tiefer": ("Targets ~%lld m lower", "Cibles ~%lld m plus bas", "Bersagli ~%lld m più in basso"),
     "Scheiben auf gleicher Höhe": ("Targets at the same height", "Cibles à la même hauteur", "Bersagli alla stessa altezza"),
     "Gemessene Distanzen": ("Measured distances", "Distances mesurées", "Distanze misurate"),
-    "Von der Schützenlinie bis zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; wer im oberen Stock schiesst, zielt weniger hoch.": (
-        "From the firing line to the targets, measured in swissTLM3D (© swisstopo), accurate to about ±2 m. The height is from the ground; shooting from an upper floor, you aim less high.",
-        "De la ligne de tir aux cibles, mesuré dans swissTLM3D (© swisstopo), à environ ±2 m près. La hauteur part du sol ; en tirant depuis un étage, on vise moins haut.",
-        "Dalla linea di tiro ai bersagli, misurato in swissTLM3D (© swisstopo), con una precisione di circa ±2 m. L'altezza è dal suolo; sparando da un piano superiore si mira meno in alto."),
+    "Von der Schützenlinie zu den Scheiben, gemessen in swissTLM3D (© swisstopo), auf etwa ±2 m genau. Die Höhe gilt ab Boden; im oberen Stock zielst du weniger hoch.": (
+        "From the firing line to the targets, measured in swissTLM3D (© swisstopo), accurate to about ±2 m. The height is from the ground; from an upper floor you aim less high.",
+        "De la ligne de tir aux cibles, mesuré dans swissTLM3D (© swisstopo), à environ ±2 m près. La hauteur part du sol ; depuis un étage, tu vises moins haut.",
+        "Dalla linea di tiro ai bersagli, misurato in swissTLM3D (© swisstopo), con una precisione di circa ±2 m. L'altezza è dal suolo; da un piano superiore miri meno in alto."),
     "m ü. M.": ("m a.s.l.", "m d'altitude", "m s.l.m."),
     "Schussrichtung": ("Shooting direction", "Direction de tir", "Direzione di tiro"),
     "Optional. Mit Ort und Schussrichtung schlägt die App vor, woher die Sonne kommt.": ("Optional. With the location and shooting direction, the app suggests where the sun comes from.", "Facultatif. Avec le lieu et la direction de tir, l'app propose d'où vient le soleil.", "Facoltativo. Con il luogo e la direzione di tiro, l'app propone da dove viene il sole."),
@@ -636,7 +645,7 @@ T = {
         "The default barrel is preselected for new entries.",
         "Le canon par défaut est présélectionné pour les nouvelles entrées.",
         "La canna predefinita è preselezionata per le nuove voci."),
-    "Die Kaliber gehören zum Lauf. Beim Erfassen werden nur die Kaliber der montierten Läufe angeboten.": (
+    "Die Kaliber gehören zum Lauf. Einträge bieten nur die Kaliber der montierten Läufe an.": (
         "Calibres belong to the barrel. New entries only offer the calibres of the fitted barrels.",
         "Les calibres appartiennent au canon. Les entrées ne proposent que les calibres des canons montés.",
         "I calibri appartengono alla canna. Le voci propongono solo i calibri delle canne montate."),
@@ -675,10 +684,10 @@ T = {
     "Standardlauf": ("Default barrel", "Canon par défaut", "Canna predefinita"),
     "Trommel": ("Cylinder", "Barillet", "Tamburo"),
     "Weitere Nummer": ("Add number", "Ajouter un numéro", "Aggiungi numero"),
-    "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": (
-        "E.g. for parts numbered differently from the main number. A barrel's serial number is entered with the barrel.",
-        "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro de série d'un canon se saisit avec le canon.",
-        "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna."),
+    "Für Teile mit eigener Nummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": (
+        "For parts with a number of their own. A barrel's serial number is entered with the barrel.",
+        "Pour les pièces qui ont leur propre numéro. Le numéro de série d'un canon se saisit avec le canon.",
+        "Per le parti con un numero proprio. Il numero di serie di una canna si inserisce con la canna."),
     "Pro Lauf": ("By barrel", "Par canon", "Per canna"),
     "Schüsse vor der Erfassung": ("Shots before logging", "Coups avant l'enregistrement", "Colpi prima della registrazione"),
     "ausgebaut am %@": ("removed %@", "démonté le %@", "smontata il %@"),
@@ -727,10 +736,10 @@ T = {
         "Tempo e colpi A, C, D per stage, con hit factor"),
     # Import: ranges matched to ones already known
     "Bekannte Schiessanlagen": ("Known shooting ranges", "Stands de tir connus", "Poligoni conosciuti"),
-    "Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.": (
-        "These ranges are already in the app or in the directory of Swiss shooting ranges, recognised by name, town, postcode and distance. Switch off matches that are wrong. Where several ranges fit, pick the right one. Without a match, a new range is created.",
-        "Ces stands sont déjà dans l'app ou dans le répertoire des stands de tir suisses, reconnus par nom, localité, NPA et distance. Désactive les correspondances erronées. Si plusieurs stands conviennent, choisis le bon. Sans correspondance, un nouveau stand est créé.",
-        "Questi poligoni sono già nell'app o nell'elenco dei poligoni svizzeri, riconosciuti da nome, località, NPA e distanza. Disattiva gli abbinamenti errati. Se più poligoni corrispondono, scegli quello giusto. Senza abbinamento viene creato un nuovo poligono."),
+    "Diese Anlagen kennt die App schon. Schalte aus, was nicht stimmt; passen mehrere, wähle die richtige. Ohne Zuordnung entsteht eine neue Anlage.": (
+        "The app already knows these ranges. Switch off what is wrong; where several fit, pick the right one. Without a match, a new range is created.",
+        "L'app connaît déjà ces stands. Désactive ce qui est faux ; si plusieurs conviennent, choisis le bon. Sans correspondance, un nouveau stand est créé.",
+        "L'app conosce già questi poligoni. Disattiva ciò che non è giusto; se più di uno corrisponde, scegli quello giusto. Senza abbinamento viene creato un nuovo poligono."),
     "Mehrere Anlagen passen": ("Several ranges fit", "Plusieurs stands conviennent", "Più poligoni corrispondono"),
     "Neue Anlage anlegen": ("Add as new range", "Ajouter comme nouveau stand", "Aggiungi come nuovo poligono"),
     # Used-up ammunition lots
@@ -738,14 +747,14 @@ T = {
     "Aufgebraucht": ("Used up", "Épuisé", "Esaurito"),
     "Wieder verwenden": ("Use again", "Réutiliser", "Usa di nuovo"),
     "Aufgebrauchte Lose": ("Used-up lots", "Lots épuisés", "Lotti esauriti"),
-    "Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen. Hast du ein Los ganz verschossen, markiere es mit ✓ als aufgebraucht.": (
-        "Optional. You can pick the lot when logging an entry. Once you have shot a whole lot, mark it as used up with ✓.",
-        "Facultatif. Tu peux choisir le lot en saisissant une entrée. Quand tu as tiré tout un lot, marque-le comme épuisé avec ✓.",
-        "Facoltativo. Puoi scegliere il lotto quando registri una voce. Quando hai sparato tutto un lotto, segnalo come esaurito con ✓."),
-    "Aufgebrauchte Lose erscheinen nicht mehr bei neuen Einträgen, bleiben aber in bisherigen Einträgen und in der Statistik.": (
-        "Used-up lots no longer appear for new entries, but stay in earlier entries and in the statistics.",
-        "Les lots épuisés n’apparaissent plus pour les nouvelles entrées, mais restent dans les entrées précédentes et dans les statistiques.",
-        "I lotti esauriti non compaiono più nelle nuove voci, ma restano nelle voci precedenti e nelle statistiche."),
+    "Optional. Im Eintrag wählst du das Los. Ist eines verschossen, markiere es mit ✓ als aufgebraucht.": (
+        "Optional. You pick the lot in the entry. Once one is shot, mark it as used up with ✓.",
+        "Facultatif. Tu choisis le lot dans l'entrée. Quand un lot est tiré, marque-le comme épuisé avec ✓.",
+        "Facoltativo. Scegli il lotto nella voce. Quando un lotto è finito, segnalo come esaurito con ✓."),
+    "Aufgebrauchte Lose fehlen bei neuen Einträgen, bleiben aber in den bisherigen und in der Statistik.": (
+        "Used-up lots are not offered for new entries, but stay in earlier ones and in the statistics.",
+        "Les lots épuisés ne sont plus proposés pour les nouvelles entrées, mais restent dans les précédentes et dans les statistiques.",
+        "I lotti esauriti non vengono più proposti nelle nuove voci, ma restano in quelle precedenti e nelle statistiche."),
 }
 
 # Weather block: kept in its own file; same German key must mean the same thing.

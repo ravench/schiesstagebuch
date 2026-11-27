@@ -75,7 +75,7 @@ struct LegacyImportView: View {
                         } header: {
                             Text("Bekannte Schiessanlagen")
                         } footer: {
-                            Text("Diese Anlagen sind schon in der App oder im Verzeichnis der Schweizer Schiessanlagen, erkannt an Name, Ort, Postleitzahl und Distanz. Schalte Zuordnungen aus, die nicht stimmen. Passen mehrere Anlagen, wähle die richtige. Ohne Zuordnung wird eine neue Anlage angelegt.")
+                            Text("Diese Anlagen kennt die App schon. Schalte aus, was nicht stimmt; passen mehrere, wähle die richtige. Ohne Zuordnung entsteht eine neue Anlage.")
                         }
                     }
                     if !plan.sighterSuggestions.isEmpty {
@@ -86,7 +86,7 @@ struct LegacyImportView: View {
                         } header: {
                             Text("Probeschüsse abziehen")
                         } footer: {
-                            Text("Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.")
+                            Text("Der Export kennt nur die Schusszahl. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; der Rest gilt als Probeschüsse. Schalte aus, wo das nicht stimmt.")
                         }
                     }
                     Section {
@@ -225,7 +225,7 @@ struct LegacyImportView: View {
             // Asked before anything is written: imported without access, the entries are there and a second
             // import skips them, so their photos could never follow.
             if loadPhotos, plan.photoCount > 0, !(await LegacyImport.requestPhotoAccess()) {
-                error = "Ohne Zugriff auf die Fotomediathek können die Fotos nicht übernommen werden. Erlaube den Zugriff in den Einstellungen des iPhones, oder schalte «Fotos aus der Fotomediathek übernehmen» aus.".loc
+                error = "Ohne Zugriff auf die Fotomediathek kommen keine Fotos mit. Erlaube ihn in den iPhone-Einstellungen oder schalte «Fotos aus der Fotomediathek übernehmen» aus.".loc
                 running = false
                 return
             }

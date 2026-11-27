@@ -115,7 +115,7 @@ struct EntryDetailView: View {
 
             let sight = SightSettings(entry: entry).only(features)
             if !sight.isEmpty {
-                Section("Einstellungen für Sportschützen") {
+                Section("Einstellungen fürs Sportschiessen") {
                     if features.contains(.filter) {
                         let filterLabel = sight.filters.count > 1 ? "Filter (Mehrzahl)".loc : "Filter".loc
                         LabeledContent(filterLabel) {
