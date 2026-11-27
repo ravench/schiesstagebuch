@@ -2623,6 +2623,29 @@
         }
       }
     },
+    "Der Standort ist zu ungenau für eine Schiessanlage. Schalte «Genauer Standort» ein oder suche die Adresse.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The location is too vague for a range. Turn on precise location or search for the address."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La position est trop imprécise pour un stand. Active « Position exacte » ou cherche l'adresse."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La posizione è troppo imprecisa per un poligono. Attiva «Posizione esatta» o cerca l'indirizzo."
+          }
+        }
+      }
+    },
     "Deutschland": {
       "extractionState": "manual",
       "localizations": {

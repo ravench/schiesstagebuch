@@ -16,6 +16,14 @@ struct PickedLocation: Equatable {
         self.altitude = altitude
     }
 
+    /// A fix good enough to be a range's position: with «Genauer Standort» off it is the middle of a region
+    /// kilometres wide (review 2026-11-27).
+    static let maxAccuracy: CLLocationAccuracy = 200
+
+    static func accepts(_ fix: CLLocation) -> Bool {
+        fix.horizontalAccuracy >= 0 && fix.horizontalAccuracy <= maxAccuracy
+    }
+
     /// The height of a position fix in whole metres, nil when the fix has none (vertical accuracy below zero).
     static func altitude(of fix: CLLocation) -> Double? {
         fix.verticalAccuracy > 0 ? fix.altitude.rounded() : nil
@@ -104,6 +112,11 @@ final class PlaceCompleter: NSObject, MKLocalSearchCompleterDelegate {
 struct PlaceField: View {
     @Binding var place: String
     @Binding var location: PickedLocation?
+    /// A range from the catalogue keeps its position when the place is corrected: its entry cannot be
+    /// picked again to get it back.
+    var keepsPosition = false
+    /// The last fix was too vague to use.
+    @State private var vague = false
     @State private var completer = PlaceCompleter()
     @State private var here = OneShotLocation()
     @FocusState private var focused: Bool
@@ -119,7 +132,7 @@ struct PlaceField: View {
                 guard focused, new != pickedText else { return }
                 pickedText = nil
                 // Typing a different place drops the old map position.
-                location = nil
+                if !keepsPosition { location = nil }
                 completer.search(new)
             }
         if focused, location == nil {
@@ -142,6 +155,10 @@ struct PlaceField: View {
                     if let new { Task { await use(new) } }
                 }
         }
+        if vague {
+            Text("Der Standort ist zu ungenau für eine Schiessanlage. Schalte «Genauer Standort» ein oder suche die Adresse.")
+                .font(.footnote).foregroundStyle(.secondary)
+        }
         if let location {
             HStack {
                 Label(location.address.isEmpty ? "Auf der Karte gewählt".loc : location.address, systemImage: "mappin.circle.fill")
@@ -161,6 +178,8 @@ struct PlaceField: View {
 
     /// Town, address, position and height of where the device is; without a network only position and height.
     private func use(_ here: CLLocation) async {
+        vague = !PickedLocation.accepts(here)
+        guard !vague else { return }
         let found = try? await CLGeocoder().reverseGeocodeLocation(here).first
         if let town = found?.locality, !town.isEmpty {
             pickedText = town
@@ -245,9 +264,16 @@ struct RangeMeasuredSection: View {
 /// Optional shooting direction of a range: a switch, then a compass dial to turn, in 5° steps.
 struct RangeBearingRow: View {
     @Binding var bearing: Double?
+    /// The bearing before the switch went off, so on again brings it back instead of north.
+    @State private var remembered: Double?
+
+    /// The bearing and what to remember after the switch is set to `on`.
+    static func switched(_ on: Bool, bearing: Double?, remembered: Double?) -> (bearing: Double?, remembered: Double?) {
+        on ? (bearing ?? remembered ?? 0, remembered) : (nil, bearing ?? remembered)
+    }
 
     var body: some View {
-        Toggle(isOn: Binding(get: { bearing != nil }, set: { bearing = $0 ? (bearing ?? 0) : nil })) {
+        Toggle(isOn: Binding(get: { bearing != nil }, set: { (bearing, remembered) = Self.switched($0, bearing: bearing, remembered: remembered) })) {
             HStack {
                 Text("Schussrichtung")
                 Spacer()

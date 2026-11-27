@@ -347,6 +347,10 @@ T = {
     "Auf der Karte gewählt": ("Picked on the map", "Choisi sur la carte", "Scelto sulla mappa"),
     "In Karten öffnen": ("Open in Maps", "Ouvrir dans Plans", "Apri in Mappe"),
     "Aktuellen Standort verwenden": ("Use current location", "Utiliser la position actuelle", "Usa la posizione attuale"),
+    "Der Standort ist zu ungenau für eine Schiessanlage. Schalte «Genauer Standort» ein oder suche die Adresse.": (
+        "The location is too vague for a range. Turn on precise location or search for the address.",
+        "La position est trop imprécise pour un stand. Active « Position exacte » ou cherche l'adresse.",
+        "La posizione è troppo imprecisa per un poligono. Attiva «Posizione esatta» o cerca l'indirizzo."),
     "Kartenposition entfernen": ("Remove map location", "Retirer la position", "Rimuovi posizione"),
     "Los": ("Lot", "Lot", "Lotto"),
     "Losnummer": ("Lot number", "Numéro de lot", "Numero di lotto"),

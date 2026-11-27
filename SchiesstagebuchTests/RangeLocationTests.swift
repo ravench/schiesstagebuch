@@ -46,4 +46,27 @@ final class RangeLocationTests: ModelTestCase {
         XCTAssertNil(PickedLocation(address: "Gyrhalde 3, 8952 Schlieren", latitude: 47.3975, longitude: 8.4471).altitude,
                      "an address from Apple Maps has none")
     }
+
+    private func fix(accuracy: CLLocationAccuracy) -> CLLocation {
+        CLLocation(coordinate: CLLocationCoordinate2D(latitude: 47.357, longitude: 8.505), altitude: 450,
+                   horizontalAccuracy: accuracy, verticalAccuracy: 10, timestamp: .now)
+    }
+
+    /// With «Genauer Standort» off the fix is the middle of a region kilometres wide: not a range's position.
+    func testOnlyAPreciseFixBecomesTheRangesPosition() {
+        XCTAssertTrue(PickedLocation.accepts(fix(accuracy: 8)))
+        XCTAssertTrue(PickedLocation.accepts(fix(accuracy: 200)))
+        XCTAssertFalse(PickedLocation.accepts(fix(accuracy: 201)))
+        XCTAssertFalse(PickedLocation.accepts(fix(accuracy: 5_000)))
+        XCTAssertFalse(PickedLocation.accepts(fix(accuracy: -1)), "an invalid fix")
+    }
+
+    /// «Schussrichtung» off and on again brings the bearing back instead of north.
+    func testBearingSwitchRemembersTheDirection() {
+        let off = RangeBearingRow.switched(false, bearing: 214, remembered: nil)
+        XCTAssertNil(off.bearing)
+        let on = RangeBearingRow.switched(true, bearing: off.bearing, remembered: off.remembered)
+        XCTAssertEqual(on.bearing, 214)
+        XCTAssertEqual(RangeBearingRow.switched(true, bearing: nil, remembered: nil).bearing, 0, "a range without one starts north")
+    }
 }

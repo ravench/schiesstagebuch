@@ -12,8 +12,11 @@ struct WeatherSection: View {
     @AppStorage(AppleWeather.enabledKey) private var appleWeather = true
 
     /// The sun at the range at the entry's time; nil without weather, or without the range's position or shooting direction.
+    /// Nil too without a time of day: the Anlass date's own clock time is when it was typed, not when the
+    /// Stich was shot, and a Stich entered in the evening got «Sonne: keine» (review 2026-11-27).
     private var sun: SunDirection? {
-        weather.flatMap { _ in SunDirection.suggestion(for: range, at: WeatherRecord.combine(day: day, time: time)) }
+        guard time != nil else { return nil }
+        return weather.flatMap { _ in SunDirection.suggestion(for: range, at: WeatherRecord.combine(day: day, time: time)) }
     }
 
     var body: some View {
@@ -27,7 +30,7 @@ struct WeatherSection: View {
                 let date = WeatherRecord.combine(day: day, time: time)
                 // Only when it shows something, so the list has no empty row.
                 if AppleWeatherRow.shows(record, enabled: appleWeather, range: range, date: date) {
-                    AppleWeatherRow(weather: $weather, date: date, range: range)
+                    AppleWeatherRow(weather: $weather, date: date, fillsByItself: time != nil, range: range)
                 }
                 let conditions = Binding(get: { weather?.conditions ?? .init() }, set: { weather?.conditions = $0 })
                 ForEach(WeatherField.inputs.filter { $0.isShown(with: record.conditions) }) { field in
@@ -49,6 +52,8 @@ struct WeatherSection: View {
 private struct AppleWeatherRow: View {
     @Binding var weather: WeatherRecord?
     let date: Date
+    /// Off for a Stich without a time of day: there is no hour to fetch for, only the button.
+    let fillsByItself: Bool
     let range: ShootingRange?
     /// What the last fetch put in, to tell it apart from the user's own values.
     @State private var last: WeatherConditions?
@@ -85,7 +90,7 @@ private struct AppleWeatherRow: View {
                 .onDisappear { fetch?.cancel() }
                 .task(id: request) {
                     fetch?.cancel()
-                    guard request != loaded, last != nil || weather?.hasValues == false else { return }
+                    guard fillsByItself, request != loaded, last != nil || weather?.hasValues == false else { return }
                     // Scrolling the time or date picker passes many hours: fetch the one it stops at.
                     try? await Task.sleep(for: .seconds(0.5))
                     if !Task.isCancelled { await load(request) }
