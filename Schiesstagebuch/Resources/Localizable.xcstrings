@@ -2543,7 +2543,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vos armes"
+            "value": "Tes armes"
           }
         },
         "it": {
@@ -2589,7 +2589,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes."
+            "value": "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de tes armes."
           }
         },
         "it": {
@@ -2612,7 +2612,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'export ne contient que des références vers des photos de votre photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
+            "value": "L'export ne contient que des références vers des photos de ta photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
           }
         },
         "it": {
@@ -3578,7 +3578,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajoutez vos types de munitions, chacun avec son calibre."
+            "value": "Ajoute tes types de munitions, chacun avec son calibre."
           }
         },
         "it": {
@@ -3624,7 +3624,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enregistrez votre première séance de tir avec +."
+            "value": "Enregistre ta première séance de tir avec +."
           }
         },
         "it": {
@@ -3716,7 +3716,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière révision."
+            "value": "Te rappelle dès qu'une des deux limites est atteinte depuis la dernière révision."
           }
         },
         "it": {
@@ -3739,7 +3739,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage."
+            "value": "Te rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage."
           }
         },
         "it": {
@@ -5654,7 +5654,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici."
+            "value": "Dans « %@ » de %@, enregistre ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisis-le ici."
           }
         },
         "it": {
@@ -6718,7 +6718,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajoutez vos armes avec leurs calibres."
+            "value": "Ajoute tes armes avec leurs calibres."
           }
         },
         "it": {
@@ -10007,7 +10007,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vérifiez la catégorie et les calibres des armes importées sous Armes."
+            "value": "Vérifie la catégorie et les calibres des armes importées sous Armes."
           }
         },
         "it": {
@@ -10911,6 +10911,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Poligoni"
+          }
+        }
+      }
+    },
+    "Schiessanlagen: swissTLM3D, amtliches Gebäudeadressverzeichnis © swisstopo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shooting ranges: swissTLM3D, official directory of building addresses © swisstopo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stands de tir : swissTLM3D, répertoire officiel des adresses de bâtiments © swisstopo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poligoni di tiro: swissTLM3D, elenco ufficiale degli indirizzi degli edifici © swisstopo"
           }
         }
       }

@@ -180,7 +180,10 @@ struct PlaceField: View {
     private func use(_ here: CLLocation) async {
         vague = !PickedLocation.accepts(here)
         guard !vague else { return }
+        let typed = place
         let found = try? await CLGeocoder().reverseGeocodeLocation(here).first
+        // The answer of a slow lookup must not replace what was typed since.
+        guard place == typed else { return }
         if let town = found?.locality, !town.isEmpty {
             pickedText = town
             place = town
@@ -194,8 +197,10 @@ struct PlaceField: View {
     }
 
     private func pick(_ result: MKLocalSearchCompletion) {
+        let typed = place
         Task {
-            guard let resolved = await completer.resolve(result) else { return }
+            // The answer of a slow lookup must not replace what was typed since.
+            guard let resolved = await completer.resolve(result), place == typed else { return }
             pickedText = resolved.town
             place = resolved.town
             location = resolved.location
