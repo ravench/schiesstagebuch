@@ -73,7 +73,7 @@ struct SettingsView: View {
             } header: {
                 Text("Erfassung")
             } footer: {
-                Text("Gilt für neue Einträge. Pro Eintrag kannst du die Art jederzeit wechseln.")
+                Text("Gilt für neue Einträge. Im Eintrag wechselst du die Art jederzeit.")
             }
 
             Section {
@@ -81,7 +81,7 @@ struct SettingsView: View {
                     Label("Schiessanlage nach Standort wählen", systemImage: "location")
                 }
             } footer: {
-                Text("Neue Einträge von heute wählen die Schiessanlage, bei der du gerade bist, und listen nahe Anlagen zuerst. Der Standort wird nur dafür gelesen und weder gespeichert noch gesendet.")
+                Text("Neue Einträge von heute wählen die Anlage, bei der du bist, und zeigen nahe Anlagen zuerst. Dein Standort wird weder gespeichert noch gesendet.")
             }
 
             Section {
@@ -121,7 +121,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.")
                     if features.contains(.weather) {
-                        Text("Für die Wetterdaten von Apple Weather schickt die App die Koordinaten der Schiessanlage und den Zeitpunkt an Apple, nicht deinen Standort. Weil du meist dort schiesst, ist es aber fast derselbe Ort.")
+                        Text("Für Apple Weather schickt die App Ort und Zeit der Schiessanlage an Apple, nicht deinen Standort. Meist ist das aber derselbe Ort.")
                     }
                 }
             }
@@ -156,7 +156,7 @@ struct SettingsView: View {
             } header: {
                 Text("Daten")
             } footer: {
-                Text("Das Backup enthält alle Einträge, Fotos und Stammdaten. Beim Wiederherstellen werden vorhandene Einträge nicht doppelt angelegt. Die letzten 10 Backups liegen zusätzlich in der Dateien-App unter Auf meinem iPhone › Schiesstagebuch › Backups.")
+                Text("Das Backup enthält Einträge, Fotos und Stammdaten. Die letzten 10 liegen auch in der Dateien-App: Auf meinem iPhone › Schiesstagebuch › Backups.")
             }
 
             Section {
@@ -186,7 +186,7 @@ struct SettingsView: View {
             Button("Backup wählen") { importing = true }
             Button("Abbrechen", role: .cancel) {}
         } message: {
-            Text("Mit iCloud kommen deine Daten von selbst auf dieses Gerät, das kann einige Minuten dauern. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen: was iCloud danach noch liefert, ist sonst doppelt.")
+            Text("Mit iCloud kommen deine Daten von selbst; das dauert einige Minuten. Stelle ein Backup nur wieder her, wenn du iCloud nicht nutzt oder die Daten dort fehlen. Sonst ist danach alles doppelt.")
         }
         .alert("Datensicherung", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
             Button("OK") {}
@@ -292,7 +292,7 @@ struct CaliberListView: View {
             } header: {
                 Text("Katalog")
             } footer: {
-                Text("Ein Kaliber aus dem Katalog kommt zu deinen Kalibern, sobald du es für einen Lauf, eine Munition oder einen Eintrag wählst. Seltene Kaliber zeigt erst die Suche.")
+                Text("Ein Kaliber aus dem Katalog gehört zu deinen, sobald du es wählst. Seltene zeigt erst die Suche.")
             }
         }
         .searchable(text: $search, prompt: "Kaliber suchen")
@@ -485,7 +485,7 @@ struct AmmunitionEditorView: View {
         } header: {
             Text("Losnummern")
         } footer: {
-            Text("Optional. Beim Erfassen eines Eintrags kannst du das Los auswählen. Hast du ein Los ganz verschossen, markiere es mit ✓ als aufgebraucht.")
+            Text("Optional. Im Eintrag wählst du das Los. Ist eines verschossen, markiere es mit ✓ als aufgebraucht.")
         }
         if lots.contains(where: \.isUsedUp) {
             Section {
@@ -502,7 +502,7 @@ struct AmmunitionEditorView: View {
             } header: {
                 Text("Aufgebrauchte Lose")
             } footer: {
-                Text("Aufgebrauchte Lose erscheinen nicht mehr bei neuen Einträgen, bleiben aber in bisherigen Einträgen und in der Statistik.")
+                Text("Aufgebrauchte Lose fehlen bei neuen Einträgen, bleiben aber in den bisherigen und in der Statistik.")
             }
         }
     }

@@ -59,7 +59,7 @@ final class LocalizationTests: XCTestCase {
 
     func testLegacyImportHintsTalkAboutTheExportNotAnOldApp() throws {
         let hints = [
-            "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.",
+            "Der Export kennt nur die Schusszahl. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; der Rest gilt als Probeschüsse. Schalte aus, wo das nicht stimmt.",
             "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.",
             "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Sportgeräte.",
             "Der Export enthält nur Verweise auf Fotos in deiner Mediathek (%lld). Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind."
@@ -109,10 +109,10 @@ final class LocalizationTests: XCTestCase {
                 "fr": "Numéro de série du canon (facultatif)",
                 "it": "Numero di serie della canna (facoltativo)",
             ],
-            "Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": [
-                "en": "E.g. for parts numbered differently from the main number. A barrel's serial number is entered with the barrel.",
-                "fr": "P. ex. pour les pièces dont le numéro diffère du numéro principal. Le numéro de série d'un canon se saisit avec le canon.",
-                "it": "P. es. per parti con un numero diverso da quello principale. Il numero di serie di una canna si inserisce con la canna.",
+            "Für Teile mit eigener Nummer. Die Seriennummer eines Laufs erfasst du beim Lauf.": [
+                "en": "For parts with a number of their own. A barrel's serial number is entered with the barrel.",
+                "fr": "Pour les pièces qui ont leur propre numéro. Le numéro de série d'un canon se saisit avec le canon.",
+                "it": "Per le parti con un numero proprio. Il numero di serie di una canna si inserisce con la canna.",
             ],
         ]
         for (key, byLang) in expected {

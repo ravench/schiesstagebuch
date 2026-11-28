@@ -284,7 +284,7 @@ final class PRScreensTests: XCTestCase {
         relaunch(adding: ["-sportFeatures.v1", "117"]) // every sport shooter field but the weather
         tab("Tagebuch")
         guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
-        topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17-Sportschuetzen-Felder")
+        topStop(app.staticTexts["Einstellungen fürs Sportschiessen"].firstMatch, "17-Sportschuetzen-Felder")
         if turnDiopter() { snap("17b-Diopterkorrekturen") }
     }
 
@@ -326,7 +326,7 @@ final class PRScreensTests: XCTestCase {
         app.buttons["Sichern"].firstMatch.tap()
         tab("Tagebuch")
         guard open(app.staticTexts["Feldschiessen"].firstMatch), open(app.buttons["Stich hinzufügen"].firstMatch) else { return }
-        topStop(app.staticTexts["Einstellungen für Sportschützen"].firstMatch, "17c-Sportschuetzen-Felder-bei")
+        topStop(app.staticTexts["Einstellungen fürs Sportschiessen"].firstMatch, "17c-Sportschuetzen-Felder-bei")
         if turnDiopter() { snap("17c2-Diopterkorrekturen-bei") }
     }
 
@@ -349,7 +349,7 @@ final class PRScreensTests: XCTestCase {
     /// The fields are pinned off: 09c of the tour switches the filters on, and a run that misses it does not.
     func testWelcome() {
         relaunch(adding: ["-welcome", "-sportFeatures.v1", "0"])
-        let fields = app.staticTexts["Für Sportschützen"].firstMatch
+        let fields = app.staticTexts["Fürs Sportschiessen"].firstMatch
         if fields.waitForExistence(timeout: 10) {
             reveal(fields)
             holdAtTop(fields)

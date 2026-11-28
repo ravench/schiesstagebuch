@@ -40,8 +40,8 @@ struct WeatherSection: View {
         } header: {
             Text("Wetter")
         } footer: {
-            Text(weather == nil ? "Aus, wenn drinnen geschossen wird; dann erscheint auch im Eintrag kein Wetter.".loc
-                 : appleWeather ? "Alles optional. Mit dem Ort der Schiessanlage füllt die App leere Felder mit Wetterdaten von Apple Weather (in den Einstellungen abschaltbar); mit der Schussrichtung auch Windrichtung und Sonne.".loc
+            Text(weather == nil ? "Aus für drinnen: Der Eintrag zeigt dann kein Wetter.".loc
+                 : appleWeather ? "Alles optional. Kennt die App den Ort der Anlage, füllt sie leere Felder mit Apple Weather (abschaltbar in den Einstellungen); mit der Schussrichtung auch Wind und Sonne.".loc
                  : "Alles optional. Mit Ort und Schussrichtung der Schiessanlage füllt die App die Sonne aus.".loc)
         }
     }

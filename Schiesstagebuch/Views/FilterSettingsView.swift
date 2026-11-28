@@ -63,7 +63,7 @@ struct FilterSettingsView: View {
             } header: {
                 Text("Brillenfilter")
             } footer: {
-                Text("Wähle die Filter, die du besitzt. Nur diese erscheinen in der Auswahl. Bereits erfasste Einträge behalten ihren Filter. Andere Filter kannst du von Hand anlegen.")
+                Text("Wähle die Filter, die du besitzt: Nur sie erscheinen in der Auswahl. Erfasste Einträge behalten ihren Filter. Andere legst du selbst an.")
             }
 
             // A wheel is bought whole, so it is owned whole: one switch, its colours shown beneath.

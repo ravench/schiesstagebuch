@@ -414,7 +414,7 @@ struct WeaponEditorView: View {
         } header: {
             Text("Läufe")
         } footer: {
-            Text("Die Kaliber gehören zum Lauf. Beim Erfassen werden nur die Kaliber der montierten Läufe angeboten.")
+            Text("Die Kaliber gehören zum Lauf. Einträge bieten nur die Kaliber der montierten Läufe an.")
         }
     }
 
@@ -538,7 +538,7 @@ struct SerialNumbersSection: View {
         } header: {
             Text("Nummern")
         } footer: {
-            Text("Z. B. für Teile mit einer anderen Nummer als die Hauptnummer. Die Seriennummer eines Laufs erfasst du beim Lauf.")
+            Text("Für Teile mit eigener Nummer. Die Seriennummer eines Laufs erfasst du beim Lauf.")
         }
     }
 }

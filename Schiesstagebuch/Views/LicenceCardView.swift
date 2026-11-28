@@ -235,7 +235,7 @@ struct LicenceCardEditor: View {
                     if draft.numberIsInvalid {
                         Text("Die Lizenznummer hat höchstens 6 Ziffern.").foregroundStyle(.red)
                     } else {
-                        Text("Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.")
+                        Text("Beide Barcodes entstehen aus der Lizenznummer. Kreditkartendaten speichert die App nicht.")
                     }
                 }
                 if let number = draft.normalizedNumber {
