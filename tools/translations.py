@@ -22,10 +22,11 @@ T = {
     "%lld Einträge": ("%lld entries", "%lld entrées", "%lld voci"),
     "%lld Einträge importieren": ("Import %lld entries", "Importer %lld entrées", "Importa %lld voci"),
     "%lld Einträge importiert": ("%lld entries imported", "%lld entrées importées", "%lld voci importate"),
-    "%lld Einträge wiederhergestellt, %lld waren schon vorhanden.": (
-        "%1$lld entries restored, %2$lld already existed.",
-        "%1$lld entrées restaurées, %2$lld existaient déjà.",
-        "%1$lld voci ripristinate, %2$lld erano già presenti."),
+    # Two numbers: worded so that neither needs a singular form.
+    "Einträge wiederhergestellt: %lld, schon vorhanden: %lld": (
+        "Entries restored: %1$lld, already there: %2$lld",
+        "Entrées restaurées : %1$lld, déjà présentes : %2$lld",
+        "Voci ripristinate: %1$lld, già presenti: %2$lld"),
     "%lld Einträge wiederhergestellt.": ("%lld entries restored.", "%lld entrées restaurées.", "%lld voci ripristinate."),
     "Barcode kann nicht dargestellt werden": ("Barcode can't be displayed", "Impossible d'afficher le code-barres", "Impossibile visualizzare il codice a barre"),
     "Beide Barcodes werden aus der Lizenznummer berechnet. Kreditkartendaten der Karte werden nicht gespeichert.": (
@@ -442,7 +443,8 @@ T = {
     "Seriennummer in der Waffenauswahl": ("Serial number in firearm picker", "Numéro de série dans le choix d'arme", "Numero di serie nella scelta dell'arma"),
 
     "Scheibe": ("Target", "Cible", "Bersaglio"),
-    "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighters", "%1$lld coups comptés + %2$lld coups d'essai", "%1$lld colpi di gara + %2$lld colpi di prova"),
+    # Two numbers, so no noun that would need a singular: «1 scored + 1 sighting».
+    "%lld Wertung + %lld Probe": ("%1$lld scored + %2$lld sighting", "%1$lld en compétition + %2$lld d'essai", "%1$lld di gara + %2$lld di prova"),
     "Probeschüsse abziehen": ("Split off sighters", "Déduire les coups d'essai", "Scorporare i colpi di prova"),
     "Der Export enthält nur die Gesamtzahl der Schüsse. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; was darüber liegt, wird als Probeschüsse erfasst. Schalte Einträge aus, bei denen das nicht stimmt.": (
         "The export only holds the total number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; anything above that is recorded as sighters. Switch off entries where this is wrong.",

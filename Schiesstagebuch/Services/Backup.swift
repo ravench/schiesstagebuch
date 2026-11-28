@@ -476,7 +476,7 @@ enum Backup {
         weapons.values.forEach { MaintenanceNotifier.refresh($0) }
         let skipped = file.entries.count - added
         return skipped > 0
-            ? String(localized: "\(added) Einträge wiederhergestellt, \(skipped) waren schon vorhanden.")
+            ? String(localized: "Einträge wiederhergestellt: \(added), schon vorhanden: \(skipped)")
             : String(localized: "\(added) Einträge wiederhergestellt.")
     }
 
