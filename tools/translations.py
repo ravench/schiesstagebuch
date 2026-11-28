@@ -98,14 +98,14 @@ T = {
     "Datensicherung": ("Backup", "Sauvegarde", "Backup"),
     "Datum": ("Date", "Date", "Data"),
     "Davon schon importiert": ("Already imported", "Déjà importées", "Già importate"),
-    "Deine Waffen": ("Your firearms", "Vos armes", "Le tue armi"),
+    "Deine Waffen": ("Your firearms", "Tes armes", "Le tue armi"),
     "Die Datei konnte nicht gelesen werden. Erwartet wird ShootCounter-Export.tsv oder data.db.": (
         "The file could not be read. Expected ShootCounter-Export.tsv or data.db.",
         "Le fichier n'a pas pu être lu. Fichier attendu : ShootCounter-Export.tsv ou data.db.",
         "Impossibile leggere il file. Previsto: ShootCounter-Export.tsv o data.db."),
     "Der Export enthält nur Verweise auf Fotos in deiner Mediathek (%lld). Sie werden gefunden, wenn die Fotos noch auf diesem Gerät oder in iCloud-Fotos sind.": (
         "The export only holds references to photos in your library (%lld). They are found if the photos are still on this device or in iCloud Photos.",
-        "L'export ne contient que des références vers des photos de votre photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud.",
+        "L'export ne contient que des références vers des photos de ta photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud.",
         "L'esportazione contiene solo riferimenti a foto della tua libreria (%lld). Vengono trovate se le foto sono ancora su questo dispositivo o in Foto di iCloud."),
     "Zeilen ohne lesbares Datum": ("Lines without a readable date", "Lignes sans date lisible", "Righe senza data leggibile"),
     "Ohne Zugriff auf die Fotomediathek kommen keine Fotos mit. Erlaube ihn in den iPhone-Einstellungen oder schalte «Fotos aus der Fotomediathek übernehmen» aus.": (
@@ -114,7 +114,7 @@ T = {
         "Senza accesso alla libreria foto non viene ripresa alcuna foto. Consentilo nelle impostazioni dell'iPhone oppure disattiva «Riprendi le foto dalla libreria»."),
     "Der Export enthält keine Kaliber. Jede Munition wird einem Kaliber zugeordnet; daraus ergeben sich die Kaliber deiner Waffen.": (
         "The export has no calibres. Each ammunition is assigned a calibre, which also sets the calibres of your firearms.",
-        "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes.",
+        "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de tes armes.",
         "L'esportazione non contiene calibri. A ogni munizione viene assegnato un calibro, che determina anche i calibri delle tue armi."),
     "Eigenes Kaliber": ("Custom calibre", "Calibre personnalisé", "Calibro personalizzato"),
     "Einstellungen": ("Settings", "Réglages", "Impostazioni"),
@@ -127,20 +127,20 @@ T = {
         "Le voci restano ma perdono l'arma. L'archiviazione conserva tutto."),
     "Erfasse deine Munitionssorten, je mit Kaliber.": (
         "Add your types of ammunition, each with its calibre.",
-        "Ajoutez vos types de munitions, chacun avec son calibre.",
+        "Ajoute tes types de munitions, chacun avec son calibre.",
         "Aggiungi i tuoi tipi di munizioni, ognuno con il suo calibro."),
     "Erfasse deinen ersten Schiesstag mit +.": (
         "Log your first day at the range with +.",
-        "Enregistrez votre première séance de tir avec +.",
+        "Enregistre ta première séance de tir avec +.",
         "Registra la tua prima giornata di tiro con +."),
     "Erfassen": ("Log", "Saisir", "Registra"),
     "Erinnert, sobald eine der beiden Grenzen seit der letzten Reinigung erreicht ist.": (
         "Reminds you as soon as either limit is reached since the last cleaning.",
-        "Vous rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage.",
+        "Te rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage.",
         "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima pulizia."),
     "Erinnert, sobald eine der beiden Grenzen seit dem letzten Service erreicht ist.": (
         "Reminds you as soon as either limit is reached since the last service.",
-        "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière révision.",
+        "Te rappelle dès qu'une des deux limites est atteinte depuis la dernière révision.",
         "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima revisione."),
     "Frühere Stiche": ("Earlier matches", "Cibles précédentes", "Programmi precedenti"),
     "Frühere Anlässe": ("Earlier events", "Événements précédents", "Eventi precedenti"),
@@ -256,7 +256,7 @@ T = {
     "Kurzwaffe": ("Handgun", "Arme de poing", "Arma corta"),
     "Langwaffe": ("Rifle", "Arme longue", "Arma lunga"),
     "Lege deine Waffen mit ihren Kalibern an.": (
-        "Add your firearms with their calibres.", "Ajoutez vos armes avec leurs calibres.", "Aggiungi le tue armi con i loro calibri."),
+        "Add your firearms with their calibres.", "Ajoute tes armes avec leurs calibres.", "Aggiungi le tue armi con i loro calibri."),
     "Letzte 12 Monate": ("Last 12 months", "12 derniers mois", "Ultimi 12 mesi"),
     "Luftdruck": ("Air", "Air comprimé", "Aria compressa"),
     "Luftgewehr": ("Air rifle", "Carabine à air comprimé", "Carabina ad aria compressa"),
@@ -308,7 +308,7 @@ T = {
     "Präzisions- / Long-Range-Gewehr": ("Precision / long-range rifle", "Fusil de précision / longue distance", "Fucile di precisione / long range"),
     "Prüfe unter Waffen die Kategorie und die Kaliber der importierten Waffen.": (
         "Check the category and calibres of the imported firearms under Firearms.",
-        "Vérifiez la catégorie et les calibres des armes importées sous Armes.",
+        "Vérifie la catégorie et les calibres des armes importées sous Armes.",
         "Controlla categoria e calibri delle armi importate in Armi."),
     "Randfeuer": ("Rimfire", "Percussion annulaire", "Percussione anulare"),
     "Reaktivieren": ("Reactivate", "Réactiver", "Riattiva"),
@@ -319,6 +319,10 @@ T = {
     "Schiessanlage bearbeiten": ("Edit range", "Modifier le stand de tir", "Modifica poligono"),
     "Schiessanlagen": ("Ranges", "Stands de tir", "Poligoni"),
     "Anlagen": ("Ranges", "Stands", "Poligoni"),
+    "Schiessanlagen: swissTLM3D, amtliches Gebäudeadressverzeichnis © swisstopo": (
+        "Shooting ranges: swissTLM3D, official directory of building addresses © swisstopo",
+        "Stands de tir : swissTLM3D, répertoire officiel des adresses de bâtiments © swisstopo",
+        "Poligoni di tiro: swissTLM3D, elenco ufficiale degli indirizzi degli edifici © swisstopo"),
     "Mehr": ("More", "Plus", "Altro"),
     "Schiessen": ("Shooting", "Tir", "Tiro"),
     "Schiesstagebuch": ("Shooting Log", "Journal de tir", "Diario di tiro"),
@@ -466,7 +470,7 @@ T = {
         "Il backup contiene voci, foto e dati di base. Gli ultimi 10 sono anche nell'app File: Sul mio iPhone › Schiesstagebuch › Backups."),
     "Import aus «%@»": ("Import from “%@”", "Importer depuis « %@ »", "Importa da «%@»"),
     "App von %@": ("App by %@", "App de %@", "App di %@"),
-    "In «%@» von %@ unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": ("In “%@” by %@, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here.", "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici.", "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."),
+    "In «%@» von %@ unter Menü › Daten sichern / exportieren die Datei ShootCounter-Export.tsv oder data.db sichern und hier auswählen.": ("In “%@” by %@, save ShootCounter-Export.tsv or data.db via Menu › Daten sichern / exportieren, then choose it here.", "Dans « %@ » de %@, enregistre ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisis-le ici.", "In «%@» di %@ salva ShootCounter-Export.tsv o data.db da Menu › Daten sichern / exportieren, poi sceglilo qui."),
     "Diopter": ("Diopter", "Dioptre", "Diottra"),
     "Diopterkorrekturen": ("Diopter corrections", "Corrections du dioptre", "Correzioni della diottra"),
     "Höhenverstellung": ("Elevation", "Hauteur", "Alzo"),
@@ -758,6 +762,28 @@ T = {
         "Les lots épuisés ne sont plus proposés pour les nouvelles entrées, mais restent dans les précédentes et dans les statistiques.",
         "I lotti esauriti non vengono più proposti nelle nuove voci, ma restano in quelle precedenti e nelle statistiche."),
 }
+
+# Built-in filters (FilterColor): the maker's name stays, the colour word is translated. Product names
+# («Citron», «Saphire») have no entry and are shown as they are.
+_COLOURS = {
+    "hellgrau": ("light grey", "gris clair", "grigio chiaro"), "dunkelgrau": ("dark grey", "gris foncé", "grigio scuro"),
+    "hellblau": ("light blue", "bleu clair", "azzurro"), "dunkelblau": ("dark blue", "bleu foncé", "blu scuro"),
+    "hellgelb": ("light yellow", "jaune clair", "giallo chiaro"), "dunkelgelb": ("dark yellow", "jaune foncé", "giallo scuro"),
+    "hellorange": ("light orange", "orange clair", "arancione chiaro"), "dunkelorange": ("dark orange", "orange foncé", "arancione scuro"),
+    "hellgrün": ("light green", "vert clair", "verde chiaro"), "dunkelgrün": ("dark green", "vert foncé", "verde scuro"),
+    "gelb": ("yellow", "jaune", "giallo"), "orange": ("orange", "orange", "arancione"), "grün": ("green", "vert", "verde"),
+    "blau": ("blue", "bleu", "blu"), "rosa": ("pink", "rose", "rosa"), "rot": ("red", "rouge", "rosso"),
+    "grey polarisiert": ("grey polarised", "gris polarisé", "grigio polarizzato"),
+    "braun polarisiert": ("brown polarised", "brun polarisé", "marrone polarizzato"),
+    "polarisiert": ("polarised", "polarisé", "polarizzato"),
+}
+_FILTERS = {
+    "Wyss": ["hellgrau", "dunkelgrau", "gelb", "orange", "grün", "blau"],
+    "G+E": ["hellblau", "dunkelblau", "hellgrau", "dunkelgrau", "hellgelb", "hellorange", "hellgrün", "dunkelgrün", "rosa", "dunkelgelb",
+            "dunkelorange", "rot"],
+    "Nasashield": ["grey polarisiert", "braun polarisiert"], "Serengeti": ["polarisiert"], "Eidgenoss": ["polarisiert"],
+}
+T.update({f"{_maker} {_de}": tuple(f"{_maker} {_x}" for _x in _COLOURS[_de]) for _maker, _names in _FILTERS.items() for _de in _names})
 
 # Weather block: kept in its own file; same German key must mean the same thing.
 from translations_weather import W  # noqa: E402

@@ -36,6 +36,17 @@ final class RangeCatalogTests: ModelTestCase {
         XCTAssertTrue(RangeCatalog.attribution.contains("Gebäudeadressverzeichnis"))
     }
 
+    /// The credit comes from the catalogue file: when the builder changes its wording, the translations
+    /// have to follow, or English, French and Italian fall back to German.
+    func testTheCataloguesCreditIsTranslated() throws {
+        for lang in ["en", "fr", "it"] {
+            let path = try XCTUnwrap(Bundle.main.path(forResource: lang, ofType: "lproj"))
+            let text = try XCTUnwrap(Bundle(path: path)).localizedString(forKey: RangeCatalog.attribution, value: "<missing>", table: nil)
+            XCTAssertNotEqual(text, "<missing>", lang)
+            XCTAssertTrue(text.contains("swisstopo"), text)
+        }
+    }
+
     func testDecodesTheFileFormat() throws {
         let json = """
         {"source": "swissTLM3D 2026-02 © swisstopo", "ranges": [

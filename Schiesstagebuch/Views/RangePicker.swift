@@ -41,7 +41,7 @@ struct RangePickerList: View {
                     Text("Keine passende Schiessanlage").foregroundStyle(.secondary)
                 }
             } footer: {
-                if shown.contains(where: { $0.item != nil }) { Text(RangeCatalog.attribution) }
+                if shown.contains(where: { $0.item != nil }) { Text(RangeCatalog.attribution.loc) }
             }
             // Last row, so it shows when nothing matches or at the end of the list.
             Button { adding = true } label: { Label("Schiessanlage hinzufügen", systemImage: "plus") }

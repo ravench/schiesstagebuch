@@ -2543,7 +2543,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vos armes"
+            "value": "Tes armes"
           }
         },
         "it": {
@@ -2589,7 +2589,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de vos armes."
+            "value": "L'export ne contient pas de calibres. Chaque munition est associée à un calibre, ce qui définit aussi les calibres de tes armes."
           }
         },
         "it": {
@@ -2612,7 +2612,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'export ne contient que des références vers des photos de votre photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
+            "value": "L'export ne contient que des références vers des photos de ta photothèque (%lld). Elles sont retrouvées si les photos sont encore sur cet appareil ou dans Photos iCloud."
           }
         },
         "it": {
@@ -3106,6 +3106,29 @@
         }
       }
     },
+    "Eidgenoss polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eidgenoss polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eidgenoss polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eidgenoss polarizzato"
+          }
+        }
+      }
+    },
     "Eigene Filter": {
       "extractionState": "manual",
       "localizations": {
@@ -3555,7 +3578,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajoutez vos types de munitions, chacun avec son calibre."
+            "value": "Ajoute tes types de munitions, chacun avec son calibre."
           }
         },
         "it": {
@@ -3601,7 +3624,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enregistrez votre première séance de tir avec +."
+            "value": "Enregistre ta première séance de tir avec +."
           }
         },
         "it": {
@@ -3693,7 +3716,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière révision."
+            "value": "Te rappelle dès qu'une des deux limites est atteinte depuis la dernière révision."
           }
         },
         "it": {
@@ -3716,7 +3739,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage."
+            "value": "Te rappelle dès qu'une des deux limites est atteinte depuis le dernier nettoyage."
           }
         },
         "it": {
@@ -4561,6 +4584,282 @@
         }
       }
     },
+    "G+E dunkelblau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark blue"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E bleu foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E blu scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelgelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E jaune foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E giallo scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E gris foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E grigio scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelgrün": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark green"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E vert foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E verde scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelorange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark orange"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E orange foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E arancione scuro"
+          }
+        }
+      }
+    },
+    "G+E hellblau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light blue"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E bleu clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E azzurro"
+          }
+        }
+      }
+    },
+    "G+E hellgelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E jaune clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E giallo chiaro"
+          }
+        }
+      }
+    },
+    "G+E hellgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E gris clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E grigio chiaro"
+          }
+        }
+      }
+    },
+    "G+E hellgrün": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light green"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E vert clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E verde chiaro"
+          }
+        }
+      }
+    },
+    "G+E hellorange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light orange"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E orange clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E arancione chiaro"
+          }
+        }
+      }
+    },
+    "G+E rosa": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E pink"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rose"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rosa"
+          }
+        }
+      }
+    },
+    "G+E rot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E red"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rouge"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rosso"
+          }
+        }
+      }
+    },
     "Gebundenes Tagebuch": {
       "extractionState": "manual",
       "localizations": {
@@ -5378,7 +5677,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dans « %@ » de %@, enregistrez ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisissez-le ici."
+            "value": "Dans « %@ » de %@, enregistre ShootCounter-Export.tsv ou data.db via Menu › Daten sichern / exportieren, puis choisis-le ici."
           }
         },
         "it": {
@@ -6442,7 +6741,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajoutez vos armes avec leurs calibres."
+            "value": "Ajoute tes armes avec leurs calibres."
           }
         },
         "it": {
@@ -7852,6 +8151,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nome, ad es. SIG P210"
+          }
+        }
+      }
+    },
+    "Nasashield braun polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield brown polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield brun polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield marrone polarizzato"
+          }
+        }
+      }
+    },
+    "Nasashield grey polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield grey polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield gris polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield grigio polarizzato"
           }
         }
       }
@@ -9685,7 +10030,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vérifiez la catégorie et les calibres des armes importées sous Armes."
+            "value": "Vérifie la catégorie et les calibres des armes importées sous Armes."
           }
         },
         "it": {
@@ -10622,6 +10967,29 @@
         }
       }
     },
+    "Schiessanlagen: swissTLM3D, amtliches Gebäudeadressverzeichnis © swisstopo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shooting ranges: swissTLM3D, official directory of building addresses © swisstopo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stands de tir : swissTLM3D, répertoire officiel des adresses de bâtiments © swisstopo"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poligoni di tiro: swissTLM3D, elenco ufficiale degli indirizzi degli edifici © swisstopo"
+          }
+        }
+      }
+    },
     "Schiessen": {
       "extractionState": "manual",
       "localizations": {
@@ -11078,6 +11446,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Secondi"
+          }
+        }
+      }
+    },
+    "Serengeti polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serengeti polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serengeti polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serengeti polarizzato"
           }
         }
       }
@@ -13010,6 +13401,144 @@
           "stringUnit": {
             "state": "translated",
             "value": "Forza del vento al poligono"
+          }
+        }
+      }
+    },
+    "Wyss blau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss blue"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss bleu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss blu"
+          }
+        }
+      }
+    },
+    "Wyss dunkelgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss dark grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss gris foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss grigio scuro"
+          }
+        }
+      }
+    },
+    "Wyss gelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss jaune"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss giallo"
+          }
+        }
+      }
+    },
+    "Wyss grün": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss green"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss vert"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss verde"
+          }
+        }
+      }
+    },
+    "Wyss hellgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss light grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss gris clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss grigio chiaro"
+          }
+        }
+      }
+    },
+    "Wyss orange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss orange"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss orange"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss arancione"
           }
         }
       }

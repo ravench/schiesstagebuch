@@ -287,7 +287,11 @@ enum FilterColor {
     /// The built-in filter with this name; nil for "no filter" or an unknown name.
     static func filter(named name: String) -> Filter? { builtIn.first { $0.name == name } }
 
-    static func title(_ key: String) -> String { key.isEmpty ? "Kein Filter".loc : key }
+    /// The name as shown. Built-in names with a colour word («Wyss hellgrau») are translated; an own filter
+    /// keeps the name the user typed, also when it reads like a text of the app.
+    static func title(_ key: String) -> String {
+        key.isEmpty ? "Kein Filter".loc : filter(named: key) != nil ? key.loc : key
+    }
 
     /// One or two filters for display, e.g. "Citron + +0.25"; "Kein Filter" when there are none.
     static func title(_ names: [String]) -> String {

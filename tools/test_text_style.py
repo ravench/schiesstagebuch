@@ -27,6 +27,10 @@ PROPER = {"Albisgüetli", "Apple", "Edit", "Elmiger", "Equipment", "Files", "Fir
           "Menu", "My", "On", "Photos", "Ranges", "Settings", "ShootCounter-Export", "Swiss", "Weather"}
 
 
+# French says «tu», like the German «du»: no «vous», «votre», «vos», and no verb in the vous form.
+FORMAL_FRENCH = re.compile(r"\b(vous|votre|vos|veuillez)\b|\b(?!assez\b|chez\b)\w{4,}ez\b", re.I)
+
+
 def german():
     """Every German text: the keys, and the German spelling where it differs from the key."""
     return list(T) + [v[3] for v in T.values() if len(v) > 3]
@@ -52,6 +56,11 @@ class TextStyleTests(unittest.TestCase):
 
     def test_english_uses_british_spelling(self):
         bad = [t for t in english() if NOT_BRITISH.search(t)]
+        self.assertEqual(bad, [])
+
+    def test_french_addresses_the_user_informally(self):
+        # Ten texts said «vous» among 37 that said «tu»; the Sportgerät switch even flipped the form.
+        bad = [v[FR] for v in T.values() if FORMAL_FRENCH.search(v[FR])]
         self.assertEqual(bad, [])
 
     def test_english_uses_sentence_case(self):

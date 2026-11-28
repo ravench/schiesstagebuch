@@ -26,7 +26,7 @@ struct FilterSettingsView: View {
         ForEach(filters, id: \.name) { f in
             Toggle(isOn: Binding(get: { catalog.owns(f.name) },
                                  set: { on in update { $0.setOwned(f.name, on) } })) {
-                Label { Text(f.name) } icon: { FilterSwatch(filter: f) }
+                Label { Text(FilterColor.title(f.name)) } icon: { FilterSwatch(filter: f) }
             }
         }
     }
