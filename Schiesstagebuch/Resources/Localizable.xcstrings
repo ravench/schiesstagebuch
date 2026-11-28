@@ -295,7 +295,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld bersagli"
+            "value": "%lld programmi"
           }
         }
       }
@@ -1031,7 +1031,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eliminare l'evento con tutti i bersagli?"
+            "value": "Eliminare l'evento con tutti i programmi?"
           }
         }
       }
@@ -2480,7 +2480,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Data, poligono ed evento valgono per tutti i %lld bersagli."
+            "value": "Data, poligono ed evento valgono per tutti i %lld programmi."
           }
         }
       }
@@ -2641,7 +2641,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'esportazione conosce solo il numero di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; il resto vale come colpi di prova. Disattiva dove non è corretto."
+            "value": "L'esportazione conosce solo il numero di colpi. Un programma ha di solito 10, 15–18, 20, 30 o 60 colpi; il resto vale come colpi di prova. Disattiva dove non è corretto."
           }
         }
       }
@@ -2825,7 +2825,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "I bersagli li registri poi nell'evento."
+            "value": "I programmi li registri poi nell'evento."
           }
         }
       }
@@ -2848,7 +2848,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "I bersagli tirati con questo tipo restano, ma lo perdono insieme al massimo calcolato da esso."
+            "value": "I programmi tirati su questo bersaglio restano, ma perdono il bersaglio e il massimo calcolato da esso."
           }
         }
       }
@@ -3055,7 +3055,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Media per bersaglio"
+            "value": "Media per programma"
           }
         }
       }
@@ -3147,7 +3147,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tipo di bersaglio personalizzato"
+            "value": "Bersaglio personalizzato"
           }
         }
       }
@@ -3630,7 +3630,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Registra i tipi di bersaglio su cui spari. Ne scegli uno per ogni bersaglio, e i colpi singoli offrono solo i suoi valori."
+            "value": "Registra i bersagli su cui spari. Nel programma ne scegli uno, e i colpi singoli offrono solo i suoi valori."
           }
         }
       }
@@ -4441,7 +4441,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bersagli precedenti"
+            "value": "Programmi precedenti"
           }
         }
       }
@@ -4510,7 +4510,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per i bersagli tirati più volte a questo evento."
+            "value": "Per i programmi tirati più volte a questo evento."
           }
         }
       }
@@ -4786,7 +4786,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vale per tutti i %lld bersagli di questo evento."
+            "value": "Vale per tutti i %lld programmi di questo evento."
           }
         }
       }
@@ -5965,7 +5965,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nessun tipo di bersaglio"
+            "value": "Nessun bersaglio"
           }
         }
       }
@@ -6494,7 +6494,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Luce, vento e temperatura per bersaglio"
+            "value": "Luce, vento e temperatura per programma"
           }
         }
       }
@@ -7345,7 +7345,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Con un nome, il bersaglio appare nelle statistiche, p. es. «Match distrettuale»."
+            "value": "Con un nome, il programma appare nelle statistiche, p. es. «Match distrettuale»."
           }
         }
       }
@@ -7989,7 +7989,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nuovo tipo di bersaglio"
+            "value": "Nuovo bersaglio"
           }
         }
       }
@@ -8196,7 +8196,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nuovo bersaglio"
+            "value": "Nuovo programma"
           }
         }
       }
@@ -9990,7 +9990,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Risultato, colpi singoli e punti max. per bersaglio"
+            "value": "Risultato, colpi singoli e punti max. per programma"
           }
         }
       }
@@ -10295,7 +10295,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tipo di bersaglio"
+            "value": "Bersaglio"
           }
         }
       }
@@ -10318,7 +10318,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Modifica tipo di bersaglio"
+            "value": "Modifica bersaglio"
           }
         }
       }
@@ -10341,7 +10341,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eliminare il tipo di bersaglio?"
+            "value": "Eliminare il bersaglio?"
           }
         }
       }
@@ -10364,7 +10364,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tipo di bersaglio, paese o distanza"
+            "value": "Bersaglio, paese o distanza"
           }
         }
       }
@@ -10387,7 +10387,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tipi di bersaglio"
+            "value": "Bersagli"
           }
         }
       }
@@ -11721,7 +11721,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bersaglio"
+            "value": "Programma"
           }
         }
       }
@@ -11744,7 +11744,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aggiungi bersaglio"
+            "value": "Aggiungi programma"
           }
         }
       }
@@ -11767,7 +11767,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bersagli"
+            "value": "Programmi"
           }
         }
       }
@@ -12618,7 +12618,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Altro bersaglio"
+            "value": "Altro programma"
           }
         }
       }
@@ -13055,7 +13055,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scegli cosa è scritto sulle manopole della tua diottra. Senza regolazione, il bersaglio non mostra correzioni della diottra."
+            "value": "Scegli cosa è scritto sulle manopole della tua diottra. Senza regolazione, il programma non mostra correzioni della diottra."
           }
         }
       }

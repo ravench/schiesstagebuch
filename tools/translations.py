@@ -142,7 +142,7 @@ T = {
         "Reminds you as soon as either limit is reached since the last service.",
         "Vous rappelle dès qu'une des deux limites est atteinte depuis la dernière révision.",
         "Ti avvisa non appena uno dei due limiti viene raggiunto dall'ultima revisione."),
-    "Frühere Stiche": ("Earlier matches", "Cibles précédentes", "Bersagli precedenti"),
+    "Frühere Stiche": ("Earlier matches", "Cibles précédentes", "Programmi precedenti"),
     "Frühere Anlässe": ("Earlier events", "Événements précédents", "Eventi precedenti"),
     "Vorschläge": ("Suggestions", "Suggestions", "Suggerimenti"),
     "Foto %lld": ("Photo %lld", "Photo %lld", "Foto %lld"),
@@ -198,23 +198,25 @@ T = {
     "Keine Einträge": ("No entries", "Aucune entrée", "Nessuna voce"),
     "Keine Munition": ("No ammunition", "Aucune munition", "Nessuna munizione"),
     # Targets (Scheiben), 2026-11-16
-    # The kinds of target the user registers (Settings › Scheiben, the Stich's «Scheibe» row). French and Italian
-    # call a Stich «cible» / «bersaglio», as Swiss shooters do, so the kind of target needs a word of its own there.
-    "Scheiben": ("Targets", "Types de cibles", "Tipi di bersaglio"),
-    "Scheibe (Art)": ("Target", "Type de cible", "Tipo di bersaglio", "Scheibe"),
+    # The kinds of target the user registers (Settings › Scheiben, the Stich's «Scheibe» row), in the words Swiss
+    # shooters write (federation rules, the Vaud plan de tir, the Ticino periodical «Tiro Ticino»; checked 2026-11-28):
+    # French names a Stich «Cible …», so the kind of target is «Type de cible» there. Italian keeps «bersaglio» for
+    # the target itself, «serie» for a string of shots, and calls what is shot a «programma».
+    "Scheiben": ("Targets", "Types de cibles", "Bersagli"),
+    "Scheibe (Art)": ("Target", "Type de cible", "Bersaglio", "Scheibe"),
     "Scheiben-Nr.": ("Target no.", "N° de cible", "N. bersaglio"),
-    "Keine Scheiben": ("No targets", "Aucun type de cible", "Nessun tipo di bersaglio"),
-    "Neue Scheibe": ("New target", "Nouveau type de cible", "Nuovo tipo di bersaglio"),
-    "Scheibe bearbeiten": ("Edit target", "Modifier le type de cible", "Modifica tipo di bersaglio"),
-    "Scheibe löschen?": ("Delete target?", "Supprimer le type de cible ?", "Eliminare il tipo di bersaglio?"),
+    "Keine Scheiben": ("No targets", "Aucun type de cible", "Nessun bersaglio"),
+    "Neue Scheibe": ("New target", "Nouveau type de cible", "Nuovo bersaglio"),
+    "Scheibe bearbeiten": ("Edit target", "Modifier le type de cible", "Modifica bersaglio"),
+    "Scheibe löschen?": ("Delete target?", "Supprimer le type de cible ?", "Eliminare il bersaglio?"),
     "Die Stiche mit dieser Scheibe bleiben, verlieren aber die Scheibe und das daraus berechnete Maximum.": (
         "The matches shot on this target stay, but lose the target and the maximum worked out from it.",
         "Les cibles tirées avec ce type restent, mais le perdent, ainsi que le maximum calculé à partir de lui.",
-        "I bersagli tirati con questo tipo restano, ma lo perdono insieme al massimo calcolato da esso."),
-    "Eigene Scheibe": ("Own target", "Type de cible personnalisé", "Tipo di bersaglio personalizzato"),
+        "I programmi tirati su questo bersaglio restano, ma perdono il bersaglio e il massimo calcolato da esso."),
+    "Eigene Scheibe": ("Own target", "Type de cible personnalisé", "Bersaglio personalizzato"),
     "Aus Vorlage hinzufügen": ("Add from template", "Ajouter depuis un modèle", "Aggiungi da modello"),
     "Vorlagen": ("Templates", "Modèles", "Modelli"),
-    "Scheibe, Land oder Distanz": ("Target, country or distance", "Type de cible, pays ou distance", "Tipo di bersaglio, paese o distanza"),
+    "Scheibe, Land oder Distanz": ("Target, country or distance", "Type de cible, pays ou distance", "Bersaglio, paese o distanza"),
     "Schweiz": ("Switzerland", "Suisse", "Svizzera"),
     "ISSF": ("ISSF", "ISSF", "ISSF"),
     # Target groups of other countries (Targets.json from SIUSData).
@@ -239,7 +241,7 @@ T = {
     "Erfasse die Scheiben, auf die du schiesst. Im Stich wählst du eine, und die Einzelschüsse bieten nur ihre Werte an.": (
         "Add the targets you shoot at. In a match you pick one, and the individual shots offer only its values.",
         "Enregistre les types de cibles sur lesquels tu tires. Tu en choisis un par cible, et les coups individuels ne proposent que ses valeurs.",
-        "Registra i tipi di bersaglio su cui spari. Ne scegli uno per ogni bersaglio, e i colpi singoli offrono solo i suoi valori."),
+        "Registra i bersagli su cui spari. Nel programma ne scegli uno, e i colpi singoli offrono solo i suoi valori."),
     "Einzelschüsse tippst du als Zahl; Werte ausserhalb werden rot. Etwa 0 bis 10.9 für Zehntelwertung oder 0 bis 100 für A100.": (
         "You type individual shots as numbers; values outside turn red. For example 0 to 10.9 for decimal scoring or 0 to 100 for A100.",
         "Tu saisis les coups individuels en chiffres ; les valeurs hors plage deviennent rouges. Par exemple 0 à 10,9 pour l'évaluation au dixième ou 0 à 100 pour A100.",
@@ -278,11 +280,11 @@ T = {
     "Neue Waffen": ("New firearms", "Nouvelles armes", "Nuove armi"),
     "Neuer Anlass": ("New event", "Nouvel événement", "Nuovo evento"),
     "Anlass erfassen": ("Log event", "Saisir un événement", "Registra evento"),
-    "Neuer Stich": ("New match", "Nouvelle cible", "Nuovo bersaglio"),
+    "Neuer Stich": ("New match", "Nouvelle cible", "Nuovo programma"),
     "Die Stiche erfasst du anschliessend im Anlass.": (
         "You add the matches in the event afterwards.",
         "Tu saisis ensuite les cibles dans l'événement.",
-        "I bersagli li registri poi nell'evento."),
+        "I programmi li registri poi nell'evento."),
     "Neues Kaliber": ("New calibre", "Nouveau calibre", "Nuovo calibro"),
     "Nicht alle Fotos konnten geladen werden.": ("Not all photos could be loaded.", "Toutes les photos n'ont pas pu être chargées.", "Non è stato possibile caricare tutte le foto."),
     "Noch keine Einträge": ("No entries yet", "Pas encore d'entrées", "Ancora nessuna voce"),
@@ -453,7 +455,7 @@ T = {
     "Der Export kennt nur die Schusszahl. Ein Stich hat meist 10, 15–18, 20, 30 oder 60 Schüsse; der Rest gilt als Probeschüsse. Schalte aus, wo das nicht stimmt.": (
         "The export only knows the number of shots. A match usually has 10, 15–18, 20, 30 or 60 shots; the rest counts as sighters. Switch off where this is wrong.",
         "L'export ne connaît que le nombre de coups. Une cible compte généralement 10, 15–18, 20, 30 ou 60 coups ; le reste compte comme coups d'essai. Désactive là où ce n'est pas juste.",
-        "L'esportazione conosce solo il numero di colpi. Un bersaglio ha di solito 10, 15–18, 20, 30 o 60 colpi; il resto vale come colpi di prova. Disattiva dove non è corretto."),
+        "L'esportazione conosce solo il numero di colpi. Un programma ha di solito 10, 15–18, 20, 30 o 60 colpi; il resto vale come colpi di prova. Disattiva dove non è corretto."),
     "Das Resultat liegt über dem Maximum. Korrigiere Resultat oder Max. Punkte.": (
         "The result is above the maximum. Correct the result or the max. points.",
         "Le résultat dépasse le maximum. Corrige le résultat ou les points max.",
@@ -481,10 +483,10 @@ T = {
     "bei hoch, bei rechts": ("when high, when right", "si haut, si à droite", "se alto, se a destra"),
     "Keine Verstellung": ("No adjustment", "Pas de réglage", "Nessuna regolazione"),
     "Korrektur": ("Correction", "Correction", "Correzione"),
-    "Wähle, was auf den Knöpfen deines Diopters steht. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.":
-        ("Pick what is printed on your sight’s knobs. With no adjustment, a match shows no diopter corrections.",
-         "Choisis ce qui est inscrit sur les boutons de ton dioptre. Sans réglage, la cible n'affiche pas de corrections du dioptre.",
-         "Scegli cosa è scritto sulle manopole della tua diottra. Senza regolazione, il bersaglio non mostra correzioni della diottra."),
+    "Wähle, was auf den Knöpfen deines Diopters steht. Ohne Verstellung zeigt der Stich keine Diopterkorrekturen.": (
+        "Pick what is printed on your sight’s knobs. With no adjustment, a match shows no diopter corrections.",
+        "Choisis ce qui est inscrit sur les boutons de ton dioptre. Sans réglage, la cible n'affiche pas de corrections du dioptre.",
+        "Scegli cosa è scritto sulle manopole della tua diottra. Senza regolazione, il programma non mostra correzioni della diottra."),
     "Kein Filter": ("No filter", "Sans filtre", "Nessun filtro"),
     "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe.": ("Optional. New entries take the iris, ring and bipod of the last entry with this firearm.", "Facultatif. Les nouvelles entrées reprennent l'iris, l'anneau et le bipied de la dernière entrée avec cette arme.", "Facoltativo. Le nuove voci riprendono iride, anello e bipiede dell'ultima voce con quest'arma."),
     "Ringgrösse": ("Ring size", "Taille de l'anneau", "Dimensione dell'anello"),
@@ -506,7 +508,7 @@ T = {
     "Licht, Wind und Temperatur pro Stich": (
         "Light, wind and temperature per match",
         "Lumière, vent et température par cible",
-        "Luce, vento e temperatura per bersaglio"),
+        "Luce, vento e temperatura per programma"),
     "Jedes Feld lässt sich einzeln einschalten. Ausgeblendete Werte bleiben gespeichert.": (
         "Switch each field on separately. Hidden values stay saved.",
         "Chaque champ s'active séparément. Les valeurs masquées restent enregistrées.",
@@ -563,11 +565,11 @@ T = {
     "W": ("W", "O", "O"),
     "NW": ("NW", "NO", "NO"),
     # Events with several Stiche (programmes); Swiss French says "cible", Swiss Italian "bersaglio".
-    "Stich": ("Match", "Cible", "Bersaglio"),
-    "Stiche": ("Matches", "Cibles", "Bersagli"),
-    "%lld Stiche": ("%lld matches", "%lld cibles", "%lld bersagli"),
+    "Stich": ("Match", "Cible", "Programma"),
+    "Stiche": ("Matches", "Cibles", "Programmi"),
+    "%lld Stiche": ("%lld matches", "%lld cibles", "%lld programmi"),
     "%lld Schuss": ("%lld shots", "%lld coups", "%lld colpi"),
-    "Stich hinzufügen": ("Add match", "Ajouter une cible", "Aggiungi bersaglio"),
+    "Stich hinzufügen": ("Add match", "Ajouter une cible", "Aggiungi programma"),
     # Shooting position per Stich, ISSF terms (FR/IT as used by FST/FTST).
     "Stellung": ("Position", "Position", "Posizione"),
     "Liegend": ("Prone", "Couché", "A terra"),
@@ -575,33 +577,33 @@ T = {
     "Stehend": ("Standing", "Debout", "In piedi"),
     "Aufgelegt": ("Rested", "Appuyé", "Appoggiato"),
     "Weiter": ("Next", "Suivant", "Avanti"),
-    "Weiterer Stich": ("Another match", "Autre cible", "Altro bersaglio"),
+    "Weiterer Stich": ("Another match", "Autre cible", "Altro programma"),
     "Datum, Schiessanlage und Anlass gelten für alle %lld Stiche.": (
         "Date, range and event apply to all %lld matches.",
         "La date, le stand et l'événement valent pour les %lld cibles.",
-        "Data, poligono ed evento valgono per tutti i %lld bersagli."),
+        "Data, poligono ed evento valgono per tutti i %lld programmi."),
     "Fotos werden geladen …": ("Loading photos …", "Chargement des photos …", "Caricamento delle foto …"),
     "Gilt für alle %lld Stiche dieses Anlasses.": (
         "Applies to all %lld matches of this event.",
         "Vaut pour les %lld cibles de cet événement.",
-        "Vale per tutti i %lld bersagli di questo evento."),
+        "Vale per tutti i %lld programmi di questo evento."),
     "Anlass bearbeiten": ("Edit event", "Modifier l'événement", "Modifica evento"),
     "Anlass mit allen Stichen löschen?": (
         "Delete the event with all its matches?",
         "Supprimer l'événement avec toutes ses cibles ?",
-        "Eliminare l'evento con tutti i bersagli?"),
+        "Eliminare l'evento con tutti i programmi?"),
     # Averages per entry only for a Stich shot several times at one event.
-    "Durchschnitt pro Stich": ("Average per match", "Moyenne par cible", "Media per bersaglio"),
+    "Durchschnitt pro Stich": ("Average per match", "Moyenne par cible", "Media per programma"),
     "Für Stiche, die an diesem Anlass mehrmals geschossen wurden.": (
         "For matches shot more than once at this event.",
         "Pour les cibles tirées plusieurs fois à cet événement.",
-        "Per i bersagli tirati più volte a questo evento."),
+        "Per i programmi tirati più volte a questo evento."),
     "%lld× geschossen": ("Shot %lld×", "Tirée %lld×", "Tirato %lld×"),
     "pro Schuss": ("per shot", "par coup", "per colpo"),
     "Mit einem Namen erscheint der Stich in der Statistik, z. B. «Bezirksmatch».": (
         "With a name, the match shows up in the statistics, e.g. “District match”.",
         "Avec un nom, la cible apparaît dans les statistiques, p. ex. « Match de district ».",
-        "Con un nome, il bersaglio appare nelle statistiche, p. es. «Match distrettuale»."),
+        "Con un nome, il programma appare nelle statistiche, p. es. «Match distrettuale»."),
     "Ø Punkte": ("Avg. points", "Moy. points", "Media punti"),
     "Bestes Resultat": ("Best result", "Meilleur résultat", "Miglior risultato"),
     "Im Ordner der App gefunden": ("Found in the app's folder", "Trouvé dans le dossier de l'app", "Trovato nella cartella dell'app"),
@@ -711,7 +713,7 @@ T = {
     "Resultat, Einzelschüsse und Max. Punkte pro Stich": (
         "Result, single shots and max. points per match",
         "Résultat, coups individuels et points max. par cible",
-        "Risultato, colpi singoli e punti max. per bersaglio"),
+        "Risultato, colpi singoli e punti max. per programma"),
     "Sekunden": ("Seconds", "Secondes", "Secondi"),
     "Stage": ("Stage", "Stage", "Stage"),
     "Stage hinzufügen": ("Add stage", "Ajouter un stage", "Aggiungi stage"),
