@@ -748,6 +748,28 @@ T = {
         "I lotti esauriti non compaiono più nelle nuove voci, ma restano nelle voci precedenti e nelle statistiche."),
 }
 
+# Built-in filters (FilterColor): the maker's name stays, the colour word is translated. Product names
+# («Citron», «Saphire») have no entry and are shown as they are.
+_COLOURS = {
+    "hellgrau": ("light grey", "gris clair", "grigio chiaro"), "dunkelgrau": ("dark grey", "gris foncé", "grigio scuro"),
+    "hellblau": ("light blue", "bleu clair", "azzurro"), "dunkelblau": ("dark blue", "bleu foncé", "blu scuro"),
+    "hellgelb": ("light yellow", "jaune clair", "giallo chiaro"), "dunkelgelb": ("dark yellow", "jaune foncé", "giallo scuro"),
+    "hellorange": ("light orange", "orange clair", "arancione chiaro"), "dunkelorange": ("dark orange", "orange foncé", "arancione scuro"),
+    "hellgrün": ("light green", "vert clair", "verde chiaro"), "dunkelgrün": ("dark green", "vert foncé", "verde scuro"),
+    "gelb": ("yellow", "jaune", "giallo"), "orange": ("orange", "orange", "arancione"), "grün": ("green", "vert", "verde"),
+    "blau": ("blue", "bleu", "blu"), "rosa": ("pink", "rose", "rosa"), "rot": ("red", "rouge", "rosso"),
+    "grey polarisiert": ("grey polarised", "gris polarisé", "grigio polarizzato"),
+    "braun polarisiert": ("brown polarised", "brun polarisé", "marrone polarizzato"),
+    "polarisiert": ("polarised", "polarisé", "polarizzato"),
+}
+_FILTERS = {
+    "Wyss": ["hellgrau", "dunkelgrau", "gelb", "orange", "grün", "blau"],
+    "G+E": ["hellblau", "dunkelblau", "hellgrau", "dunkelgrau", "hellgelb", "hellorange", "hellgrün", "dunkelgrün", "rosa", "dunkelgelb",
+            "dunkelorange", "rot"],
+    "Nasashield": ["grey polarisiert", "braun polarisiert"], "Serengeti": ["polarisiert"], "Eidgenoss": ["polarisiert"],
+}
+T.update({f"{_maker} {_de}": tuple(f"{_maker} {_x}" for _x in _COLOURS[_de]) for _maker, _names in _FILTERS.items() for _de in _names})
+
 # Weather block: kept in its own file; same German key must mean the same thing.
 from translations_weather import W  # noqa: E402
 

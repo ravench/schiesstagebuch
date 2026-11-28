@@ -3106,6 +3106,29 @@
         }
       }
     },
+    "Eidgenoss polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eidgenoss polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eidgenoss polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eidgenoss polarizzato"
+          }
+        }
+      }
+    },
     "Eigene Filter": {
       "extractionState": "manual",
       "localizations": {
@@ -4534,6 +4557,282 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per il meteo di Apple, l'app invia ad Apple le coordinate del poligono e l'ora, non la tua posizione. Siccome di solito tiri lì, è però quasi lo stesso posto."
+          }
+        }
+      }
+    },
+    "G+E dunkelblau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark blue"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E bleu foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E blu scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelgelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E jaune foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E giallo scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E gris foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E grigio scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelgrün": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark green"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E vert foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E verde scuro"
+          }
+        }
+      }
+    },
+    "G+E dunkelorange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E dark orange"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E orange foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E arancione scuro"
+          }
+        }
+      }
+    },
+    "G+E hellblau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light blue"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E bleu clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E azzurro"
+          }
+        }
+      }
+    },
+    "G+E hellgelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E jaune clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E giallo chiaro"
+          }
+        }
+      }
+    },
+    "G+E hellgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E gris clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E grigio chiaro"
+          }
+        }
+      }
+    },
+    "G+E hellgrün": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light green"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E vert clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E verde chiaro"
+          }
+        }
+      }
+    },
+    "G+E hellorange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E light orange"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E orange clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E arancione chiaro"
+          }
+        }
+      }
+    },
+    "G+E rosa": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E pink"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rose"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rosa"
+          }
+        }
+      }
+    },
+    "G+E rot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E red"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rouge"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "G+E rosso"
           }
         }
       }
@@ -7833,6 +8132,52 @@
         }
       }
     },
+    "Nasashield braun polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield brown polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield brun polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield marrone polarizzato"
+          }
+        }
+      }
+    },
+    "Nasashield grey polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield grey polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield gris polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasashield grigio polarizzato"
+          }
+        }
+      }
+    },
     "Nebel": {
       "extractionState": "manual",
       "localizations": {
@@ -11030,6 +11375,29 @@
         }
       }
     },
+    "Serengeti polarisiert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serengeti polarised"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serengeti polarisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serengeti polarizzato"
+          }
+        }
+      }
+    },
     "Seriennummer (optional)": {
       "extractionState": "manual",
       "localizations": {
@@ -12958,6 +13326,144 @@
           "stringUnit": {
             "state": "translated",
             "value": "Forza del vento al poligono"
+          }
+        }
+      }
+    },
+    "Wyss blau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss blue"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss bleu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss blu"
+          }
+        }
+      }
+    },
+    "Wyss dunkelgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss dark grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss gris foncé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss grigio scuro"
+          }
+        }
+      }
+    },
+    "Wyss gelb": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss yellow"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss jaune"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss giallo"
+          }
+        }
+      }
+    },
+    "Wyss grün": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss green"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss vert"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss verde"
+          }
+        }
+      }
+    },
+    "Wyss hellgrau": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss light grey"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss gris clair"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss grigio chiaro"
+          }
+        }
+      }
+    },
+    "Wyss orange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss orange"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss orange"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyss arancione"
           }
         }
       }

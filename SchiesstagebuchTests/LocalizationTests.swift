@@ -173,6 +173,22 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(try localized("Farbfilter", "en"), "<missing>", "the row is called «Filter» now")
     }
 
+    /// Built-in filters are named by maker and colour: the colour is translated, a product name and an own filter are not.
+    func testBuiltInFilterColoursAreTranslated() throws {
+        let coloured = FilterColor.wyss + FilterColor.gruenigElmiger + FilterColor.filters.filter { $0.name.hasSuffix("polarisiert") }
+        XCTAssertEqual(coloured.count, 22)
+        for filter in coloured {
+            for lang in ["en", "fr", "it"] {
+                XCTAssertNotEqual(try localized(filter.name, lang), "<missing>", "\(filter.name) in \(lang)")
+            }
+        }
+        XCTAssertEqual(try localized("G+E dunkelgrün", "en"), "G+E dark green")
+        XCTAssertEqual(try localized("Nasashield braun polarisiert", "fr"), "Nasashield brun polarisé")
+        XCTAssertEqual(try localized("Citron", "en"), "<missing>", "a product name stays as it is")
+        XCTAssertEqual(FilterColor.title("Ein"), "Ein", "an own filter keeps its name, even one that is a text of the app")
+        XCTAssertEqual(FilterColor.title("Citron"), "Citron")
+    }
+
     /// The entry's filter hint points to the row that opens the filters, in both wordings and every language.
     func testFilterHintNamesTheFiltersRow() throws {
         let key = "Optional. Neue Einträge übernehmen Iris, Ringkorn und Zweibeinstütze des letzten Eintrags mit dieser Waffe. Deine Filter wählst du unter Einstellungen › Filter."

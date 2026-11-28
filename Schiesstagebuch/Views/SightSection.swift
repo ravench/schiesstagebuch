@@ -45,7 +45,7 @@ struct SightSection: View {
         let visible = FilterCatalog(data: catalogData).visible
         // Keeps the entry's filter selectable even if it is hidden or was removed in Settings.
         let names = visible.map(\.name) + (selected.isEmpty || visible.contains { $0.name == selected } ? [] : [selected])
-        let choices = [PickerChoice(value: "", title: "Kein Filter".loc)] + names.map { PickerChoice(value: $0, title: $0) }
+        let choices = [PickerChoice(value: "", title: "Kein Filter".loc)] + names.map { PickerChoice(value: $0, title: FilterColor.title($0)) }
         return SearchablePicker(title: title.loc, selection: Binding(get: { selected }, set: { sight.setFilter($0, at: index) }),
                                 choices: choices) { c in
             Label { Text(c.title) } icon: { FilterSwatch(name: c.value) }
