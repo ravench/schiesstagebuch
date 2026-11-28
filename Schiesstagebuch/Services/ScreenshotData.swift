@@ -45,6 +45,8 @@ enum ScreenshotData {
         rifle.ensureBarrel(for: gp11, in: context)
         pistol.ensureBarrel(for: luger, in: context)
         carbine.ensureBarrel(for: gp11, in: context)
+        // A single barrel with an expected life: the carbine's page lists it; the other two show none.
+        carbine.barrels?.first?.expectedLifeShots = 8000
         // Two GP 11 lots, each better in a different rifle, and one Stich kniend, for «Resultat pro Los»
         // and «Resultat pro Stellung».
         let lotA = AmmoLot(number: "21-07"), lotB = AmmoLot(number: "23-02")
