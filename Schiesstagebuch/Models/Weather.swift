@@ -291,6 +291,15 @@ struct WeatherRecord: Codable, Hashable {
         return !events.isEmpty
     }
 
+    /// What a further Stich of the Anlass starts with: the observations of the Stich before, without the
+    /// measured values (temperature, humidity, pressure). Those belong to that Stich's hour; the row for
+    /// Apple Weather fetches this one's.
+    var forNextStich: WeatherRecord {
+        var next = self
+        for field in WeatherField.measured { next.conditions.values[field.key] = nil }
+        return next
+    }
+
     /// Something recorded apart from the sun, which the app fills in by itself. While
     /// nothing is, the switch follows the weapon's default and Apple Weather fills the fields by itself.
     var hasValues: Bool { conditions.values.keys.contains { $0 != "sun_direction" } }
