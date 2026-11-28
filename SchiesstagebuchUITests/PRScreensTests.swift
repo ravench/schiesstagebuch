@@ -623,6 +623,14 @@ final class PRScreensTests: XCTestCase {
         snap("01d-Anlass-mit-einem-Stich")
     }
 
+    /// A firearm with one barrel that has an expected life: its page lists the barrel with its wear.
+    func testSingleBarrelWithWear() {
+        tab("Waffen")
+        guard open(app.staticTexts["K31"].firstMatch) else { return }
+        XCTAssertTrue(app.buttons["Lauf hinzufügen"].firstMatch.waitForExistence(timeout: 5), "The carbine's page lists no barrel")
+        snap("07k-Waffe-ein-Lauf-mit-Lebensdauer")
+    }
+
     /// A range's editor: the compass dial the shooting direction is set on.
     func testRangeDirection() {
         tab("Anlagen")

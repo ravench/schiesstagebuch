@@ -145,8 +145,9 @@ struct WeaponDetailView: View {
                     LabeledContent("Verkaufsdatum", value: sold.formatted(date: .long, time: .omitted))
                 }
             }
-            // A single (e.g. fixed) barrel adds nothing to the firearm's own figures.
-            if weapon.hasSeveralBarrels {
+            // A single (e.g. fixed) barrel adds nothing to the firearm's own figures, unless it has a number,
+            // earlier shots or an expected life of its own.
+            if weapon.showsBarrels {
                 BarrelSection(weapon: weapon, present: { barrelSheet = $0 }, delete: { swipedBarrel = $0 })
             }
             MaintenanceSection(weapon: weapon) { maintenanceSheet = $0 }

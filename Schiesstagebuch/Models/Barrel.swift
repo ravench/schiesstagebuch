@@ -110,6 +110,15 @@ extension Weapon {
     /// True when the firearm has more than one barrel, so the UI shows per-barrel detail.
     var hasSeveralBarrels: Bool { (barrels ?? []).count > 1 }
 
+    /// Whether the firearm's page lists its barrels: with several, and for a single barrel that has
+    /// something of its own to show. Its serial number, its shots from before and its wear were asked for
+    /// in the editor and then shown nowhere (review 2026-11-27).
+    var showsBarrels: Bool {
+        hasSeveralBarrels || (barrels ?? []).contains {
+            !$0.serialNumber.trimmingCharacters(in: .whitespaces).isEmpty || $0.previousShots > 0 || $0.expectedLifeShots > 0
+        }
+    }
+
     /// Barrels fitted on that day, whatever their calibre.
     func mountedBarrels(on date: Date) -> [Barrel] {
         sortedBarrels.filter { $0.isMounted(on: date) }
@@ -170,6 +179,19 @@ extension Weapon {
     func makeDefault(_ barrel: Barrel) {
         for b in barrels ?? [] { b.isDefault = b == barrel }
         barrel.isDefault = true
+    }
+}
+
+extension Barrel {
+    /// Before the barrel's calibres change to `new`: the entries that count for it now and whose calibre it
+    /// loses are pinned to it. They would fit no barrel any more, and a barrel whose calibre was corrected
+    /// showed 0 shots (review 2026-11-27).
+    func keepEntries(changingCalibersTo new: [Caliber]) {
+        let lost = (calibers ?? []).filter { !new.contains($0) }
+        guard !lost.isEmpty else { return }
+        for entry in weapon?.entries ?? [] where entry.effectiveBarrel == self {
+            if let caliber = entry.caliber, lost.contains(caliber) { entry.barrel = self }
+        }
     }
 }
 
