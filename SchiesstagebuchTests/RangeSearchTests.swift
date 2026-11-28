@@ -17,6 +17,20 @@ final class RangeSearchTests: ModelTestCase {
 
     private func names(_ list: [ShootingRange]) -> [String] { list.map(\.name) }
 
+    /// A short number is a distance: it must not find ranges by a house number or a piece of a postcode.
+    func testAShortNumberMeansADistance() {
+        let ten = range("Luftgewehrkeller", distances: [10])
+        let house = range("Schützenhaus Moos", address: "Dorfstrasse 10, 5056 Attelwil", distances: [300])
+        let named = range("Aarwangen 50m", distances: [])
+        let longer = range("Buchs 150m", distances: [150])
+        let all = [ten, house, named, longer]
+        XCTAssertEqual(names(RangeSearch.results(all, matching: "10")), ["Luftgewehrkeller"])
+        XCTAssertEqual(names(RangeSearch.results(all, matching: "50m")), ["Aarwangen 50m"], "not the 150 m range")
+        XCTAssertEqual(names(RangeSearch.results(all, matching: "50")), ["Aarwangen 50m"], "nor the postcode 5056")
+        XCTAssertEqual(names(RangeSearch.results(all, matching: "5056")), ["Schützenhaus Moos"], "a postcode still finds its range")
+        XCTAssertEqual(names(RangeSearch.results(all, matching: "300")), ["Schützenhaus Moos"])
+    }
+
     func testEmptyQueryKeepsEveryRange() {
         let all = [range("Albisgüetli"), range("Bern Riedbach")]
         XCTAssertEqual(names(RangeSearch.results(all, matching: "")), ["Albisgüetli", "Bern Riedbach"])

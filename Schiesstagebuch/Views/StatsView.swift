@@ -27,7 +27,7 @@ struct StatsView: View {
                     NavigationLink {
                         List(stiche) { item in
                             NavigationLink {
-                                StichDetailView(name: item.name)
+                                StichDetailView(name: item.name, period: period)
                             } label: {
                                 StatsLinkRow(name: item.name, subtitle: StichDetailView.subtitle(item.entries),
                                              archived: false, shots: item.shots)
@@ -73,16 +73,19 @@ struct StatsLinkRow: View {
 /// Shared layout for the per-weapon / per-range / per-ammo statistics screens.
 struct ItemStatsList<Header: View, Extra: View>: View {
     let entries: [Entry]
+    /// The period the list opens with: the one chosen on the page it was opened from.
+    var initialPeriod: StatsPeriod = .all
     @ViewBuilder var header: Header
     @ViewBuilder var breakdowns: ([Entry]) -> Extra
-    @State private var period: StatsPeriod = .all
+    @State private var chosen: StatsPeriod?
 
+    private var period: StatsPeriod { chosen ?? initialPeriod }
     private var filtered: [Entry] { period.entries(entries) }
 
     var body: some View {
         List {
             header
-            Section { PeriodPicker(period: $period, entries: entries) }
+            Section { PeriodPicker(period: Binding(get: { period }, set: { chosen = $0 }), entries: entries) }
             Section { KPIGrid(entries: filtered) }
                 .listRowBackground(Color.clear).listRowInsets(EdgeInsets())
             Section { ShotsOverTimeChart(entries: filtered) }
@@ -271,6 +274,8 @@ struct CaliberDetailView: View {
 struct StichDetailView: View {
     @Environment(\.term) private var term
     let name: String
+    /// The period of the statistics page it was opened from, so its figures match the row tapped.
+    var period: StatsPeriod = .all
     @Query(sort: \Entry.date) private var allEntries: [Entry]
 
     /// "3× geschossen · Ø 92.5 %" for the statistics list.
@@ -280,7 +285,7 @@ struct StichDetailView: View {
     }
 
     var body: some View {
-        ItemStatsList(entries: StichStats.entries(named: name, in: allEntries)) {
+        ItemStatsList(entries: StichStats.entries(named: name, in: allEntries), initialPeriod: period) {
             EmptyView()
         } breakdowns: { entries in
             // Same Stich, same shot count and maximum: here an average in points is meaningful.

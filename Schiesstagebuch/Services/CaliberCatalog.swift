@@ -172,8 +172,10 @@ enum CaliberCatalog {
         s.lowercased()
             .replacingOccurrences(of: "×", with: "x")
             .replacingOccurrences(of: ",", with: ".")
+            // «mm» as the unit (after a number, or standing alone), not wherever the letters meet once the spaces
+            // are gone: «5.56 Com» did not find «5.56 Commercial», nor «.416 Rim» the «.416 Rimmed» (review 2026-11-27).
+            .replacingOccurrences(of: #"(?<=\d)\s*mm|(?<![a-z])mm(?![a-z])"#, with: "", options: .regularExpression)
             .filter { !$0.isWhitespace }
-            .replacingOccurrences(of: "mm", with: "")
             .trimmingCharacters(in: CharacterSet(charactersIn: "."))
     }
 

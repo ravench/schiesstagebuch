@@ -255,6 +255,13 @@ enum BreakdownLimit {
         return set > 0 ? set : 10
     }
 
+    /// Most shots first; equal ones by name. Without the second rule bars with equal shots came in the order
+    /// a Dictionary happens to give, which changes from one drawing to the next, and with it which of
+    /// them made the first ten (review 2026-11-27).
+    static func before(_ a: (shots: Int, name: String), _ b: (shots: Int, name: String)) -> Bool {
+        a.shots != b.shots ? a.shots > b.shots : a.name.localizedStandardCompare(b.name) == .orderedAscending
+    }
+
     static func shown<Row>(_ rows: [Row], all: Bool, lines: Int = lines) -> [Row] {
         all ? rows : Array(rows.prefix(lines))
     }
@@ -272,7 +279,7 @@ struct BreakdownChart<Key: Hashable>: View {
     private var rows: [Row] {
         let sorted = Dictionary(grouping: entries.compactMap { e in key(e).map { ($0, e) } }, by: { $0.0 })
             .map { Row(key: $0, name: label($0), shots: $1.map(\.1).totalShots) }
-            .sorted { $0.shots > $1.shots }
+            .sorted { BreakdownLimit.before(($0.shots, $0.name), ($1.shots, $1.name)) }
         // The chart plots by name: two keys with one name (two ranges «Schützenhaus») would merge into one bar.
         var seen: [String: Int] = [:]
         return sorted.map { row in

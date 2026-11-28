@@ -3,6 +3,28 @@ import SwiftData
 @testable import Schiesstagebuch
 
 final class ScoringSystemTests: ModelTestCase {
+    /// An Anlass switched from rings to IPSC hides its Stiche's points; they stop counting in the averages too.
+    func testPointsOfAnIPSCAnlassDoNotCount() throws {
+        let entry = addEntry(nil, on: day(1), shots: 10)
+        entry.result = "92"; entry.maxPoints = 100
+        XCTAssertEqual(entry.score.percentage, 0.92)
+        entry.shootingEvent?.scoringSystem = .ipsc
+        XCTAssertNil(entry.score.percentage)
+        XCTAssertNil([entry].averagePercentage)
+    }
+
+    /// The Stiche of one Anlass share its date: the time of day, then the order of entry, decides.
+    func testStichesOfADayAreOrderedByTimeThenEntry() throws {
+        let first = addEntry(nil, on: day(1), shots: 10)
+        let event = try XCTUnwrap(first.shootingEvent)
+        let second = addStich(to: event, nil, shots: 10)
+        first.createdAt = day(1); second.createdAt = day(1).addingTimeInterval(60)
+        XCTAssertTrue(Entry.shotBefore(first, second), "entered first")
+        first.time = Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: day(1))
+        second.time = Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: day(1))
+        XCTAssertTrue(Entry.shotBefore(second, first), "shot at 9:00, before the one at 15:00")
+    }
+
     private var defaults: UserDefaults!
     private let suite = "ScoringSystemTests"
 
