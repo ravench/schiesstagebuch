@@ -1,6 +1,6 @@
 #!/bin/bash
 # Pushes the screens that look different (the out dir of `pr_screens.py changes`) to this pull
-# request's folder in ravench/app-screens, outside this repo's history, and adds or updates the
+# request's folder in ch-giotta/app-screens, outside this repo's history, and adds or updates the
 # pull request's comment for them. Both screens jobs of .github/workflows/build.yml run it:
 #
 #   bash publish_pr_screens.sh <changes dir>        # iPhone: <PR>/before, <PR>/after
@@ -12,7 +12,7 @@ TOOLS=$(cd "$(dirname "$0")" && pwd)
 CHANGED=$(cd "$1" && pwd)
 DEVICE=$2
 DEST="$PR${DEVICE:+/$DEVICE}"
-# ravench/app-screens accepts this repo's deploy key; the host key is GitHub's published one.
+# ch-giotta/app-screens accepts this repo's deploy key; the host key is GitHub's published one.
 [ -n "$SCREENS_DEPLOY_KEY" ] || { echo "::error::The SCREENS_DEPLOY_KEY secret is missing"; exit 1; }
 # Both in RUNNER_TEMP, which is emptied after the job, not in the runner's home folder.
 KEY="${RUNNER_TEMP:?}/app-screens" HOSTS="$RUNNER_TEMP/known_hosts"

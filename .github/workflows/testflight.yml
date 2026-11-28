@@ -116,7 +116,7 @@ jobs:
         run: |
           if [ -n "$ASC_KEY_ID" ] && [ -n "$ASC_ISSUER_ID" ] && [ -n "$ASC_KEY_P8" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
-          elif [ "$GITHUB_REPOSITORY" = ravench/schiesstagebuch ]; then
+          elif [ "$GITHUB_REPOSITORY" = ch-giotta/schiesstagebuch ]; then
             # Here a missing key is a broken release, not a fork without one: no green run without an upload.
             echo "::error::TestFlight upload failed: the ASC_KEY_ID, ASC_ISSUER_ID or ASC_KEY_P8 secret is missing."
             exit 1

@@ -16,7 +16,7 @@ See the [README](README.md#building). In short: `brew install xcodegen`,
 - German is Swiss Standard German, in the neutral tone of [srf.ch](https://www.srf.ch): ss (never ß),
   «guillemets», a decimal point (10.9), Swiss words (Website, Bildschirm, Pflege, Total), and
   «du». `tools/test_text_style.py` fails on ß, „“, a decimal comma and the German words it lists.
-- New calibres go into [calibre-data](https://github.com/ravench/calibre-data) (a submodule
+- New calibres go into [calibre-data](https://github.com/ch-giotta/calibre-data) (a submodule
   here), icons into `tools/weapon_icons.py`; `python3 tools/bump_data.py` moves the submodule
   to calibre-data's main and regenerates the JSON and strings, which you commit.
 - Every change comes with unit tests; CI runs them and SwiftLint on every push.

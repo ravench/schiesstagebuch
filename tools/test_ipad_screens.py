@@ -102,12 +102,12 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("name: ipad-screens", upload)
 
     def test_publishes_to_app_screens(self):
-        # The images stay out of this repo's history: they go to ravench/app-screens with a deploy key.
+        # The images stay out of this repo's history: they go to ch-giotta/app-screens with a deploy key.
         self.assertIn("contents: read", self.workflow)
         self.assertNotIn("contents: write", self.workflow)
         publish = self.workflow.split("Publish to app-screens")[1]
         self.assertIn("git push -q -f", publish)
-        self.assertIn("SCREENS_REPO: ravench/app-screens", publish)
+        self.assertIn("SCREENS_REPO: ch-giotta/app-screens", publish)
         self.assertIn("SCREENS_BRANCH: schiesstagebuch/ipad-screens", publish)
         self.assertIn("secrets.SCREENS_DEPLOY_KEY", publish)
         self.assertNotIn("github.com/${{ github.repository }}.git", publish)
