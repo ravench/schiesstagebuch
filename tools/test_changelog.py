@@ -3,6 +3,7 @@
     python3 -m unittest discover -s tools -p 'test_changelog.py'
 """
 import base64
+import io
 import json
 import os
 import subprocess
@@ -131,6 +132,21 @@ class SummariseTests(unittest.TestCase):
             changelog.what_to_test(NOTES, 1234, "key.p8", "K", "I", "ch.giotta.schiesstagebuch", wait=10, poll=0)
         self.assertEqual(sum(p.startswith("/builds?") for _, p in calls), 2, "polled again after the error")
         self.assertEqual(sum(m == "POST" for m, _ in calls), 4, "then set the four languages")
+
+    def test_busy_answers_are_raised_for_the_poll_to_retry(self):
+        def answer(code):
+            def urlopen(request, timeout=60):
+                raise urllib.error.HTTPError(request.full_url, code, "x", {}, io.BytesIO(b"{}"))
+            return urlopen
+
+        for code in (429, 500, 503):
+            with mock.patch.object(changelog.urllib.request, "urlopen", answer(code)):
+                with self.assertRaises(urllib.error.URLError, msg=str(code)):
+                    changelog.asc("GET", "/builds", "t")
+        # Anything else is a real mistake (a bad token, a wrong path): the script stops.
+        with mock.patch.object(changelog.urllib.request, "urlopen", answer(401)):
+            with self.assertRaises(SystemExit):
+                changelog.asc("GET", "/builds", "t")
 
     def test_missing_language_or_refusal_fails(self):
         with self.assertRaises(ValueError):

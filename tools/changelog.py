@@ -110,13 +110,17 @@ def token(key_path, key_id, issuer, now=None):
 
 
 def asc(method, path, token, body=None, timeout=60):
-    """One App Store Connect call; a URLError (no connection, timeout) is raised to the caller."""
+    """One App Store Connect call. A URLError (no connection, timeout) is raised to the caller, and so is an
+    answer that asks to come back later (429, 5xx; HTTPError is a URLError): the hour of polling for
+    «What to Test» tries again instead of losing the notes. Any other HTTP error ends the script."""
     request = urllib.request.Request(ASC + path, method=method, data=json.dumps(body).encode() if body else None,
                                      headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
             return json.load(response) if response.status != 204 else {}
     except urllib.error.HTTPError as e:
+        if e.code == 429 or e.code >= 500:
+            raise
         sys.exit(f"{method} {path}: {e}\n{e.read().decode()}")
 
 
