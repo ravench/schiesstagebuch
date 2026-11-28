@@ -591,6 +591,18 @@ final class PRScreensTests: XCTestCase {
         snap("19c-Schiessanlage-gemessen")
     }
 
+    /// The range list of a new Anlass, searched with a short number: a distance («10» lists the 10 m ranges),
+    /// not every range with a 10 in its house number or postcode.
+    func testRangeSearchByDistance() {
+        tab("Tagebuch")
+        guard open(app.buttons["Neuer Anlass"].firstMatch), open(app.staticTexts["Schiessanlage"].firstMatch) else { return }
+        let search = app.searchFields.firstMatch
+        guard search.waitForExistence(timeout: 5) else { return XCTFail("No search field in the range list") }
+        search.tap()
+        search.typeText("10\n") // return hides the keyboard
+        snap("03b1-Schiessanlage-Suche-Distanz")
+    }
+
     /// The firearm editor with a date of purchase: the date sits in the switch's row.
     func testOwnershipDates() {
         tab("Waffen")
