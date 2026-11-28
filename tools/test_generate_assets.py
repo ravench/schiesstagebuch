@@ -95,7 +95,7 @@ class BlankTests(unittest.TestCase):
 
 
 class CalibreDataSubmoduleTests(unittest.TestCase):
-    """The catalogue comes from the shared calibre-data submodule (github.com/ravench/calibre-data)."""
+    """The catalogue comes from the shared calibre-data submodule (github.com/ch-giotta/calibre-data)."""
 
     def test_catalogue_comes_from_the_submodule(self):
         import cartridges, outline
@@ -107,7 +107,7 @@ class CalibreDataSubmoduleTests(unittest.TestCase):
 
     def test_ci_checks_out_the_submodule(self):
         with open(os.path.join(ROOT, ".gitmodules")) as f:
-            self.assertIn("url = https://github.com/ravench/calibre-data", f.read())
+            self.assertIn("url = https://github.com/ch-giotta/calibre-data", f.read())
         with open(os.path.join(ROOT, ".github", "workflows", "build.yml")) as f:
             build_job = f.read().split("  build:", 1)[1]
         self.assertIn("submodules: true", build_job.split("- run:", 1)[0])

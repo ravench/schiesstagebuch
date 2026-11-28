@@ -214,7 +214,7 @@ class PublishTests(unittest.TestCase):
         self.remote = os.path.join(t, "app-screens.git")
         subprocess.run(["git", "init", "-q", "--bare", self.remote], check=True)
         with open(os.path.join(t, "gitconfig"), "w") as f:
-            f.write(f'[url "{self.remote}"]\n\tinsteadOf = git@github.com:ravench/app-screens.git\n')
+            f.write(f'[url "{self.remote}"]\n\tinsteadOf = git@github.com:ch-giotta/app-screens.git\n')
         os.makedirs(os.path.join(t, "bin"))
         self.gh_log = os.path.join(t, "gh.log")
         gh = os.path.join(t, "bin", "gh")
@@ -225,8 +225,8 @@ class PublishTests(unittest.TestCase):
         self.env = dict(os.environ, HOME=os.path.join(t, "home"), GIT_CONFIG_GLOBAL=os.path.join(t, "gitconfig"),
                         RUNNER_TEMP=os.path.join(t, "runner-temp"),
                         PATH=os.path.join(t, "bin") + os.pathsep + os.environ["PATH"], GH_TOKEN="x",
-                        REPO="ravench/schiesstagebuch", PR="122", HEAD_SHA="abc", RUN_URL="https://run",
-                        SCREENS_REPO="ravench/app-screens", SCREENS_BRANCH="schiesstagebuch/pr-screens",
+                        REPO="ch-giotta/schiesstagebuch", PR="122", HEAD_SHA="abc", RUN_URL="https://run",
+                        SCREENS_REPO="ch-giotta/app-screens", SCREENS_BRANCH="schiesstagebuch/pr-screens",
                         SCREENS_DEPLOY_KEY="key")
 
     def tearDown(self):
@@ -267,7 +267,7 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(calls.count("-F body=@comment.md"), 3)  # no comment found, so each posts one
         with open(os.path.join(self.tmp.name, "comment.md")) as f:
             body = f.read()
-        self.assertIn("https://github.com/ravench/app-screens/raw/", body)
+        self.assertIn("https://github.com/ch-giotta/app-screens/raw/", body)
         self.assertIn("/122/after/05-Statistik.png", body)
 
 
@@ -383,10 +383,10 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("PATCH", self.publish)
 
     def test_images_go_to_app_screens_with_a_deploy_key(self):
-        # The images stay out of this repo's history: ravench/app-screens holds them.
+        # The images stay out of this repo's history: ch-giotta/app-screens holds them.
         for job_ in (self.screens, self.ipad):
             comment = job_.split("name: Comment on the pull request")[1]
-            self.assertIn("SCREENS_REPO: ravench/app-screens", comment)
+            self.assertIn("SCREENS_REPO: ch-giotta/app-screens", comment)
             self.assertIn("SCREENS_BRANCH: ${{ github.event.repository.name }}/pr-screens", comment)
             self.assertIn("secrets.SCREENS_DEPLOY_KEY", comment)
             self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", comment)

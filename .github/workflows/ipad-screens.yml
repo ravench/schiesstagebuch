@@ -1,6 +1,6 @@
 name: iPad screens
 # Screenshots of every main screen on an iPad simulator, portrait and landscape, with sample data.
-# See them in ravench/app-screens on its schiesstagebuch/ipad-screens branch, or download the run's "ipad-screens" artifact.
+# See them in ch-giotta/app-screens on its schiesstagebuch/ipad-screens branch, or download the run's "ipad-screens" artifact.
 # Runs by hand (Actions › iPad screens › Run workflow). Pull requests that change the GUI get the
 # same screens, before and after, as a comment from the Build workflow's ipad-screens job.
 on:
@@ -14,7 +14,7 @@ jobs:
     # private (README, CI on your own Mac).
     runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
     permissions:
-      # The screenshots go to ravench/app-screens with a deploy key, not to this repo.
+      # The screenshots go to ch-giotta/app-screens with a deploy key, not to this repo.
       contents: read
     steps:
       - uses: actions/checkout@v5
@@ -56,12 +56,12 @@ jobs:
         # Browsable on GitHub without downloading the zip; only the latest set is kept.
         if: always()
         env:
-          SCREENS_REPO: ravench/app-screens
+          SCREENS_REPO: ch-giotta/app-screens
           SCREENS_BRANCH: schiesstagebuch/ipad-screens
           SCREENS_DEPLOY_KEY: ${{ secrets.SCREENS_DEPLOY_KEY }}
         run: |
           [ -n "$(ls ipad-screens 2>/dev/null)" ] || exit 0
-          # ravench/app-screens accepts this repo's deploy key; the host key is GitHub's published one.
+          # ch-giotta/app-screens accepts this repo's deploy key; the host key is GitHub's published one.
           [ -n "$SCREENS_DEPLOY_KEY" ] || { echo "::error::The SCREENS_DEPLOY_KEY secret is missing"; exit 1; }
           # Both in RUNNER_TEMP, which is emptied after the job, not in the runner's home folder.
           KEY="${RUNNER_TEMP:?}/app-screens" HOSTS="$RUNNER_TEMP/known_hosts"

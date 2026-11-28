@@ -100,7 +100,7 @@ container on first run. Change the bundle id / container in `project.yml` if
 under Certificates, Identifiers & Profiles, on both the Capabilities and the App Services tab;
 without it the weather fields still work, and the row that fills them says Apple Weather can't be reached.
 
-The calibre catalogue lives in the shared [calibre-data](https://github.com/ravench/calibre-data)
+The calibre catalogue lives in the shared [calibre-data](https://github.com/ch-giotta/calibre-data)
 repository, included as a git submodule at `calibre-data/` (also used by Kaliberfinder and the
 [calibre poster](https://github.com/ravench/calibre-poster)). After cloning, run
 `git submodule update --init`. To change calibres, edit their TOML files there (one per calibre,
@@ -145,7 +145,7 @@ Admin role (Users and Access, Integrations, Team Keys): `ASC_KEY_ID` (Key ID),
 The **iPad screens** workflow (Actions › iPad screens › Run workflow) starts the app on an
 iPad simulator with sample data (launch argument `-screenshotData`, kept in memory only) and
 screenshots every tab in portrait and landscape. Browse them on the `schiesstagebuch/ipad-screens` branch of
-[ravench/app-screens](https://github.com/ravench/app-screens/tree/schiesstagebuch/ipad-screens)
+[ch-giotta/app-screens](https://github.com/ch-giotta/app-screens/tree/schiesstagebuch/ipad-screens)
 (latest run only) or download the run's `ipad-screens` artifact. The UI test lives in
 `SchiesstagebuchUITests` and has its own scheme, `SchiesstagebuchScreens`, so the normal
 test run skips it. Pull requests that change the GUI get the same screens, before and after,

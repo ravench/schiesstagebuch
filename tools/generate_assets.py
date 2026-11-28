@@ -11,7 +11,7 @@ import json, os, subprocess, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 # The calibre catalogue and the outline drawing live in the calibre-data submodule
-# (github.com/ravench/calibre-data), shared with Kaliberfinder and the calibre poster.
+# (github.com/ch-giotta/calibre-data), shared with Kaliberfinder and the calibre poster.
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "calibre-data"))
 from cartridges import CATALOGUE, DISPLAY_ALIASES, LOOKALIKES, LOOKALIKE_NAMES, PRIMERS, RIMFIRE, SHOT, LOOSE, BALL, MINIE, PELLET, is_blank, tags  # noqa: E402
 from outline import outline, bullet_profile  # noqa: E402
