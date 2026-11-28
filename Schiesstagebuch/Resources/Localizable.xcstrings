@@ -587,13 +587,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lld bersaglio"
+                  "value": "%lld programma"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lld bersagli"
+                  "value": "%lld programmi"
                 }
               }
             }

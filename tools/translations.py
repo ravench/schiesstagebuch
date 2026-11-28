@@ -558,7 +558,7 @@ T = {
     # Events with several Stiche (programmes); Swiss French says "cible", Swiss Italian "bersaglio".
     "Stich": ("Match", "Cible", "Bersaglio"),
     "Stiche": ("Matches", "Cibles", "Bersagli"),
-    "%lld Stiche": ("%lld matches", "%lld cibles", "%lld bersagli"),
+    "%lld Stiche": ("%lld matches", "%lld cibles", "%lld programmi"),
     "%lld Schuss": ("%lld shots", "%lld coups", "%lld colpi"),
     "Stich hinzufügen": ("Add match", "Ajouter une cible", "Aggiungi bersaglio"),
     # Shooting position per Stich, ISSF terms (FR/IT as used by FST/FTST).

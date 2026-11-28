@@ -9,6 +9,6 @@ ONE = {
     "%lld Einträge importiert": ("%lld Eintrag importiert", "%lld entry imported", "%lld entrée importée", "%lld voce importata"),
     "%lld Einträge wiederhergestellt.": ("%lld Eintrag wiederhergestellt.", "%lld entry restored.", "%lld entrée restaurée.",
                                          "%lld voce ripristinata."),
-    "%lld Stiche": ("%lld Stich", "%lld match", "%lld cible", "%lld bersaglio"),
+    "%lld Stiche": ("%lld Stich", "%lld match", "%lld cible", "%lld programma"),
     "%lld Schuss": ("%lld Schuss", "%lld shot", "%lld coup", "%lld colpo"),
 }
