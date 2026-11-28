@@ -828,6 +828,16 @@ final class PRScreensTests: XCTestCase {
         snap("11c-Kaliber-32-SW")
     }
 
+    /// A firearm with a cleaning interval in days and no cleaning recorded: «Pflege» says when the days start to count.
+    func testReminderDaysWithoutARecord() {
+        tab("Waffen")
+        guard open(app.staticTexts["SIG P226"].firstMatch) else { return }
+        let hint = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Tage zählen ab der ersten erfassten Reinigung")).firstMatch
+        reveal(hint)
+        XCTAssertTrue(hint.exists, "The page does not say when the days start to count")
+        snap("07p-Pflege-Tage-ohne-Reinigung")
+    }
+
     /// The journal row of an Anlass with two Stiche: their number beside the list symbol, then range and firearm.
     func testJournalRowWithSeveralStiche() {
         tab("Tagebuch")
