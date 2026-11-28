@@ -154,10 +154,10 @@ as a comment from the **Build** workflow's `ipad-screens` job.
 ## CI on your own Mac
 
 The Mac jobs (Build with its iPad screens, TestFlight, iPad screens) run on GitHub's macOS
-runner, or on a self-hosted Mac while the repo is private and the repository variable
-`MAC_RUNNER` names it. Register the runner only once the repo is private, and remove it
-(`./svc.sh uninstall`, then `./config.sh remove`) before the repo ever goes public again: on a
-public repo, a pull request could change its own workflow to run code on that Mac. The Linux
+runner while the repo is public, and on the ch-giotta organisation's self-hosted Mac mini
+(labels `self-hosted`, `macOS`, `ARM64`) while it is private: `runs-on` picks it from
+`github.event.repository.private`. The runner's group must never allow public repositories: on
+a public repo, a pull request could change its own workflow to run code on that Mac. The Linux
 jobs stay on GitHub. While the Mac is off or asleep, or its runner user is logged out, the Mac
 jobs wait (up to 24 hours) instead of falling back to GitHub's runner.
 
@@ -169,13 +169,13 @@ jobs wait (up to 24 hours) instead of falling back to GitHub's runner.
    and `sudo dseditgroup -o edit -a <runner user> -t user _developer`, so the runner user can run
    tests without a password prompt. As the runner user, run `git lfs install` and add
    `eval "$(/opt/homebrew/bin/brew shellenv)"` to `~/.zprofile`, then open a new Terminal window.
-3. Under Settings › Actions › Runners › New self-hosted runner (macOS, ARM64), run the commands it
-   shows in that window, then `./svc.sh install && ./svc.sh start`. The runner works while its
+3. Under the organisation's Settings › Actions › Runners › New runner (macOS, ARM64), run the
+   commands it shows in that window, then `./env.sh` (so the runner finds Homebrew's tools) and
+   `./svc.sh install && ./svc.sh start`. The runner works while its
    user is logged in: after a restart, log it in once and switch back to your own user. Keep it
    to one runner, which takes the Mac jobs one after another: two would erase each other's
    simulators.
-4. Under Settings › Secrets and variables › Actions › Variables, set `MAC_RUNNER` to
-   `self-hosted`. Delete the variable to send the Mac jobs back to GitHub's runner.
+4. Under Settings › Actions › Runner groups › Default, leave «Allow public repositories» off.
 
 ## Code style
 

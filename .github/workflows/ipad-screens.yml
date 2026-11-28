@@ -10,9 +10,9 @@ defaults:
     shell: bash -eo pipefail {0}
 jobs:
   screens:
-    # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
-    # private (README, CI on your own Mac).
-    runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
+    # GitHub's Mac, or the self-hosted Mac mini while the repo is private (README, CI on your
+    # own Mac).
+    runs-on: ${{ github.event.repository.private && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'macos-26' }}
     permissions:
       # The screenshots go to ravench/app-screens with a deploy key, not to this repo.
       contents: read

@@ -92,9 +92,9 @@ jobs:
   build:
     needs: changes
     if: needs.changes.outputs.mac == 'true'
-    # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
-    # private (README, CI on your own Mac).
-    runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
+    # GitHub's Mac, or the self-hosted Mac mini while the repo is private (README, CI on your
+    # own Mac).
+    runs-on: ${{ github.event.repository.private && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'macos-26' }}
     permissions:
       contents: read
     env:
@@ -228,9 +228,9 @@ jobs:
     # day are the same: the tour then only runs here once per base.
     needs: changes
     if: needs.changes.outputs.screens == 'true'
-    # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
-    # private (README, CI on your own Mac).
-    runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
+    # GitHub's Mac, or the self-hosted Mac mini while the repo is private (README, CI on your
+    # own Mac).
+    runs-on: ${{ github.event.repository.private && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'macos-26' }}
     permissions:
       contents: read
     steps:
@@ -378,9 +378,9 @@ jobs:
     # like the base-screens job's, so a later push to the pull request tours only the pull request.
     needs: changes
     if: needs.changes.outputs.screens == 'true'
-    # GitHub's Mac, or the self-hosted one named in the MAC_RUNNER variable while the repo is
-    # private (README, CI on your own Mac).
-    runs-on: ${{ github.event.repository.private && vars.MAC_RUNNER || 'macos-26' }}
+    # GitHub's Mac, or the self-hosted Mac mini while the repo is private (README, CI on your
+    # own Mac).
+    runs-on: ${{ github.event.repository.private && fromJSON('["self-hosted", "macOS", "ARM64"]') || 'macos-26' }}
     permissions:
       contents: read # the screens go to ravench/app-screens with a deploy key
       pull-requests: write # and the comment to the pull request
