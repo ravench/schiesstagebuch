@@ -56,6 +56,9 @@ struct MaintenanceStatus {
         return false
     }
 
+    /// The state in a word, for VoiceOver: the badge tells it by colour.
+    var stateText: String { isDue ? "fällig".loc : isDueSoon ? "bald fällig".loc : "in Ordnung".loc }
+
     var summary: String {
         var parts: [String] = []
         if let lastDate { parts.append(String(localized: "zuletzt \(lastDate.formatted(date: .abbreviated, time: .omitted))")) }

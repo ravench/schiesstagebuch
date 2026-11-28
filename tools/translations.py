@@ -62,6 +62,10 @@ T = {
     "Anlass, Anlage, Waffe …": ("Event, range, firearm …", "Événement, stand, arme …", "Evento, poligono, arma …"),
     "Archivieren": ("Archive", "Archiver", "Archivia"),
     "Archiviert": ("Archived", "Archivé", "Archiviato"),
+    "fällig": ("due", "à faire", "da fare"),
+    "bald fällig": ("due soon", "bientôt à faire", "da fare a breve"),
+    "in Ordnung": ("fine", "en ordre", "in ordine"),
+    "ungültig": ("invalid", "non valable", "non valido"),
     "Archivierte": ("Archived", "Archivés", "Archiviati"),
     "Archivierte Waffen erscheinen nicht mehr bei neuen Einträgen, bleiben aber in Tagebuch und Statistik.": (
         "Archived firearms are no longer offered for new entries but stay in the log and statistics.",

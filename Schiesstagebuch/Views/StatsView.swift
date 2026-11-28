@@ -63,7 +63,7 @@ struct StatsLinkRow: View {
                 Text(name)
                 if !subtitle.isEmpty { Text(subtitle).font(.caption).foregroundStyle(.secondary) }
             }
-            if archived { Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small) }
+            if archived { Image(systemName: "archivebox").foregroundStyle(.secondary).imageScale(.small).accessibilityLabel(Text("Archiviert")) }
             Spacer()
             Text("\(shots.formatted()) Schuss").monospacedDigit().foregroundStyle(.secondary)
         }

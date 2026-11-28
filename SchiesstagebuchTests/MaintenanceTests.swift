@@ -64,6 +64,17 @@ final class MaintenanceTests: ModelTestCase {
         XCTAssertEqual(weapon.status(.service).shotsSince, 50)
     }
 
+    /// The badge tells its state by colour; VoiceOver gets it in a word.
+    func testStateInAWordForVoiceOver() throws {
+        log(.cleaning, on: .now)
+        try context.save()
+        XCTAssertEqual(weapon.status(.cleaning).stateText, "in Ordnung".loc)
+        addEntry(weapon, on: Calendar.current.date(byAdding: .day, value: 1, to: .now)!, shots: 95)
+        XCTAssertEqual(weapon.status(.cleaning).stateText, "bald fällig".loc, "within a tenth of the 100 shots")
+        addEntry(weapon, on: Calendar.current.date(byAdding: .day, value: 1, to: .now)!, shots: 10)
+        XCTAssertEqual(weapon.status(.cleaning).stateText, "fällig".loc)
+    }
+
     func testShotLimitMakesItDue() throws {
         log(.cleaning, on: day(1))
         addEntry(weapon, on: day(2), shots: 100)

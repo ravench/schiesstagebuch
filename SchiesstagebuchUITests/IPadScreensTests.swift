@@ -21,6 +21,20 @@ final class IPadScreensTests: XCTestCase {
 
     func testLandscape() { capture(.landscapeLeft, name: "landscape") }
 
+    /// The licence card: on an iPad it keeps a card's width, so both barcodes are on the screen.
+    func testLicenceCard() {
+        // Landscape: on an 11-inch iPad in portrait the tab bar hides «Einstellungen» behind its ›.
+        XCUIDevice.shared.orientation = .landscapeLeft
+        guard select("Einstellungen") else { return XCTFail("Tab Einstellungen not found") }
+        for element in [app.staticTexts["SSV-Lizenzkarte"], app.buttons["Lizenz erfassen"], app.textFields["Lizenznummer"]] {
+            guard element.firstMatch.waitForExistence(timeout: 5) else { return XCTFail("\(element) not found") }
+            element.firstMatch.tap()
+        }
+        app.textFields["Lizenznummer"].firstMatch.typeText("123456")
+        app.buttons["Sichern"].firstMatch.tap()
+        snap("landscape-6-Lizenzkarte")
+    }
+
     private func capture(_ orientation: UIDeviceOrientation, name: String) {
         XCUIDevice.shared.orientation = orientation
         for (index, tab) in Self.tabs.enumerated() {

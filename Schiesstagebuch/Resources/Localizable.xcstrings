@@ -14206,6 +14206,29 @@
         }
       }
     },
+    "bald fällig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "due soon"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bientôt à faire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "da fare a breve"
+          }
+        }
+      }
+    },
     "bedeckt": {
       "extractionState": "manual",
       "localizations": {
@@ -14459,6 +14482,29 @@
         }
       }
     },
+    "fällig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "due"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "à faire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "da fare"
+          }
+        }
+      }
+    },
     "garstig": {
       "extractionState": "manual",
       "localizations": {
@@ -14662,6 +14708,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "tra %@ colpi"
+          }
+        }
+      }
+    },
+    "in Ordnung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fine"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "en ordre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in ordine"
           }
         }
       }
@@ -15214,6 +15283,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "basso"
+          }
+        }
+      }
+    },
+    "ungültig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "invalid"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "non valable"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "non valido"
           }
         }
       }
