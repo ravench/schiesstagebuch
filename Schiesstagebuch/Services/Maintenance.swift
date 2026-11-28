@@ -72,8 +72,11 @@ struct MaintenanceStatus {
         var parts: [String] = []
         if let r = shotsRemaining { parts.append(r > 0 ? String(localized: "in \(r.formatted()) Schuss") : String(localized: "\((-r).formatted()) Schuss überfällig")) }
         if let d = dueDate { parts.append(d > .now ? String(localized: "bis \(d.formatted(date: .abbreviated, time: .omitted))") : String(localized: "seit \(d.formatted(date: .abbreviated, time: .omitted)) fällig")) }
-        let waiting = intervalDays > 0 && lastDate != nil && countingStart == nil
-        let waitingText = "Tage zählen ab dem nächsten Schuss".loc
+        // Days need a start: with nothing recorded yet there is none, and the firearm showed a green badge
+        // for good without saying why no day reminder came (review 2026-11-27).
+        let waiting = intervalDays > 0 && countingStart == nil
+        let waitingText = lastDate != nil ? "Tage zählen ab dem nächsten Schuss".loc
+            : kind == .cleaning ? "Tage zählen ab der ersten erfassten Reinigung".loc : "Tage zählen ab dem ersten erfassten Service".loc
         guard !parts.isEmpty else { return waiting ? waitingText : nil }
         let joined = parts.joined(separator: " \("oder".loc) ")
         let due = String(localized: "Fällig \(joined)")
@@ -137,6 +140,12 @@ enum MaintenanceNotifier {
         status == .notDetermined && !screenshots && weapons.contains { weapon in
             !weapon.isArchived && MaintenanceKind.allCases.contains { weapon.status($0).hasReminder }
         }
+    }
+
+    /// The delivered reminders (`ids`) that are no longer due: of a cleaning recorded since, or of a firearm
+    /// that is gone or archived.
+    static func settled(_ ids: [String], due: Set<String>) -> [String] {
+        ids.filter { $0.hasPrefix("maintenance-") && !due.contains($0) }
     }
 
     /// The pending reminders (`ids`) of firearms that no longer exist.
@@ -218,16 +227,21 @@ enum MaintenanceNotifier {
         center.getPendingNotificationRequests { requests in
             center.removePendingNotificationRequests(withIdentifiers: orphaned(requests.map(\.identifier), weapons: weapons.map(\.id)))
         }
+        // A reminder still in Notification Centre after its cleaning was recorded (here or on another device).
+        let due = Set(weapons.filter { !$0.isArchived }.flatMap { weapon in weapon.dueMaintenance.map { identifier(weapon, $0.kind) } })
+        center.getDeliveredNotifications { delivered in
+            center.removeDeliveredNotifications(withIdentifiers: settled(delivered.map(\.request.identifier), due: due))
+        }
         Task { @MainActor in
             guard asksPermission(await authorizationStatus(), weapons: weapons) else { return }
             await requestAuthorization()
             refreshAll(in: context) // now allowed or denied: schedules, and does not ask again
         }
-        let due = dueCount(weapons)
+        let dueNow = dueCount(weapons)
         // shortcut: a reminder ahead counts what is due now plus itself, not the others that fire
         // before it; the next start of the app puts the number right. Upgrade if that is noticed.
-        for weapon in weapons { refresh(weapon, badgeAhead: due + 1) }
-        UNUserNotificationCenter.current().setBadgeCount(due)
+        for weapon in weapons { refresh(weapon, badgeAhead: dueNow + 1) }
+        UNUserNotificationCenter.current().setBadgeCount(dueNow)
     }
 }
 

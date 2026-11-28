@@ -12481,6 +12481,29 @@
         }
       }
     },
+    "Tage zählen ab dem ersten erfassten Service": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days count from the first recorded service"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les jours comptent dès la première révision saisie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I giorni contano dalla prima revisione registrata"
+          }
+        }
+      }
+    },
     "Tage zählen ab dem nächsten Schuss": {
       "extractionState": "manual",
       "localizations": {
@@ -12500,6 +12523,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "I giorni contano dal prossimo colpo"
+          }
+        }
+      }
+    },
+    "Tage zählen ab der ersten erfassten Reinigung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days count from the first recorded cleaning"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les jours comptent dès le premier nettoyage saisi"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I giorni contano dalla prima pulizia registrata"
           }
         }
       }

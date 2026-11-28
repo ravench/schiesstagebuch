@@ -187,6 +187,25 @@ final class MaintenanceTests: ModelTestCase {
         XCTAssertEqual(s.shotsSince, 30)
     }
 
+    /// A day interval alone, nothing recorded yet: the firearm says why no day reminder is coming.
+    func testNoRecordSaysWhenDaysStartToCount() throws {
+        weapon.cleaningIntervalShots = 0; weapon.serviceIntervalShots = 0
+        addEntry(weapon, on: day(1), shots: 30)
+        try context.save()
+        XCTAssertEqual(weapon.status(.cleaning).dueText, "Tage zählen ab der ersten erfassten Reinigung".loc)
+        XCTAssertEqual(weapon.status(.service).dueText, "Tage zählen ab dem ersten erfassten Service".loc)
+        weapon.cleaningIntervalDays = 0
+        XCTAssertNil(weapon.status(.cleaning).dueText, "no reminder set, nothing to say")
+    }
+
+    /// A reminder in Notification Centre whose cleaning has been recorded, or whose firearm is gone, is taken away.
+    func testDeliveredRemindersNoLongerDueAreSettled() {
+        let stillDue = MaintenanceNotifier.identifier(weapon, .cleaning)
+        let done = MaintenanceNotifier.identifier(weapon, .service)
+        let gone = "maintenance-\(UUID().uuidString)-cleaning"
+        XCTAssertEqual(MaintenanceNotifier.settled([stillDue, done, gone, "something-else"], due: [stillDue]), [done, gone])
+    }
+
     func testDayCountingTitles() throws {
         XCTAssertEqual(DayCounting.fromFirstUse.title, "Ab erstem Schuss danach".loc)
         XCTAssertEqual(DayCounting.fromMaintenance.title, "Ab Reinigung / Service".loc)

@@ -168,7 +168,7 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Einstellungen")
-        .onChange(of: dayCounting) { weapons.forEach { MaintenanceNotifier.refresh($0) } }
+        .onChange(of: dayCounting) { MaintenanceNotifier.refreshAll(in: context) } // the icon's number too
         .fileExporter(isPresented: Binding(get: { exportDoc != nil }, set: { if !$0 { exportDoc = nil } }),
                       document: exportDoc, contentType: exportType, defaultFilename: exportName) { result in
             if case .failure(let e) = result { message = e.localizedDescription }

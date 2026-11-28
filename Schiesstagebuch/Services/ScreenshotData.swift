@@ -34,6 +34,8 @@ enum ScreenshotData {
         rifle.serialNumber = "A 123456"
         let pistol = Weapon(name: "SIG P226")
         pistol.category = .pistol
+        // A day interval and no cleaning recorded yet: the pistol's page says when the days start to count.
+        pistol.cleaningIntervalDays = 30
         let carbine = Weapon(name: "K31")
         carbine.category = .serviceCarbine
         let ammo = Ammunition(name: "GP 11", caliber: gp11)
