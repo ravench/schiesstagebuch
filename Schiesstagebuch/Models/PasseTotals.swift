@@ -13,7 +13,8 @@ struct PasseTotal: Codable, Equatable {
 extension Array where Element == PasseTotal {
     /// The Passen worth keeping: empty ones dropped, negative numbers clamped to 0.
     var normalized: [PasseTotal] {
-        map { PasseTotal(shots: Swift.max(0, $0.shots), points: Swift.max(0, $0.points)) }.filter { !$0.isEmpty }
+        // At most 10 000 shots a Passe: two absurd numbers added up to an overflow, which crashes.
+        map { PasseTotal(shots: Swift.min(10_000, Swift.max(0, $0.shots)), points: Swift.max(0, $0.points)) }.filter { !$0.isEmpty }
     }
 
     var shotCount: Int { reduce(0) { $0 + $1.shots } }

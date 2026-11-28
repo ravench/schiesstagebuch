@@ -340,14 +340,16 @@ final class ShootingEvent {
 
     /// Moves the event and all its Stiche to a new day.
     func setDate(_ newDate: Date) {
-        date = newDate
-        for entry in entries ?? [] { entry.date = newDate }
+        // Only what differs: every Stich save came through here and marked the Anlass and all its Stiche
+        // as changed, for iCloud to send and to collide with an edit from another device (review 2026-11-27).
+        if date != newDate { date = newDate }
+        for entry in entries ?? [] where entry.date != newDate { entry.date = newDate }
     }
 
     /// Makes `entry` a Stich of this event; it takes over the event's date.
     func add(_ entry: Entry) {
-        entry.shootingEvent = self
-        entry.date = date
+        if entry.shootingEvent != self { entry.shootingEvent = self }
+        if entry.date != date { entry.date = date }
     }
 
     /// The event of `entry`, created when the entry has none yet (e.g. after a sync left it alone).

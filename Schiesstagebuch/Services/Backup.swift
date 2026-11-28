@@ -331,8 +331,6 @@ enum Backup {
         return event
     }
 
-    /// Returns a short German summary for the user.
-    @discardableResult
     /// Ranges of the backup by their id. A range that is already in the app under another id (the same
     /// catalogue range, the same name, or a range close by with a fitting name, e.g. after the catalogue
     /// was imported on a new phone) is reused and only gets the values it lacks.
@@ -371,6 +369,8 @@ enum Backup {
 
     /// Restores a backup, or leaves the store as it was: a failure half-way (a fetch, the save) would
     /// otherwise persist what was inserted so far, and a retry would skip those ids (review 2026-11-10).
+    /// Returns a short summary for the user.
+    @discardableResult
     static func restore(from data: Data, into context: ModelContext, defaults: UserDefaults = .standard) throws -> String {
         do {
             let file = try decode(data)
@@ -445,9 +445,12 @@ enum Backup {
 
         let events = try restoreEvents(file.events ?? [], ranges: ranges, into: context), targets = try restoreTargets(file.targets ?? [], into: context)
 
-        let existingEntries = Set(try all(Entry.self, context).map(\.id))
+        let present = try all(Entry.self, context)
+        let existingEntries = Set(present.map(\.id))
+        // An entry imported from Schusszähler on this device too is the backup's entry under another id.
+        let imported = Set(present.map(\.importKey).filter { !$0.isEmpty })
         var added = 0
-        for d in file.entries where !existingEntries.contains(d.id) {
+        for d in file.entries where !existingEntries.contains(d.id) && !imported.contains(d.importKey ?? "") {
             let e = Entry(date: d.date,
                           weapon: d.weaponID.flatMap { weapons[$0] }, caliber: d.caliberID.flatMap { caliberMap[$0] },
                           shotCount: d.shotCount, ammunition: d.ammunitionID.flatMap { ammo[$0] },
@@ -476,7 +479,7 @@ enum Backup {
         weapons.values.forEach { MaintenanceNotifier.refresh($0) }
         let skipped = file.entries.count - added
         return skipped > 0
-            ? String(localized: "\(added) Einträge wiederhergestellt, \(skipped) waren schon vorhanden.")
+            ? String(localized: "Einträge wiederhergestellt: \(added), schon vorhanden: \(skipped)")
             : String(localized: "\(added) Einträge wiederhergestellt.")
     }
 

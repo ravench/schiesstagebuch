@@ -840,6 +840,19 @@ final class PRScreensTests: XCTestCase {
         snap("01c-Tagebuch-mehrere-Stiche")
     }
 
+    /// The journal's search with one hit: «1 Eintrag», not «1 Einträge».
+    func testJournalSearchWithOneHit() {
+        tab("Tagebuch")
+        let search = app.searchFields.firstMatch
+        if !search.waitForExistence(timeout: 2) { app.swipeDown(velocity: .slow) }
+        guard search.waitForExistence(timeout: 5) else { return XCTFail("No search field in the journal") }
+        search.tap()
+        search.typeText("Feldschiessen\n") // return hides the keyboard
+        let hit = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "1 Eintrag")).firstMatch
+        _ = hit.waitForExistence(timeout: 5)
+        snap("01e-Tagebuch-Suche-ein-Treffer")
+    }
+
     /// The import from Schusszähler: its sheet before a file is chosen, with a title that fits.
     func testLegacyImportSheet() {
         tab("Einstellungen")

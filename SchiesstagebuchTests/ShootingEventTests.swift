@@ -280,4 +280,20 @@ final class ShootingEventTests: ModelTestCase {
         XCTAssertEqual(row[anlass], "Feldschiessen")
         XCTAssertEqual(row[stich], "Hauptstich")
     }
+
+    /// Saving a Stich goes through `setDate` and `add` with what is there already: that must not mark
+    /// the Anlass and its other Stiche as changed (iCloud would send them all).
+    func testSettingTheSameDateAndStichChangesNothing() throws {
+        let first = addEntry(nil, on: day(4), shots: 10)
+        let event = try XCTUnwrap(first.shootingEvent)
+        addStich(to: event, nil, shots: 20)
+        try context.save()
+        XCTAssertFalse(context.hasChanges)
+        event.setDate(event.date)
+        event.add(first)
+        XCTAssertFalse(context.hasChanges, "nothing differs, nothing to save")
+        event.setDate(day(5))
+        XCTAssertTrue(context.hasChanges)
+        XCTAssertEqual(event.sortedEntries.map(\.date), [day(5), day(5)])
+    }
 }

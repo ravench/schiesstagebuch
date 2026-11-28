@@ -7,6 +7,12 @@ enum BackupStore {
         URL.documentsDirectory.appending(path: "Backups", directoryHint: .isDirectory)
     }
 
+    /// «Schiesstagebuch-2026-11-28», with the day as the phone shows it: `.iso8601` alone is Greenwich's day,
+    /// so a backup made just after midnight carried yesterday's date.
+    static func name(on date: Date = .now, timeZone: TimeZone = .current) -> String {
+        "Schiesstagebuch-\(date.formatted(Date.ISO8601FormatStyle(timeZone: timeZone).year().month().day()))"
+    }
+
     /// Number of backup copies kept; older ones are removed.
     static let keep = 10
 

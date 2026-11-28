@@ -121,4 +121,11 @@ final class PasseTotalsTests: ModelTestCase {
             }
         }
     }
+
+    /// Two absurd shot counts added up to an integer overflow, which crashes: a Passe keeps at most 10 000.
+    func testAbsurdShotCountsAreCapped() {
+        let passen = [PasseTotal(shots: 5_000_000_000_000_000_000, points: 10), PasseTotal(shots: 5_000_000_000_000_000_000, points: 10)].normalized
+        XCTAssertEqual(passen.map(\.shots), [10_000, 10_000])
+        XCTAssertEqual(passen.shotCount, 20_000)
+    }
 }

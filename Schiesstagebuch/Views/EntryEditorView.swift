@@ -530,7 +530,7 @@ struct EntryEditorView: View {
                     ? last.ammunition : suggestedAmmunition(weapon: weapon, caliber: caliber)
                 lot = ammunition == last.ammunition && last.lot?.isArchived == false ? last.lot : suggestedLot(for: ammunition)
                 sight = SightSettings(entry: last).forNewStich
-                weather = last.weather
+                weather = last.weather?.forNextStich
             } else if let last = allEntries.first {
                 // The first Stich starts from the most recent weapon and ammo: usually what you shoot next.
                 weapon = last.weapon?.isArchived == false ? last.weapon : nil
@@ -600,16 +600,21 @@ struct EntryEditorView: View {
         let shootingEvent = addingTo ?? ShootingEvent.of(target, in: context)
         let moved = !Calendar.current.isDate(date, inSameDayAs: shootingEvent.date)
         shootingEvent.add(target)
-        shootingEvent.setDate(date)
-        shootingEvent.range = range?.saved(in: context)
-        shootingEvent.name = event.trimmingCharacters(in: .whitespaces)
+        // A further Stich does not show date, range and Anlass: it leaves them as they are now, not as they
+        // were when the sheet opened (another device may have changed them since).
+        if addingTo == nil {
+            shootingEvent.setDate(date)
+            let newRange = range?.saved(in: context), newName = event.trimmingCharacters(in: .whitespaces)
+            if shootingEvent.range != newRange { shootingEvent.range = newRange }
+            if shootingEvent.name != newName { shootingEvent.name = newName }
+        }
         target.stich = stich.trimmingCharacters(in: .whitespaces)
         target.relay = relay.trimmingCharacters(in: .whitespaces); target.targetNumber = targetNumber.trimmingCharacters(in: .whitespaces)
         target.time = time
         target.weapon = weapon; target.caliber = caliber; target.ammunition = ammunition
         target.lot = lot?.ammunition == ammunition ? lot : nil
         target.barrel = weapon?.barrelToStore(picked: barrel, caliber: caliber, on: date)
-        shootingEvent.scoringSystem = scoring
+        if shootingEvent.scoringSystem != scoring { shootingEvent.scoringSystem = scoring }
         if scoring == .ipsc {
             shootingEvent.setIPSC(division: division, powerFactor: powerFactor)
             target.ipscStage = ipsc
@@ -620,7 +625,8 @@ struct EntryEditorView: View {
         } else {
             switch mode {
             case .split:
-                target.shotCount = max(0, sighters) + max(0, scored); target.sighterCount = max(0, sighters)
+                let probe = target.sighterCountToStore(sighters: sighters, scored: scored)
+                target.shotCount = max(0, sighters) + max(0, scored); target.sighterCount = probe
             case .passeTotals:
                 target.shotCount = max(0, sighters) + enteredPasseTotals.shotCount; target.sighterCount = max(0, sighters)
             case .shots:
