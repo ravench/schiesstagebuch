@@ -1,7 +1,8 @@
 import Foundation
 
 /// The release notes of a TestFlight build, written into the bundle by CI (tools/changelog.py) and
-/// shown the first time the build is opened (`WhatsNewView`). Development builds carry none.
+/// shown to testers the first time the build is opened (`WhatsNewView`). Development builds carry none,
+/// and the same build installed from the App Store shows none: its notes are on the store page.
 struct Changelog: Decodable {
     /// Bullet points by language (de, en, fr, it).
     var notes: [String: [String]]
@@ -22,9 +23,19 @@ struct Changelog: Decodable {
         [notes[language], notes["de"]].compactMap { $0 }.first { !$0.isEmpty }
     }
 
+    /// A TestFlight install has a sandbox receipt, an App Store install a production one.
+    static func isTestFlight(receipt: URL?) -> Bool { receipt?.lastPathComponent == "sandboxReceipt" }
+
+    /// Whether this install shows the notes: a TestFlight build, or the PR screens tour with its own file.
+    static var showsNotes: Bool {
+        isTestFlight(receipt: Bundle.main.appStoreReceiptURL) || UserDefaults.standard.string(forKey: "screenTourChangelog") != nil
+    }
+
     /// The notes to show at this start: those of a build other than the one shown last. Marks `build` as shown.
-    static func toShow(build: String, language: String, defaults: UserDefaults = .standard, changelog: Changelog? = load()) -> [String]? {
-        guard defaults.string(forKey: shownBuildKey) != build else { return nil }
+    /// Nothing for store users (`shows` false).
+    static func toShow(build: String, language: String, defaults: UserDefaults = .standard, changelog: Changelog? = load(),
+                       shows: Bool = showsNotes) -> [String]? {
+        guard shows, defaults.string(forKey: shownBuildKey) != build else { return nil }
         defaults.set(build, forKey: shownBuildKey)
         return changelog?.bullets(language: language)
     }
